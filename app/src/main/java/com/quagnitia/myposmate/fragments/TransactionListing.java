@@ -136,7 +136,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -340,7 +340,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
 
     public void callTimeStamp() {
         try {
-            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -413,7 +413,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             hashMapKeys.put("random_str", new Date().getTime() + "");
 
             new OkHttpHandler(getActivity(), this, null, "TransactionListing")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_RECENT_TRANSACTIONS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_RECENT_TRANSACTIONS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
 
 
         } catch (Exception e) {

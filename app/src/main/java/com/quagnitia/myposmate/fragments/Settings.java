@@ -201,7 +201,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.putAll(hashMapKeys);
         new OkHttpHandler(getActivity(), this, hashMap, "validateTerminal")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_VALIDATE_TERMINAL);
+                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL);
 
 
     }
@@ -223,7 +223,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         hashMap.put("grant_type", "password");
         hashMap.put("username", preferencesManager.getterminalId());
         hashMap.put("password", preferencesManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 */
@@ -235,7 +235,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -253,10 +253,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.V2_DELETE_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.V2_DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -276,10 +276,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
-//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.V2_DELETE_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption_old(edt_terminal_id.getText().toString()));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.V2_DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -599,10 +599,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
-//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsOld").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsOld").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption_old(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsOld").execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TERMINAL_CONFIG);//encryption("47f17c5fe8d43843"));
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsOld").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);//encryption("47f17c5fe8d43843"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -622,10 +622,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -648,9 +648,9 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
-            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
 
-//            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()) + "&configId=" + encryption(configId));
 
         } catch (Exception e) {
@@ -719,7 +719,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             jsonObject.put("isUpdated", true);
 
 
-//            new OkHttpHandler(getActivity(), this, null, "UpdateBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.V2_SAVE_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "UpdateBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
 //                    + "?branch_name=" + (preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()))
 //                    + "&branch_address=" + (preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()))
 //                    + "&branch_contact_no=" + (preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()))
@@ -746,7 +746,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, hashMap, "UpdateBranchDetailsNew")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_SAVE_TERMINAL_CONFIG);
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
 
 
         } catch (Exception e) {

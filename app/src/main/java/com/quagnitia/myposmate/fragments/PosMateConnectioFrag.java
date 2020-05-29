@@ -458,14 +458,14 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
         hashMapKeys.put("pos_id", preferencesManager.getPOSIdentifier());
         new OkHttpHandler(getActivity(), this, null, "saveLoyaltyInfo")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
     }
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
     public static boolean isBack = false;

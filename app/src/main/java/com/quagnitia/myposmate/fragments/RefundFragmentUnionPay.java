@@ -108,7 +108,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -478,7 +478,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
 
             new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -497,7 +497,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         hashMapKeys.put("random_str", new Date().getTime() + "");
 
         new OkHttpHandler(getActivity(), this, null, "getDetailsByRef")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_getDetailsByRef + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(AppConstants.BASE_URL2 + AppConstants.getDetailsByRef + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -776,7 +776,7 @@ public static boolean isScannedUnionPayQr=false;
             hashMapKeys.put("is_mobile_device", "true");
 
             new OkHttpHandler(getActivity(), this, null, "refundUnionPay")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_REFUND_UNION_PAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND_UNION_PAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
             callAuthToken();
         } catch (Exception e) {
             e.printStackTrace();

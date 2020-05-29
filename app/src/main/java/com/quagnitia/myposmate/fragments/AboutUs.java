@@ -23,7 +23,6 @@ import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.utils.AESHelper;
 import com.quagnitia.myposmate.utils.AppConstants;
-import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -34,7 +33,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -52,16 +50,15 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private EditText edt_merchant_name, edt_gst_number, edt_contact_no, edt_contact_email, edt_address
-            ,edt_lane_identifier,edt_terminal_identifier,edt_pos_identifier;
+    private EditText edt_merchant_name, edt_gst_number, edt_contact_no, edt_contact_email, edt_address, edt_lane_identifier, edt_terminal_identifier, edt_pos_identifier;
     private View view;
-    private CheckBox chk_branch_name, chk_branch_address, chk_branch_contact_no, chk_branch_email, chk_gst_no
-            ,chk_lane_identifier,chk_pos_identifier,chk_terminal_identifier;
+    private CheckBox chk_branch_name, chk_branch_address, chk_branch_contact_no, chk_branch_email, chk_gst_no, chk_lane_identifier, chk_pos_identifier, chk_terminal_identifier;
     private Spinner sp_timezone;
     private Button btn_save, btn_cancel;
     private static PreferencesManager preferencesManager;
     private Context mContext;
     TreeMap<String, String> hashMapKeys;
+
     public AboutUs() {
         // Required empty public constructor
     }
@@ -83,16 +80,17 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    public void callAuthToken()
-    {
+
+    public void callAuthToken() {
         openProgressDialog();
-        HashMap<String,String> hashMap=new HashMap<>();
-        hashMap.put("grant_type","password");
-        hashMap.put("username",preferencesManager.getterminalId());
-        hashMap.put("password",preferencesManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("grant_type", "password");
+        hashMap.put("username", preferencesManager.getterminalId());
+        hashMap.put("password", preferencesManager.getuniqueId());
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,7 +98,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         view = inflater.inflate(R.layout.fragment_about_us, container, false);
         preferencesManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
-        mContext=getActivity();
+        mContext = getActivity();
         callAuthToken();
         initUI();
         initLIstenere();
@@ -133,7 +131,6 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         edt_contact_no.setText(preferencesManager.getcontact_no());
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         String emailPattern1 = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+\\.+[a-z]+";
-
 
 
         edt_address.setText(preferencesManager.getaddress());
@@ -183,8 +180,6 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             chk_terminal_identifier.setChecked(false);
             chk_terminal_identifier.setSelected(false);
         }
-
-
 
 
         if (preferencesManager.getBranchName().equals("true")) {
@@ -237,18 +232,17 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             @Override
             public void onClick(View v) {
                 //is chkIos checked?
-                if (edt_gst_number.getText().toString().equals("")||
+                if (edt_gst_number.getText().toString().equals("") ||
                         (!edt_gst_number.getText().toString().equals("")
-                                &&(edt_gst_number.getText().toString().length()<8
-                                ||edt_gst_number.getText().toString().length()>9))) {
+                                && (edt_gst_number.getText().toString().length() < 8
+                                || edt_gst_number.getText().toString().length() > 9))) {
                     preferencesManager.setGSTNo("false");
                     chk_gst_no.setChecked(false);
                     chk_gst_no.setSelected(false);
 
-                    if(!edt_gst_number.getText().toString().equals("")
-                            &&(edt_gst_number.getText().toString().length()<8
-                            ||edt_gst_number.getText().toString().length()>9))
-                    {
+                    if (!edt_gst_number.getText().toString().equals("")
+                            && (edt_gst_number.getText().toString().length() < 8
+                            || edt_gst_number.getText().toString().length() > 9)) {
                         Toast.makeText(getActivity(), "GST number should be 8 or 9 digits", Toast.LENGTH_SHORT).show();
                         edt_gst_number.setText("");
                     }
@@ -580,20 +574,13 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         });
 
 
-
 //
-        if(!preferencesManager.getcontact_email().equals(""))
-        {
-            if(preferencesManager.getcontact_email().trim().matches(emailPattern1))
-            {
+        if (!preferencesManager.getcontact_email().equals("")) {
+            if (preferencesManager.getcontact_email().trim().matches(emailPattern1)) {
                 edt_contact_email.setText(preferencesManager.getcontact_email());
-            }
-            else if(preferencesManager.getcontact_email().trim().matches(emailPattern))
-            {
+            } else if (preferencesManager.getcontact_email().trim().matches(emailPattern)) {
                 edt_contact_email.setText(preferencesManager.getcontact_email());
-            }
-            else
-            {
+            } else {
                 edt_contact_email.setText(decryption(preferencesManager.getcontact_email()));
             }
         }
@@ -627,8 +614,8 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
     @Override
     public void onClick(View v) {
-        if (((DashboardActivity)mContext).mPopupWindow.isShowing())
-            ((DashboardActivity)mContext).mPopupWindow.dismiss();
+        if (((DashboardActivity) mContext).mPopupWindow.isShowing())
+            ((DashboardActivity) mContext).mPopupWindow.dismiss();
         switch (v.getId()) {
             case R.id.btn_save:
                 String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -638,9 +625,9 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                         edt_contact_email.getText().toString().equals("") &&
                         edt_contact_no.getText().toString().equals("") &&
                         edt_merchant_name.getText().toString().equals("") &&
-                        edt_gst_number.getText().toString().equals("")&&
-                        edt_terminal_identifier.getText().toString().equals("")&&
-                        edt_lane_identifier.getText().toString().equals("")&&
+                        edt_gst_number.getText().toString().equals("") &&
+                        edt_terminal_identifier.getText().toString().equals("") &&
+                        edt_lane_identifier.getText().toString().equals("") &&
                         edt_pos_identifier.getText().toString().equals("")
                 ) {
                     Toast.makeText(getActivity(), "Please fill in the details", Toast.LENGTH_LONG).show();
@@ -665,10 +652,8 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                         if (!edt_contact_email.getText().toString().equals("") && !edt_contact_email.getText().toString().trim().matches(emailPattern1)) {
                             flag = false;
                             Toast.makeText(getActivity(), "Invalid email id", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            flag=true;
+                        } else {
+                            flag = true;
                         }
 
 
@@ -677,7 +662,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 //                        flag = false;
 //                        Toast.makeText(getActivity(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
 //                    }
-                    if (!edt_gst_number.getText().toString().equals("") && (edt_gst_number.getText().toString().length() < 8 || edt_gst_number.getText().toString().length() >9)) {
+                    if (!edt_gst_number.getText().toString().equals("") && (edt_gst_number.getText().toString().length() < 8 || edt_gst_number.getText().toString().length() > 9)) {
                         flag = false;
                         Toast.makeText(getActivity(), "GST number should be 8 or 9 digits", Toast.LENGTH_SHORT).show();
                     }
@@ -699,13 +684,13 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             case R.id.btn_cancel:
                 MyPOSMateApplication.isOpen = false;
                 MyPOSMateApplication.isActiveQrcode = false;
-                isCancel=true;
+                isCancel = true;
                 callAuthToken();
                 break;
         }
     }
 
-    public static boolean isCancel=false;
+    public static boolean isCancel = false;
     ProgressDialog progress;
 
     public void openProgressDialog() {
@@ -724,39 +709,39 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         try {
 
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("AlipaySelected",preferencesManager.isAlipaySelected());
-            jsonObject.put("AlipayValue",preferencesManager.getcnv_alipay());
+            jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
+            jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
             jsonObject.put("CnvAlipayDisplayOnly", preferencesManager.is_cnv_alipay_display_only());
-            jsonObject.put("WeChatSelected",preferencesManager.isWechatSelected());
-            jsonObject.put("WeChatValue",preferencesManager.getcnv_wechat());
+            jsonObject.put("WeChatSelected", preferencesManager.isWechatSelected());
+            jsonObject.put("WeChatValue", preferencesManager.getcnv_wechat());
             jsonObject.put("CnvWeChatDisplayAndAdd", preferencesManager.is_cnv_wechat_display_and_add());
             jsonObject.put("CnvWeChatDisplayOnly", preferencesManager.is_cnv_wechat_display_only());
-            jsonObject.put("AlipayScanQR",preferencesManager.isAlipayScan());
-            jsonObject.put("WeChatScanQR",preferencesManager.isWeChatScan());
-            jsonObject.put("MerchantId",preferencesManager.getMerchantId());
-            jsonObject.put("ConfigId",preferencesManager.getConfigId());
+            jsonObject.put("AlipayScanQR", preferencesManager.isAlipayScan());
+            jsonObject.put("WeChatScanQR", preferencesManager.isWeChatScan());
+            jsonObject.put("MerchantId", preferencesManager.getMerchantId());
+            jsonObject.put("ConfigId", preferencesManager.getConfigId());
             jsonObject.put("UnionPay", preferencesManager.isUnionPaySelected());
             jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
             jsonObject.put("CnvAlipayDisplayOnly", preferencesManager.is_cnv_alipay_display_only());
             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferencesManager.getcnv_uniqr());
-            jsonObject.put("UplanValue",preferencesManager.getcnv_uplan());
+            jsonObject.put("UplanValue", preferencesManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
             jsonObject.put("Uplan", preferencesManager.isUplanSelected());
             jsonObject.put("PrintReceiptautomatically", preferencesManager.getisPrint());
             jsonObject.put("ShowReference", preferencesManager.getshowReference());
-            jsonObject.put("ShowPrintQR",preferencesManager.isQR());
-            jsonObject.put("DisplayStaticQR",preferencesManager.isStaticQR());
-            jsonObject.put("Membership/Loyality",preferencesManager.isLoyality());
+            jsonObject.put("ShowPrintQR", preferencesManager.isQR());
+            jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
+            jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
             jsonObject.put("ManualEntry", preferencesManager.isManual());
-            jsonObject.put("Back",preferencesManager.isBack());
-            jsonObject.put("Front",preferencesManager.isFront());
-            jsonObject.put("ShowMembershipManual",preferencesManager.isMembershipManual());
-            jsonObject.put("ShowMembershipHome",preferencesManager.isMembershipHome());
+            jsonObject.put("Back", preferencesManager.isBack());
+            jsonObject.put("Front", preferencesManager.isFront());
+            jsonObject.put("ShowMembershipManual", preferencesManager.isMembershipManual());
+            jsonObject.put("ShowMembershipHome", preferencesManager.isMembershipHome());
             jsonObject.put("ConvenienceFee", preferencesManager.isConvenienceFeeSelected());
             jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
             jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
@@ -771,16 +756,16 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             jsonObject.put("isTerminalIdentifier", preferencesManager.isTerminalIdentifier());
             jsonObject.put("isPOSIdentifier", preferencesManager.isPOSIdentifier());
             jsonObject.put("isLaneIdentifier", preferencesManager.isLaneIdentifier());
-            jsonObject.put("LaneIdentifier",edt_lane_identifier.getText().toString());
-            jsonObject.put("TerminalIdentifier",edt_terminal_identifier.getText().toString());
-            jsonObject.put("POSIdentifier",edt_pos_identifier.getText().toString());
+            jsonObject.put("LaneIdentifier", edt_lane_identifier.getText().toString());
+            jsonObject.put("TerminalIdentifier", edt_terminal_identifier.getText().toString());
+            jsonObject.put("POSIdentifier", edt_pos_identifier.getText().toString());
             jsonObject.put("isUpdated", true);
 
-            new OkHttpHandler(getActivity(), this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.V2_SAVE_TERMINAL_CONFIG
+            new OkHttpHandler(getActivity(), this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
                     + "?branch_name=" + (edt_merchant_name.getText().toString().equals("") ? encryption("nodata") : encryption(edt_merchant_name.getText().toString()))
                     + "&branch_address=" + (edt_address.getText().toString().equals("") ? encryption("nodata") : encryption(edt_address.getText().toString()))
                     + "&branch_contact_no=" + (edt_contact_no.getText().toString().equals("") ? encryption("nodata") : encryption(edt_contact_no.getText().toString()))
-                    + "&branch_email=" + (edt_contact_email.getText().toString().equals("") ? "nodata" :encryption(edt_contact_email.getText().toString()))
+                    + "&branch_email=" + (edt_contact_email.getText().toString().equals("") ? "nodata" : encryption(edt_contact_email.getText().toString()))
                     + "&gst_no=" + (edt_gst_number.getText().toString().equals("") ? encryption("nodata") : encryption(edt_gst_number.getText().toString()))
                     + "&terminal_id=" + encryption(preferencesManager.getterminalId())
                     + "&access_id=" + encryption(preferencesManager.getuniqueId())
@@ -843,14 +828,12 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
             case "AuthToken":
-                if(jsonObject.has("access_token")&&!jsonObject.optString("access_token").equals(""))
-                {
+                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
 
-                if(isCancel)
-                {
-                    isCancel=false;
+                if (isCancel) {
+                    isCancel = false;
                     callGetBranchDetails_new();
                 }
                 break;
@@ -870,7 +853,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                 callAuthToken();
                 PreferencesManager preferencesManager = PreferencesManager.getInstance(getActivity());
                 preferencesManager.setaddress(decryption(jsonObject.optString("branch_address")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_address")));
-                preferencesManager.setcontact_email(jsonObject.optString("branch_email").equals("nodata") ? "" :decryption(jsonObject.optString("branch_email")));
+                preferencesManager.setcontact_email(jsonObject.optString("branch_email").equals("nodata") ? "" : decryption(jsonObject.optString("branch_email")));
                 preferencesManager.setmerchant_name(decryption(jsonObject.optString("branch_name")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_name")));
                 preferencesManager.setgstno(decryption(jsonObject.optString("gst_no")).equals("nodata") ? "" : decryption(jsonObject.optString("gst_no")));
                 preferencesManager.setcontact_no(decryption(jsonObject.optString("branch_contact_no")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_contact_no")));
@@ -882,9 +865,9 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
 
 
-                    if(jsonObject1.has("ConfigId"))
+                    if (jsonObject1.has("ConfigId"))
                         preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
-                    if(jsonObject1.has("MerchantId"))
+                    if (jsonObject1.has("MerchantId"))
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
@@ -899,7 +882,6 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-
 
 
                     preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
@@ -939,12 +921,9 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                 }
 
 
-                if(preferencesManager.isManual())
-                {
+                if (preferencesManager.isManual()) {
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                }
-                else
-                {
+                } else {
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                 }
 
@@ -995,7 +974,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     private static final int PKCS5_SALT_LENGTH = 32;
     private static final String DELIMITER = "]";
     private static final SecureRandom random = new SecureRandom();
-    private static final String password="qspl123";
+    private static final String password = "qspl123";
 
     public static String encryption1(String plaintext) {
         byte[] salt = generateSalt();
@@ -1081,35 +1060,32 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     private static byte[] fromBase64(String base64) {
         return Base64.decode(base64, Base64.NO_WRAP);
     }
+
     public void callGetBranchDetails_new() {
 
         openProgressDialog();
         try {
-            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_TERMINAL_CONFIG
+            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
                     + "?terminal_id=" + encryption(preferencesManager.getterminalId()));//encryption("47f17c5fe8d43843"));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void _NewUser(JSONObject jsonObject) {
         try {
             if (jsonObject.optString("success").equals("true")) {
                 preferencesManager.setaddress(decryption(jsonObject.optString("branch_address")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_address")));
-                if(jsonObject.optString("branch_email").equals("nodata"))
-                {
+                if (jsonObject.optString("branch_email").equals("nodata")) {
                     preferencesManager.setcontact_email("");
-                }
-                else
-                {
+                } else {
                     preferencesManager.setcontact_email(decryption(jsonObject.optString("branch_email")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_email")));
                 }
                 preferencesManager.setcontact_no(decryption(jsonObject.optString("branch_contact_no")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_contact_no")));
                 preferencesManager.setmerchant_name(decryption(jsonObject.optString("branch_name")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_name")));
                 preferencesManager.setgstno(decryption(jsonObject.optString("gst_no")).equals("nodata") ? "" : decryption(jsonObject.optString("gst_no")));
                 preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
-
-
 
 
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));

@@ -114,72 +114,68 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
                         notifyDataSetChanged();
 
                         try {
-                            JSONObject jsonObject=new JSONObject();
-                            jsonObject.put("AlipaySelected",preferencesManager.isAlipaySelected());
-                            jsonObject.put("AlipayValue",preferencesManager.getcnv_alipay());
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
+                            jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
                             jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
                             jsonObject.put("CnvAlipayDisplayOnly", preferencesManager.is_cnv_alipay_display_only());
 
-                            jsonObject.put("WeChatSelected",preferencesManager.isWechatSelected());
-                            jsonObject.put("WeChatValue",preferencesManager.getcnv_wechat());
+                            jsonObject.put("WeChatSelected", preferencesManager.isWechatSelected());
+                            jsonObject.put("WeChatValue", preferencesManager.getcnv_wechat());
                             jsonObject.put("CnvWeChatDisplayAndAdd", preferencesManager.is_cnv_wechat_display_and_add());
                             jsonObject.put("CnvWeChatDisplayOnly", preferencesManager.is_cnv_wechat_display_only());
 
-                            jsonObject.put("AlipayScanQR",preferencesManager.isAlipayScan());
-                            jsonObject.put("WeChatScanQR",preferencesManager.isWeChatScan());
+                            jsonObject.put("AlipayScanQR", preferencesManager.isAlipayScan());
+                            jsonObject.put("WeChatScanQR", preferencesManager.isWeChatScan());
 
-                            jsonObject.put("MerchantId",preferencesManager.getMerchantId());
-                            jsonObject.put("ConfigId",preferencesManager.getConfigId());
-                            jsonObject.put("UnionPay",preferencesManager.isUnionPaySelected());
+                            jsonObject.put("MerchantId", preferencesManager.getMerchantId());
+                            jsonObject.put("ConfigId", preferencesManager.getConfigId());
+                            jsonObject.put("UnionPay", preferencesManager.isUnionPaySelected());
                             jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
                             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
                             jsonObject.put("UnionPayQrValue", preferencesManager.getcnv_uniqr());
-                            jsonObject.put("UplanValue",preferencesManager.getcnv_uplan());
+                            jsonObject.put("UplanValue", preferencesManager.getcnv_uplan());
                             jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
                             jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
-                            jsonObject.put("Uplan",preferencesManager.isUplanSelected());
-                            jsonObject.put("AlipayWeChatPay",preferencesManager.isaggregated_singleqr());
-                            jsonObject.put("AlipayWeChatScanQR",preferencesManager.isAlipayWechatQrSelected());
-                            jsonObject.put("PrintReceiptautomatically",preferencesManager.getisPrint());
-                            jsonObject.put("ShowReference",preferencesManager.getshowReference());
-                            jsonObject.put("ShowPrintQR",preferencesManager.isQR());
-                            jsonObject.put("DisplayStaticQR",preferencesManager.isStaticQR());
-                            jsonObject.put("Home",preferencesManager.isHome());
-                            jsonObject.put("ManualEntry",preferencesManager.isManual());
-                            jsonObject.put("Back",preferencesManager.isBack());
-                            jsonObject.put("Front",preferencesManager.isFront());
-                            jsonObject.put("ShowMembershipManual",preferencesManager.isMembershipManual());
-                            jsonObject.put("ShowMembershipHome",preferencesManager.isMembershipHome());
-                            jsonObject.put("ConvenienceFee",preferencesManager.isConvenienceFeeSelected());
-                            jsonObject.put("AlipayWechatvalue",preferencesManager.getcnv_alipay());
-                            jsonObject.put("UnionPayvalue",preferencesManager.getcnv_uni());
-                            jsonObject.put("EnableBranchName",preferencesManager.getBranchName());
-                            jsonObject.put("EnableBranchAddress",preferencesManager.getBranchAddress());
-                            jsonObject.put("EnableBranchEmail",preferencesManager.getBranchEmail());
-                            jsonObject.put("EnableBranchContactNo",preferencesManager.getBranchPhoneNo());
-                            jsonObject.put("EnableBranchGSTNo",preferencesManager.getGSTNo());
-                            jsonObject.put("TimeZoneId",preferencesManager.getTimeZoneId());
-                            jsonObject.put("TimeZone",preferencesManager.getTimeZone());
-                            jsonObject.put("isTimeZoneChecked",preferencesManager.isTimeZoneChecked());
+                            jsonObject.put("Uplan", preferencesManager.isUplanSelected());
+                            jsonObject.put("AlipayWeChatPay", preferencesManager.isaggregated_singleqr());
+                            jsonObject.put("AlipayWeChatScanQR", preferencesManager.isAlipayWechatQrSelected());
+                            jsonObject.put("PrintReceiptautomatically", preferencesManager.getisPrint());
+                            jsonObject.put("ShowReference", preferencesManager.getshowReference());
+                            jsonObject.put("ShowPrintQR", preferencesManager.isQR());
+                            jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
+                            jsonObject.put("Home", preferencesManager.isHome());
+                            jsonObject.put("ManualEntry", preferencesManager.isManual());
+                            jsonObject.put("Back", preferencesManager.isBack());
+                            jsonObject.put("Front", preferencesManager.isFront());
+                            jsonObject.put("ShowMembershipManual", preferencesManager.isMembershipManual());
+                            jsonObject.put("ShowMembershipHome", preferencesManager.isMembershipHome());
+                            jsonObject.put("ConvenienceFee", preferencesManager.isConvenienceFeeSelected());
+                            jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
+                            jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
+                            jsonObject.put("EnableBranchName", preferencesManager.getBranchName());
+                            jsonObject.put("EnableBranchAddress", preferencesManager.getBranchAddress());
+                            jsonObject.put("EnableBranchEmail", preferencesManager.getBranchEmail());
+                            jsonObject.put("EnableBranchContactNo", preferencesManager.getBranchPhoneNo());
+                            jsonObject.put("EnableBranchGSTNo", preferencesManager.getGSTNo());
+                            jsonObject.put("TimeZoneId", preferencesManager.getTimeZoneId());
+                            jsonObject.put("TimeZone", preferencesManager.getTimeZone());
+                            jsonObject.put("isTimeZoneChecked", preferencesManager.isTimeZoneChecked());
 
-                            jsonObject.put("Membership/Loyality",preferencesManager.isLoyality());
+                            jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
                             jsonObject.put("isTerminalIdentifier", preferencesManager.isTerminalIdentifier());
                             jsonObject.put("isPOSIdentifier", preferencesManager.isPOSIdentifier());
                             jsonObject.put("isLaneIdentifier", preferencesManager.isLaneIdentifier());
-                            jsonObject.put("LaneIdentifier",preferencesManager.getLaneIdentifier());
-                            jsonObject.put("TerminalIdentifier",preferencesManager.getTerminalIdentifier());
-                            jsonObject.put("POSIdentifier",preferencesManager.getPOSIdentifier());
+                            jsonObject.put("LaneIdentifier", preferencesManager.getLaneIdentifier());
+                            jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
+                            jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
 
                             jsonObject.put("isUpdated", true);
 
-                            ((TimeZoneActivity)mContext).callUpdateBranchDetails(jsonObject);
-                        }
-                        catch (Exception e)
-                        {
+                            ((TimeZoneActivity) mContext).callUpdateBranchDetails(jsonObject);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-
 
 
                     } else {

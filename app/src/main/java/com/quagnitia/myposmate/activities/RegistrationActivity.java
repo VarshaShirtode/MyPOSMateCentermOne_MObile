@@ -141,7 +141,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
         preferencesManager.setConfigId(edt_config_id.getText().toString());
         preferencesManager.setMerchantId(edt_merchant_id.getText().toString());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -166,7 +166,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
         hashMapKeys.put("random_str", new Date().getTime() + "");
         preferencesManager.setuniqueId(edt_access_id.getText().toString());
         new OkHttpHandler(getActivity(), this, null, "Registration")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_REGISTRATION + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(AppConstants.BASE_URL2 + AppConstants.REGISTRATION + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
     }
 
     @Override

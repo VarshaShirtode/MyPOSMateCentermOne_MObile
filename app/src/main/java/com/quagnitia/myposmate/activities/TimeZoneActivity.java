@@ -1,10 +1,8 @@
 package com.quagnitia.myposmate.activities;
 
-import android.app.AlarmManager;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +12,9 @@ import android.util.Base64;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
-import com.quagnitia.myposmate.fragments.TransactionListingAdapter;
 import com.quagnitia.myposmate.utils.AESHelper;
 import com.quagnitia.myposmate.utils.AppConstants;
-import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -27,12 +22,10 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -67,26 +60,23 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
 
             TimeZone tz = TimeZone.getTimeZone(tzId);
             String name = tz.getDisplayName();
-            if(tzId.equals("Australia/Perth")||
-                    tzId.equals("Australia/Eucla")||
-                    tzId.equals("Australia/Darwin")||
-                    tzId.equals("Australia/Brisbane")||
-                    tzId.equals("Australia/Adelaide")||
-                    tzId.equals("Australia/Sydney")||
-                    tzId.equals("Australia/Lord_Howe")||
-                    tzId.equals("Pacific/Fiji")||
-                    tzId.equals("Pacific/Auckland")||
+            if (tzId.equals("Australia/Perth") ||
+                    tzId.equals("Australia/Eucla") ||
+                    tzId.equals("Australia/Darwin") ||
+                    tzId.equals("Australia/Brisbane") ||
+                    tzId.equals("Australia/Adelaide") ||
+                    tzId.equals("Australia/Sydney") ||
+                    tzId.equals("Australia/Lord_Howe") ||
+                    tzId.equals("Pacific/Fiji") ||
+                    tzId.equals("Pacific/Auckland") ||
                     tzId.equals("Pacific/Chatham")
-            )
-            {
+            ) {
                 arrayList.add(tzId);
             }
 
             int offset = tz.getRawOffset();
             // ...
         }
-
-
 
 
         timeZoneAdapter = new TimeZoneAdapter(this, arrayList);
@@ -129,7 +119,9 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         //calling a method of the adapter class and passing the filtered list
         timeZoneAdapter.filterList(filterdNames);
     }
+
     ProgressDialog progress;
+
     public void openProgressDialog() {
         progress = new ProgressDialog(TimeZoneActivity.this);
         progress.setMessage("Loading.......");
@@ -138,6 +130,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         progress.setIndeterminate(true);
         progress.show();
     }
+
     public String encryption(String strNormalText) {
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
@@ -159,8 +152,10 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         }
         return strDecryptedText;
     }
+
     private PreferencesManager preferenceManager;
     TreeMap<String, String> hashMapKeys;
+
     public void callUpdateBranchDetails(JSONObject jsonObject) {
 
         openProgressDialog();
@@ -182,18 +177,15 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
 //                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_SAVE_TERMINAL_CONFIG + MD5Class.generateSignatureString(hashMapKeys, TimeZoneActivity.this)+"&access_token="+preferenceManager.getauthToken());
 
 
-
-
-
-            new OkHttpHandler(TimeZoneActivity.this, this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.V2_SAVE_TERMINAL_CONFIG
-                            + "?other_data="+ encryption(jsonObject.toString())
-                            + "&terminal_id=" + encryption(preferenceManager.getterminalId())
-                            + "&access_id=" + encryption(preferenceManager.getuniqueId())
-                            + "&branch_name=" + encryption(preferenceManager.getmerchant_name())
-                            + "&branch_address=" + encryption(preferenceManager.getaddress())
-                            + "&branch_contact_no=" + encryption(preferenceManager.getcontact_no())
-                            + "&branch_email=" +encryption( preferenceManager.getcontact_email())
-                            + "&gst_no=" + encryption(preferenceManager.getgstno())
+            new OkHttpHandler(TimeZoneActivity.this, this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
+                    + "?other_data=" + encryption(jsonObject.toString())
+                    + "&terminal_id=" + encryption(preferenceManager.getterminalId())
+                    + "&access_id=" + encryption(preferenceManager.getuniqueId())
+                    + "&branch_name=" + encryption(preferenceManager.getmerchant_name())
+                    + "&branch_address=" + encryption(preferenceManager.getaddress())
+                    + "&branch_contact_no=" + encryption(preferenceManager.getcontact_no())
+                    + "&branch_email=" + encryption(preferenceManager.getcontact_email())
+                    + "&gst_no=" + encryption(preferenceManager.getgstno())
 
             );
 
@@ -217,14 +209,13 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
             case "UpdateBranchDetails":
-                if(jsonObject.has("other_data"))
-                {
-                    JSONObject jsonObject1=new JSONObject(decryption(jsonObject.optString("other_data")));
+                if (jsonObject.has("other_data")) {
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
 
 
-                    if(jsonObject1.has("ConfigId"))
+                    if (jsonObject1.has("ConfigId"))
                         preferenceManager.setConfigId(jsonObject1.optString("ConfigId"));
-                    if(jsonObject1.has("MerchantId"))
+                    if (jsonObject1.has("MerchantId"))
                         preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
 
                     preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
@@ -290,7 +281,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
     private static final int PKCS5_SALT_LENGTH = 32;
     private static final String DELIMITER = "]";
     private static final SecureRandom random = new SecureRandom();
-    private static final String password="qspl123";
+    private static final String password = "qspl123";
 
     public static String encryption1(String plaintext) {
         byte[] salt = generateSalt();

@@ -222,7 +222,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         hashMap.put("grant_type", "password");
         hashMap.put("username", preferencesManager.getterminalId());
         hashMap.put("password", preferencesManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 

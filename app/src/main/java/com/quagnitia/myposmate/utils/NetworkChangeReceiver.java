@@ -140,7 +140,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver implements OnTaskCo
 
 
             new OkHttpHandler(context, this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature);
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature);
 
         } catch (Exception e) {
             e.printStackTrace();

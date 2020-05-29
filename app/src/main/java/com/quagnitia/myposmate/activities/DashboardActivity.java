@@ -2948,7 +2948,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             hashMapKeys.put("executed", executed + "");
 
             new OkHttpHandler(this, this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_REQUEST +
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, this)
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -3239,7 +3239,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(DashboardActivity.this, this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(DashboardActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -3310,7 +3310,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("isUpdated", true);
 
 
-            new OkHttpHandler(DashboardActivity.this, this, null, "UpdateBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.V2_SAVE_TERMINAL_CONFIG
+            new OkHttpHandler(DashboardActivity.this, this, null, "UpdateBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
                     + "?branch_name=" + (preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()))
                     + "&branch_address=" + (preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()))
                     + "&branch_contact_no=" + (preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()))
@@ -3332,7 +3332,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openProgressDialog();
         try {
             new OkHttpHandler(DashboardActivity.this, this, null, "DeleteTerminal")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_DELETE_TERMINAL_CONFIG
+                    .execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG
                             + "?terminal_id=" + encryption(preferenceManager.getterminalId()));
 
         } catch (Exception e) {
@@ -3362,7 +3362,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         openProgressDialog();
         try {
-            new OkHttpHandler(DashboardActivity.this, this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.V2_SAVE_TERMINAL_CONFIG
+            new OkHttpHandler(DashboardActivity.this, this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
                     + "?other_data=" + encryption(jsonObject.toString())
                     + "&terminal_id=" + encryption(preferencesManager.getterminalId())
                     + "&access_id=" + encryption(preferencesManager.getuniqueId())
@@ -3383,7 +3383,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         openProgressDialog();
         try {
-            new OkHttpHandler(DashboardActivity.this, this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_TERMINAL_CONFIG
+            new OkHttpHandler(DashboardActivity.this, this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
                     + "?terminal_id=" + encryption(preferenceManager.getterminalId()));//encryption("47f17c5fe8d43843"));
 
         } catch (Exception e) {

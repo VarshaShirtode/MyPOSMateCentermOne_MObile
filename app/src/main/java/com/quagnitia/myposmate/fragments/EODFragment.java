@@ -337,7 +337,7 @@ callAuthToken();
         try {
             HashMap<String, String> jsonObject = new HashMap<>();
             jsonObject.put("zone_id", preferencesManager.getTimeZoneId());
-            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.V2_GET_CURRENT_DATETIME+"?access_token="+preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME+"?access_token="+preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -377,7 +377,7 @@ callAuthToken();
             hashMapKeys.put("end_date", endTime.replace(" ", "T"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "GetReports")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity())+"&access_token="+preferencesManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity())+"&access_token="+preferencesManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -462,7 +462,7 @@ callAuthToken();
         hashMap.put("grant_type","password");
         hashMap.put("username",preferencesManager.getterminalId());
         hashMap.put("password",preferencesManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
     @Override

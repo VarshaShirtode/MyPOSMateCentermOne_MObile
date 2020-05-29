@@ -179,7 +179,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", preferenceManager.getterminalId());
 //        hashMap.put("password", preferenceManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthTokenCloseTrade").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthTokenCloseTrade").execute(AppConstants.AUTH);
 
     }
 
@@ -189,7 +189,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", preferenceManager.getterminalId());
 //        hashMap.put("password", preferenceManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -662,7 +662,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -685,7 +685,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMapKeys.put("reference_id", reference_id);
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails1")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
     String reference_id = "";
@@ -707,7 +707,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMapKeys.put("random_str", new Date().getTime() + "");
 
         new OkHttpHandler(getActivity(), this, null, "CloseTrade")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
+                .execute(AppConstants.BASE_URL2 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
 
 
     }

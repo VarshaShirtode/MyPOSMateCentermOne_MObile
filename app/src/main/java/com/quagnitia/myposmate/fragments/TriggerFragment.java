@@ -160,7 +160,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("random_str", new Date().getTime() + "");
 
             new OkHttpHandler(getActivity(), this, null, "refundNow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_REFUND +
+                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -185,7 +185,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("executed", executed+"");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_REQUEST +
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -403,7 +403,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
         hashMapKeys.put("reference_id", jsonObject.optString("reference_id"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TRANSACTION_DETAILS
+                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS
                         + MD5Class.generateSignatureString(hashMapKeys, getActivity())
                         + "&access_token=" + preferenceManager.getauthToken());
     }
@@ -419,7 +419,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
         hashMap.put("grant_type", "password");
         hashMap.put("username", preferenceManager.getterminalId());
         hashMap.put("password", preferenceManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
 
@@ -662,7 +662,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
 
 
             new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
