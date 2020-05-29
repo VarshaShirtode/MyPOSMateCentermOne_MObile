@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:paddingBottom="20dp"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical" >
+
+    <TextView
+        android:visibility="visible"
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:layout_marginBottom="10dp"
+
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="Select Channel"
+        android:textStyle="bold"
+        android:textColor="@color/colorBtnBg"
+        android:textSize="20sp" />
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:id="@+id/btn_alipay"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorHeader"
+        android:textStyle="bold"
+        android:text="Alipay"
+        ></Button>
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/btn_wechat"
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorHeader"
+        android:textStyle="bold"
+        android:text="WeChat"
+        ></Button>
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/btn_cancel"
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorHeader"
+        android:textStyle="bold"
+        android:text="Cancel"
+        ></Button>
+</LinearLayout>

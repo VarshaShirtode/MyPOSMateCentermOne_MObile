@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#90A4AE"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="Orders"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:text="Total Orders"
+            android:textSize="14sp" />
+
+
+        <EditText
+            android:id="@+id/edt_merchant_name"
+            style="@style/EditTextStyle"
+            android:paddingRight="10dp"
+            android:textStyle="bold"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:gravity="center|right"
+            android:text="24"
+            android:inputType="text"
+            android:minLines="2"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:text="To Review"
+            android:textSize="14sp" />
+
+
+        <EditText
+            style="@style/EditTextStyle"
+            android:gravity="center|right"
+            android:text="2"
+            android:paddingRight="10dp"
+            android:textStyle="bold"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:minLines="2"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:layout_weight="2"
+            android:text="Accepted"
+            android:textSize="14sp" />
+
+
+        <EditText
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:gravity="center|right"
+            android:text="2"
+            android:paddingRight="10dp"
+            android:textStyle="bold"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:minLines="2"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:text="Completed"
+            android:textSize="14sp" />
+
+
+        <EditText
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:gravity="center|right"
+            android:text="14"
+            android:paddingRight="10dp"
+            android:textStyle="bold"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:minLines="2"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:text="Rejected"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+
+        <EditText
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:paddingRight="10dp"
+            android:textStyle="bold"
+            android:gravity="center|right"
+            android:text="6"
+            android:minLines="2"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorBlack" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#053265"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="40dp"
+            android:background="@color/colorBlack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="ID"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="40dp"
+            android:background="@color/colorBlack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="From"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="40dp"
+            android:background="@color/colorBlack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Order No"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="40dp"
+            android:background="@color/colorBlack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Status"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="40dp"
+            android:background="@color/colorBlack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Ready By"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="40dp"
+            android:background="@color/colorBlack" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorBlack" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EEEEEE"
+        android:scrollbars="vertical" />
+
+
+</LinearLayout>

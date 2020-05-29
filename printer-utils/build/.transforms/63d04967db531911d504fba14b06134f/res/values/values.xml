@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">H5 Printer</string>
+    <string name="h5_printer_error_image_data_to_print_should_not_be_null">The image data to print should not be null</string>
+    <string name="h5_printer_error_not_init_webview">Not init webview</string>
+    <string name="nymph_printer_content_generate_error">Generating printing content error</string>
+</resources>

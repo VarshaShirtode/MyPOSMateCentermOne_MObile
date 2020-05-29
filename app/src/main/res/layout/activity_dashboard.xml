@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/header"
+        layout="@layout/header"></include>
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_centerInParent="true"
+        android:textColor="@color/colorBtnBg"
+        android:text="Copywrite 2018    Version 1.0"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:layout_below="@+id/header"
+        android:id="@+id/inner_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/version"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_un"
+        android:background="#98000000"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:gravity="center"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="16sp"
+            android:text="Please wait,update in progress..."
+            android:layout_centerInParent="true"
+            android:background="@color/colorWhite"
+            android:textColor="@color/colorBlack"
+            />
+    </RelativeLayout>
+
+
+</RelativeLayout>

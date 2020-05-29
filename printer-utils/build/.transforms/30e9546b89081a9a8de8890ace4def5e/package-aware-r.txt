@@ -1,0 +1,5 @@
+com.printerutils
+string app_name
+string h5_printer_error_image_data_to_print_should_not_be_null
+string h5_printer_error_not_init_webview
+string nymph_printer_content_generate_error

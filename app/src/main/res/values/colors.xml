@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#263238</color>
+    <color name="colorPrimaryDark">#263238</color>
+    <color name="colorAccent">#263238</color>
+
+    <color name="colorHeader">#455A64</color>
+    <color name="colorPopupBg">#DDDDDD</color>
+    <color name="colorLine">#818181</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGreen">#20A151</color>
+    <color name="colorBtnBg">#263238</color>
+    <color name="colorBlue">#1565C0</color>
+    <color name="colorOrange">#E65100</color>
+
+</resources>

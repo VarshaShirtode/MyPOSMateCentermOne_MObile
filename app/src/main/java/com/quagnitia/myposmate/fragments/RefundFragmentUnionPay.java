@@ -1,0 +1,844 @@
+package com.quagnitia.myposmate.fragments;
+
+/**
+ * Created by admin on 7/20/2018.
+ */
+
+import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.support.v4.app.Fragment;
+import android.text.InputType;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.centerm.smartpos.aidl.qrscan.AidlQuickScanZbar;
+import com.centerm.smartpos.aidl.qrscan.AidlScanCallback;
+import com.centerm.smartpos.aidl.qrscan.CameraBeanZbar;
+import com.centerm.smartpos.aidl.sys.AidlDeviceManager;
+import com.centerm.smartpos.constant.Constant;
+import com.centerm.smartpos.util.LogUtil;
+import com.quagnitia.myposmate.R;
+import com.quagnitia.myposmate.activities.DashboardActivity;
+import com.quagnitia.myposmate.arke.TransactionNames;
+import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
+import com.quagnitia.myposmate.centrum.ThirtConst;
+import com.quagnitia.myposmate.scanner.ScannerForBack;
+import com.quagnitia.myposmate.utils.AppConstants;
+import com.quagnitia.myposmate.utils.MD5Class;
+import com.quagnitia.myposmate.utils.OkHttpHandler;
+import com.quagnitia.myposmate.utils.OnTaskCompleted;
+import com.quagnitia.myposmate.utils.PreferencesManager;
+import com.usdk.apiservice.aidl.scanner.OnScanListener;
+
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static com.quagnitia.myposmate.printer.ApiDemo.TAG;
+
+
+public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted, View.OnClickListener {
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    private PreferencesManager preferenceManager;
+    private Button btn_save1, btn_cancel1;
+    private EditText edt_amount1, edt_transaction_no, edt_order_no, edt_reference_id;
+    private View view;
+    private ProgressDialog progress;
+    private LinearLayout ll_se, ll_first1, ll_amount1, ll_reference_id, ll_order_no, ll_transaction_no;
+    private Button btn_save2, btn_cancel2;
+
+    private Button btn_scan_reference;
+    private VASCallsArkeBusiness vasCallsArkeBusiness;
+
+
+    public RefundFragmentUnionPay() {
+        // Required empty public constructor
+    }
+
+    public void openProgressDialog() {
+        progress = new ProgressDialog(getActivity());
+        progress.setMessage("Loading.......");
+        progress.setCancelable(false);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.show();
+    }
+
+    public static RefundFragmentUnionPay newInstance(String param1, String param2) {
+        RefundFragmentUnionPay fragment = new RefundFragmentUnionPay();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+        }
+    }
+
+    public void callAuthToken() {
+        // openProgressDialog();
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("grant_type", "client_credentials");
+//        hashMap.put("username", AppConstants.CLIENT_ID);
+//        hashMap.put("password",AppConstants.CLIENT_SECRET);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.V2_AUTH);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.refund_fragment_unionpay, container, false);
+        preferenceManager = PreferencesManager.getInstance(getActivity());
+        hashMapKeys = new TreeMap<>();
+        bindService();
+        callAuthToken();
+        initUI();
+        initListener();
+        view.findViewById(R.id.ll_two).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (((DashboardActivity) getActivity()).mPopupWindow.isShowing()) {
+                    ((DashboardActivity) getActivity()).mPopupWindow.dismiss();
+                }
+                return false;
+            }
+        });
+        return view;
+    }
+
+    public void initUI() {
+        vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
+        edt_amount1 = view.findViewById(R.id.edt_amount1);
+        edt_order_no = view.findViewById(R.id.edt_order_no);
+        edt_transaction_no = view.findViewById(R.id.edt_transaction_date);
+        edt_reference_id =  view.findViewById(R.id.edt_reference_no);
+        btn_save1 = view.findViewById(R.id.btn_save1);
+        btn_cancel1 = view.findViewById(R.id.btn_cancel1);
+        edt_amount1.setInputType(InputType.TYPE_CLASS_NUMBER);
+        btn_scan_reference = view.findViewById(R.id.btn_scan_reference);
+        ll_amount1 =  view.findViewById(R.id.ll_amount1);
+        ll_reference_id =  view.findViewById(R.id.ll_reference_id);
+        ll_transaction_no = view.findViewById(R.id.ll_transaction_no);
+        ll_order_no = view.findViewById(R.id.ll_order_no);
+        ll_se = view.findViewById(R.id.ll_se);
+        ll_first1 = view.findViewById(R.id.ll_first1);
+
+        ll_reference_id.setVisibility(View.VISIBLE);
+        ll_amount1.setVisibility(View.GONE);
+        ll_transaction_no.setVisibility(View.GONE);
+        ll_order_no.setVisibility(View.GONE);
+        ll_first1.setVisibility(View.GONE);
+        ll_se.setVisibility(View.VISIBLE);
+
+        btn_save2 = view.findViewById(R.id.btn_save2);
+        btn_cancel2 = view.findViewById(R.id.btn_cancel2);
+
+        edt_amount1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (edt_amount1.getText().toString().equals("0.00")) {
+                    edt_amount1.setText("");
+                }
+                return false;
+            }
+        });
+    }
+
+    public void initListener() {
+        btn_save1.setOnClickListener(this);
+        btn_scan_reference.setOnClickListener(this);
+        btn_cancel1.setOnClickListener(this);
+        btn_save2.setOnClickListener(this);
+        btn_cancel2.setOnClickListener(this);
+    }
+
+    public static boolean isScanned = false;
+
+    /**
+     * Start back scan.
+     */
+    private void startBackScan() throws RemoteException {
+        ScannerForBack.getInstance().startScan(30, new OnScanListener.Stub() {
+
+            @Override
+            public void onSuccess(String code) throws RemoteException {
+                Log.d(TAG, "--- onSuccess ---");
+                if (getActivity() != null)
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+
+                            edt_reference_id.setText(code + "");
+                            edt_reference_id.setEnabled(false);
+                            edt_order_no.setEnabled(false);
+                            edt_transaction_no.setEnabled(false);
+                            isScanned = true;
+                            callAuthToken();
+
+
+                        }
+                    });
+            }
+
+            @Override
+            public void onError(int error) throws RemoteException {
+                Log.d(TAG, "--- onError ---");
+
+
+            }
+
+            @Override
+            public void onTimeout() throws RemoteException {
+                Log.d(TAG, "--- onTimeout ---");
+
+
+            }
+
+            @Override
+
+
+            public void onCancel() throws RemoteException {
+                Log.d(TAG, "--- onCancel ---");
+
+
+            }
+        });
+    }
+
+    private AidlQuickScanZbar aidlQuickScanService = null;
+    private int bestWidth = 640;
+    private int bestHeight = 480;
+    private int spinDegree = 90;
+    private int cameraDisplayEffect = 0;
+
+    private void switchCameraDisplayEffect(boolean cameraBack) {
+        try {
+            aidlQuickScanService.switchCameraDisplayEffect(cameraBack ? 0 : 1, cameraDisplayEffect);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stsartFastScan(boolean cameraBack) {
+        final long startTime = System.currentTimeMillis();
+        try {
+            CameraBeanZbar cameraBean = new com.centerm.smartpos.aidl.qrscan.CameraBeanZbar(0, bestWidth, bestHeight, 4, Integer.MAX_VALUE, spinDegree, 1);
+            if (cameraBack) {
+                cameraBean.setCameraId(0);
+            } else {
+                cameraBean.setCameraId(1);
+            }
+            HashMap<String, Object> externalMap = new HashMap<String, Object>();
+            externalMap.put("ShowPreview", true);
+            cameraBean.setExternalMap(externalMap);
+            switchCameraDisplayEffect(cameraBack);//2018-03-06 增加切换摄像头显示效果 linpeita@centerm.com
+            aidlQuickScanService.scanQRCode(cameraBean, new AidlScanCallback.Stub() {
+                @Override
+                public void onFailed(int arg0) throws RemoteException {
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), getString(R.string.scan_fail), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCaptured(String arg0, int arg1) throws RemoteException {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(), getString(R.string.scan_success) + "\n" + getString(R.string.scan_info) + "\n" + arg0, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    long SuccessEndTime = System.currentTimeMillis();
+                    long SuccessCostTime = SuccessEndTime - startTime;
+                    if (getActivity() != null)
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+
+                                edt_reference_id.setText(arg0 + "");
+                                edt_reference_id.setEnabled(false);
+                                edt_order_no.setEnabled(false);
+                                edt_transaction_no.setEnabled(true);
+                                isScanned = true;
+                                callAuthToken();
+
+
+                            }
+                        });
+
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private Context mContext;
+
+    @Override
+    public void onClick(View v) {
+        mContext = getActivity();
+        if (((DashboardActivity) mContext).mPopupWindow.isShowing())
+            ((DashboardActivity) mContext).mPopupWindow.dismiss();
+
+        switch (v.getId()) {
+
+            case R.id.btn_scan_reference:
+                try {
+                    stsartFastScan(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+
+            case R.id.btn_save2:
+                if (edt_reference_id.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Enter reference no", Toast.LENGTH_SHORT).show();
+                } else {
+                    callGetDetailsByRef(edt_reference_id.getText().toString());
+                }
+                break;
+
+            case R.id.btn_cancel2:
+            case R.id.btn_cancel1:
+                edt_reference_id.setEnabled(true);
+                edt_order_no.setEnabled(true);
+                edt_transaction_no.setEnabled(true);
+                if (preferenceManager.isManual()) {
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                } else {
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                }
+                break;
+
+            case R.id.btn_save1:
+                if (edt_amount1.getText().toString().equals("") || edt_amount1.getText().toString().equals("0.00")) {
+                    Toast.makeText(getActivity(), "Enter amount", Toast.LENGTH_SHORT).show();
+                } else if (edt_reference_id.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Enter reference no", Toast.LENGTH_SHORT).show();
+                } else if (edt_transaction_no.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Enter transaction date(MMDD)", Toast.LENGTH_SHORT).show();
+                } else if (edt_order_no.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Enter order no", Toast.LENGTH_SHORT).show();
+                }
+                else if(alipaywechatamount!=0.0&&Double.parseDouble(edt_amount1.getText().toString())>alipaywechatamount)
+                {
+                    Toast.makeText(getActivity(), "Amount entered is greater than the original amount used in the transaction.", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("transactionType", "REFUND");
+                        jsonObject.put("amount", edt_amount1.getText().toString());
+                        jsonObject.put("originalReferenceNumber", edt_reference_id.getText().toString());
+                        jsonObject.put("orderNumber", edt_order_no.getText().toString());
+                        jsonObject.put("originalTransactionDate", edt_transaction_no.getText().toString());
+
+
+
+                        beginRefund(jsonObject);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+                break;
+
+        }
+    }
+
+
+    TreeMap<String, String> hashMapKeys;
+
+    public void callUnionPayStatus(String json_data, String status) {
+        openProgressDialog();
+        try {
+            String s = "{\n" +
+                    "  \"head\": {\n" +
+                    "    \"version\": \"V1.2.0\"\n" +
+                    "  },\n" +
+                    "  \"body\":";
+
+            JSONObject jsonObject = new JSONObject(json_data);
+            if (jsonObject.has("responseCodeThirtyNine")) {
+                if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
+                    if (jsonObject.optString("transactionType").equals("SALE") ||
+                            jsonObject.optString("transactionType").equals("COUPON_SALE") ||
+                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+                    ) {
+                        status = "20";
+                    } else if (jsonObject.optString("transactionType").equals("VOID") ||
+                            jsonObject.optString("transactionType").equals("REFUND") ||
+                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_VOID") ||
+                            jsonObject.optString("transactionType").equals("COUPON_VOID")) {
+                        status = "19"; //set 22 to 19 in case of void on 28/02/2019
+                    }
+
+                }
+            } else {
+                status = "23";
+                Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
+
+            }
+            preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
+
+            hashMapKeys.clear();
+            String randomStr = new Date().getTime() + "";
+
+            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("is_mobile_device", "true");
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
+            hashMapKeys.put("random_str", randomStr);
+            hashMapKeys.put("status_id", status);
+            hashMapKeys.put("json_data", s + json_data + "}");
+
+
+            String s2 = "", s1 = "";
+            int i1 = 0;
+            Iterator<String> iterator = hashMapKeys.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                if (i1 != hashMapKeys.size() - 1)
+                    s2 = s2 + key + "=" + hashMapKeys.get(key) + "&";
+                else
+                    s2 = s2 + key + "=" + hashMapKeys.get(key);
+                i1++;
+            }
+            s2 = s2 + PreferencesManager.getInstance(getActivity()).getauthToken();//.getuniqueId();
+            String signature = MD5Class.MD5(s2);
+
+
+            s = "{\n" +
+                    "  \"head\": {\n" +
+                    "    \"version\": \"V1.2.0\"\n" +
+                    "  },\n" +
+                    "  \"body\":";
+
+            hashMapKeys.clear();
+            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("is_mobile_device", "true");
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
+            hashMapKeys.put("random_str", randomStr);
+            hashMapKeys.put("status_id", status);
+            hashMapKeys.put("json_data", URLEncoder.encode(s + json_data + "}", "UTF-8"));
+            i1 = 0;
+            Iterator<String> iterator1 = hashMapKeys.keySet().iterator();
+            while (iterator1.hasNext()) {
+                String key = iterator1.next();
+                if (i1 != hashMapKeys.size() - 1)
+                    s1 = s1 + key + "=" + hashMapKeys.get(key) + "&";
+                else
+                    s1 = s1 + key + "=" + hashMapKeys.get(key);
+                i1++;
+            }
+
+
+            new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void callGetDetailsByRef(String trade_no) {
+        openProgressDialog();
+
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("trade_no", trade_no);
+        hashMapKeys.put("is_mobile_device", "true");
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+
+        new OkHttpHandler(getActivity(), this, null, "getDetailsByRef")
+                .execute(AppConstants.BASE_URL2 + AppConstants.V2_getDetailsByRef + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (conn != null) {
+            getActivity().unbindService(conn);
+        }
+        getActivity().stopService(intentService);
+    }
+
+    boolean isUnionPayStatusUpdate = false;
+
+    @Override
+    public void onResume() {
+//        if (ManualEntry.shadaf) {
+//            isUnionPayStatusUpdate=true;
+//            callAuthToken();
+//
+//        }
+        super.onResume();
+    }
+
+    JSONObject jsonObjectSale;
+    Intent intentCen = new Intent();
+    String packageName = "com.centerm.dynaminpayinskate";
+    String activityName = "org.skate.pay.component.PayEntry";
+    ComponentName comp = new ComponentName(packageName, activityName);
+    private static final int REQ_PAY_SALE = 100;
+
+    public void beginRefund(JSONObject jsonObjectSale) {
+        this.jsonObjectSale = jsonObjectSale;
+        hideSoftInput();
+
+        try {
+            //doTransaction(TransactionNames.REFUND.name(), jsonObject);
+            intentCen.setComponent(comp);
+            Bundle bundle = new Bundle();
+            bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_TYPE, ThirtConst.TransType.REFUND);
+            bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORI_REFERENCE_NO, jsonObjectSale.optString("originalReferenceNumber"));
+            bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORI_TRANS_DATE, jsonObjectSale.optString("originalTransactionDate"));
+            bundle.putDouble(ThirtConst.RequestTag.THIRD_PATH_TRANS_AMOUNT, jsonObjectSale.optDouble("amount"));
+            bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORDER_NO, jsonObjectSale.optString("orderNumber"));
+
+            if(isScannedUnionPayQr)
+            {
+                isScannedUnionPayQr=false;
+                bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_SCAN_AUTH_PAY_CODE, qrcode);
+            }
+
+            intentCen.putExtras(bundle);
+            startActivityForResult(intentCen, REQ_PAY_SALE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (data.hasExtra("responseCodeThirtyNine")) {
+            try {
+                Bundle bundle = new Bundle();
+                bundle.putAll(data.getExtras());
+                JSONObject json = new JSONObject();
+                Set<String> keys = bundle.keySet();
+                for (String key : keys) {
+                    if (bundle.get(key) != null)
+                        json.put(key, JSONObject.wrap(bundle.get(key)));
+                }
+                json.put("orderNumber", jsonObjectSale.optString("orderNumber"));
+                onTaskCompleted(json.toString(), "Arke");
+            } catch (Exception e) {
+                //Handle exception here
+            }
+
+        }
+
+    }
+
+
+    /**
+     * According to the choice, began to do the transaction
+     * <p>
+     * 根据选择，开始做交易
+     *
+     * @param interfaceId
+     */
+    private void doTransaction(String interfaceId, JSONObject jsonObject) {
+        if (TransactionNames.SALE_BY_SDK.name().equals(interfaceId)) {
+            vasCallsArkeBusiness.doTransaction(interfaceId, jsonObject, this);
+        } else {
+            vasCallsArkeBusiness.doTransaction(interfaceId, jsonObject, this);
+        }
+    }
+
+    /**
+     * Hide soft keyboard
+     * <p>
+     * 隐藏软键盘
+     */
+    private void hideSoftInput() {
+        if (getActivity().getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    JSONObject jsonObject;
+    private String payment_mode = "", qrMode = "";
+public static String qrcode="";
+public static boolean isScannedUnionPayQr=false;
+    public static double alipaywechatamount=0.0;
+
+    @Override
+    public void onTaskCompleted(String result, String TAG) throws Exception {
+
+        if (result.equals("")) {
+            if (progress != null && progress.isShowing())
+                progress.dismiss();
+            if (!TAG.equals("unionpaystatus"))
+                Toast.makeText(getActivity(), "No data from server.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!TAG.equals("Arke")) {
+            if (progress != null && progress.isShowing())
+                progress.dismiss();
+        }
+
+        jsonObject = new JSONObject(result);
+        switch (TAG) {
+            case "AuthToken":
+                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
+
+                    if (isScanned) {
+                        isScanned = false;
+                        callGetDetailsByRef(edt_reference_id.getText().toString());
+                    }
+
+                    if (isUnionPayStatusUpdate) {
+                        isUnionPayStatusUpdate = false;
+                        callUnionPayStatus(ManualEntry.val, "true");
+                    }
+
+                    if(AppConstants.isRefundUnionpayDone)
+                    {
+                        AppConstants.isRefundUnionpayDone=false;
+                        callRefundUnionPay( ManualEntry.val);
+                    }
+
+                }
+                break;
+            case "Arke":
+                //    callAuthToken();
+                if (jsonObject.has("responseCodeThirtyNine")) {
+                    if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
+                        // preferenceManager.setunion_pay_resp(jsonObject.toString());
+                        ManualEntry.shadaf = true;
+                        ManualEntry.val = jsonObject.toString();
+                    }
+                }
+                if (ManualEntry.shadaf) {
+                    isUnionPayStatusUpdate = true;
+                    callAuthToken();
+
+                }
+
+                break;
+
+
+            case "getDetailsByRef":
+                callAuthToken();
+
+                if (jsonObject.has("server_response")) {
+
+                    if(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionType").equals("COUPON_SALE")||
+                            jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionType").equals("COUPON_VOID"))
+                    {
+                        Toast.makeText(getActivity(), "Refund of coupon transaction cannot be done.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    ll_amount1.setVisibility(View.VISIBLE);
+                    ll_order_no.setVisibility(View.VISIBLE);
+                    ll_transaction_no.setVisibility(View.VISIBLE);
+                    ll_se.setVisibility(View.GONE);
+                    ll_first1.setVisibility(View.VISIBLE);
+                    refund_time = jsonObject.optString("created_on");
+                    referenecno = jsonObject.optString("reference_id");
+                    DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+                    //  edt_amount1.setText(decimalFormat.format(Double.parseDouble(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("amount"))) + "");
+                    edt_order_no.setText(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("orderNumber"));
+                    if(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+                        && jsonObject.optJSONObject("server_response").optJSONObject("body").has("qrcode"))
+                    {
+                        isScannedUnionPayQr=true;
+                        qrcode=jsonObject.optJSONObject("server_response").optJSONObject("body").optString("qrcode");
+                    }
+                    alipaywechatamount=Double.parseDouble(jsonObject.optString("grandtotal"));
+//                    alipaywechatamount=Double.parseDouble(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("amount"));
+                    char formats1[] = jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionDate").toString().toCharArray();//formatter5.format(date).toString().split("-");
+                    edt_transaction_no.setText(formats1[4] + "" + formats1[5] + "" + formats1[6] + "" + formats1[7] + "");
+                } else {
+                    if (jsonObject.optString("message").equals("Invalid Trade ID")) {
+                        Toast.makeText(getActivity(), "Invalid Reference no", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                break;
+
+            case "refundUnionPay":
+                 callAuthToken();
+                if (jsonObject.optBoolean("success")) {
+                    refund_time = "";
+                    refund_trade_no = "";
+                    Toast.makeText(getActivity(), "Transaction status updated successfully", Toast.LENGTH_SHORT).show();
+                    if (preferenceManager.isManual()) {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                    } else {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Transaction status not updated", Toast.LENGTH_SHORT).show();
+                }
+
+            case "unionpaystatus":
+                callAuthToken();
+                if (progress != null && progress.isShowing())
+                    progress.dismiss();
+
+                if (jsonObject.optBoolean("success")) {
+                    ManualEntry.shadaf = false;
+                    AppConstants.isRefundUnionpayDone=true;
+
+                    Toast.makeText(getActivity(), "Details Updated Successfully", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getActivity(), "Unsuccessful transaction update.", Toast.LENGTH_SHORT).show();
+
+
+
+                break;
+
+        }
+    }
+
+
+
+    public String refund_time = "", refund_trade_no = "";
+    public String referenecno = "";
+
+    public void callRefundUnionPay(String json_data) {
+        openProgressDialog();
+        try {
+            JSONObject jsonObject = new JSONObject(json_data);
+            //v2 signature implementation
+            hashMapKeys.clear();
+            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("refund_time", refund_time);
+            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("reference_id", referenecno);
+            hashMapKeys.put("refund_fee", jsonObject.optString("amount"));
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("refund_password", preferenceManager.getterminal_refund_password());
+            hashMapKeys.put("refund_reason", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_mobile_device", "true");
+
+            new OkHttpHandler(getActivity(), this, null, "refundUnionPay")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_REFUND_UNION_PAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+            callAuthToken();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+
+
+
+    public AidlDeviceManager manager = null;
+
+    Intent intentService;
+
+    public void bindService() {
+        intentService = new Intent();
+        intentService.setPackage("com.centerm.smartposservice");
+        intentService.setAction("com.centerm.smartpos.service.MANAGER_SERVICE");
+        getActivity().bindService(intentService, conn, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 服务连接桥
+     */
+    public ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            manager = null;
+            LogUtil.print(getResources().getString(R.string.bind_service_fail));
+            LogUtil.print("manager = " + manager);
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            manager = AidlDeviceManager.Stub.asInterface(service);
+            LogUtil.print(getResources().getString(R.string.bind_service_success));
+            LogUtil.print("manager = " + manager);
+            if (null != manager) {
+                try {
+                    onDeviceConnected(manager);
+                } catch (Exception e) {
+
+                }
+
+            }
+        }
+
+
+    };
+
+    public void onDeviceConnected(AidlDeviceManager deviceManager) {
+        try {
+            aidlQuickScanService = AidlQuickScanZbar.Stub.asInterface(deviceManager.getDevice(Constant.DEVICE_TYPE.DEVICE_TYPE_QUICKSCAN));
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+
+}
+

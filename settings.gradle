@@ -1,0 +1,2 @@
+include ':app', ':printer-utils'
+rootProject.name='MyPOSMateCentermOne'

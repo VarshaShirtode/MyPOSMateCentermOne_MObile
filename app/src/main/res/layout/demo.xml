@@ -1,0 +1,1067 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F6F5">
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/colorHeader"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/mainui"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rel_loyalty"
+        android:orientation="vertical">
+
+        <!--start ll_one-->
+        <LinearLayout
+            android:id="@+id/ll_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!--amount-->
+            <LinearLayout
+                android:id="@+id/ll_amount"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2"
+                    android:text="@string/amount"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+                <faranjit.currency.edittext.CurrencyEditText
+                    android:id="@+id/edt_amount"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center|right"
+                    android:inputType="numberDecimal"
+                    android:text="0.00"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:locale="en_US" />
+
+
+            </LinearLayout>
+
+            <!--reference-->
+            <LinearLayout
+                android:id="@+id/ll_reference"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/tv_reference"
+                    style="@style/TextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="2"
+                    android:text="@string/reference"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edt_reference"
+                    style="@style/EditTextStyle"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <!--Coupon scroll-->
+            <ScrollView
+                android:id="@+id/scroll_coupon"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:id="@+id/rel_alipay_static_qr"
+                        android:layout_width="230dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="#FA4F4F">
+
+
+                        <ImageView
+                            android:id="@+id/ali_ic"
+                            android:layout_width="30dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/icon_alipay"></ImageView>
+
+                        <ImageView
+                            android:layout_width="80dp"
+                            android:layout_height="30dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/chinese_text"></ImageView>
+
+                    </RelativeLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:weightSum="2">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="#FA4F4F">
+
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/icon_alipay"></ImageView>
+
+                            <ImageView
+                                android:layout_width="80dp"
+                                android:layout_height="30dp"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/chinese_text"></ImageView>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="#FA4F4F">
+
+
+                            <ImageView
+                                android:id="@+id/uni_ic1"
+                                android:layout_width="50dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_unipay"></ImageView>
+
+                            <ImageView
+                                android:layout_width="80dp"
+                                android:layout_height="30dp"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="5dp"
+                                android:layout_toRightOf="@+id/uni_ic1"
+                                android:src="@drawable/chinese_text"></ImageView>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <!--xmpp amount trigger-->
+            <TextView
+                android:id="@+id/edt_xmpp_amount"
+                android:layout_width="230dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/button_shadow"
+                android:gravity="center"
+                android:text="NZD $100"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <!--payment mode frame-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ScrollView
+                    android:id="@+id/sc_payment_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="330dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/payment_scroll_border"
+                    android:padding="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+
+                            <LinearLayout
+                                android:id="@+id/rel_unionpay"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/colorWhite"
+                                android:orientation="horizontal"
+                                android:weightSum="3">
+
+                                <RelativeLayout
+                                    android:layout_width="103dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <ImageView
+                                        android:id="@+id/img_unipay"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_unipay" />
+
+                                    <TextView
+                                        android:id="@+id/tv_unionpay_disabled"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="10dp"
+                                        android:text="UnionPay Disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="12dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="103dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <ImageView
+                                        android:id="@+id/img_upay"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:padding="10dp"
+                                        android:src="@drawable/uplan_logo" />
+
+
+                                    <TextView
+                                        android:id="@+id/tv_uplan_disabled"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="10dp"
+                                        android:text="Uplan disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="12dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="103dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:id="@+id/scanqr_unionpay"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:drawableTop="@drawable/scanner"
+                                        android:gravity="center"
+                                        android:paddingTop="5dp"
+                                        android:text="Click To Scan UnionPay QR"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:visibility="visible" />
+
+                                    <TextView
+                                        android:id="@+id/tv_scan_uni_disabled"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:paddingTop="5dp"
+                                        android:text="UnionPay scan disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="12dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/img_unipay"
+                                android:weightSum="3">
+
+                                <faranjit.currency.edittext.CurrencyEditText
+                                    android:textSize="14sp"
+                                    android:layout_height="18dp"
+                                    android:id="@+id/tv_uni_cv"
+                                    android:layout_width="match_parent"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_conv"
+                                    android:gravity="center"
+                                    android:text="0.00"
+                                    android:textColor="@color/colorBlue"
+                                    android:textStyle="bold" />
+
+                                <faranjit.currency.edittext.CurrencyEditText
+                                    android:textSize="14sp"
+                                    android:layout_height="18dp"
+                                    android:id="@+id/tv_uni_cv1_uplan"
+                                    android:layout_width="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_conv"
+                                    android:gravity="center"
+                                    android:text="0.00"
+                                    android:textColor="@color/colorBlue"
+                                    android:textStyle="bold" />
+
+                                <faranjit.currency.edittext.CurrencyEditText
+                                    android:textSize="14sp"
+                                    android:layout_height="18dp"
+                                    android:id="@+id/tv_uni_cv2_scan_qr"
+                                    android:layout_width="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_conv"
+                                    android:gravity="center"
+                                    android:text="0.00"
+                                    android:textColor="@color/colorBlue"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:id="@+id/ag_v2"
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@color/colorWhite"
+                            android:orientation="horizontal"
+                            android:visibility="visible"
+                            android:weightSum="3">
+
+
+                            <RelativeLayout
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:id="@+id/img_alipay"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:padding="10dp"
+                                    android:src="@drawable/ic_alipay" />
+
+                                <TextView
+                                    android:id="@+id/tv_alipay_disabled"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:padding="10dp"
+                                    android:text="Alipay disabled"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+                            </RelativeLayout>
+
+
+
+                            <RelativeLayout
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:id="@+id/scanqr"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:drawableTop="@drawable/scanner"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:text="Click To Scan\nAlipay / WeChat"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:visibility="visible" />
+
+                                <TextView
+                                    android:id="@+id/tv_scanqr_disabled"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:text="Alipay QR scan disabled"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+
+                            </RelativeLayout>
+
+
+
+
+                            <RelativeLayout
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+
+                                <ImageView
+                                    android:id="@+id/img_wechat"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:padding="12dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_wechat" />
+
+                                <TextView
+                                    android:id="@+id/tv_wechat_disabled"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:padding="12dp"
+                                    android:text="WeChat disabled"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:weightSum="3">
+
+                            <faranjit.currency.edittext.CurrencyEditText
+                                android:textSize="14sp"
+                                android:layout_height="18dp"
+                                android:id="@+id/tv_ali_cv"
+                                android:layout_width="match_parent"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold" />
+                            <faranjit.currency.edittext.CurrencyEditText
+                                android:textSize="14sp"
+                                android:layout_height="18dp"
+                                android:id="@+id/tv_ali_cv2"
+                                android:layout_width="match_parent"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold" />
+                            <faranjit.currency.edittext.CurrencyEditText
+                                android:textSize="14sp"
+                                android:layout_height="18dp"
+                                android:id="@+id/tv_ali_cv1"
+                                android:layout_width="match_parent"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:id="@+id/ll_row3"
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@color/colorWhite"
+                            android:orientation="horizontal"
+                            android:visibility="visible"
+                            android:weightSum="3">
+
+
+
+                            <RelativeLayout
+                                android:layout_weight="1"
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/img_unionpay_qr"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:padding="10dp"
+                                    android:src="@drawable/unionpay_qr" />
+
+                                <TextView
+                                    android:visibility="gone"
+                                    android:id="@+id/tv_unionpay_qr_disabled"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:textStyle="bold"
+                                    android:textSize="12sp"
+                                    android:gravity="center"
+                                    android:textColor="@color/colorBlack"
+                                    android:text="UnionPay QR disabled"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:padding="10dp"
+                                    />
+
+                            </RelativeLayout>
+
+
+                            <RelativeLayout
+                                android:visibility="invisible"
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:drawableTop="@drawable/scanner"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:text="Click To Scan\nAlipay"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:visibility="visible" />
+
+                                <TextView
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:text="WeChat QR scan disabled"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:visibility="invisible"
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:drawableTop="@drawable/scanner"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:text="Click To Scan\nAlipay"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:visibility="visible" />
+
+                                <TextView
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:text="WeChat QR scan disabled"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:weightSum="3">
+                            <faranjit.currency.edittext.CurrencyEditText
+                                android:textSize="14sp"
+                                android:layout_height="18dp"
+                                android:id="@+id/tv_unionpay_qr_cv"
+                                android:layout_width="match_parent"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold" />
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold"
+                                android:visibility="invisible" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold"
+                                android:visibility="invisible" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </ScrollView>
+
+                <TextView
+                    android:id="@+id/tv_noitem"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:gravity="center"
+                    android:text="Please select the payment method from payment display choices under menu."
+                    android:textColor="@color/colorBlack"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+        </LinearLayout><!--end ll_one-->
+
+        <LinearLayout
+            android:id="@+id/ll_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/title1"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#90A4AE"
+                android:elevation="2dp"
+                android:gravity="center"
+                android:text="Manual Entry"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:id="@+id/ll_amount1"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2"
+                    android:text="@string/amount" />
+
+
+                <faranjit.currency.edittext.CurrencyEditText
+                    android:id="@+id/edt_amount1"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center|right"
+                    android:inputType="numberDecimal"
+                    android:text="0.00"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <!-- <EditText
+                     android:id="@+id/edt_amount"
+                     style="@style/EditTextStyle"
+                     android:layout_marginLeft="20dp"
+                     android:layout_marginRight="20dp"
+                     android:layout_marginTop="10dp"
+                     android:layout_weight="1"
+                     android:textDirection="rtl"
+                     android:inputType="number|numberDecimal"
+                     android:textSize="22sp" />-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_reference1"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/tv_reference1"
+                    style="@style/TextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2"
+                    android:text="@string/reference" />
+
+                <EditText
+                    android:id="@+id/edt_reference1"
+                    style="@style/EditTextStyle"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <TextView
+
+                android:id="@+id/edt_xmpp_amount1"
+                android:layout_width="230dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/edt_border_green"
+                android:gravity="center"
+                android:text="Sale Amount NZ"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="20dp">
+
+
+                <LinearLayout
+                    android:id="@+id/ll_second1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+
+                    <RelativeLayout
+                        android:id="@+id/ll_first1"
+                        android:layout_width="230dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <Button
+                            android:id="@+id/btn_save1"
+                            android:layout_width="100dp"
+                            android:layout_height="35dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@color/colorBtnBg"
+                            android:gravity="center"
+                            android:text="@string/ok"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="16sp"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/btn_cancel1"
+                            android:layout_width="100dp"
+                            android:layout_height="35dp"
+                            android:layout_centerInParent="true"
+                            android:background="@color/colorBtnBg"
+                            android:gravity="center"
+                            android:text="@string/cancel"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="16sp" />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_start_countdown"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_enable_payment"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Please enable the payment mode from display choices"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_loyalty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:visibility="visible">
+
+
+        <RelativeLayout
+            android:id="@+id/rel_membership"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/button_shadow">
+
+            <Button
+
+                android:id="@+id/tv_status_scan_button"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:text="Membership/Loyality"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/tv_status_scan_button"
+                android:layout_alignLeft="@id/tv_status_scan_button"
+                android:layout_alignRight="@+id/tv_status_scan_button"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:gravity="center"
+                    android:text="Back Camera"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorBlue"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btn_front"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:gravity="center"
+                    android:text="Front Camera"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorBlue"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_status_scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rel_membership"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="Thank you for using Membership/Loyality"
+            android:textColor="@color/colorBlue"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

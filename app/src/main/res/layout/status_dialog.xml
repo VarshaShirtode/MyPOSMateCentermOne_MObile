@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorBlack"
+        android:gravity="center"
+        android:text="Order Status"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp"
+        android:textStyle="bold"></TextView>
+
+    <TextView
+        android:background="@color/colorWhite"
+        android:textStyle="bold"
+        android:text="Current Status"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TextView>
+    <TextView
+        android:background="@color/colorWhite"
+        android:textStyle="bold"
+        android:text="To Review"
+        android:textColor="@color/colorBlue"
+        android:textSize="16sp"
+        android:paddingTop="5dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TextView>
+
+    <Button
+        android:background="#198E14"
+        android:textStyle="bold"
+        android:text="Completed"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+    </Button>
+
+    <Button
+        android:background="#E92F1C"
+        android:textStyle="bold"
+        android:text="Rejected"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+    </Button>
+
+
+    <Button
+        android:background="#5797CD"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:text="To Review"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+    </Button>
+
+
+    <Button
+        android:background="#F4C200"
+        android:textStyle="bold"
+        android:text="Accept"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+    </Button>
+
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Spinner
+
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+           android:background="@drawable/spinner_bg"
+            android:layout_marginLeft="10dp"
+android:id="@+id/spinner"
+             />
+
+        <TextView
+            android:layout_toRightOf="@+id/spinner"
+            android:layout_marginLeft="20dp"
+            android:textStyle="bold"
+            android:text="7:40 PM"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:gravity="center|left"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+        </TextView>
+    </RelativeLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/colorBtnBg"
+            android:gravity="center"
+            android:text="Done"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp" />
+
+        <Button
+            android:textAllCaps="false"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/colorBtnBg"
+            android:gravity="center"
+            android:text="Close"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp" />
+
+
+
+    </LinearLayout>
+</LinearLayout>

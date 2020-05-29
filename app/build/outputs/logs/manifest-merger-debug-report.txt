@@ -1,0 +1,405 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b1f254700f38d09357331c2d556466c6\AndroidManifest.xml:2:1-11:12
+MERGED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:17:1-55:12
+MERGED from [com.github.faranjit:currency-edittext:1.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\28bffd25d1a0b5305aef869b42d2a380\AndroidManifest.xml:2:1-17:12
+MERGED from [com.android.support:appcompat-v7:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\8389f2509c934a56ed36a8f0cd6b2157\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-appindexing:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\71df5b7ee0c7336f9715ca40d712de2e\AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-base:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3a4b3c5000b3a37e4ee49dac38ef246d\AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\68d47c8d1240a278cc4bcc5443f5c485\AndroidManifest.xml:2:1-8:12
+MERGED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\23542701f8783bc9385a111d6d7294ce\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:16:1-23:12
+MERGED from [com.android.support:support-v4:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\079807cd409ff14c6a4b3430d80e281a\AndroidManifest.xml:17:1-22:12
+MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.20] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a20c50c8572d95dd95cb7ed8ac565160\AndroidManifest.xml:2:1-9:12
+MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b091b6d68443853605b6b2416ec751e4\AndroidManifest.xml:15:1-21:12
+MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:2:1-10:12
+MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:17:1-28:12
+MERGED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:2:1-23:12
+MERGED from [com.android.support:support-fragment:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\836b19bfe41eb996f9047c06b7988dcb\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e2159bdf3640bb43dc4a290e9c3940a1\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-ui:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0307c1618c9102e9611ecd8ce15ae631\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\49a9601470e42530480225a94caf504b\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\84e3011f23ab262696bb4d82f53b5546\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-media-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\663d5b5b5ad909456d0cc9d548888f52\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:loader:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\174e5b534d072096fa419da11c865eea\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:viewpager:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\045056ac4eb2892482b26a9923619ab6\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:coordinatorlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b45420589eba871f5f8019c51ccbce53\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:drawerlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\1bb58608166503a68284caa77c652ec1\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:slidingpanelayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a747649714ada12886ab2a42e2632a86\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:customview:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e3ac3f9e503eccf8c8f8f6a529909871\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:swiperefreshlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\bad6ba897bb56670d5f2a7452131d007\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:asynclayoutinflater:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\8bd4e07cd12700ab487af4dbb4588840\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\93fc1b9986db8fdb37572ae9fd275d2e\AndroidManifest.xml:17:1-24:12
+MERGED from [com.android.support:cursoradapter:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\88b161c8fa121851c31b868db066669d\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e77cafcc527a04ea756df46674103459\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:versionedparcelable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\f3b68e8b16fb3f324745abc439560d25\AndroidManifest.xml:17:1-25:12
+MERGED from [com.android.support:documentfile:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e8f16a8480d8e3e22398ea65629aca1e\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:localbroadcastmanager:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\ce1a8ae1c62742fff0b132815fc107c7\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:print:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\2db6470fb70f366f1044235d8fe707f4\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d8cac744ecbe89cdae48dab0513be24\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:interpolator:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\509b8f0c73b12f1e805e054da6f18beb\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d2d9483d1474e467cd07fce2e875ce3\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\7f93883cd6e5d6474ea5e859d8cc064e\AndroidManifest.xml:17:1-22:12
+MERGED from [pl.droidsonroids:relinker:1.3.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\6712795a5ee27e5df799da7fbf659d87\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+	package
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:4:5-38
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:11-69
+uses-sdk
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b1f254700f38d09357331c2d556466c6\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b1f254700f38d09357331c2d556466c6\AndroidManifest.xml:5:5-7:41
+MERGED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:19:5-43
+MERGED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:19:5-43
+MERGED from [com.github.faranjit:currency-edittext:1.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\28bffd25d1a0b5305aef869b42d2a380\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.faranjit:currency-edittext:1.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\28bffd25d1a0b5305aef869b42d2a380\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:appcompat-v7:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\8389f2509c934a56ed36a8f0cd6b2157\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\8389f2509c934a56ed36a8f0cd6b2157\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-appindexing:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\71df5b7ee0c7336f9715ca40d712de2e\AndroidManifest.xml:17:5-42
+MERGED from [com.google.android.gms:play-services-appindexing:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\71df5b7ee0c7336f9715ca40d712de2e\AndroidManifest.xml:17:5-42
+MERGED from [com.google.android.gms:play-services-base:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3a4b3c5000b3a37e4ee49dac38ef246d\AndroidManifest.xml:17:5-42
+MERGED from [com.google.android.gms:play-services-base:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3a4b3c5000b3a37e4ee49dac38ef246d\AndroidManifest.xml:17:5-42
+MERGED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\68d47c8d1240a278cc4bcc5443f5c485\AndroidManifest.xml:3:5-42
+MERGED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\68d47c8d1240a278cc4bcc5443f5c485\AndroidManifest.xml:3:5-42
+MERGED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\23542701f8783bc9385a111d6d7294ce\AndroidManifest.xml:3:5-42
+MERGED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\23542701f8783bc9385a111d6d7294ce\AndroidManifest.xml:3:5-42
+MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:17:5-42
+MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:17:5-42
+MERGED from [com.android.support:support-v4:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\079807cd409ff14c6a4b3430d80e281a\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\079807cd409ff14c6a4b3430d80e281a\AndroidManifest.xml:20:5-44
+MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.20] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a20c50c8572d95dd95cb7ed8ac565160\AndroidManifest.xml:5:5-7:41
+MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.20] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a20c50c8572d95dd95cb7ed8ac565160\AndroidManifest.xml:5:5-7:41
+MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b091b6d68443853605b6b2416ec751e4\AndroidManifest.xml:19:5-43
+MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b091b6d68443853605b6b2416ec751e4\AndroidManifest.xml:19:5-43
+MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:6:5-43
+MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:6:5-43
+MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:20:5-44
+MERGED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:7:5-9:41
+MERGED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:support-fragment:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\836b19bfe41eb996f9047c06b7988dcb\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\836b19bfe41eb996f9047c06b7988dcb\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e2159bdf3640bb43dc4a290e9c3940a1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e2159bdf3640bb43dc4a290e9c3940a1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0307c1618c9102e9611ecd8ce15ae631\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0307c1618c9102e9611ecd8ce15ae631\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\49a9601470e42530480225a94caf504b\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\49a9601470e42530480225a94caf504b\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\84e3011f23ab262696bb4d82f53b5546\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\84e3011f23ab262696bb4d82f53b5546\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\663d5b5b5ad909456d0cc9d548888f52\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\663d5b5b5ad909456d0cc9d548888f52\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\174e5b534d072096fa419da11c865eea\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\174e5b534d072096fa419da11c865eea\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\045056ac4eb2892482b26a9923619ab6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\045056ac4eb2892482b26a9923619ab6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b45420589eba871f5f8019c51ccbce53\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b45420589eba871f5f8019c51ccbce53\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\1bb58608166503a68284caa77c652ec1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\1bb58608166503a68284caa77c652ec1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a747649714ada12886ab2a42e2632a86\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a747649714ada12886ab2a42e2632a86\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e3ac3f9e503eccf8c8f8f6a529909871\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e3ac3f9e503eccf8c8f8f6a529909871\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\bad6ba897bb56670d5f2a7452131d007\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\bad6ba897bb56670d5f2a7452131d007\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\8bd4e07cd12700ab487af4dbb4588840\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\8bd4e07cd12700ab487af4dbb4588840\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\93fc1b9986db8fdb37572ae9fd275d2e\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\93fc1b9986db8fdb37572ae9fd275d2e\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\88b161c8fa121851c31b868db066669d\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\88b161c8fa121851c31b868db066669d\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e77cafcc527a04ea756df46674103459\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e77cafcc527a04ea756df46674103459\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\f3b68e8b16fb3f324745abc439560d25\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\f3b68e8b16fb3f324745abc439560d25\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e8f16a8480d8e3e22398ea65629aca1e\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\e8f16a8480d8e3e22398ea65629aca1e\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\ce1a8ae1c62742fff0b132815fc107c7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\ce1a8ae1c62742fff0b132815fc107c7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\2db6470fb70f366f1044235d8fe707f4\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\2db6470fb70f366f1044235d8fe707f4\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d8cac744ecbe89cdae48dab0513be24\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d8cac744ecbe89cdae48dab0513be24\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\509b8f0c73b12f1e805e054da6f18beb\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\509b8f0c73b12f1e805e054da6f18beb\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d2d9483d1474e467cd07fce2e875ce3\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d2d9483d1474e467cd07fce2e875ce3\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\7f93883cd6e5d6474ea5e859d8cc064e\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\7f93883cd6e5d6474ea5e859d8cc064e\AndroidManifest.xml:20:5-44
+MERGED from [pl.droidsonroids:relinker:1.3.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\6712795a5ee27e5df799da7fbf659d87\AndroidManifest.xml:5:5-43
+MERGED from [pl.droidsonroids:relinker:1.3.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\6712795a5ee27e5df799da7fbf659d87\AndroidManifest.xml:5:5-43
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+	android:targetSdkVersion
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:15-44
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+uses-permission#android.permission.CPAYSDK_PRINTER_MODULE
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:6:5-81
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:6:22-78
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:7:5-79
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:7:22-76
+uses-permission#android.permission.INTERNET
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:8:5-67
+MERGED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:11:5-67
+MERGED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:11:5-67
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:8:22-64
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:9:5-76
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:9:22-73
+uses-permission#com.wizarpos.paymentrouter.permission.WIZARPOS_PAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:12:5-90
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:12:22-87
+uses-permission#com.wizarpos.cardinfolink.CloudPosPaymentClient.permission.CLOUDPAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:13:5-107
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:13:22-104
+uses-permission#com.wizarpos.fjumspos.CloudPosPaymentClient.permission.CLOUDPAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:14:5-103
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:14:22-100
+uses-permission#com.wizarpos.allinpay_gd.payment.CloudPosPaymentClient.permission.CLOUDPAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:15:5-114
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:15:22-111
+uses-permission#com.unionpay.CloudPosPaymentClient.permission.CLOUDPAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:16:5-94
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:16:22-91
+uses-permission#com.wizarpos.cuppos.CloudPosPaymentClient.permission.CLOUDPAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:17:5-101
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:17:22-98
+uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.CLOUDPAY
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:18:5-107
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:18:22-104
+uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.REVERSE
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:19:5-106
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:19:22-103
+uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.CLOUDPAY_SIGN
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:20:5-112
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:20:22-109
+uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.REVERSE_SIGN
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:21:5-111
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:21:22-108
+uses-permission#android.permission.CLOUDPOS_PUSHSERVICE
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:22:5-79
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:22:22-76
+uses-permission#android.permission.CPAYSDK_QUICK_SCAN
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:23:5-77
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:23:22-74
+application
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:25:5-87:19
+REJECTED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b1f254700f38d09357331c2d556466c6\AndroidManifest.xml:9:5-20
+REJECTED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:45:5-53:19
+REJECTED from [com.github.faranjit:currency-edittext:1.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\28bffd25d1a0b5305aef869b42d2a380\AndroidManifest.xml:11:5-15:19
+REJECTED from [com.google.android.gms:play-services-appindexing:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\71df5b7ee0c7336f9715ca40d712de2e\AndroidManifest.xml:18:5-19
+REJECTED from [com.google.android.gms:play-services-base:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3a4b3c5000b3a37e4ee49dac38ef246d\AndroidManifest.xml:18:5-20:19
+REJECTED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\68d47c8d1240a278cc4bcc5443f5c485\AndroidManifest.xml:4:5-7:19
+REJECTED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\23542701f8783bc9385a111d6d7294ce\AndroidManifest.xml:4:5-19
+REJECTED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:19:5-21:19
+REJECTED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:8:5-20
+REJECTED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:22:5-26:19
+REJECTED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:14:5-21:19
+REJECTED from [com.android.support:support-compat:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\93fc1b9986db8fdb37572ae9fd275d2e\AndroidManifest.xml:22:5-94
+REJECTED from [com.android.support:versionedparcelable:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\f3b68e8b16fb3f324745abc439560d25\AndroidManifest.xml:22:5-23:19
+	tools:node
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:31:9-29
+	android:supportsRtl
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:30:9-35
+	android:label
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:29:9-41
+	tools:overrideLibrary
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:33:9-49
+	android:icon
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:28:9-43
+	android:allowBackup
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:27:9-36
+	android:theme
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:32:9-40
+	tools:replace
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:34:9-44
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:26:9-68
+activity#com.quagnitia.myposmate.activities.OrderDetailsActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:35:9-37:25
+	android:windowSoftInputMode
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:36:13-65
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:35:19-89
+activity#com.quagnitia.myposmate.activities.SplashScreen
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:38:9-46:20
+	android:screenOrientation
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:40:13-49
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:39:13-75
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:41:13-45:29
+action#android.intent.action.MAIN
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:42:17-69
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:42:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:44:17-77
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:44:27-74
+activity#com.quagnitia.myposmate.activities.WelcomeScreen
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:47:9-49:52
+	android:screenOrientation
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:49:13-49
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:48:13-76
+activity#com.quagnitia.myposmate.activities.DashboardActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:50:9-55:68
+	android:screenOrientation
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:54:13-49
+	android:windowSoftInputMode
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:55:13-65
+	android:exported
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:53:13-36
+	android:configChanges
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:52:13-59
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:51:13-80
+meta-data#com.google.android.gms.version
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:60:9-62:69
+	android:value
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:62:13-66
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:61:13-58
+activity#com.journeyapps.barcodescanner.CaptureActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:64:9-67:49
+	android:screenOrientation
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:66:13-51
+	tools:replace
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:67:13-46
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:65:13-74
+activity#com.quagnitia.myposmate.activities.PaymentExpressActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:68:9-94
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:68:19-91
+activity#com.quagnitia.myposmate.activities.UnionPayActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:69:9-88
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:69:19-85
+activity#com.quagnitia.myposmate.activities.UnionPayScreen
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:70:9-86
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:70:19-83
+activity#com.quagnitia.myposmate.fragments.TransactionDetailsActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:71:9-97
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:71:19-94
+activity#com.quagnitia.myposmate.activities.TimeZoneActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:72:9-88
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:72:19-85
+activity#com.printerutils.WebViewActivity
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:75:9-78
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:75:19-66
+receiver#com.quagnitia.myposmate.utils.NetworkChangeReceiver
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:77:9-86:20
+	android:enabled
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:79:13-35
+	android:exported
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:80:13-36
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:78:13-79
+intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE+action:name:android.net.wifi.STATE_CHANGED+action:name:android.net.wifi.WIFI_STATE_CHANGED
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:81:13-85:29
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:82:17-79
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:82:25-76
+action#android.net.wifi.WIFI_STATE_CHANGED
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:83:17-78
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:83:25-75
+action#android.net.wifi.STATE_CHANGED
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:84:17-73
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:84:25-70
+uses-permission#android.permission.CAMERA
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:21:5-65
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:21:22-62
+uses-feature#android.hardware.camera
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:24:5-26:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:26:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:25:9-47
+uses-feature#android.hardware.camera.front
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:27:5-29:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:29:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:28:9-53
+uses-feature#android.hardware.camera.autofocus
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:32:5-34:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:34:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:33:9-57
+uses-feature#android.hardware.camera.flash
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:35:5-37:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:37:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:36:9-53
+uses-feature#android.hardware.screen.landscape
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:38:5-40:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:40:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:39:9-57
+uses-feature#android.hardware.wifi
+ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:41:5-43:36
+	android:required
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:43:9-33
+	android:name
+		ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:42:9-45
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:12:5-78
+	android:name
+		ADDED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:12:22-75

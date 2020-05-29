@@ -1,0 +1,310 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_two"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="20dp"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#90A4AE"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="Refund UnionPay"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/ll_amount1"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="@string/amount1" />
+
+
+        <faranjit.currency.edittext.CurrencyEditText
+            android:id="@+id/edt_amount1"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center|right"
+            android:inputType="numberDecimal"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <!-- <EditText
+             android:id="@+id/edt_amount"
+             style="@style/EditTextStyle"
+             android:layout_marginLeft="20dp"
+             android:layout_marginRight="20dp"
+             android:layout_marginTop="10dp"
+             android:layout_weight="1"
+             android:textDirection="rtl"
+             android:inputType="number|numberDecimal"
+             android:textSize="22sp" />-->
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_merchat_id"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="Merchant Id" />
+
+        <EditText
+            android:id="@+id/edt_merchant_id"
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:inputType="number"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/ll_reference_id"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="*CUP Reference No" />
+
+        <EditText
+            android:id="@+id/edt_reference_no"
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:inputType="number"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+
+
+    <Button
+        android:id="@+id/btn_scan_reference"
+        android:layout_width="280dp"
+        android:layout_height="35dp"
+
+        android:background="@drawable/edt_border_black_gray"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:textAllCaps="false"
+        android:text="Click To Scan CUP Reference No"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp" />
+    <LinearLayout
+
+        android:id="@+id/ll_order_no"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="*Reference Number" />
+
+        <EditText
+            android:id="@+id/edt_order_no"
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:inputType="number"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_transaction_no"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="*Transaction Date" />
+
+        <EditText
+            android:id="@+id/edt_transaction_date"
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:hint="MMDD"
+            android:inputType="number"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/edt_xmpp_amount1"
+        android:layout_width="230dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edt_border_green"
+        android:gravity="center"
+        android:text="Sale Amount NZ"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp">
+
+
+        <LinearLayout
+            android:id="@+id/ll_second1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
+            <LinearLayout
+                android:id="@+id/ll_first1"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btn_save1"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="@string/ok"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_cancel1"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_se"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btn_save2"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="@string/ok"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_cancel2"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+</LinearLayout>
+
+

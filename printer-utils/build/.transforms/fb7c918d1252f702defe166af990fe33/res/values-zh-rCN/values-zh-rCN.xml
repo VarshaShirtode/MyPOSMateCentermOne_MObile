@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">H5 Printer</string>
+    <string name="h5_printer_error_image_data_to_print_should_not_be_null">打印机的图片数据不允许为空</string>
+    <string name="h5_printer_error_not_init_webview">未初始化webview</string>
+    <string name="nymph_printer_content_generate_error">生成打印数据失败</string>
+</resources>

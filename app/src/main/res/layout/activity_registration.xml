@@ -1,0 +1,185 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+
+    >
+
+    <TextView
+        android:elevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#90A4AE"
+        android:text="Registration"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/textView" />
+
+    <ScrollView
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="2"
+                    android:text="@string/terminalId" />
+
+                <EditText
+                    android:id="@+id/edt_terminal_id"
+                    style="@style/EditTextStyle"
+                    android:layout_height="40dp"
+                    android:enabled="true"
+                    android:layout_marginLeft="20dp"
+                    android:minLines="2"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2"
+                    android:text="@string/merchant_id" />
+
+                <EditText
+                    android:id="@+id/edt_merchant_id"
+                    style="@style/EditTextStyle"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2"
+                    android:text="@string/configId" />
+
+                <EditText
+                    android:id="@+id/edt_config_id"
+                    style="@style/EditTextStyle"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2"
+                    android:text="@string/uniqueId" />
+
+                <EditText
+                    android:id="@+id/edt_access_id"
+                    style="@style/EditTextStyle"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:inputType="textPassword"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center|bottom"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical"
+                >
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="@string/save_and_ok"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/btn_already_registered"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:text="@string/already_registered"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+                <Button
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/btn_exit"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="Exit App"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

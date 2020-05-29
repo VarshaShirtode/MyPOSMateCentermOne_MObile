@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.quagnitia.myposmate"
+    android:versionCode="19"
+    android:versionName="2.1.1" >
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="29" />
+
+    <uses-permission android:name="android.permission.CPAYSDK_PRINTER_MODULE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- New Permissions -->
+    <uses-permission android:name="com.wizarpos.paymentrouter.permission.WIZARPOS_PAY" />
+    <uses-permission android:name="com.wizarpos.cardinfolink.CloudPosPaymentClient.permission.CLOUDPAY" />
+    <uses-permission android:name="com.wizarpos.fjumspos.CloudPosPaymentClient.permission.CLOUDPAY" />
+    <uses-permission android:name="com.wizarpos.allinpay_gd.payment.CloudPosPaymentClient.permission.CLOUDPAY" />
+    <uses-permission android:name="com.unionpay.CloudPosPaymentClient.permission.CLOUDPAY" />
+    <uses-permission android:name="com.wizarpos.cuppos.CloudPosPaymentClient.permission.CLOUDPAY" />
+    <uses-permission android:name="com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.CLOUDPAY" />
+    <uses-permission android:name="com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.REVERSE" />
+    <uses-permission android:name="com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.CLOUDPAY_SIGN" />
+    <uses-permission android:name="com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.REVERSE_SIGN" />
+    <uses-permission android:name="android.permission.CLOUDPOS_PUSHSERVICE" />
+    <uses-permission android:name="android.permission.CPAYSDK_QUICK_SCAN" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" /> <!-- TODO replace above two with next line after Android 4.2 -->
+    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:name="com.quagnitia.myposmate.MyPOSMateApplication"
+        android:allowBackup="false"
+        android:debuggable="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.quagnitia.myposmate.activities.OrderDetailsActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.quagnitia.myposmate.activities.SplashScreen"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.quagnitia.myposmate.activities.WelcomeScreen"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.quagnitia.myposmate.activities.DashboardActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor" />
+        <activity android:name="com.quagnitia.myposmate.activities.PaymentExpressActivity" />
+        <activity android:name="com.quagnitia.myposmate.activities.UnionPayActivity" />
+        <activity android:name="com.quagnitia.myposmate.activities.UnionPayScreen" />
+        <activity android:name="com.quagnitia.myposmate.fragments.TransactionDetailsActivity" />
+        <activity android:name="com.quagnitia.myposmate.activities.TimeZoneActivity" />
+        <activity android:name="com.printerutils.WebViewActivity" />
+
+        <receiver
+            android:name="com.quagnitia.myposmate.utils.NetworkChangeReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
