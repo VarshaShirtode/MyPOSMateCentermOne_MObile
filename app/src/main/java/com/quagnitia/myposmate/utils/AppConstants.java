@@ -23,7 +23,7 @@ public class AppConstants {
     public static String BASE_URL2 = "https://one.myposmate.com/api/v1/terminal/";
     public static String V2_AUTH = "https://one.myposmate.com/oauth/token";
     public static String serverIp = "one.myposmate.com";
-
+//one.myposmate.com commit
 
 
     public static String CLIENT_ID="b7ae46e37ba373dce7bd";
