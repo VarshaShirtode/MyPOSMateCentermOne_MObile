@@ -245,7 +245,9 @@ public class Settlement extends Fragment implements OnTaskCompleted {
         openProgressDialog();
         try {
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferencesManager.getMerchantId());
+            hashMapKeys.put("email",edt_email.getText().toString());
+            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "SettlementReports")
@@ -300,17 +302,20 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                 Toast.makeText(getActivity(), "Please fill in the terminal identifier in branch info", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
             hashMapKeys.put("branch_name", preferencesManager.getmerchant_name());
             hashMapKeys.put("timezone", datetime);
             hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
             hashMapKeys.put("pos_id", preferencesManager.getPOSIdentifier());
             hashMapKeys.put("email", edt_email.getText().toString());
             hashMapKeys.put("terminal_id", preferencesManager.getTerminalIdentifier());
-            hashMapKeys.put("merchant_id", preferencesManager.getMerchantId());
+            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "Settle")
                     .execute(AppConstants.BASE_URL2 + AppConstants.SETTLE + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -350,9 +355,9 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     public void callTimeStampConversion(String s) {
         try {
             String ss1[] = s.split("T");
-            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
-            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
             df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
             Date d = df1.parse(ss1[0] + " " + ss1[1]);
             datetime = df2.format(d);

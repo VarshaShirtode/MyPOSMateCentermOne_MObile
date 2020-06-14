@@ -102,6 +102,7 @@ public class PreferencesManager {
     private String authToken="authToken";
     private String authTokenCloseTrade="authTokenCloseTrade";
     private String isResetTerminal="isResetTerminal";
+    private String timezoneabrev="timezoneabrev";
 
 
     //added preference fields on 3/3/2020
@@ -158,6 +159,19 @@ public class PreferencesManager {
         editor.apply();
 
     }
+
+
+    public String getTimezoneAbrev() {
+        return sharedPreferences.getString(timezoneabrev, "");
+    }
+
+    public void setTimezoneAbrev(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(timezoneabrev, text);
+        editor.apply();
+
+    }
+
 
 
     public boolean isWeChatScan() {

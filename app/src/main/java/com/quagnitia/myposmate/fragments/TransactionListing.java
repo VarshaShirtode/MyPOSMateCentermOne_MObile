@@ -34,6 +34,7 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -307,7 +308,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         vasCallsArkeBusiness.doTransaction(interfaceId, new JSONObject(), this);
     }
 
-
+boolean isListingCalled=false;
     public void callTimeStampConversion(String s) {
         try {
             JSONObject jsonObjectTimeNZ = new JSONObject(s);
@@ -327,9 +328,9 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             edt_end_datetime.setText(ss[0]);
             edt_start_time.setText("00:00:00");
             edt_end_time.setText(ss[1]);
+            isListingCalled=true;
+callAuthToken();
 
-
-            callTransactionList();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,7 +393,8 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         openProgressDialog();
         try {
 
-
+            SimpleDateFormat mainConv = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS");
+            mainConv.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -403,14 +405,15 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             String endTime = df1.format(df2.parse(edt_end_datetime.getText().toString() + "T" + edt_end_time.getText().toString()));
 
             startTime = df1.format(df2.parse(startTime));
-
             hashMapKeys.clear();
+            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("start_date", startTime);
-            hashMapKeys.put("end_date", endTime);
+            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df2.parse(endTime))+preferencesManager.getTimezoneAbrev(),"UTF-8"));
+            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df2.parse(startTime))+preferencesManager.getTimezoneAbrev(),"UTF-8"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("limit","1000");
 
             new OkHttpHandler(getActivity(), this, null, "TransactionListing")
                     .execute(AppConstants.BASE_URL2 + AppConstants.GET_RECENT_TRANSACTIONS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
@@ -448,6 +451,11 @@ public class TransactionListing extends Fragment implements View.OnClickListener
                         isInitialLaunch = false;
                         callTimeStamp();
                     }
+                    else if(isListingCalled)
+                    {
+                        isListingCalled=false;
+                        callTransactionList();
+                    }
                 }
                 break;
 
@@ -472,15 +480,15 @@ public class TransactionListing extends Fragment implements View.OnClickListener
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.optJSONObject(i);
-                        if (!jsonObject1.optString("status").equals("REQUEST_RECEIVED")
-                                && !jsonObject1.optString("status").equals("WAIT_BUYER_PAY")
-                                && !jsonObject1.optString("status").equals("TRADE_NOT_PAY")
-                                && !jsonObject1.optString("status").equals("TRADE_NOT_ISEXIST")
-                                && !jsonObject1.optString("status").equals("INVALID_PARAMETER")
-                                && !jsonObject1.optString("status").equals("SYSTEM_ERROR")
-                                && !jsonObject1.optString("status").equals("USERPAYING")) {
+                        if (!jsonObject1.optString("paymentStatus").equals("REQUEST_RECEIVED")
+                                && !jsonObject1.optString("paymentStatus").equals("WAIT_BUYER_PAY")
+                                && !jsonObject1.optString("paymentStatus").equals("TRADE_NOT_PAY")
+                                && !jsonObject1.optString("paymentStatus").equals("TRADE_NOT_ISEXIST")
+                                && !jsonObject1.optString("paymentStatus").equals("INVALID_PARAMETER")
+                                && !jsonObject1.optString("paymentStatus").equals("SYSTEM_ERROR")
+                                && !jsonObject1.optString("paymentStatus").equals("USERPAYING")) {
                             jsonArray1.put(jsonObject1);
-                        } else if (jsonObject1.optString("status").equals("REQUEST_RECEIVED") &&
+                        } else if (jsonObject1.optString("paymentStatus").equals("REQUEST_RECEIVED") &&
                                 jsonObject1.optString("channel").equals("UNION_PAY")) {
                             jsonArray1.put(jsonObject1);
                         }

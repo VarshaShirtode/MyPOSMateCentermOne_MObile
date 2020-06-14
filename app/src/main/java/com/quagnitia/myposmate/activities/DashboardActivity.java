@@ -482,11 +482,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-        if (preferencesManager.isAuthenticated()) {
+       // if (preferencesManager.isAuthenticated()) {
             callSetupFragment(SCREENS.SETTLEMEMT, null);
-        } else {
-            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
-        }
+//        } else {
+//            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
+//        }
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
             return;
@@ -585,11 +585,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-        if (preferencesManager.isAuthenticated()) {
+       // if (preferencesManager.isAuthenticated()) {
             callSetupFragment(SCREENS.REFUND, null);
-        } else {
-            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
-        }
+//        } else {
+//            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
+//        }
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }

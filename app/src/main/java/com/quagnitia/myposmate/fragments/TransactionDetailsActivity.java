@@ -31,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.centerm.smartpos.aidl.printer.AidlPrinter;
 import com.centerm.smartpos.aidl.printer.AidlPrinterStateChangeListener;
 import com.centerm.smartpos.aidl.printer.PrintDataObject;
@@ -56,6 +55,7 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -265,7 +265,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         openProgressDialog();
         //v2 signature implementation
         hashMapKeys.clear();
-        hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("reference_id", getIntent().getStringExtra("reference_id"));
@@ -433,7 +434,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 dialog.setContentView(dialogview);
 
 
-                 final EditText editAmount = (EditText) dialogview.findViewById(R.id.edt_amount_unionpay);
+                final EditText editAmount = (EditText) dialogview.findViewById(R.id.edt_amount_unionpay);
                 Button btn_close = (Button) dialogview.findViewById(R.id.btn_close);
                 Button btn_refund = (Button) dialogview.findViewById(R.id.btn_refund);
 
@@ -723,7 +724,18 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                 break;
 
+
             case "TransactionDetails":
+
+                if (jsonObject.optBoolean("status")) {
+                    parseTransactionDetailsResponse(jsonObject);
+
+                } else {
+                    Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case "TransactionDetails1":
 
                 if (jsonObject.has("error") && jsonObject.optString("error").equals("invalid_token")) {
                     callTransactionDetails();
@@ -1047,14 +1059,11 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
 
                     newjson = json;
-                    if(json.optString("Transaction Successful").equals("false"))
-                    {
+                    if (json.optString("Transaction Successful").equals("false")) {
                         print1.setEnabled(false);
                         btn_void.setEnabled(false);
                         btn_refund_uni.setEnabled(false);
-                    }
-                    else
-                    {
+                    } else {
                         print1.setEnabled(true);
                         btn_void.setEnabled(true);
                         btn_refund_uni.setEnabled(true);
@@ -1164,6 +1173,152 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
         }
     }
+
+
+    public void parseTransactionDetailsResponse(JSONObject jsonObject) throws JSONException {
+
+        JSONObject jsonObjectPayment = jsonObject.optJSONObject("payment");
+        JSONObject json = new JSONObject();
+        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")) {
+            for (int i = 0; i < jsonObjectPayment.length(); i++) {
+                for (int j = 0; j < jsonObjectPayment.length(); j++) {
+                    String value = jsonObjectPayment.names().optString(j);
+                    switch (jsonObjectPayment.names().optString(j)) {
+                        case "id":
+                            json.put("Transaction Number", value);
+                            break;
+                        case "channel":
+                            json.put("Payment By", value);
+                            if (value.equals("UNION_PAY")) {
+                                print1.setVisibility(View.VISIBLE);
+                                btn_close1.setVisibility(View.VISIBLE);
+                                btn_void.setVisibility(View.VISIBLE);
+                                ll.setVisibility(View.GONE);
+                            } else {
+                                print1.setVisibility(View.GONE);
+                                btn_close1.setVisibility(View.GONE);
+                                btn_void.setVisibility(View.GONE);
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            break;
+                        case "createDate":
+                            json.put("Date And Time", value);
+                            break;
+                        case "currency":
+                            json.put("Payment Currency", value);
+                            break;
+                        case "grandTotal":
+                            json.put("Payment Amount", value);
+                            break;
+                        case "status":
+                            json.put("Transaction Successful", value);
+                            break;
+                        case "message":
+                            json.put("Message Description", value);
+                            break;
+                        case "paymentStatus":
+                            json.put("Message Status", value);
+                            break;
+                        case "qrCode":
+                            json.put("QRCode", value);
+                            break;
+                        case "rate":
+                            Double receipt_amount = Double.parseDouble(jsonObjectPayment.optString("receiptAmount"));
+                            Double rate = Double.parseDouble(jsonObjectPayment.optString("rate"));
+                            Double rmb_amount = receipt_amount * rate;
+                            json.put("Amount RMB", rmb_amount);
+                            break;
+                        case "receiptAmount":
+                            json.put("Receipt Amount", value);
+                            break;
+                        case "referenceId":
+                            json.put("Reference Number", value);
+                            break;
+                        case "terminalId":
+                            json.put("Terminal Id", value);
+                            break;
+                        case "tradeNo":
+                            json.put("Payment Reference", value);
+                            break;
+                        case "type":
+                            json.put("Transaction Type", value);
+                            break;
+                    }
+                }
+            }
+
+
+            json.put("Amount Refunded", "0.00");
+            newjson = json;
+
+            if (json.optString("Transaction Successful").equals("false")) {
+                print1.setEnabled(false);
+                btn_void.setEnabled(false);
+                btn_refund_uni.setEnabled(false);
+            } else {
+                print1.setEnabled(true);
+                btn_void.setEnabled(true);
+                btn_refund_uni.setEnabled(true);
+            }
+
+            if (newjson.optString("Payment Amount").equals(newjson.optString("Amount Refunded"))) {
+                btn_refund.setVisibility(View.GONE);
+                findViewById(R.id.ll1).setVisibility(View.GONE);
+                findViewById(R.id.ll2).setVisibility(View.GONE);
+                findViewById(R.id.ll3).setVisibility(View.GONE);
+            } else if (newjson.optString("Message Status").equals("CLOSED")) { //closed
+                btn_refund.setVisibility(View.GONE);
+                findViewById(R.id.ll1).setVisibility(View.GONE);
+                findViewById(R.id.ll2).setVisibility(View.GONE);
+                findViewById(R.id.ll3).setVisibility(View.GONE);
+            } else {
+                btn_refund.setVisibility(View.VISIBLE);
+                findViewById(R.id.ll1).setVisibility(View.VISIBLE);
+                findViewById(R.id.ll2).setVisibility(View.VISIBLE);
+                findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+            }
+
+
+            if (newjson.optString("Transaction Type").equals("VOIDED") ||
+                    newjson.optString("Transaction Type").equals("REFUND") ||
+                    newjson.optString("Transaction Type").equals("TRADE_REFUND") ||
+                    newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_VOID") ||
+                    newjson.optString("Transaction Type").equals("VOID") ||
+                    newjson.optString("Transaction Type").equals("COUPON_VOID")) {
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_void);
+                linearLayout.setWeightSum(2);
+                btn_refund_uni.setVisibility(View.GONE);
+                btn_void.setVisibility(View.GONE);
+            } else if (newjson.optString("Transaction Type").equals("SALE") ||
+                    newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_SALE")
+            ) {
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_void);
+                linearLayout.setWeightSum(4);
+                btn_void.setVisibility(View.VISIBLE);
+                btn_refund_uni.setVisibility(View.VISIBLE);
+            } else if (newjson.optString("Transaction Type").equals("COUPON_SALE")) {
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_void);
+                linearLayout.setWeightSum(3);
+                btn_void.setVisibility(View.VISIBLE);
+                btn_refund_uni.setVisibility(View.GONE);
+            } else {
+                btn_void.setVisibility(View.GONE);
+                btn_refund_uni.setVisibility(View.GONE);
+            }
+
+            amountTotal = jsonObjectPayment.optString("receiptAmount");
+
+            TransactionDetailsAdapter transactionDetailsAdapter = new TransactionDetailsAdapter(TransactionDetailsActivity.this, newjson);
+            recycler_view.setAdapter(transactionDetailsAdapter);
+
+
+        } else {
+            Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
 
     String roundTwoDecimals(float d) {
         DecimalFormat twoDForm = new DecimalFormat("#0.00");

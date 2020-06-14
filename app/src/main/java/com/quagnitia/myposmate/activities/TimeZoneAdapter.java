@@ -111,6 +111,47 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
                         preferencesManager.setisTimeZoneChecked(true);
                         preferencesManager.setTimeZone(holder.tv_timezone.getText().toString());
                         preferencesManager.setTimeZoneId(arrayList.get(position));
+                        if (arrayList.get(position).equals("Australia/Perth")) {
+                            preferencesManager.setTimezoneAbrev("AWST");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Australia/Eucla")) {
+                            preferencesManager.setTimezoneAbrev("ACWST");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Australia/Darwin")) {
+                            preferencesManager.setTimezoneAbrev("ACST");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Australia/Brisbane")) {
+                            preferencesManager.setTimezoneAbrev("AEST");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Australia/Adelaide")) {
+                            preferencesManager.setTimezoneAbrev("ACDT");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Australia/Sydney")) {
+                            preferencesManager.setTimezoneAbrev("AEDT");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Australia/Lord_Howe")) {
+                            preferencesManager.setTimezoneAbrev("LHDT");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Pacific/Fiji")) {
+                            preferencesManager.setTimezoneAbrev("FJT");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Pacific/Auckland")) {
+                            preferencesManager.setTimezoneAbrev("NZDT");
+                        }
+                        else
+                        if (arrayList.get(position).equals("Pacific/Chatham")) {
+                            preferencesManager.setTimezoneAbrev("CHADT");
+                        }
+
+
                         notifyDataSetChanged();
 
                         try {

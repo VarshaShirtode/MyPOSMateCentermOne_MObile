@@ -184,13 +184,9 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     }
 
     public void callAuthToken() {
-        // openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-//        hashMap.put("username", preferenceManager.getterminalId());
-//        hashMap.put("password", preferenceManager.getuniqueId());
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
-
     }
 
     public void openProgressDialog() {
@@ -656,6 +652,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     public void callTransactionDetails() {
         //v2 signature implementation
         hashMapKeys.clear();
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
@@ -679,6 +676,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         openProgressDialog();
         //v2 signature implementation
         hashMapKeys.clear();
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());

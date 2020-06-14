@@ -68,7 +68,7 @@ public LinearLayout parent;
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         JSONObject jsonObject=jsonArray.optJSONObject(position);
-        if(jsonObject.optString("status").equals("TRADE_SUCCESS"))
+        if(jsonObject.optString("paymentStatus").equals("SUCCESS"))
         {
             holder.parent.setBackgroundColor(Color.parseColor("#82e0aa"));
         }
@@ -76,12 +76,12 @@ public LinearLayout parent;
         {
             holder.parent.setBackgroundColor(Color.parseColor("#EEEEEE"));
         }
-        holder.tv_reference_id.setText(jsonObject.optString("reference_id"));
+        holder.tv_reference_id.setText(jsonObject.optString("referenceId"));
         try
         {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date d=df.parse(jsonObject.optString("gmt_payment"));
+            Date d=df.parse(jsonObject.optString("createDate"));
 
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
@@ -92,41 +92,41 @@ public LinearLayout parent;
             e.printStackTrace();
         }
 
-        holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))));
+        holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))));
         holder.tv_type.setText("PAYMENT");
 
         holder.tv_scheme.setText(jsonObject.optString("channel"));
-        if(jsonObject.optString("status").equals("TRADE_CLOSED")||
-                jsonObject.optString("status").equals("TRADE_REFUND")
+        if(jsonObject.optString("paymentStatus").equals("CLOSED")||
+                jsonObject.optString("paymentStatus").equals("REFUND")
         )
         {
             if(jsonObject.optString("channel").equals("UNION_PAY"))
             {
-                holder.tv_result.setText(jsonObject.optString("status"));//("VOIDED");
+                holder.tv_result.setText(jsonObject.optString("paymentStatus"));//("VOIDED");
             }
             else
             {
-                holder.tv_result.setText(jsonObject.optString("status"));
+                holder.tv_result.setText(jsonObject.optString("paymentStatus"));
             }
         }
         else
         {
-            holder.tv_result.setText(jsonObject.optString("status"));
+            holder.tv_result.setText(jsonObject.optString("paymentStatus"));
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(jsonObject.optString("channel").equals("UNION_PAY") && jsonObject.optString("status").equals("REQUEST_RECEIVED"))
+                if(jsonObject.optString("channel").equals("UNION_PAY") && jsonObject.optString("paymentStatus").equals("REQUEST_RECEIVED"))
                 {
                     Toast.makeText(mContext, "Transaction incomplete. Details not available.", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     Intent i = new Intent(mContext, TransactionDetailsActivity.class);
-                    i.putExtra("reference_id",jsonObject.optString("reference_id"));
-                    i.putExtra("increment_id",jsonObject.optString("increment_id"));
+                    i.putExtra("reference_id",jsonObject.optString("referenceId"));
+                   // i.putExtra("increment_id",jsonObject.optString("increment_id"));
                     mContext.startActivity(i);
                 }
 
