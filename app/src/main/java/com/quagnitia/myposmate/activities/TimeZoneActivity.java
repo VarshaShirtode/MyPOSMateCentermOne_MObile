@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.utils.AESHelper;
 import com.quagnitia.myposmate.utils.AppConstants;
+import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -26,6 +27,8 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -160,34 +163,24 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
 
         openProgressDialog();
         try {
+            hashMapKeys.clear();
+            hashMapKeys.put("branchAddress",  encryption(preferenceManager.getaddress()));
+            hashMapKeys.put("branchContactNo", encryption(preferenceManager.getcontact_no()));
+            hashMapKeys.put("branchName",  encryption(preferenceManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", encryption(preferenceManager.getcontact_email()));
+            hashMapKeys.put("gstNo",  encryption(preferenceManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("accessId", encryption(preferenceManager.getuniqueId()));
+            hashMapKeys.put("configId", preferenceManager.getConfigId());
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, TimeZoneActivity.this));
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
 
-
-//            hashMapKeys.clear();
-//            hashMapKeys.put("access_id", encryption(preferenceManager.getuniqueId()));
-//            hashMapKeys.put("terminal_id",  encryption(preferenceManager.getterminalId()));
-//            hashMapKeys.put("branch_name", encryption(preferenceManager.getmerchant_name()));
-//            hashMapKeys.put("branch_address",  encryption(preferenceManager.getaddress()));
-//            hashMapKeys.put("branch_contact_no", encryption(preferenceManager.getcontact_no()));
-//            hashMapKeys.put("branch_email",encryption(preferenceManager.getcontact_email()));
-//            hashMapKeys.put("gst_no",encryption(preferenceManager.getgstno()));
-//            hashMapKeys.put("other_data",encryption(jsonObject.toString()));
-//
-//
-//            new OkHttpHandler(TimeZoneActivity.this, this, null, "UpdateBranchDetails")
-//                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_SAVE_TERMINAL_CONFIG + MD5Class.generateSignatureString(hashMapKeys, TimeZoneActivity.this)+"&access_token="+preferenceManager.getauthToken());
-
-
-            new OkHttpHandler(TimeZoneActivity.this, this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
-                    + "?other_data=" + encryption(jsonObject.toString())
-                    + "&terminal_id=" + encryption(preferenceManager.getterminalId())
-                    + "&access_id=" + encryption(preferenceManager.getuniqueId())
-                    + "&branch_name=" + encryption(preferenceManager.getmerchant_name())
-                    + "&branch_address=" + encryption(preferenceManager.getaddress())
-                    + "&branch_contact_no=" + encryption(preferenceManager.getcontact_no())
-                    + "&branch_email=" + encryption(preferenceManager.getcontact_email())
-                    + "&gst_no=" + encryption(preferenceManager.getgstno())
-
-            );
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "UpdateBranchDetails")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,8 +202,8 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
             case "UpdateBranchDetails":
-                if (jsonObject.has("other_data")) {
-                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
+                if (jsonObject.has("otherData")) {
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 
 
                     if (jsonObject1.has("ConfigId"))

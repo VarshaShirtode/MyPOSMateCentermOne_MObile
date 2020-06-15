@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -197,7 +198,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 //        hashMapKeys.put("access_token",preferencesManager.getauthToken());
         preferencesManager.setuniqueId(edt_unique_id.getText().toString());
         new OkHttpHandler(getActivity(), this, null, "validateTerminal")
-                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL + MD5Class.generateSignatureString(hashMapKeys, getActivity())+ "&access_token=" + preferencesManager.getauthToken());
+                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
 
 //        HashMap<String, String> hashMap = new HashMap<>();
 //        hashMap.putAll(hashMapKeys);
@@ -218,24 +219,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     }
 
 
-   /* public void callAuthToken() {
-        openProgressDialog();
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("grant_type", "password");
-        hashMap.put("username", preferencesManager.getterminalId());
-        hashMap.put("password", preferencesManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
-
-    }
-*/
 
 
     public void callAuthToken() {
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-//        hashMap.put("username", AppConstants.CLIENT_ID);
-//        hashMap.put("password",AppConstants.CLIENT_SECRET);
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
@@ -251,7 +240,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token",preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 //            new OkHttpHandler(getActivity(), this, null, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
@@ -596,7 +585,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token",preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
@@ -620,7 +609,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token",preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 //            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
@@ -720,89 +709,48 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             jsonObject.put("isUpdated", true);
 
 
-//            new OkHttpHandler(getActivity(), this, null, "UpdateBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
-//                    + "?branch_name=" + (preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()))
-//                    + "&branch_address=" + (preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()))
-//                    + "&branch_contact_no=" + (preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()))
-//                    + "&branch_email=" + (preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()))
-//                    + "&gst_no=" + (preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()))
-//                    + "&terminalId=" + encryption(preferencesManager.getterminalId())
-//                    + "&accessId=" + encryption(preferencesManager.getuniqueId())
-//                    + "&other_data=" + encryption(jsonObject.toString()));
 
 
             hashMapKeys.clear();
-            hashMapKeys.put("branchAddress", base64Encoding(preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress())));
-            hashMapKeys.put("branchContactNo",base64Encoding( preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no())));
-            hashMapKeys.put("branchName", base64Encoding(preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name())));
-            hashMapKeys.put("branchEmail",base64Encoding( preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email())));
-            hashMapKeys.put("gstNo",base64Encoding( preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno())));
-            hashMapKeys.put("terminalId", base64Encoding(encryption(preferencesManager.getterminalId())));
-            hashMapKeys.put("otherData",base64Encoding( encryption(jsonObject.toString())));
+            hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
+            hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
+            hashMapKeys.put("branchName", preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
+            hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("accessId", base64Encoding(encryption(preferencesManager.getuniqueId())));
+            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
             hashMapKeys.put("configId", preferencesManager.getConfigId());
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token",preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, hashMap, "UpdateBranchDetailsNew")
                     .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public String base64Encoding(String text) throws UnsupportedEncodingException
-    {
-//        String base64="";
-//        try {
-//            byte[] data = text.getBytes("UTF-8");
-//            base64 = convertStringToUTF8(text);//Base64.encodeToString(data, Base64.NO_WRAP);
-//        }
-//        catch ( Exception e)
-//        {
-//            e.printStackTrace();
-//            base64="";
-//        }
-        return URLEncoder.encode(text,"UTF-8");
-    }
 
-    public  String convertStringToUTF8(String s) {
-        String out = null;
-        try {
-            out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return null;
-        }
-        return out;
-    }
 
-    public  String convertUTF8ToString(String s) {
-        String out = null;
-        try {
-            out = new String(s.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return null;
-        }
-        return out;
-    }
+
 
     public void _oldUser(JSONObject jsonObject) {
         try {
             if (jsonObject.optString("success").equals("true")) {
-                preferencesManager.setaddress(decryption_old(jsonObject.optString("branch_address")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branch_address")));
-                preferencesManager.setcontact_email(jsonObject.optString("branch_email").equals("nodata") ? "" : jsonObject.optString("branch_email"));
-                preferencesManager.setcontact_no(decryption_old(jsonObject.optString("branch_contact_no")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branch_contact_no")));
-                preferencesManager.setmerchant_name(decryption_old(jsonObject.optString("branch_name")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branch_name")));
-                preferencesManager.setgstno(decryption_old(jsonObject.optString("gst_no")).equals("nodata") ? "" : decryption_old(jsonObject.optString("gst_no")));
+                preferencesManager.setaddress(decryption_old(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchAddress")));
+                preferencesManager.setcontact_email(jsonObject.optString("branchEmail").equals("nodata") ? "" : jsonObject.optString("branchEmail"));
+                preferencesManager.setcontact_no(decryption_old(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchContactNo")));
+                preferencesManager.setmerchant_name(decryption_old(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchName")));
+                preferencesManager.setgstno(decryption_old(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption_old(jsonObject.optString("gstNo")));
                 preferencesManager.setterminalId(decryption_old(jsonObject.optString("terminalId")));
                 edt_unique_id.setText(decryption_old(jsonObject.optString("accessId")));
-                jsonObject1 = new JSONObject(decryption_old(jsonObject.optString("other_data")));
-                if (jsonObject.has("other_data")) {
+                jsonObject1 = new JSONObject(decryption_old(jsonObject.optString("otherData")));
+                if (jsonObject.has("otherData")) {
 
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
@@ -874,15 +822,15 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     public void _NewUser(JSONObject jsonObject) {
         try {
             if (jsonObject.optString("success").equals("true")) {
-                preferencesManager.setaddress(decryption(jsonObject.optString("branch_address")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_address")));
-                if (jsonObject.optString("branch_email").equals("nodata")) {
+                preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
+                if (jsonObject.optString("branchEmail").equals("nodata")) {
                     preferencesManager.setcontact_email("");
                 } else {
-                    preferencesManager.setcontact_email(decryption(jsonObject.optString("branch_email")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_email")));
+                    preferencesManager.setcontact_email(decryption(jsonObject.optString("branchEmail")).equals("nodata") ? "" : decryption(jsonObject.optString("branchEmail")));
                 }
-                preferencesManager.setcontact_no(decryption(jsonObject.optString("branch_contact_no")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_contact_no")));
-                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branch_name")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_name")));
-                preferencesManager.setgstno(decryption(jsonObject.optString("gst_no")).equals("nodata") ? "" : decryption(jsonObject.optString("gst_no")));
+                preferencesManager.setcontact_no(decryption(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption(jsonObject.optString("branchContactNo")));
+                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption(jsonObject.optString("branchName")));
+                preferencesManager.setgstno(decryption(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption(jsonObject.optString("gstNo")));
                 preferencesManager.setterminalId(decryption(jsonObject.optString("terminalId")));
 
                 if (preferencesManager.isResetTerminal()) {
@@ -903,8 +851,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 }
 
 
-                jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
-                if (jsonObject.has("other_data")) {
+                jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                if (jsonObject.has("otherData")) {
 
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
@@ -999,7 +947,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
     JSONObject jsonObject1 = null;
-boolean isUpdateNewDetails=false;
+    boolean isUpdateNewDetails = false;
+
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
         if (progress != null && progress.isShowing())
@@ -1029,9 +978,8 @@ boolean isUpdateNewDetails=false;
                     callValidateTerminal();
                 }
 
-                if(isUpdateNewDetails)
-                {
-                    isUpdateNewDetails=false;
+                if (isUpdateNewDetails) {
+                    isUpdateNewDetails = false;
                     callUpdateBranchDetailsNew();
                 }
                 break;
@@ -1081,14 +1029,16 @@ boolean isUpdateNewDetails=false;
                 break;
 
             case "DeleteTerminalOld":
-                isUpdateNewDetails=true;
+                isUpdateNewDetails = true;
                 callAuthToken();
 
 
                 break;
 
             case "GetBranchDetailsOld":
-                _oldUser(jsonObject);
+//                isUpdateNewDetails = true;
+//                callAuthToken();
+                   _oldUser(jsonObject);
                 break;
 
             case "GetBranchDetailsNew":

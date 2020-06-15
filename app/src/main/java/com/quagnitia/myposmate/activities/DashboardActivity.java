@@ -652,11 +652,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-        if (preferencesManager.isAuthenticated()) {
+//        if (preferencesManager.isAuthenticated()) {
             callSetupFragment(SCREENS.ABOUT, null);
-        } else {
-            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
-        }
+//        } else {
+//            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
+//        }
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
@@ -2700,8 +2700,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
             case "UpdateBranchDetails":
                 callAuthToken();
-                if (jsonObject.has("other_data")) {
-                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
+                if (jsonObject.has("otherData")) {
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 
 
                     if (jsonObject1.has("ConfigId"))
@@ -3309,16 +3309,25 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
 
+            hashMapKeys.clear();
+            hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
+            hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
+            hashMapKeys.put("branchName", preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
+            hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
+            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
 
-            new OkHttpHandler(DashboardActivity.this, this, null, "UpdateBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
-                    + "?branch_name=" + (preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()))
-                    + "&branch_address=" + (preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()))
-                    + "&branch_contact_no=" + (preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()))
-                    + "&branch_email=" + (preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()))
-                    + "&gst_no=" + (preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()))
-                    + "&terminal_id=" + encryption(preferencesManager.getterminalId())
-                    + "&access_id=" + encryption(preferencesManager.getuniqueId())
-                    + "&other_data=" + encryption(jsonObject.toString()));
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(DashboardActivity.this, this, hashMap, "UpdateBranchDetailsNew")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3362,16 +3371,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         openProgressDialog();
         try {
-            new OkHttpHandler(DashboardActivity.this, this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
-                    + "?other_data=" + encryption(jsonObject.toString())
-                    + "&terminal_id=" + encryption(preferencesManager.getterminalId())
-                    + "&access_id=" + encryption(preferencesManager.getuniqueId())
-                    + "&branch_name=" + encryption(preferenceManager.getmerchant_name())
-                    + "&branch_address=" + encryption(preferenceManager.getaddress())
-                    + "&branch_contact_no=" + encryption(preferenceManager.getcontact_no())
-                    + "&branch_email=" + encryption(preferenceManager.getcontact_email())
-                    + "&gst_no=" + encryption(preferenceManager.getgstno())
-            );
+            hashMapKeys.clear();
+            hashMapKeys.put("branchAddress",  encryption(preferencesManager.getaddress()));
+            hashMapKeys.put("branchContactNo", encryption(preferencesManager.getcontact_no()));
+            hashMapKeys.put("branchName",  encryption(preferencesManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", encryption(preferencesManager.getcontact_email()));
+            hashMapKeys.put("gstNo",  encryption(preferencesManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
+            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(DashboardActivity.this, this, hashMap, "UpdateBranchDetails")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3396,8 +3413,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             if (jsonObject.optString("success").equals("true")) {
 
 
-                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
-                if (jsonObject.has("other_data")) {
+                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                if (jsonObject.has("otherData")) {
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
                     preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));

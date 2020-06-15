@@ -23,6 +23,7 @@ import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.utils.AESHelper;
 import com.quagnitia.myposmate.utils.AppConstants;
+import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -33,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -84,9 +86,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     public void callAuthToken() {
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("grant_type", "password");
-        hashMap.put("username", preferencesManager.getterminalId());
-        hashMap.put("password", preferencesManager.getuniqueId());
+        hashMap.put("grant_type", "client_credentials");
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
@@ -670,7 +670,8 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 //                    {
                     if (flag) {
 
-                        callUpdateBranchDetails();
+                        isUpdateDetails=true;
+                        callAuthToken();
 
                     } else {
                         Toast.makeText(getActivity(), "Please check if the details are entered properly", Toast.LENGTH_SHORT).show();
@@ -701,7 +702,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         progress.setIndeterminate(true);
         progress.show();
     }
-
+boolean isUpdateDetails=false;
     public void callUpdateBranchDetails() {
 
         openProgressDialog();
@@ -761,15 +762,25 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             jsonObject.put("POSIdentifier", edt_pos_identifier.getText().toString());
             jsonObject.put("isUpdated", true);
 
-            new OkHttpHandler(getActivity(), this, null, "UpdateBranchDetails").execute(AppConstants.BASE_URL3 + AppConstants.SAVE_TERMINAL_CONFIG
-                    + "?branch_name=" + (edt_merchant_name.getText().toString().equals("") ? encryption("nodata") : encryption(edt_merchant_name.getText().toString()))
-                    + "&branch_address=" + (edt_address.getText().toString().equals("") ? encryption("nodata") : encryption(edt_address.getText().toString()))
-                    + "&branch_contact_no=" + (edt_contact_no.getText().toString().equals("") ? encryption("nodata") : encryption(edt_contact_no.getText().toString()))
-                    + "&branch_email=" + (edt_contact_email.getText().toString().equals("") ? "nodata" : encryption(edt_contact_email.getText().toString()))
-                    + "&gst_no=" + (edt_gst_number.getText().toString().equals("") ? encryption("nodata") : encryption(edt_gst_number.getText().toString()))
-                    + "&terminal_id=" + encryption(preferencesManager.getterminalId())
-                    + "&access_id=" + encryption(preferencesManager.getuniqueId())
-                    + "&other_data=" + encryption(jsonObject.toString()));
+            hashMapKeys.clear();
+            hashMapKeys.put("branchAddress", edt_address.getText().toString().equals("") ? encryption("nodata") : encryption(edt_address.getText().toString()));
+            hashMapKeys.put("branchContactNo", edt_contact_no.getText().toString().equals("") ? encryption("nodata") : encryption(edt_contact_no.getText().toString()));
+            hashMapKeys.put("branchName", edt_merchant_name.getText().toString().equals("") ? encryption("nodata") : encryption(edt_merchant_name.getText().toString()));
+            hashMapKeys.put("branchEmail", edt_contact_email.getText().toString().equals("") ? "nodata" : encryption(edt_contact_email.getText().toString()));
+            hashMapKeys.put("gstNo", edt_gst_number.getText().toString().equals("") ? encryption("nodata") : encryption(edt_gst_number.getText().toString()));
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
+            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(getActivity(), this, hashMap, "UpdateBranchDetails")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -836,6 +847,11 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     isCancel = false;
                     callGetBranchDetails_new();
                 }
+                if(isUpdateDetails)
+                {
+                    isUpdateDetails=false;
+                    callUpdateBranchDetails();
+                }
                 break;
 
             case "GetBranchDetailsNew":
@@ -852,16 +868,16 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             case "UpdateBranchDetails":
                 callAuthToken();
                 PreferencesManager preferencesManager = PreferencesManager.getInstance(getActivity());
-                preferencesManager.setaddress(decryption(jsonObject.optString("branch_address")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_address")));
-                preferencesManager.setcontact_email(jsonObject.optString("branch_email").equals("nodata") ? "" : decryption(jsonObject.optString("branch_email")));
-                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branch_name")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_name")));
-                preferencesManager.setgstno(decryption(jsonObject.optString("gst_no")).equals("nodata") ? "" : decryption(jsonObject.optString("gst_no")));
-                preferencesManager.setcontact_no(decryption(jsonObject.optString("branch_contact_no")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_contact_no")));
+                preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
+                preferencesManager.setcontact_email(jsonObject.optString("branchEmail").equals("nodata") ? "" : decryption(jsonObject.optString("branchEmail")));
+                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption(jsonObject.optString("branchName")));
+                preferencesManager.setgstno(decryption(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption(jsonObject.optString("gstNo")));
+                preferencesManager.setcontact_no(decryption(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption(jsonObject.optString("branchContactNo")));
                 MyPOSMateApplication.isOpen = false;
                 MyPOSMateApplication.isActiveQrcode = false;
 
-                if (jsonObject.has("other_data")) {
-                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
+                if (jsonObject.has("otherData")) {
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                     preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
 
 
@@ -1076,20 +1092,20 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     public void _NewUser(JSONObject jsonObject) {
         try {
             if (jsonObject.optString("success").equals("true")) {
-                preferencesManager.setaddress(decryption(jsonObject.optString("branch_address")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_address")));
-                if (jsonObject.optString("branch_email").equals("nodata")) {
+                preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
+                if (jsonObject.optString("branchEmail").equals("nodata")) {
                     preferencesManager.setcontact_email("");
                 } else {
-                    preferencesManager.setcontact_email(decryption(jsonObject.optString("branch_email")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_email")));
+                    preferencesManager.setcontact_email(decryption(jsonObject.optString("branchEmail")).equals("nodata") ? "" : decryption(jsonObject.optString("branchEmail")));
                 }
-                preferencesManager.setcontact_no(decryption(jsonObject.optString("branch_contact_no")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_contact_no")));
-                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branch_name")).equals("nodata") ? "" : decryption(jsonObject.optString("branch_name")));
-                preferencesManager.setgstno(decryption(jsonObject.optString("gst_no")).equals("nodata") ? "" : decryption(jsonObject.optString("gst_no")));
+                preferencesManager.setcontact_no(decryption(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption(jsonObject.optString("branchContactNo")));
+                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption(jsonObject.optString("branchName")));
+                preferencesManager.setgstno(decryption(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption(jsonObject.optString("gstNo")));
                 preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
 
 
-                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("other_data")));
-                if (jsonObject.has("other_data")) {
+                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                if (jsonObject.has("otherData")) {
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
                     preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
