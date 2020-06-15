@@ -134,36 +134,31 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                         img_payment.setImageResource(R.drawable.ic_smalwechat);
                     } else if (jsonObject.optString("channel").equals("ALIPAY")) {
                         img_payment.setImageResource(R.drawable.ic_smallali);
-                    } else if (jsonObject.optString("channel").equals("DPS")) {
-                        img_payment.setImageResource(R.drawable.ic_paymentexp);
                     }
 
 
-                    if (jsonObject.optString("status").equals("TRADE_SUCCESS") ||
-                            jsonObject.optString("status").equals("TRADE_HAS_SUCCESS") ||
-                            jsonObject.optString("status").equals("0") ||
-                            jsonObject.optString("status").equalsIgnoreCase("true")
+                    if (jsonObject.optString("status").equals("true")
                             || jsonObject.optString("responseCodeThirtyNine").equals("00")
 
                     ) {
-                        if (jsonObject.optString("status_description").equals("TRADE_NOT_PAY")) {
+                        if (jsonObject.optJSONObject("payment").optString("paymentStatus").equals("FAILED")) {
                             payment_tag.setText("Payment Unsuccessful");
                             status = "Unsuccessful";
                             payment_image.setImageResource(R.drawable.unsuccessful_icon);
-                            if (jsonObject.has("receipt_amount")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))));
-                            } else if (jsonObject.has("grandtotal")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))));
+                            if (jsonObject.optJSONObject("payment").has("receiptAmount")) {
+                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
+                            } else if (jsonObject.optJSONObject("payment").has("grandTotal")) {
+                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal"))));
                             }
                         } else {
                             payment_tag.setText("Payment Successful");
                             status = "Successful";
-                            if (jsonObject.has("receipt_amount")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))));
-                            } else if (jsonObject.has("amount")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optString("amount"))));
-                            } else if (jsonObject.has("grandtotal")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))));
+                            if (jsonObject.optJSONObject("payment").has("receiptAmount")) {
+                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
+                            } else if (jsonObject.optJSONObject("payment").has("amount")) {
+                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optJSONObject("payment").optString("amount"))));
+                            } else if (jsonObject.optJSONObject("payment").has("grandTotal")) {
+                                tv_amount.setText("$" + roundTwoDecimals(Float.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal"))));
                             }
 
                             payment_image.setImageResource(R.drawable.successful_icon);
@@ -184,12 +179,12 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                         tv_reference.setVisibility(View.VISIBLE);
                         tv_reference1.setVisibility(View.VISIBLE);
                     }
-                    tv_tradeno.setText(jsonObject.optString("trade_no"));
-                    if (jsonObject.has("orderNumber")) {
-                        tv_referenceid.setText(jsonObject.optString("orderNumber"));
+                    tv_tradeno.setText(jsonObject.optJSONObject("payment").optString("tradeNo"));
+                    if (jsonObject.optJSONObject("payment").has("orderNumber")) {
+                        tv_referenceid.setText(jsonObject.optJSONObject("payment").optString("orderNumber"));
                     } else
-                        tv_referenceid.setText(jsonObject.optString("reference_id"));
-                    tv_transid.setText(jsonObject.optString("increment_id"));
+                        tv_referenceid.setText(jsonObject.optJSONObject("payment").optString("referenceId"));
+                    tv_transid.setText(jsonObject.optJSONObject("payment").optString("id"));//increment_id
 
                 }
                 if (preferencesManager.getisPrint().equals("true")) {
@@ -272,10 +267,12 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
     String emailPattern1 = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+\\.+[a-z]+";
 
     private void print() throws RemoteException {
+        JSONObject jsonObject=this.jsonObject.optJSONObject("payment");
+
         btn_ok.setEnabled(false);
         btn_email.setEnabled(false);
         btn_ok.setOnClickListener(null);
-        btn_email.setOnClickListener(null);
+
         btn_ok.setClickable(false);
         btn_email.setClickable(false);
         final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
@@ -411,7 +408,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 true));
 
 
-        if (jsonObject.has("trade_no")) {
+        if (jsonObject.has("tradeNo")) {
             list.add(new PrintDataObject("Trade Number:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
@@ -425,21 +422,21 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 true));
 
         try {
-            Date c1 = Calendar.getInstance().getTime();
-            System.out.println("Current time => " + c1);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            df.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date d = df.parse(jsonObject.optString("gmt_payment").replace("T", " "));
-            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
-            list.add(new PrintDataObject(df1.format(d),
+
+            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            df1.setTimeZone(TimeZone.getTimeZone("UTC"));
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+
+
+            Date d = df1.parse(jsonObject.optString("createDate"));
+            list.add(new PrintDataObject(df2.format(d).replace("T"," "),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            //  Printer.getInstance().addText(AlignMode.LEFT, "25/01/2018  15:23:45");
         }
 
 
@@ -469,58 +466,48 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                 true));
 
-        if (jsonObject.has("receipt_amount")) {
+        if (jsonObject.has("receiptAmount")) {
             if (jsonObject.optString("channel").equals("UNION_PAY")) {
-                list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))),
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 
             } else {
-                if (jsonObject.has("rmb_amount")) {
-                    if (jsonObject.optString("rmb_amount").equals("") ||
-                            jsonObject.optString("rmb_amount").equals("null") ||
-                            jsonObject.optString("rmb_amount").equals("0.00") ||
-                            jsonObject.optString("rmb_amount").equals("0.0")) {
-                        list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))) + " RMB 0.00",
-                                fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-                                true));
 
-                    } else {
-                        list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))) + " RMB " + jsonObject.optString("rmb_amount"),
-                                fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-                                true));
 
-                    }
+
+                if (jsonObject.has("rate")) {
+                    Double receipt_amount = Double.parseDouble(jsonObject.optString("receiptAmount"));
+                    Double rate = Double.parseDouble(jsonObject.optString("rate"));
+                    Double rmb_amount = receipt_amount * rate;
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receiptAmount"))) + " RMB " + rmb_amount,
+                            fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                            true));
                 } else {
-                    list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))) + " RMB 0.00",
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receiptAmount"))) + " RMB 0.00",
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                             true));
                 }
             }
 
 
-        } else if (jsonObject.has("grandtotal")) {
+        } else if (jsonObject.has("grandTotal")) {
             if (jsonObject.optString("channel").equals("UNION_PAY")) {
-                list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))),
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 
             } else {
-                if (jsonObject.has("rmb_amount")) {
-                    if (jsonObject.optString("rmb_amount").equals("") ||
-                            jsonObject.optString("rmb_amount").equals("null") ||
-                            jsonObject.optString("rmb_amount").equals("0.00") ||
-                            jsonObject.optString("rmb_amount").equals("0.0")) {
-                        list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))) + " RMB 0.00",
-                                fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-                                true));
-                    } else {
-                        list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))) + " RMB " + jsonObject.optString("rmb_amount"),
-                                fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-                                true));
-                    }
+                if (jsonObject.has("rate")) {
+
+                    Double receipt_amount = Double.parseDouble(jsonObject.optString("receiptAmount"));
+                    Double rate = Double.parseDouble(jsonObject.optString("rate"));
+                    Double rmb_amount = receipt_amount * rate;
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))) + " RMB " + rmb_amount,
+                            fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                            true));
                 } else {
-                    list.add(new PrintDataObject(preferencesManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))) + " RMB 0.00",
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))) + " RMB 0.00",
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                             true));
                 }
@@ -530,7 +517,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
         if (jsonObject.has("original_amount") && !jsonObject.optString("original_amount").equals("0.0") &&
                 !jsonObject.optString("original_amount").equals("0.00")) {
-            list.add(new PrintDataObject("Original Amount: " + preferencesManager.getcurrency() + " " + jsonObject.optString("original_amount"),
+            list.add(new PrintDataObject("Original Amount: " + jsonObject.optString("currency") + " " + jsonObject.optString("original_amount"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
@@ -538,7 +525,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
         if (jsonObject.has("fee_amount") && !jsonObject.optString("fee_amount").equals("0.0") &&
                 !jsonObject.optString("fee_amount").equals("0.00")) {
-            list.add(new PrintDataObject("Fee Amount: " + preferencesManager.getcurrency() + " " + jsonObject.optString("fee_amount"),
+            list.add(new PrintDataObject("Fee Amount: " + jsonObject.optString("currency") + " " + jsonObject.optString("fee_amount"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
         }
@@ -552,7 +539,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
         if (jsonObject.has("discount") && !jsonObject.optString("discount").equals("0.0") &&
                 !jsonObject.optString("discount").equals("0.00")) {
-            list.add(new PrintDataObject("Discount: " + preferencesManager.getcurrency() + " " + jsonObject.optString("discount"),
+            list.add(new PrintDataObject("Discount: " + jsonObject.optString("currency") + " " + jsonObject.optString("discount"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
         }

@@ -1182,7 +1182,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")) {
             for (int i = 0; i < jsonObjectPayment.length(); i++) {
                 for (int j = 0; j < jsonObjectPayment.length(); j++) {
-                    String value = jsonObjectPayment.names().optString(j);
+                    String value = jsonObjectPayment.optString(jsonObjectPayment.names().optString(j));
                     switch (jsonObjectPayment.names().optString(j)) {
                         case "id":
                             json.put("Transaction Number", value);

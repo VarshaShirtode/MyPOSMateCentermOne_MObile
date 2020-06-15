@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,6 +41,7 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 
+import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -188,20 +188,21 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     public void callValidateTerminal() {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("merchant_id", preferencesManager.getMerchantId());
+        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
         hashMapKeys.put("terminal_id", edt_terminal_id.getText().toString());
         hashMapKeys.put("access_id", edt_unique_id.getText().toString());
         hashMapKeys.put("config_id", preferencesManager.getConfigId());
         hashMapKeys.put("random_str", new Date().getTime() + "");
-        hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+//        hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+//        hashMapKeys.put("access_token",preferencesManager.getauthToken());
         preferencesManager.setuniqueId(edt_unique_id.getText().toString());
-//        new OkHttpHandler(getActivity(), this, null, "validateTerminal")
-//                .execute(AppConstants.BASE_URL2 + AppConstants.V2_VALIDATE_TERMINAL + MD5Class.generateSignatureString(hashMapKeys, getActivity())+ "&access_token=" + preferencesManager.getauthToken());
+        new OkHttpHandler(getActivity(), this, null, "validateTerminal")
+                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL + MD5Class.generateSignatureString(hashMapKeys, getActivity())+ "&access_token=" + preferencesManager.getauthToken());
 
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.putAll(hashMapKeys);
-        new OkHttpHandler(getActivity(), this, hashMap, "validateTerminal")
-                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL);
+//        HashMap<String, String> hashMap = new HashMap<>();
+//        hashMap.putAll(hashMapKeys);
+//        new OkHttpHandler(getActivity(), this, hashMap, "validateTerminal")
+//                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL);
 
 
     }
@@ -250,7 +251,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-
+            hashMapKeys.put("access_token",preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 //            new OkHttpHandler(getActivity(), this, null, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
@@ -272,7 +273,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption_old(edt_terminal_id.getText().toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
@@ -595,7 +596,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-
+            hashMapKeys.put("access_token",preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
@@ -619,7 +620,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-
+            hashMapKeys.put("access_token",preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 //            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
@@ -644,7 +645,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("configId", preferencesManager.getConfigId());
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
@@ -742,6 +743,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("accessId", base64Encoding(encryption(preferencesManager.getuniqueId())));
             hashMapKeys.put("configId", preferencesManager.getConfigId());
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token",preferencesManager.getauthToken());
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
@@ -754,19 +756,19 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         }
     }
 
-    public String base64Encoding(String text)
+    public String base64Encoding(String text) throws UnsupportedEncodingException
     {
-        String base64="";
-        try {
-            byte[] data = text.getBytes("UTF-8");
-            base64 = convertStringToUTF8(text);//Base64.encodeToString(data, Base64.NO_WRAP);
-        }
-        catch ( Exception e)
-        {
-            e.printStackTrace();
-            base64="";
-        }
-        return base64;
+//        String base64="";
+//        try {
+//            byte[] data = text.getBytes("UTF-8");
+//            base64 = convertStringToUTF8(text);//Base64.encodeToString(data, Base64.NO_WRAP);
+//        }
+//        catch ( Exception e)
+//        {
+//            e.printStackTrace();
+//            base64="";
+//        }
+        return URLEncoder.encode(text,"UTF-8");
     }
 
     public  String convertStringToUTF8(String s) {
@@ -997,7 +999,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
     JSONObject jsonObject1 = null;
-
+boolean isUpdateNewDetails=false;
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
         if (progress != null && progress.isShowing())
@@ -1025,6 +1027,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 if (isRegisteredStart) {
                     isRegisteredStart = false;
                     callValidateTerminal();
+                }
+
+                if(isUpdateNewDetails)
+                {
+                    isUpdateNewDetails=false;
+                    callUpdateBranchDetailsNew();
                 }
                 break;
 
@@ -1073,7 +1081,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 break;
 
             case "DeleteTerminalOld":
-                callUpdateBranchDetailsNew();
+                isUpdateNewDetails=true;
+                callAuthToken();
+
+
                 break;
 
             case "GetBranchDetailsOld":

@@ -357,7 +357,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                     return;
                 }
 
-                maketransactionDetailsCalls(jsonObject.optInt("status_id"), jsonObject);
+                maketransactionDetailsCalls(jsonObject.optJSONObject("payment").optString("paymentStatus"), jsonObject);
                 break;
 
             case "TransactionDetails1":
@@ -382,7 +382,83 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     }
 
 
-    public void maketransactionDetailsCalls(int status_id, JSONObject jsonObject) {
+    public void maketransactionDetailsCalls(String status_id, JSONObject jsonObject) {
+        try {
+
+
+            switch (status_id) {
+
+                case "SUCCESS"://TRADE_SUCCESS
+                    MyPOSMateApplication.isOpen = false;
+                    if (okHttpHandler != null) {
+                        okHttpHandler.cancel(true);
+                    }
+                   jsonObject.put("grandTotal",jsonObject.optString("receiptAmount"));
+
+                    if (countDownTimerxmpp != null)
+                        countDownTimerxmpp.cancel();
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
+                    if (progress != null)
+                        if (progress.isShowing())
+                            progress.dismiss();
+                    if (countDownTimer != null)
+                        countDownTimer.cancel();
+
+                    if (countDownTimer1 != null)
+                        countDownTimer1.cancel();
+
+                    if (countDownTimer11 != null)
+                        countDownTimer11.cancel();
+
+                    break;
+
+                case "PENDING"://WAIT_BUYER_PAY
+                    if (progress != null)
+                        if (progress.isShowing())
+                            progress.dismiss();
+                    if (okHttpHandler != null) {
+                        okHttpHandler.cancel(true);
+                    }
+                    if (countDownTimer != null)
+                        countDownTimer.cancel();
+                    if (countDownTimer1 != null)
+                        countDownTimer1.cancel();
+
+                    break;
+                case "CLOSED"://TRADE_CLOSED
+                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
+                    if (getActivity() != null)
+                        showDialog("Your transaction is closed");
+                    if (okHttpHandler != null) {
+                        okHttpHandler.cancel(true);
+                    }
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
+                    if (progress != null)
+                        if (progress.isShowing())
+                            progress.dismiss();
+                    if (countDownTimer != null)
+                        countDownTimer.cancel();
+                    if (countDownTimer1 != null)
+                        countDownTimer1.cancel();
+
+                    if (countDownTimer11 != null)
+                        countDownTimer11.cancel();
+                    break;
+                case "GATEWAY_ERROR"://TRADE_ERROR
+                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
+                    break;
+
+
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void maketransactionDetailsCalls1(int status_id, JSONObject jsonObject) {
         try {
 
 
@@ -570,6 +646,8 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             e.printStackTrace();
         }
     }
+
+
 
 
     boolean isTimeOut = false;
