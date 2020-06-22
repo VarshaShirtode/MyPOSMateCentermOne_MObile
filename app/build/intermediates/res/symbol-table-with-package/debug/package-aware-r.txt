@@ -1299,7 +1299,6 @@ id tv_enable_payment
 id tv_eod
 id tv_fee
 id tv_from
-id tv_help
 id tv_home
 id tv_id
 id tv_item
@@ -1337,7 +1336,6 @@ id tv_refund1
 id tv_refund_count
 id tv_refund_unipay
 id tv_refunded_amount
-id tv_reset_settings
 id tv_result
 id tv_sale_amount
 id tv_scan

@@ -600,10 +600,10 @@ public final class R {
         public static final int title_template = 0x7f0801bb;
         public static final int top = 0x7f0801bc;
         public static final int topPanel = 0x7f0801bd;
-        public static final int up = 0x7f08023a;
-        public static final int useLogo = 0x7f08023c;
-        public static final int withText = 0x7f080243;
-        public static final int wrap_content = 0x7f080245;
+        public static final int up = 0x7f080238;
+        public static final int useLogo = 0x7f08023a;
+        public static final int withText = 0x7f080241;
+        public static final int wrap_content = 0x7f080243;
     }
     public static final class integer {
         private integer() {}

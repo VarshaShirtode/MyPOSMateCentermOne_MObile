@@ -248,38 +248,7 @@
         android:textSize="15sp"
         android:visibility="gone" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/colorLine"
-        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tv_help"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center|left"
-        android:paddingLeft="10dp"
-        android:text="Help"
-        android:textColor="@color/colorBlack"
-        android:textSize="15sp"
-        android:visibility="gone" />
-    <View
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/colorLine" />
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/tv_reset_settings"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center|left"
-        android:paddingLeft="10dp"
-        android:text="Reset Terminal Settings"
-        android:textColor="@color/colorBlack"
-        android:textSize="15sp" />
 
     <View
         android:layout_width="match_parent"

@@ -63,5 +63,6 @@ public class AppConstants {
     public static boolean isRegistered = false;
     public static boolean isNetOff = false;
     public static boolean isDeviceHomePressed = false;
+    public static boolean isTerminalInfoDeleted=false;
 
 }//app contants end

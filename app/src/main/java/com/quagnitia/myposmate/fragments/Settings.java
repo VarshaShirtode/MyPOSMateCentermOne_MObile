@@ -121,18 +121,18 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     public void initUI(View view) {
         android_id = android.provider.Settings.Secure.getString(getContext().getContentResolver(),
                 android.provider.Settings.Secure.ANDROID_ID);
-        btn_save = (Button) view.findViewById(R.id.btn_save);
-        btn_exit = (Button) view.findViewById(R.id.btn_exit);
-        btn_reset = (Button) view.findViewById(R.id.btn_reset);
-        btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
-        edt_terminal_id = (EditText) view.findViewById(R.id.edt_terminal_id);
-        edt_terminal_ip = (EditText) view.findViewById(R.id.edt_terminal_ip);
-        edt_unique_id = (EditText) view.findViewById(R.id.edt_unique_id);
-        edt_terminal_id.setText("TEST_TERMINAL");//(android_id + "");//"47f17c5fe8d43843");
+        btn_save = view.findViewById(R.id.btn_save);
+        btn_exit = view.findViewById(R.id.btn_exit);
+        btn_reset =  view.findViewById(R.id.btn_reset);
+        btn_cancel =view.findViewById(R.id.btn_cancel);
+        edt_terminal_id =  view.findViewById(R.id.edt_terminal_id);
+        edt_terminal_ip =  view.findViewById(R.id.edt_terminal_ip);
+        edt_unique_id =  view.findViewById(R.id.edt_unique_id);
+        edt_terminal_id.setText(android_id + "");//("TEST_TERMINAL");
         edt_terminal_ip.setText(getLocalIpAddress());
-        preferencesManager.setuniqueId("eeac599d06a42e9b");
-        preferencesManager.setMerchantId("29");
-        preferencesManager.setConfigId("60");
+//        preferencesManager.setuniqueId("eeac599d06a42e9b");
+//        preferencesManager.setMerchantId("29");
+//        preferencesManager.setConfigId("60");
         edt_unique_id.setText(preferencesManager.getuniqueId());
 
         if (preferencesManager.getuniqueId().equals("")) {
@@ -231,7 +231,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
     public void callDeleteTerminal() {
-        String s = decryption(encryption(edt_terminal_id.getText().toString()));
         openProgressDialog();
         try {
 
@@ -243,10 +242,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
-//                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -269,7 +266,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 //            new OkHttpHandler(getActivity(), this, null, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption_old(edt_terminal_id.getText().toString()));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminalOld").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -581,8 +578,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         try {
 
             hashMapKeys.clear();
-//            hashMapKeys.put("terminalId", encryption_old(edt_terminal_id.getText().toString()));
-            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
+            hashMapKeys.put("terminalId", encryption_old(edt_terminal_id.getText().toString()));
+//            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
@@ -605,8 +602,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         openProgressDialog();
         try {
             hashMapKeys.clear();
-//            hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
-            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
+            hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
+//            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
@@ -629,8 +626,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         try {
 
             hashMapKeys.clear();
-//            hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
-            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
+            hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
+//            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("configId", preferencesManager.getConfigId());
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
@@ -1031,8 +1028,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             case "DeleteTerminalOld":
                 isUpdateNewDetails = true;
                 callAuthToken();
-
-
                 break;
 
             case "GetBranchDetailsOld":

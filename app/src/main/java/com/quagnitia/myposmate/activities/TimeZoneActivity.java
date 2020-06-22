@@ -39,6 +39,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import static com.quagnitia.myposmate.activities.TimeZoneAdapter.isUpdateDetails;
+import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
+
 public class TimeZoneActivity extends AppCompatActivity implements OnTaskCompleted {
     RecyclerView recycler_view;
     EditText editTextSearch;
@@ -155,11 +158,27 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         }
         return strDecryptedText;
     }
+    public void callAuthToken() {
+        openProgressDialog();
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("grant_type", "client_credentials");
+        new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
+    }
     private PreferencesManager preferenceManager;
     TreeMap<String, String> hashMapKeys;
+    JSONObject updateDetailsJson=null;
 
     public void callUpdateBranchDetails(JSONObject jsonObject) {
+
+        if(isUpdateDetails)
+        {
+            updateDetailsJson=jsonObject;
+            callAuthToken();
+            return;
+        }
+
+
 
         openProgressDialog();
         try {
@@ -187,6 +206,22 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         }
     }
 
+    public void callDeleteTerminal() {
+        openProgressDialog();
+        try {
+            hashMapKeys.clear();
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, TimeZoneActivity.this));
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
@@ -201,6 +236,28 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
             progress.dismiss();
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
+            case "AuthToken":
+                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
+                }
+
+                if(isUpdateDetails)
+                {
+                    isUpdateDetails=false;
+                    callDeleteTerminal();
+                }
+                if(isTerminalInfoDeleted)
+                {
+                    isTerminalInfoDeleted=false;
+                    callUpdateBranchDetails(updateDetailsJson);
+                }
+                break;
+            case "DeleteTerminal":
+                if (jsonObject.optBoolean("success")) {
+                    isTerminalInfoDeleted = true;
+                    callAuthToken();
+                }
+                break;
             case "UpdateBranchDetails":
                 if (jsonObject.has("otherData")) {
                     JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));

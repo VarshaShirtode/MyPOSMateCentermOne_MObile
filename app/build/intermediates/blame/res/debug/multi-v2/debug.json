@@ -1133,6 +1133,21 @@
             ]
         },
         {
+            "outputFile": "D:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\res\\merged\\debug\\values-ldltr-v21_values-ldltr-v21.arsc.flat",
+            "map": [
+                {
+                    "source": "C:\\Users\\quagnitia-Ruhi\\.gradle\\caches\\transforms-2\\files-2.1\\8389f2509c934a56ed36a8f0cd6b2157\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "112",
+                        "endOffsets": "163"
+                    }
+                }
+            ]
+        },
+        {
             "outputFile": "D:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\res\\merged\\debug\\values-v28_values-v28.arsc.flat",
             "map": [
                 {
@@ -1144,21 +1159,6 @@
                         "endLines": "2,3,7,11",
                         "endColumns": "74,86,12,12",
                         "endOffsets": "125,212,442,684"
-                    }
-                }
-            ]
-        },
-        {
-            "outputFile": "D:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\res\\merged\\debug\\values-ldltr-v21_values-ldltr-v21.arsc.flat",
-            "map": [
-                {
-                    "source": "C:\\Users\\quagnitia-Ruhi\\.gradle\\caches\\transforms-2\\files-2.1\\8389f2509c934a56ed36a8f0cd6b2157\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "112",
-                        "endOffsets": "163"
                     }
                 }
             ]

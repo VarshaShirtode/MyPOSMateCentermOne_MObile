@@ -162,7 +162,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
         hashMapKeys.put("terminal_id", android_id);
         hashMapKeys.put("access_id", edt_access_id.getText().toString());
         hashMapKeys.put("config_id", edt_config_id.getText().toString());
-        hashMapKeys.put("merchant_id", edt_merchant_id.getText().toString());
+        hashMapKeys.put("branch_id", edt_merchant_id.getText().toString());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         preferencesManager.setuniqueId(edt_access_id.getText().toString());
         new OkHttpHandler(getActivity(), this, null, "Registration")

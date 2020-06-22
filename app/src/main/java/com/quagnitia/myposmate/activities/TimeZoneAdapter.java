@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.quagnitia.myposmate.R;
+import com.quagnitia.myposmate.utils.AppConstants;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import org.json.JSONObject;
@@ -52,7 +53,7 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
 
         return new TimeZoneAdapter.MyViewHolder(itemView);
     }
-
+public static boolean isUpdateDetails=false;
     @Override
     public void onBindViewHolder(TimeZoneAdapter.MyViewHolder holder, int position) {
         try {
@@ -213,6 +214,7 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
 
                             jsonObject.put("isUpdated", true);
 
+                            isUpdateDetails=true;
                             ((TimeZoneActivity) mContext).callUpdateBranchDetails(jsonObject);
                         } catch (Exception e) {
                             e.printStackTrace();

@@ -57,9 +57,7 @@ import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.fragments.AboutUs;
 import com.quagnitia.myposmate.fragments.AlipayPaymentFragment;
-//import com.quagnitia.myposmate.fragments.DemoFragment;
 import com.quagnitia.myposmate.fragments.EODFragment;
-import com.quagnitia.myposmate.fragments.Help;
 import com.quagnitia.myposmate.fragments.ManualEntry;
 import com.quagnitia.myposmate.fragments.OrderFragment;
 import com.quagnitia.myposmate.fragments.PaymentProcessing;
@@ -86,6 +84,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
+
+import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
+
+//import com.quagnitia.myposmate.fragments.DemoFragment;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener, OnTaskCompleted {
     public ImageView img_menu;
@@ -115,7 +117,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private OpenFragmentsReceiver openFragmentsReceiver;
     private ProgressDialog progress;
     private PreferencesManager preferenceManager;
-    private TextView tv_transaction_log,tv_orders;
+    private TextView tv_transaction_log, tv_orders;
     private TextView tv_eod;
     boolean isLaunch = false;
     public static boolean isExternalApp = false;
@@ -304,7 +306,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     public enum SCREENS {
-        POSMATECONNECTION, ORDERS,SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP
+        POSMATECONNECTION, ORDERS, SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP
     }
 
     @Override
@@ -382,10 +384,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView tv_close_ext;
 
     public void initUI() {
-        img_menu = (ImageView)findViewById(R.id.img_menu);
+        img_menu = (ImageView) findViewById(R.id.img_menu);
         rel_un = (RelativeLayout) findViewById(R.id.rel_un);
         tv_close_ext = (TextView) findViewById(R.id.tv_close);
-        TextView version = (TextView)findViewById(R.id.version);
+        TextView version = (TextView) findViewById(R.id.version);
         try {
             version.setText(getResources().getString(R.string.MyPOSMate_Version) + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (Exception e) {
@@ -422,7 +424,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tv_settlement.setOnClickListener((View v) -> funcMenuSettlement());
         tv_refund_unipay.setOnClickListener((View v) -> funcMenuRefundUnionPay());
         tv_timezone.setOnClickListener((View v) -> funcMenuTimezone());
-        tv_reset_settings.setOnClickListener((View v) -> funcMenuResetTerminal());
         tv_eod.setOnClickListener((View v) -> funcMenuEOD());
         tv_transaction_log.setOnClickListener((View v) -> functionMenuTransactionLog());
         tv_home.setOnClickListener((View v) -> funcMenuHome());
@@ -435,17 +436,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tv_close.setOnClickListener((View v) -> funcMenuClose());
         tv_display_choices.setOnClickListener((View v) -> funcMenuDisplayChoices());
         tv_payment_choices.setOnClickListener((View v) -> funcMenuPaymentChoices());
-        tv_orders.setOnClickListener((View v)->funcOrders());
+        tv_orders.setOnClickListener((View v) -> funcOrders());
     }
 
 
-    public void funcOrders()
-    {
+    public void funcOrders() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-      //  if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.ORDERS, null);
+        //  if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.ORDERS, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -467,12 +467,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tv_refund_unipay = customView.findViewById(R.id.tv_refund_unipay);
         tv_scan = customView.findViewById(R.id.tv_scan);
         tv_settings = customView.findViewById(R.id.tv_settings);
-        tv_help = customView.findViewById(R.id.tv_help);
         tv_about = customView.findViewById(R.id.tv_about);
         tv_close = customView.findViewById(R.id.tv_close);
         tv_display_choices = customView.findViewById(R.id.tv_display_choices);
         tv_payment_choices = customView.findViewById(R.id.tv_payment_choices);
-        tv_reset_settings = customView.findViewById(R.id.tv_reset_settings);
         inner_frame = (FrameLayout) findViewById(R.id.inner_frame);
         tv_refund_unipay.setVisibility(View.GONE);
         tv_refund.setVisibility(View.GONE);
@@ -482,8 +480,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-       // if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.SETTLEMEMT, null);
+        // if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.SETTLEMEMT, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -523,21 +521,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void funcMenuResetTerminal() {
-        callAuthToken();
-        try {
-            if (mPopupWindow.isShowing())
-                mPopupWindow.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        callDeleteTerminal();
-
-        if (mPopupWindow.isShowing()) {
-            mPopupWindow.dismiss();
-        }
-    }
 
     public void funcMenuEOD() {
         callAuthToken();
@@ -557,8 +540,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-       // if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.TRANSACTION_LIST, null);
+        // if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.TRANSACTION_LIST, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -585,8 +568,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-       // if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.REFUND, null);
+        // if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.REFUND, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -613,8 +596,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-      //  if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.MANUALENTRY, null);
+        //  if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.MANUALENTRY, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -653,7 +636,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
 //        if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.ABOUT, null);
+        callSetupFragment(SCREENS.ABOUT, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -669,132 +652,134 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         finish();
     }
 
+    boolean isDisplayChoicesDataSaved = false;
+
     public void funcMenuDisplayChoices() {
         callAuthToken();
-     //   if (preferencesManager.isAuthenticated()) {
+        //   if (preferencesManager.isAuthenticated()) {
 
 
-            final Dialog dialog = new Dialog(DashboardActivity.this);
-            dialog.setCancelable(false);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        final Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-            LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View dialogview = lf.inflate(R.layout.diaplay_choice_row, null);
-            final RadioButton chk_home = dialogview.findViewById(R.id.chk_home);
-            final RadioButton chk_manual = dialogview.findViewById(R.id.chk_manual);
-            final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
-            final CheckBox chk_print_qr = dialogview.findViewById(R.id.chk_print_qr);
-            final CheckBox chk_display_static_qr = dialogview.findViewById(R.id.chk_display_static_qr);
-            final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
-            final CheckBox chk_membership_manual = dialogview.findViewById(R.id.chk_membership_manual);
-            final CheckBox chk_membership_home = dialogview.findViewById(R.id.chk_membership_home);
-            final CheckBox chk_alipay = dialogview.findViewById(R.id.chk_alipay);
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.diaplay_choice_row, null);
+        final RadioButton chk_home = dialogview.findViewById(R.id.chk_home);
+        final RadioButton chk_manual = dialogview.findViewById(R.id.chk_manual);
+        final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
+        final CheckBox chk_print_qr = dialogview.findViewById(R.id.chk_print_qr);
+        final CheckBox chk_display_static_qr = dialogview.findViewById(R.id.chk_display_static_qr);
+        final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
+        final CheckBox chk_membership_manual = dialogview.findViewById(R.id.chk_membership_manual);
+        final CheckBox chk_membership_home = dialogview.findViewById(R.id.chk_membership_home);
+        final CheckBox chk_alipay = dialogview.findViewById(R.id.chk_alipay);
 //            final CheckBox chk_scanqr = dialogview.findViewById(R.id.chk_scanqr);
-            final CheckBox chk_print_receipt = dialogview.findViewById(R.id.chk_print_receipt);
-            final CheckBox chk_wechat = dialogview.findViewById(R.id.chk_wechat);
-            final CheckBox chk_vise = dialogview.findViewById(R.id.chk_vise);
-            final CheckBox chk_reference = dialogview.findViewById(R.id.chk_reference);
-            final CheckBox chk_loyality = dialogview.findViewById(R.id.chk_loyality);
+        final CheckBox chk_print_receipt = dialogview.findViewById(R.id.chk_print_receipt);
+        final CheckBox chk_wechat = dialogview.findViewById(R.id.chk_wechat);
+        final CheckBox chk_vise = dialogview.findViewById(R.id.chk_vise);
+        final CheckBox chk_reference = dialogview.findViewById(R.id.chk_reference);
+        final CheckBox chk_loyality = dialogview.findViewById(R.id.chk_loyality);
 //            final CheckBox chk_aggregated_singleqr = dialogview.findViewById(R.id.chk_aggregated_singleqr);
-            final CheckBox chk_ali_display_and_add = dialogview.findViewById(R.id.chk_ali_display_and_add);
-            final CheckBox chk_ali_display_only = dialogview.findViewById(R.id.chk_ali_display_only);
+        final CheckBox chk_ali_display_and_add = dialogview.findViewById(R.id.chk_ali_display_and_add);
+        final CheckBox chk_ali_display_only = dialogview.findViewById(R.id.chk_ali_display_only);
 
 
-            if (preferencesManager.getshowReference().equals("true")) {
-                chk_reference.setChecked(true);
-                chk_reference.setSelected(true);
-            } else {
-                chk_reference.setChecked(false);
-                chk_reference.setSelected(false);
-            }
+        if (preferencesManager.getshowReference().equals("true")) {
+            chk_reference.setChecked(true);
+            chk_reference.setSelected(true);
+        } else {
+            chk_reference.setChecked(false);
+            chk_reference.setSelected(false);
+        }
 
-            if (preferencesManager.isQR()) {
-                chk_print_qr.setChecked(true);
-                chk_print_qr.setSelected(true);
-            } else {
-                chk_print_qr.setChecked(false);
-                chk_print_qr.setSelected(false);
-            }
+        if (preferencesManager.isQR()) {
+            chk_print_qr.setChecked(true);
+            chk_print_qr.setSelected(true);
+        } else {
+            chk_print_qr.setChecked(false);
+            chk_print_qr.setSelected(false);
+        }
 
-            if (preferencesManager.isStaticQR()) {
-                chk_display_static_qr.setChecked(true);
-                chk_display_static_qr.setSelected(true);
-            } else {
-                chk_display_static_qr.setChecked(false);
-                chk_display_static_qr.setSelected(false);
-            }
-
-
-            if (preferencesManager.isMembershipManual()) {
-                chk_membership_manual.setChecked(true);
-                chk_membership_manual.setSelected(true);
-            } else {
-                chk_membership_manual.setChecked(false);
-                chk_membership_manual.setSelected(false);
-            }
+        if (preferencesManager.isStaticQR()) {
+            chk_display_static_qr.setChecked(true);
+            chk_display_static_qr.setSelected(true);
+        } else {
+            chk_display_static_qr.setChecked(false);
+            chk_display_static_qr.setSelected(false);
+        }
 
 
-            if (preferencesManager.isMembershipHome()) {
-                chk_membership_home.setChecked(true);
-                chk_membership_home.setSelected(true);
-            } else {
-                chk_membership_home.setChecked(false);
-                chk_membership_home.setSelected(false);
-            }
+        if (preferencesManager.isMembershipManual()) {
+            chk_membership_manual.setChecked(true);
+            chk_membership_manual.setSelected(true);
+        } else {
+            chk_membership_manual.setChecked(false);
+            chk_membership_manual.setSelected(false);
+        }
 
 
-            if (preferencesManager.isHome()) {
-                chk_home.setChecked(true);
-                chk_home.setSelected(true);
-            } else {
-                chk_home.setChecked(false);
-                chk_home.setSelected(false);
-            }
+        if (preferencesManager.isMembershipHome()) {
+            chk_membership_home.setChecked(true);
+            chk_membership_home.setSelected(true);
+        } else {
+            chk_membership_home.setChecked(false);
+            chk_membership_home.setSelected(false);
+        }
 
 
-            if (preferencesManager.isManual()) {
-                chk_manual.setChecked(true);
-                chk_manual.setSelected(true);
-            } else {
-                chk_manual.setChecked(false);
-                chk_manual.setSelected(false);
-            }
-
-            if (preferencesManager.getisPrint().equals("true")) {
-                chk_print_receipt.setChecked(true);
-                chk_print_receipt.setSelected(true);
-            }
+        if (preferencesManager.isHome()) {
+            chk_home.setChecked(true);
+            chk_home.setSelected(true);
+        } else {
+            chk_home.setChecked(false);
+            chk_home.setSelected(false);
+        }
 
 
-            if (preferencesManager.isAlipaySelected()) {
-                chk_alipay.setChecked(true);
-                chk_alipay.setSelected(true);
-            }
+        if (preferencesManager.isManual()) {
+            chk_manual.setChecked(true);
+            chk_manual.setSelected(true);
+        } else {
+            chk_manual.setChecked(false);
+            chk_manual.setSelected(false);
+        }
 
-            if (preferencesManager.isWechatSelected()) {
-                chk_wechat.setChecked(true);
-                chk_wechat.setSelected(true);
-            }
+        if (preferencesManager.getisPrint().equals("true")) {
+            chk_print_receipt.setChecked(true);
+            chk_print_receipt.setSelected(true);
+        }
+
+
+        if (preferencesManager.isAlipaySelected()) {
+            chk_alipay.setChecked(true);
+            chk_alipay.setSelected(true);
+        }
+
+        if (preferencesManager.isWechatSelected()) {
+            chk_wechat.setChecked(true);
+            chk_wechat.setSelected(true);
+        }
 
 //            if (preferencesManager.isAlipayWechatQrSelected()) {
 //                chk_scanqr.setChecked(true);
 //                chk_scanqr.setSelected(true);
 //            }
-            if (preferencesManager.isLoyality()) {
-                chk_loyality.setChecked(true);
-                chk_loyality.setSelected(true);
-            }
+        if (preferencesManager.isLoyality()) {
+            chk_loyality.setChecked(true);
+            chk_loyality.setSelected(true);
+        }
 
-            if (preferencesManager.isBack()) {
-                chk_back.setChecked(true);
-                chk_back.setSelected(true);
-            }
+        if (preferencesManager.isBack()) {
+            chk_back.setChecked(true);
+            chk_back.setSelected(true);
+        }
 
-            if (preferencesManager.isFront()) {
-                chk_front.setChecked(true);
-                chk_front.setSelected(true);
-            }
+        if (preferencesManager.isFront()) {
+            chk_front.setChecked(true);
+            chk_front.setSelected(true);
+        }
 
 
 //            if (preferencesManager.isaggregated_singleqr()) {
@@ -803,128 +788,128 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 //            }
 
 
-            chk_home.setOnClickListener((View v) -> {
-                if (chk_manual.isChecked()) {
-                    chk_manual.setChecked(false);
-                    preferenceManager.setIsManual(false);
-                    preferenceManager.setIsHome(true);
-                } else {
-                    //case 2
-                    chk_manual.setChecked(false);
-                    preferenceManager.setIsManual(false);
-                    preferenceManager.setIsHome(true);
-                }
-            });
+        chk_home.setOnClickListener((View v) -> {
+            if (chk_manual.isChecked()) {
+                chk_manual.setChecked(false);
+                preferenceManager.setIsManual(false);
+                preferenceManager.setIsHome(true);
+            } else {
+                //case 2
+                chk_manual.setChecked(false);
+                preferenceManager.setIsManual(false);
+                preferenceManager.setIsHome(true);
+            }
+        });
 
 
-            chk_manual.setOnClickListener((View v) -> {
-                if (chk_home.isChecked()) {
-                    chk_home.setChecked(false);
-                    preferenceManager.setIsManual(true);
-                    preferenceManager.setIsHome(false);
-                } else {
-                    //case 2
-                    chk_home.setChecked(false);
-                    preferenceManager.setIsManual(true);
-                    preferenceManager.setIsHome(false);
-                }
-            });
+        chk_manual.setOnClickListener((View v) -> {
+            if (chk_home.isChecked()) {
+                chk_home.setChecked(false);
+                preferenceManager.setIsManual(true);
+                preferenceManager.setIsHome(false);
+            } else {
+                //case 2
+                chk_home.setChecked(false);
+                preferenceManager.setIsManual(true);
+                preferenceManager.setIsHome(false);
+            }
+        });
 
 
-            chk_membership_home.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_membership_home.setChecked(true);
-                    preferencesManager.setshowReference("true");
-                } else {
-                    //case 2
-                    chk_membership_home.setChecked(false);
-                    preferencesManager.setshowReference("false");
-                }
-            });
+        chk_membership_home.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_membership_home.setChecked(true);
+                preferencesManager.setshowReference("true");
+            } else {
+                //case 2
+                chk_membership_home.setChecked(false);
+                preferencesManager.setshowReference("false");
+            }
+        });
 
 
-            chk_membership_manual.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_membership_manual.setChecked(true);
-                    preferencesManager.setisPrint("true");
-                } else {
-                    //case 2
-                    chk_membership_manual.setChecked(false);
-                    preferencesManager.setisPrint("false");
-                }
-            });
+        chk_membership_manual.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_membership_manual.setChecked(true);
+                preferencesManager.setisPrint("true");
+            } else {
+                //case 2
+                chk_membership_manual.setChecked(false);
+                preferencesManager.setisPrint("false");
+            }
+        });
 
 
-            chk_membership_manual.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_membership_manual.setChecked(true);
-                    preferencesManager.setisMembershipManual(true);
-                } else {
-                    //case 2
-                    chk_membership_manual.setChecked(false);
-                    preferencesManager.setisMembershipManual(false);
-                }
-            });
+        chk_membership_manual.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_membership_manual.setChecked(true);
+                preferencesManager.setisMembershipManual(true);
+            } else {
+                //case 2
+                chk_membership_manual.setChecked(false);
+                preferencesManager.setisMembershipManual(false);
+            }
+        });
 
 
-            chk_membership_home.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_membership_home.setChecked(true);
-                    preferencesManager.setisMembershipHome(true);
-                } else {
-                    //case 2
-                    chk_membership_home.setChecked(false);
-                    preferencesManager.setisMembershipHome(false);
-                }
-            });
+        chk_membership_home.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_membership_home.setChecked(true);
+                preferencesManager.setisMembershipHome(true);
+            } else {
+                //case 2
+                chk_membership_home.setChecked(false);
+                preferencesManager.setisMembershipHome(false);
+            }
+        });
 
 
-            chk_reference.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_reference.setChecked(true);
-                    preferencesManager.setshowReference("true");
-                } else {
-                    //case 2
-                    chk_reference.setChecked(false);
-                    preferencesManager.setshowReference("false");
-                }
-            });
+        chk_reference.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_reference.setChecked(true);
+                preferencesManager.setshowReference("true");
+            } else {
+                //case 2
+                chk_reference.setChecked(false);
+                preferencesManager.setshowReference("false");
+            }
+        });
 
 
-            chk_display_static_qr.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_display_static_qr.setChecked(true);
-                    preferencesManager.setisStaticQR(true);
-                } else {
-                    //case 2
-                    chk_display_static_qr.setChecked(false);
-                    preferencesManager.setisStaticQR(false);
-                }
-            });
+        chk_display_static_qr.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_display_static_qr.setChecked(true);
+                preferencesManager.setisStaticQR(true);
+            } else {
+                //case 2
+                chk_display_static_qr.setChecked(false);
+                preferencesManager.setisStaticQR(false);
+            }
+        });
 
 
-            chk_print_qr.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_print_qr.setChecked(true);
-                    preferencesManager.setisQR(true);
-                } else {
-                    //case 2
-                    chk_print_qr.setChecked(false);
-                    preferencesManager.setisQR(false);
-                }
-            });
+        chk_print_qr.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_print_qr.setChecked(true);
+                preferencesManager.setisQR(true);
+            } else {
+                //case 2
+                chk_print_qr.setChecked(false);
+                preferencesManager.setisQR(false);
+            }
+        });
 
 
-            chk_print_receipt.setOnClickListener((View v) -> {
-                if (((CheckBox) v).isChecked()) {
-                    chk_print_receipt.setChecked(true);
-                    preferencesManager.setisPrint("true");
-                } else {
-                    //case 2
-                    chk_print_receipt.setChecked(false);
-                    preferencesManager.setisPrint("false");
-                }
-            });
+        chk_print_receipt.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_print_receipt.setChecked(true);
+                preferencesManager.setisPrint("true");
+            } else {
+                //case 2
+                chk_print_receipt.setChecked(false);
+                preferencesManager.setisPrint("false");
+            }
+        });
 
 
 //            chk_alipay.setOnClickListener((View v) -> {
@@ -952,77 +937,74 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 //                    preferencesManager.setAlipayWechatQrSelected(false);
 //                }
 //            });
-            chk_loyality.setOnClickListener((View v) -> {
-                if (chk_loyality.isChecked()) {
-                    chk_loyality.setChecked(true);
-                    preferenceManager.setisLoyality(true);
-                } else {
-                    //case 2
-                    chk_loyality.setChecked(false);
-                    preferenceManager.setisLoyality(false);
+        chk_loyality.setOnClickListener((View v) -> {
+            if (chk_loyality.isChecked()) {
+                chk_loyality.setChecked(true);
+                preferenceManager.setisLoyality(true);
+            } else {
+                //case 2
+                chk_loyality.setChecked(false);
+                preferenceManager.setisLoyality(false);
+            }
+        });
+
+
+        chk_back.setOnClickListener((View v) -> {
+            if (chk_back.isChecked()) {
+                chk_back.setChecked(true);
+                preferenceManager.setIsBack(true);
+            } else {
+                //case 2
+                chk_back.setChecked(false);
+                preferenceManager.setIsBack(false);
+            }
+        });
+
+
+        chk_front.setOnClickListener((View v) -> {
+            if (chk_front.isChecked()) {
+                chk_front.setChecked(true);
+                preferenceManager.setIsFront(true);
+            } else {
+                //case 2
+                chk_front.setChecked(false);
+                preferenceManager.setIsFront(false);
+            }
+        });
+
+
+        Button btn_ok = dialogview.findViewById(R.id.btn_ok);
+        Button btn_cancel = dialogview.findViewById(R.id.btn_cancel);
+
+        dialog.setContentView(dialogview);
+
+
+        btn_cancel.setOnClickListener((View v) ->
+                {
+                    dialog.dismiss();
+                    callGetBranchDetails_new();
+
                 }
-            });
+        );
 
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
 
-            chk_back.setOnClickListener((View v) -> {
-                if (chk_back.isChecked()) {
-                    chk_back.setChecked(true);
-                    preferenceManager.setIsBack(true);
-                } else {
-                    //case 2
-                    chk_back.setChecked(false);
-                    preferenceManager.setIsBack(false);
-                }
-            });
+        btn_ok.setOnClickListener((View v) -> {
+            if (chk_alipay.isChecked()) {
+                preferencesManager.setisAlipaySelected(true);
+            } else {
+                preferencesManager.setisAlipaySelected(false);
+            }
 
-
-            chk_front.setOnClickListener((View v) -> {
-                if (chk_front.isChecked()) {
-                    chk_front.setChecked(true);
-                    preferenceManager.setIsFront(true);
-                } else {
-                    //case 2
-                    chk_front.setChecked(false);
-                    preferenceManager.setIsFront(false);
-                }
-            });
-
-
-
-
-
-            Button btn_ok = dialogview.findViewById(R.id.btn_ok);
-            Button btn_cancel = dialogview.findViewById(R.id.btn_cancel);
-
-            dialog.setContentView(dialogview);
-
-
-            btn_cancel.setOnClickListener((View v) ->
-                    {
-                        dialog.dismiss();
-                        callGetBranchDetails_new();
-
-                    }
-            );
-
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            lp.gravity = Gravity.CENTER;
-
-            btn_ok.setOnClickListener((View v) -> {
-                if (chk_alipay.isChecked()) {
-                    preferencesManager.setisAlipaySelected(true);
-                } else {
-                    preferencesManager.setisAlipaySelected(false);
-                }
-
-                if (chk_wechat.isChecked()) {
-                    preferencesManager.setisWechatSelected(true);
-                } else {
-                    preferencesManager.setisWechatSelected(false);
-                }
+            if (chk_wechat.isChecked()) {
+                preferencesManager.setisWechatSelected(true);
+            } else {
+                preferencesManager.setisWechatSelected(false);
+            }
 
 //                if (chk_aggregated_singleqr.isChecked()) {
 //                    preferencesManager.setaggregated_singleqr(true);
@@ -1030,25 +1012,26 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 //                    preferencesManager.setaggregated_singleqr(false);
 //                }
 
-                if (chk_print_receipt.isChecked()) {
-                    preferencesManager.setisPrint("true");
-                } else {
-                    preferencesManager.setisPrint("false");
-                }
+            if (chk_print_receipt.isChecked()) {
+                preferencesManager.setisPrint("true");
+            } else {
+                preferencesManager.setisPrint("false");
+            }
 
-                if (chk_home.isChecked()) {
-                    callSetupFragment(SCREENS.POSMATECONNECTION, null);
-                } else {
-                    callSetupFragment(SCREENS.MANUALENTRY, null);
-                }
+            if (chk_home.isChecked()) {
+                callSetupFragment(SCREENS.POSMATECONNECTION, null);
+            } else {
+                callSetupFragment(SCREENS.MANUALENTRY, null);
+            }
 
+            isLaunch = true;
+            isDisplayChoicesDataSaved = true;
 
-                callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
-                dialog.dismiss();
-            });
+            dialog.dismiss();
+        });
 
-            dialog.getWindow().setAttributes(lp);
-            dialog.show();
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
 
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1061,43 +1044,42 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     public void funcMenuPaymentChoices() {
         callAuthToken();
-      //  if (preferencesManager.isAuthenticated()) {
-            final Dialog dialog = new Dialog(DashboardActivity.this);
-            dialog.setCancelable(false);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View dialogview = lf.inflate(R.layout.payment_choices, null);
-            Button btn_save_and_ok = dialogview.findViewById(R.id.btn_save_and_ok);
-            Button btn_cancel_and_close = dialogview.findViewById(R.id.btn_cancel_and_close);
+        //  if (preferencesManager.isAuthenticated()) {
+        final Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.payment_choices, null);
+        Button btn_save_and_ok = dialogview.findViewById(R.id.btn_save_and_ok);
+        Button btn_cancel_and_close = dialogview.findViewById(R.id.btn_cancel_and_close);
 
 
+        //functions sequence matters
+        funcPCViewInitialize(dialogview);
+        funcEdtLengthCalPC();
+        funcCVTextChangeListener();
+        funcSetPCChkListeners();
+        funcPCPrefChecks();
 
-            //functions sequence matters
-            funcPCViewInitialize(dialogview);
-            funcEdtLengthCalPC();
-            funcCVTextChangeListener();
-            funcSetPCChkListeners();
-            funcPCPrefChecks();
 
+        btn_cancel_and_close.setOnClickListener((View v) -> {
+            dialog.dismiss();
+            callGetBranchDetails_new();
+        });
 
-            btn_cancel_and_close.setOnClickListener((View v) -> {
-                dialog.dismiss();
-                callGetBranchDetails_new();
-            });
-
-            btn_save_and_ok.setOnClickListener((View v) -> {
-                funcPCSaveAndOK();
-                dialog.dismiss();
-            });
-            dialog.setContentView(dialogview);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            lp.gravity = Gravity.CENTER;
-            dialog.getWindow().setAttributes(lp);
-            dialog.show();
+        btn_save_and_ok.setOnClickListener((View v) -> {
+            funcPCSaveAndOK();
+            dialog.dismiss();
+        });
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
 
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1138,8 +1120,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void funcSetPCChkListeners() {
 
         chk_wechat_display_and_add.setOnClickListener((View v) -> {
-            if ((chk_wechat.isChecked()||chk_wechat_qr_scan.isChecked())||
-                    (chk_wechat.isChecked()&&chk_wechat_qr_scan.isChecked())) {
+            if ((chk_wechat.isChecked() || chk_wechat_qr_scan.isChecked()) ||
+                    (chk_wechat.isChecked() && chk_wechat_qr_scan.isChecked())) {
                 if (edt_wechat_cv.getText().toString().equals("0.0") ||
                         edt_wechat_cv.getText().toString().equals("0.00") ||
                         edt_wechat_cv.getText().toString().equals("")
@@ -1180,8 +1162,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         chk_wechat_display_only.setOnClickListener((View v) -> {
 
-            if ((chk_wechat.isChecked()||chk_wechat_qr_scan.isChecked())||
-                    (chk_wechat.isChecked()&&chk_wechat_qr_scan.isChecked())) {
+            if ((chk_wechat.isChecked() || chk_wechat_qr_scan.isChecked()) ||
+                    (chk_wechat.isChecked() && chk_wechat_qr_scan.isChecked())) {
                 if (edt_wechat_cv.getText().toString().equals("0.0") ||
                         edt_wechat_cv.getText().toString().equals("0.00") ||
                         edt_wechat_cv.getText().toString().equals("")
@@ -1224,8 +1206,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         chk_ali_display_and_add.setOnClickListener((View v) -> {
 
-            if ((chk_alipay.isChecked()||chk_alipay_qr_scan.isChecked())||
-                    (chk_alipay.isChecked()&&chk_alipay_qr_scan.isChecked())) {
+            if ((chk_alipay.isChecked() || chk_alipay_qr_scan.isChecked()) ||
+                    (chk_alipay.isChecked() && chk_alipay_qr_scan.isChecked())) {
                 if (edt_ali_cv.getText().toString().equals("0.0") ||
                         edt_ali_cv.getText().toString().equals("0.00") ||
                         edt_ali_cv.getText().toString().equals("")
@@ -1266,8 +1248,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         chk_ali_display_only.setOnClickListener((View v) -> {
 
-            if ((chk_alipay.isChecked()||chk_alipay_qr_scan.isChecked())||
-                    (chk_alipay.isChecked()&&chk_alipay_qr_scan.isChecked())) {
+            if ((chk_alipay.isChecked() || chk_alipay_qr_scan.isChecked()) ||
+                    (chk_alipay.isChecked() && chk_alipay_qr_scan.isChecked())) {
                 if (edt_ali_cv.getText().toString().equals("0.0") ||
                         edt_ali_cv.getText().toString().equals("0.00") ||
                         edt_ali_cv.getText().toString().equals("")
@@ -1307,8 +1289,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
         });
-
-
 
 
         chk_uplan_display_and_add.setOnClickListener((View v) -> {
@@ -1609,8 +1589,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 //case 2
                 chk_unionpay_qr.setChecked(false);
                 preferencesManager.setUnionPayQrSelected(false);
-                if(!chk_unionpay_qr_code.isChecked())
-                {
+                if (!chk_unionpay_qr_code.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
                     chk_unionpay_qr_display_only.setChecked(false);
                     preferencesManager.setcnv_unionpayqr_display_only(false);
@@ -1635,8 +1614,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
 
 
-                if(!chk_unionpay_qr.isChecked())
-                {
+                if (!chk_unionpay_qr.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
                     chk_unionpay_qr_display_only.setChecked(false);
                     preferencesManager.setcnv_unionpayqr_display_only(false);
@@ -1660,8 +1638,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_alipay.setChecked(false);
                 preferencesManager.setisAlipaySelected(false);
 
-                if(!chk_alipay_qr_scan.isChecked())
-                {
+                if (!chk_alipay_qr_scan.isChecked()) {
                     chk_ali_display_and_add.setChecked(false);
                     chk_ali_display_only.setChecked(false);
                     preferencesManager.setcnv_alipay_diaplay_and_add(false);
@@ -1686,8 +1663,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_wechat.setChecked(false);
                 preferencesManager.setisWechatSelected(false);
 
-                if(!chk_wechat_qr_scan.isChecked())
-                {
+                if (!chk_wechat_qr_scan.isChecked()) {
                     chk_wechat_display_and_add.setChecked(false);
                     chk_wechat_display_only.setChecked(false);
                     preferencesManager.setcnv_wechat_display_only(false);
@@ -1710,8 +1686,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_wechat_qr_scan.setChecked(false);
                 preferencesManager.setisWeChatScan(false);
 
-                if(!chk_wechat.isChecked())
-                {
+                if (!chk_wechat.isChecked()) {
                     chk_wechat_display_and_add.setChecked(false);
                     chk_wechat_display_only.setChecked(false);
                     preferencesManager.setcnv_wechat_display_only(false);
@@ -1736,8 +1711,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_alipay_qr_scan.setChecked(false);
                 preferencesManager.setisAlipayScan(false);
 
-                if(!chk_alipay.isChecked())
-                {
+                if (!chk_alipay.isChecked()) {
                     chk_ali_display_and_add.setChecked(false);
                     chk_ali_display_only.setChecked(false);
                     preferencesManager.setcnv_alipay_diaplay_and_add(false);
@@ -1749,7 +1723,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         });
 
 
-
     }
 
     public void funcPCPrefChecks() {
@@ -1759,8 +1732,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferenceManager.cnv_unionpayqr_display_only() ||
                 preferencesManager.cnv_uplan_display_and_add() ||
                 preferencesManager.cnv_uplan_display_only() ||
-                preferencesManager.is_cnv_wechat_display_and_add()||
-                preferencesManager.is_cnv_wechat_display_only()||
+                preferencesManager.is_cnv_wechat_display_and_add() ||
+                preferencesManager.is_cnv_wechat_display_only() ||
                 preferencesManager.is_cnv_alipay_display_only() ||
                 preferencesManager.is_cnv_alipay_display_and_add()) {
 
@@ -1798,14 +1771,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
 
-            if(preferencesManager.is_cnv_wechat_display_only())
-            {
+            if (preferencesManager.is_cnv_wechat_display_only()) {
                 chk_wechat_display_only.setChecked(true);
                 chk_wechat_display_only.setSelected(true);
             }
 
-            if(preferencesManager.is_cnv_wechat_display_and_add())
-            {
+            if (preferencesManager.is_cnv_wechat_display_and_add()) {
                 chk_wechat_display_and_add.setChecked(true);
                 chk_wechat_display_and_add.setSelected(true);
             }
@@ -1822,14 +1793,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_unionpay_card_display_only.setSelected(true);
             }
 
-            if(preferencesManager.isWeChatScan())
-            {
+            if (preferencesManager.isWeChatScan()) {
                 chk_wechat_qr_scan.setChecked(true);
                 chk_wechat_qr_scan.setSelected(true);
             }
 
-            if(preferencesManager.isAlipayScan())
-            {
+            if (preferencesManager.isAlipayScan()) {
                 chk_alipay_qr_scan.setChecked(true);
                 chk_alipay_qr_scan.setSelected(true);
             }
@@ -1854,18 +1823,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_ali_display_only.setChecked(true);
         }
 
-        if(preferencesManager.is_cnv_wechat_display_only())
-        {
+        if (preferencesManager.is_cnv_wechat_display_only()) {
             chk_wechat_display_only.setChecked(true);
             chk_wechat_display_only.setSelected(true);
         }
 
-        if(preferencesManager.is_cnv_wechat_display_and_add())
-        {
+        if (preferencesManager.is_cnv_wechat_display_and_add()) {
             chk_wechat_display_and_add.setChecked(true);
             chk_wechat_display_and_add.setSelected(true);
         }
-
 
 
         if (preferenceManager.is_cnv_uni_display_and_add()) {
@@ -1966,8 +1932,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void funcPCSaveAndOK() {
         if (chk_ali_display_and_add.isChecked() ||
                 chk_ali_display_only.isChecked() ||
-                chk_wechat_display_and_add.isChecked()||
-                chk_wechat_display_only.isChecked()||
+                chk_wechat_display_and_add.isChecked() ||
+                chk_wechat_display_only.isChecked() ||
                 chk_unionpay_card_display_and_add.isChecked() ||
                 chk_unionpay_card_display_only.isChecked() ||
                 chk_unionpay_qr_display_and_add.isChecked() ||
@@ -2084,12 +2050,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
 
-
-
-
-
-
-
             String s = edt_ali_cv.getText().toString();
             if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
                 chk_ali_display_only.setChecked(false);
@@ -2158,7 +2118,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 } else {
                     preferencesManager.setcnv_wechat("0.00");
                 }
-
 
 
                 if (!edt_unionpay_card_cv.getText().toString().equals("") &&
@@ -2264,8 +2223,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         if ((!edt_unionpay_qr_cv.getText().toString().equals("") &&
                 (!edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
-                        !edt_unionpay_qr_cv.getText().toString().equals("0.00")))&&
-        !chk_unionpay_qr_display_and_add.isChecked()&&!chk_unionpay_qr_display_only.isChecked()) {
+                        !edt_unionpay_qr_cv.getText().toString().equals("0.00"))) &&
+                !chk_unionpay_qr_display_and_add.isChecked() && !chk_unionpay_qr_display_only.isChecked()) {
             preferencesManager.setcnv_uniqr("0.00");
             edt_unionpay_qr_cv.setText("0.00");
         }
@@ -2451,18 +2410,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public JSONObject funcPrepareDisplayChoicesJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("AlipaySelected",preferenceManager.isAlipaySelected());
-            jsonObject.put("AlipayValue",preferenceManager.getcnv_alipay());
+            jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
+            jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
             jsonObject.put("CnvAlipayDisplayOnly", preferenceManager.is_cnv_alipay_display_only());
 
-            jsonObject.put("WeChatSelected",preferenceManager.isWechatSelected());
-            jsonObject.put("WeChatValue",preferenceManager.getcnv_wechat());
+            jsonObject.put("WeChatSelected", preferenceManager.isWechatSelected());
+            jsonObject.put("WeChatValue", preferenceManager.getcnv_wechat());
             jsonObject.put("CnvWeChatDisplayAndAdd", preferenceManager.is_cnv_wechat_display_and_add());
             jsonObject.put("CnvWeChatDisplayOnly", preferenceManager.is_cnv_wechat_display_only());
 
-            jsonObject.put("AlipayScanQR",preferenceManager.isAlipayScan());
-            jsonObject.put("WeChatScanQR",preferenceManager.isWeChatScan());
+            jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
+            jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
 
             jsonObject.put("UnionPay", preferenceManager.isUnionPaySelected());
             jsonObject.put("Uplan", preferenceManager.isUplanSelected());
@@ -2629,6 +2588,23 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    public void callDeleteTerminal() {
+        openProgressDialog();
+        try {
+            hashMapKeys.clear();
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(DashboardActivity.this, this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static boolean isEndOfProcedure = false;
 
     @Override
@@ -2658,10 +2634,27 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 }
                 if (isLaunch) {
                     isLaunch = false;
-                    callUpdateBranchDetailsNew();
+                    if (isTerminalInfoDeleted) {
+                        isTerminalInfoDeleted = false;
+                        if (isDisplayChoicesDataSaved) {
+                            isDisplayChoicesDataSaved = false;
+                            callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
+                        } else
+                            callUpdateBranchDetailsNew();
+                    } else
+                        callDeleteTerminal();
+
                 }
 
                 break;
+
+            case "DeleteTerminal":
+                if (jsonObject.optBoolean("success")) {
+                    isTerminalInfoDeleted = true;
+                    callAuthToken();
+                }
+                break;
+
             case "updateRequest":
                 if (jsonObject.optBoolean("status")) {
                     //callAuthToken();
@@ -2773,14 +2766,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                 break;
 
-
-            case "DeleteTerminal":
-                callAuthToken();
-                preferencesManager.clearPreferences();
-                Toast.makeText(DashboardActivity.this, jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
-                ((MyPOSMateApplication) getApplicationContext()).asbtractConnection.disconnect();
-                callSetupFragment(SCREENS.SETTINGS, null);
-                break;
 
         }
     }
@@ -3192,10 +3177,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 CURRENTFRAGMENT = SCREENS.ABOUT.toString();
                 break;
 
-            case HELP:
-                fragment = Help.newInstance("", "");
-                CURRENTFRAGMENT = SCREENS.HELP.toString();
-                break;
 
             case TRANSACTION_LIST:
                 fragment = TransactionListing.newInstance("", "");
@@ -3244,26 +3225,23 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-
-
-
     public void callUpdateBranchDetailsNew() {
         openProgressDialog();
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("AlipaySelected",preferenceManager.isAlipaySelected());
-            jsonObject.put("AlipayValue",preferenceManager.getcnv_alipay());
+            jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
+            jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
             jsonObject.put("CnvAlipayDisplayOnly", preferenceManager.is_cnv_alipay_display_only());
 
-            jsonObject.put("WeChatSelected",preferenceManager.isWechatSelected());
-            jsonObject.put("WeChatValue",preferenceManager.getcnv_wechat());
+            jsonObject.put("WeChatSelected", preferenceManager.isWechatSelected());
+            jsonObject.put("WeChatValue", preferenceManager.getcnv_wechat());
             jsonObject.put("CnvWeChatDisplayAndAdd", preferenceManager.is_cnv_wechat_display_and_add());
             jsonObject.put("CnvWeChatDisplayOnly", preferenceManager.is_cnv_wechat_display_only());
 
 
-            jsonObject.put("AlipayScanQR",preferenceManager.isAlipayScan());
-            jsonObject.put("WeChatScanQR",preferenceManager.isWeChatScan());
+            jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
+            jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
 
 
             jsonObject.put("MerchantId", preferencesManager.getMerchantId());
@@ -3335,21 +3313,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-
-    public void callDeleteTerminal() {
-
-        openProgressDialog();
-        try {
-            new OkHttpHandler(DashboardActivity.this, this, null, "DeleteTerminal")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG
-                            + "?terminal_id=" + encryption(preferenceManager.getterminalId()));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-    }
-
     public void callProgressDialogForUnionPay() {
         rel_un.setVisibility(View.VISIBLE);
         CountDownTimer timer = new CountDownTimer(5000, 5000) {
@@ -3372,11 +3335,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openProgressDialog();
         try {
             hashMapKeys.clear();
-            hashMapKeys.put("branchAddress",  encryption(preferencesManager.getaddress()));
+            hashMapKeys.put("branchAddress", encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", encryption(preferencesManager.getcontact_no()));
-            hashMapKeys.put("branchName",  encryption(preferencesManager.getmerchant_name()));
+            hashMapKeys.put("branchName", encryption(preferencesManager.getmerchant_name()));
             hashMapKeys.put("branchEmail", encryption(preferencesManager.getcontact_email()));
-            hashMapKeys.put("gstNo",  encryption(preferencesManager.getgstno()));
+            hashMapKeys.put("gstNo", encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
             hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");

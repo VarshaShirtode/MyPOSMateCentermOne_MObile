@@ -5,9 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,20 +28,11 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
+import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
 
 public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCompleted {
     private static final String ARG_PARAM1 = "param1";
@@ -119,14 +108,13 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     public void initUI() {
 
 
-        edt_merchant_name = (EditText) view.findViewById(R.id.edt_merchant_name);
-        edt_gst_number = (EditText) view.findViewById(R.id.edt_gst_number);
-        //edt_gst_number.addTextChangedListener(new FourDigitCardFormatWatcher());
-        edt_contact_no = (EditText) view.findViewById(R.id.edt_contact_no);
-        edt_contact_email = (EditText) view.findViewById(R.id.edt_contact_email);
-        edt_address = (EditText) view.findViewById(R.id.edt_address);
-        btn_save = (Button) view.findViewById(R.id.btn_save);
-        btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
+        edt_merchant_name = view.findViewById(R.id.edt_merchant_name);
+        edt_gst_number = view.findViewById(R.id.edt_gst_number);
+        edt_contact_no = view.findViewById(R.id.edt_contact_no);
+        edt_contact_email = view.findViewById(R.id.edt_contact_email);
+        edt_address = view.findViewById(R.id.edt_address);
+        btn_save = view.findViewById(R.id.btn_save);
+        btn_cancel = view.findViewById(R.id.btn_cancel);
         edt_merchant_name.setText(preferencesManager.getmerchant_name());
         edt_contact_no.setText(preferencesManager.getcontact_no());
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -137,9 +125,9 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         edt_gst_number.setText(preferencesManager.getgstno());
 
 
-        edt_lane_identifier = (EditText) view.findViewById(R.id.edt_lane_identifier);
-        edt_terminal_identifier = (EditText) view.findViewById(R.id.edt_terminal_identifier);
-        edt_pos_identifier = (EditText) view.findViewById(R.id.edt_pos_identifier);
+        edt_lane_identifier = view.findViewById(R.id.edt_lane_identifier);
+        edt_terminal_identifier = view.findViewById(R.id.edt_terminal_identifier);
+        edt_pos_identifier = view.findViewById(R.id.edt_pos_identifier);
 
 
         edt_lane_identifier.setText(preferencesManager.getLaneIdentifier());
@@ -147,14 +135,14 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         edt_terminal_identifier.setText(preferencesManager.getTerminalIdentifier());
 
 
-        chk_branch_name = (CheckBox) view.findViewById(R.id.chk_branch_name);
-        chk_branch_address = (CheckBox) view.findViewById(R.id.chk_branch_address);
-        chk_branch_contact_no = (CheckBox) view.findViewById(R.id.chk_branch_contact_no);
-        chk_branch_email = (CheckBox) view.findViewById(R.id.chk_branch_email);
-        chk_gst_no = (CheckBox) view.findViewById(R.id.chk_gst_no);
-        chk_lane_identifier = (CheckBox) view.findViewById(R.id.chk_lane_identifier);
-        chk_pos_identifier = (CheckBox) view.findViewById(R.id.chk_pos_identifier);
-        chk_terminal_identifier = (CheckBox) view.findViewById(R.id.chk_terminal_identifier);
+        chk_branch_name = view.findViewById(R.id.chk_branch_name);
+        chk_branch_address = view.findViewById(R.id.chk_branch_address);
+        chk_branch_contact_no = view.findViewById(R.id.chk_branch_contact_no);
+        chk_branch_email = view.findViewById(R.id.chk_branch_email);
+        chk_gst_no = view.findViewById(R.id.chk_gst_no);
+        chk_lane_identifier = view.findViewById(R.id.chk_lane_identifier);
+        chk_pos_identifier = view.findViewById(R.id.chk_pos_identifier);
+        chk_terminal_identifier = view.findViewById(R.id.chk_terminal_identifier);
 
 
         if (preferencesManager.isLaneIdentifier()) {
@@ -670,7 +658,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 //                    {
                     if (flag) {
 
-                        isUpdateDetails=true;
+                        isUpdateDetails = true;
                         callAuthToken();
 
                     } else {
@@ -702,7 +690,9 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         progress.setIndeterminate(true);
         progress.show();
     }
-boolean isUpdateDetails=false;
+
+    boolean isUpdateDetails = false;
+
     public void callUpdateBranchDetails() {
 
         openProgressDialog();
@@ -813,17 +803,23 @@ boolean isUpdateDetails=false;
         return strDecryptedText;
     }
 
-    public String decryption2(String strEncryptedText) {
-        String seedValue = "YourSecKey";
-        String strDecryptedText = "";
+    public void callDeleteTerminal() {
+        openProgressDialog();
         try {
-            strDecryptedText = AESHelper.decrypt2(seedValue, strEncryptedText);
-//            strDecryptedText = AESHelper.decrypt(strEncryptedText, seedValue);
+            hashMapKeys.clear();
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return strDecryptedText;
     }
+
+
 
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
@@ -847,12 +843,28 @@ boolean isUpdateDetails=false;
                     isCancel = false;
                     callGetBranchDetails_new();
                 }
-                if(isUpdateDetails)
-                {
-                    isUpdateDetails=false;
-                    callUpdateBranchDetails();
+                if (isUpdateDetails) {
+                    isUpdateDetails = false;
+                    if (isTerminalInfoDeleted)
+                    {
+                        isTerminalInfoDeleted=false;
+                        callUpdateBranchDetails();
+                    }
+
+                    else
+                        callDeleteTerminal();
                 }
                 break;
+
+
+            case "DeleteTerminal":
+                if (jsonObject.optBoolean("success")) {
+                    isUpdateDetails = true;
+                    isTerminalInfoDeleted = true;
+                    callAuthToken();
+                }
+                break;
+
 
             case "GetBranchDetailsNew":
                 _NewUser(jsonObject);
@@ -948,134 +960,6 @@ boolean isUpdateDetails=false;
         }
     }
 
-
-    public static class FourDigitCardFormatWatcher implements TextWatcher {
-
-        // Change this to what you want... ' ', '-' etc..
-        private static final char space = ' ';
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            // Remove spacing char
-            if (s.length() > 0 && (s.length() % 5) == 0) {
-                final char c = s.charAt(s.length() - 1);
-                if (space == c) {
-                    s.delete(s.length() - 1, s.length());
-                }
-            }
-            // Insert char where needed.
-            if (s.length() > 0 && (s.length() % 5) == 0) {
-                char c = s.charAt(s.length() - 1);
-                // Only if its a digit where there should be a space we insert a space
-                if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(space)).length <= 3) {
-                    s.insert(s.length() - 1, String.valueOf(space));
-                }
-            }
-        }
-    }
-
-
-    private static final int ITERATION_COUNT = 1000;
-    private static final int KEY_LENGTH = 256;
-    private static final String PBKDF2_DERIVATION_ALGORITHM = "PBKDF2WithHmacSHA1";
-    private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
-    private static final int PKCS5_SALT_LENGTH = 32;
-    private static final String DELIMITER = "]";
-    private static final SecureRandom random = new SecureRandom();
-    private static final String password = "qspl123";
-
-    public static String encryption1(String plaintext) {
-        byte[] salt = generateSalt();
-        SecretKey key = deriveKey(password, salt);
-
-        try {
-            Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-            byte[] iv = generateIv(cipher.getBlockSize());
-            IvParameterSpec ivParams = new IvParameterSpec(iv);
-            cipher.init(Cipher.ENCRYPT_MODE, key, ivParams);
-            byte[] cipherText = cipher.doFinal(plaintext.getBytes("UTF-8"));
-
-            if (salt != null) {
-                return String.format("%s%s%s%s%s",
-                        toBase64(salt),
-                        DELIMITER,
-                        toBase64(iv),
-                        DELIMITER,
-                        toBase64(cipherText));
-            }
-
-            return String.format("%s%s%s",
-                    toBase64(iv),
-                    DELIMITER,
-                    toBase64(cipherText));
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String decryption1(String ciphertext) {
-        String[] fields = ciphertext.split(DELIMITER);
-        if (fields.length != 3) {
-            throw new IllegalArgumentException("Invalid encypted text format");
-        }
-        byte[] salt = fromBase64(fields[0]);
-        byte[] iv = fromBase64(fields[1]);
-        byte[] cipherBytes = fromBase64(fields[2]);
-        SecretKey key = deriveKey(password, salt);
-
-        try {
-            Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-            IvParameterSpec ivParams = new IvParameterSpec(iv);
-            cipher.init(Cipher.DECRYPT_MODE, key, ivParams);
-            byte[] plaintext = cipher.doFinal(cipherBytes);
-            return new String(plaintext, "UTF-8");
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static byte[] generateSalt() {
-        byte[] b = new byte[PKCS5_SALT_LENGTH];
-        random.nextBytes(b);
-        return b;
-    }
-
-    private static byte[] generateIv(int length) {
-        byte[] b = new byte[length];
-        random.nextBytes(b);
-        return b;
-    }
-
-    private static SecretKey deriveKey(String password, byte[] salt) {
-        try {
-            KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH);
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBKDF2_DERIVATION_ALGORITHM);
-            byte[] keyBytes = keyFactory.generateSecret(keySpec).getEncoded();
-            return new SecretKeySpec(keyBytes, "AES");
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String toBase64(byte[] bytes) {
-        return Base64.encodeToString(bytes, Base64.NO_WRAP);
-    }
-
-    private static byte[] fromBase64(String base64) {
-        return Base64.decode(base64, Base64.NO_WRAP);
-    }
 
     public void callGetBranchDetails_new() {
 
