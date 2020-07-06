@@ -615,17 +615,17 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
 
     public void initUI(View view) {
-        img_payment = (ImageView) view.findViewById(R.id.img_payment);
-        payment_tag = (TextView) view.findViewById(R.id.payment_tag);
-        btn_ok = (Button) view.findViewById(R.id.btn_ok);
-        btn_email = (Button) view.findViewById(R.id.btn_email);
-        payment_image = (ImageView) view.findViewById(R.id.payment_image);
-        tv_amount = (TextView) view.findViewById(R.id.tv_amount);
-        tv_referenceid = (TextView) view.findViewById(R.id.tv_referenceid);
-        tv_transid = (TextView) view.findViewById(R.id.tv_transid);
-        tv_tradeno = (TextView) view.findViewById(R.id.tv_tradeno);
-        tv_reference = (TextView) view.findViewById(R.id.tv_reference);
-        tv_reference1 = (TextView) view.findViewById(R.id.tv_reference1);
+        img_payment = view.findViewById(R.id.img_payment);
+        payment_tag =  view.findViewById(R.id.payment_tag);
+        btn_ok =  view.findViewById(R.id.btn_ok);
+        btn_email =  view.findViewById(R.id.btn_email);
+        payment_image =  view.findViewById(R.id.payment_image);
+        tv_amount =  view.findViewById(R.id.tv_amount);
+        tv_referenceid =  view.findViewById(R.id.tv_referenceid);
+        tv_transid =  view.findViewById(R.id.tv_transid);
+        tv_tradeno =  view.findViewById(R.id.tv_tradeno);
+        tv_reference =  view.findViewById(R.id.tv_reference);
+        tv_reference1 =  view.findViewById(R.id.tv_reference1);
         if (ManualEntry.selected_screen == 1) {
             img_payment.setImageResource(R.drawable.ic_smallali);
         } else if (ManualEntry.selected_screen == 2) {

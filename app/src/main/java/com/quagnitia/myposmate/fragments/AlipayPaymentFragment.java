@@ -808,14 +808,14 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     }
 
     public void initUI(View view) {
-        btn_save = (Button) view.findViewById(R.id.btn_save);
-        tv_count_down = (TextView) view.findViewById(R.id.tv_count_down);
-        btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
-        img_qrcode = (ImageView) view.findViewById(R.id.img_qrcode);
-        img_paymentmode = (ImageView) view.findViewById(R.id.img_paymentmode);
-        tv_sale_amount = (TextView) view.findViewById(R.id.tv_sale_amount);
-        img_success = (ImageView) view.findViewById(R.id.img_success);
-        img_failure = (ImageView) view.findViewById(R.id.img_failure);
+        btn_save = view.findViewById(R.id.btn_save);
+        tv_count_down =  view.findViewById(R.id.tv_count_down);
+        btn_cancel =  view.findViewById(R.id.btn_cancel);
+        img_qrcode = view.findViewById(R.id.img_qrcode);
+        img_paymentmode =  view.findViewById(R.id.img_paymentmode);
+        tv_sale_amount = view.findViewById(R.id.tv_sale_amount);
+        img_success =  view.findViewById(R.id.img_success);
+        img_failure =  view.findViewById(R.id.img_failure);
         img_success.setVisibility(View.GONE);
         img_failure.setVisibility(View.GONE);
         if (!qrcode.equals("")) {

@@ -157,35 +157,35 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
     public void initUI() {
 
         vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
-        edt_end_datetime = (TextView) view.findViewById(R.id.edt_end_datetime);
-        edt_start_datetime = (TextView) view.findViewById(R.id.edt_start_datetime);
-        edt_start_time = (TextView) view.findViewById(R.id.edt_start_time);
-        edt_end_time = (TextView) view.findViewById(R.id.edt_end_time);
+        edt_end_datetime = view.findViewById(R.id.edt_end_datetime);
+        edt_start_datetime =  view.findViewById(R.id.edt_start_datetime);
+        edt_start_time =  view.findViewById(R.id.edt_start_time);
+        edt_end_time =  view.findViewById(R.id.edt_end_time);
 
         isStart=true;
 callAuthToken();
-        btn_print = (Button) view.findViewById(R.id.btn_print);
-        btn_settlement = (Button) view.findViewById(R.id.btn_settlement);
-        btn_apply_filter = (Button) view.findViewById(R.id.btn_apply_filter);
-        tv_payment_amount = (TextView) view.findViewById(R.id.tv_payment_amount);
-        tv_payment_count = (TextView) view.findViewById(R.id.tv_payment_count);
-        tv_refunded_amount = (TextView) view.findViewById(R.id.tv_refunded_amount);
-        tv_refund_count = (TextView) view.findViewById(R.id.tv_refund_count);
-        tv_total_transactions = (TextView) view.findViewById(R.id.tv_total_transactions);
+        btn_print =  view.findViewById(R.id.btn_print);
+        btn_settlement =  view.findViewById(R.id.btn_settlement);
+        btn_apply_filter =  view.findViewById(R.id.btn_apply_filter);
+        tv_payment_amount =  view.findViewById(R.id.tv_payment_amount);
+        tv_payment_count =  view.findViewById(R.id.tv_payment_count);
+        tv_refunded_amount =  view.findViewById(R.id.tv_refunded_amount);
+        tv_refund_count =  view.findViewById(R.id.tv_refund_count);
+        tv_total_transactions =  view.findViewById(R.id.tv_total_transactions);
 
 
-        tv_ali_payment_amount = (TextView) view.findViewById(R.id.tv_ali_payment_amount);
-        tv_ali_payment_count = (TextView) view.findViewById(R.id.tv_ali_payment_count);
-        tv_ali_refund_amount = (TextView) view.findViewById(R.id.tv_ali_refund_amount);
-        tv_ali_refund_count = (TextView) view.findViewById(R.id.tv_ali_refund_count);
-        tv_we_payment_amount = (TextView) view.findViewById(R.id.tv_we_payment_amount);
-        tv_we_payment_count = (TextView) view.findViewById(R.id.tv_we_payment_count);
-        tv_we_refund_amount = (TextView) view.findViewById(R.id.tv_we_refund_amount);
-        tv_we_refund_count = (TextView) view.findViewById(R.id.tv_we_refund_count);
-        tv_union_payment_amount = (TextView) view.findViewById(R.id.tv_union_payment_amount);
-        tv_union_payment_count = (TextView) view.findViewById(R.id.tv_union_payment_count);
-        tv_union_refund_amount = (TextView) view.findViewById(R.id.tv_union_refund_amount);
-        tv_union_refund_count = (TextView) view.findViewById(R.id.tv_union_refund_count);
+        tv_ali_payment_amount =  view.findViewById(R.id.tv_ali_payment_amount);
+        tv_ali_payment_count =  view.findViewById(R.id.tv_ali_payment_count);
+        tv_ali_refund_amount =  view.findViewById(R.id.tv_ali_refund_amount);
+        tv_ali_refund_count =  view.findViewById(R.id.tv_ali_refund_count);
+        tv_we_payment_amount =  view.findViewById(R.id.tv_we_payment_amount);
+        tv_we_payment_count =  view.findViewById(R.id.tv_we_payment_count);
+        tv_we_refund_amount =  view.findViewById(R.id.tv_we_refund_amount);
+        tv_we_refund_count =  view.findViewById(R.id.tv_we_refund_count);
+        tv_union_payment_amount = view.findViewById(R.id.tv_union_payment_amount);
+        tv_union_payment_count =  view.findViewById(R.id.tv_union_payment_count);
+        tv_union_refund_amount =  view.findViewById(R.id.tv_union_refund_amount);
+        tv_union_refund_count =  view.findViewById(R.id.tv_union_refund_count);
 
         edt_end_datetime.setOnClickListener(new View.OnClickListener() {
             @Override

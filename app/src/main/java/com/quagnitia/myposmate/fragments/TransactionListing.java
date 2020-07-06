@@ -145,16 +145,16 @@ public class TransactionListing extends Fragment implements View.OnClickListener
 
     public void initUI() {
         vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
-        btn_apply_filter = (Button) view.findViewById(R.id.btn_apply_filter);
-        btn_reprint = (Button) view.findViewById(R.id.btn_reprint);
-        edt_end_datetime = (TextView) view.findViewById(R.id.edt_end_datetime);
-        edt_start_datetime = (TextView) view.findViewById(R.id.edt_start_datetime);
-        edt_start_time = (TextView) view.findViewById(R.id.edt_start_time);
-        edt_end_time = (TextView) view.findViewById(R.id.edt_end_time);
+        btn_apply_filter =  view.findViewById(R.id.btn_apply_filter);
+        btn_reprint = view.findViewById(R.id.btn_reprint);
+        edt_end_datetime =  view.findViewById(R.id.edt_end_datetime);
+        edt_start_datetime =  view.findViewById(R.id.edt_start_datetime);
+        edt_start_time =  view.findViewById(R.id.edt_start_time);
+        edt_end_time =  view.findViewById(R.id.edt_end_time);
 
         //  callTimeStamp();
 
-        recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recycler_view =  view.findViewById(R.id.recycler_view);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recycler_view.setLayoutManager(mLayoutManager);

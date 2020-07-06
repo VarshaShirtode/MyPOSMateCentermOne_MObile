@@ -138,15 +138,15 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
 
 
     public void initUI() {
-        btn_scan = (Button) view.findViewById(R.id.btn_scan_reference);
-        edt_amount1 = (EditText) view.findViewById(R.id.edt_amount1);
-        edt_reference1 = (EditText) view.findViewById(R.id.edt_reference1);
-        edt_transaction_no = (EditText) view.findViewById(R.id.edt_transaction_no);
-        edt_merchant_id = (EditText) view.findViewById(R.id.edt_merchant_id);
-        edt_account_id = (EditText) view.findViewById(R.id.edt_account_id);
-        edt_reference_id = (EditText) view.findViewById(R.id.edt_reference_id);
-        btn_save1 = (Button) view.findViewById(R.id.btn_save1);
-        btn_cancel1 = (Button) view.findViewById(R.id.btn_cancel1);
+        btn_scan = view.findViewById(R.id.btn_scan_reference);
+        edt_amount1 =  view.findViewById(R.id.edt_amount1);
+        edt_reference1 =  view.findViewById(R.id.edt_reference1);
+        edt_transaction_no =  view.findViewById(R.id.edt_transaction_no);
+        edt_merchant_id =  view.findViewById(R.id.edt_merchant_id);
+        edt_account_id =  view.findViewById(R.id.edt_account_id);
+        edt_reference_id =  view.findViewById(R.id.edt_reference_id);
+        btn_save1 =  view.findViewById(R.id.btn_save1);
+        btn_cancel1 =  view.findViewById(R.id.btn_cancel1);
         edt_amount1.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_amount1.setOnTouchListener(new View.OnTouchListener() {
             @Override

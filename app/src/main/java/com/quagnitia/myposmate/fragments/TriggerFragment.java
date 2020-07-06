@@ -99,23 +99,23 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
 
 
     public void initUI() {
-        edt_scheme = (EditText) view.findViewById(R.id.edt_scheme);
-        edt_amount = (EditText) view.findViewById(R.id.edt_amount);
-        edt_mpm_reference = (EditText) view.findViewById(R.id.edt_mpm_reference);
-        edt_cup_reference_id = (EditText) view.findViewById(R.id.edt_cup_reference_id);
-        edt_transaction_reference = (EditText) view.findViewById(R.id.edt_transaction_reference);
-        edt_reason = (EditText) view.findViewById(R.id.edt_reason);
-        edt_refund_password = (EditText) view.findViewById(R.id.edt_refund_password);
-        btn_void = (Button) view.findViewById(R.id.btn_void);
-        btn_refund1 = (Button) view.findViewById(R.id.btn_refund1);
-        btn_refund2 = (Button) view.findViewById(R.id.btn_refund2);
-        btn_cancel1 = (Button) view.findViewById(R.id.btn_cancel1);
-        btn_cancel2 = (Button) view.findViewById(R.id.btn_cancel2);
-        ll_unionpay = (LinearLayout) view.findViewById(R.id.ll_unionpay);
-        ll_epayments = (LinearLayout) view.findViewById(R.id.ll_epayments);
-        ll_refund_password = (LinearLayout) view.findViewById(R.id.ll_refund_password);
-        ll_cup_reference_id = (LinearLayout) view.findViewById(R.id.ll_cup_reference_id);
-        ll_epayments_trade_no = (LinearLayout) view.findViewById(R.id.ll_epayments_trade_no);
+        edt_scheme =  view.findViewById(R.id.edt_scheme);
+        edt_amount = view.findViewById(R.id.edt_amount);
+        edt_mpm_reference =  view.findViewById(R.id.edt_mpm_reference);
+        edt_cup_reference_id =  view.findViewById(R.id.edt_cup_reference_id);
+        edt_transaction_reference =  view.findViewById(R.id.edt_transaction_reference);
+        edt_reason =  view.findViewById(R.id.edt_reason);
+        edt_refund_password =  view.findViewById(R.id.edt_refund_password);
+        btn_void =  view.findViewById(R.id.btn_void);
+        btn_refund1 =  view.findViewById(R.id.btn_refund1);
+        btn_refund2 =  view.findViewById(R.id.btn_refund2);
+        btn_cancel1 =  view.findViewById(R.id.btn_cancel1);
+        btn_cancel2 =  view.findViewById(R.id.btn_cancel2);
+        ll_unionpay =  view.findViewById(R.id.ll_unionpay);
+        ll_epayments =  view.findViewById(R.id.ll_epayments);
+        ll_refund_password =  view.findViewById(R.id.ll_refund_password);
+        ll_cup_reference_id =  view.findViewById(R.id.ll_cup_reference_id);
+        ll_epayments_trade_no =  view.findViewById(R.id.ll_epayments_trade_no);
         ll_refund_password.setVisibility(View.GONE);
         ll_epayments_trade_no.setVisibility(View.GONE);
         ll_cup_reference_id.setVisibility(View.GONE);

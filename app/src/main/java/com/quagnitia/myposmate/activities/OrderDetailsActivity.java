@@ -30,7 +30,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     public void initUI() {
-        recycler_view = (RecyclerView) findViewById(R.id.recycler_view);
+        recycler_view =  findViewById(R.id.recycler_view);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recycler_view.setLayoutManager(mLayoutManager);

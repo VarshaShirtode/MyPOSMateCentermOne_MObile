@@ -387,10 +387,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView tv_close_ext;
 
     public void initUI() {
-        img_menu = (ImageView) findViewById(R.id.img_menu);
-        rel_un = (RelativeLayout) findViewById(R.id.rel_un);
-        tv_close_ext = (TextView) findViewById(R.id.tv_close);
-        TextView version = (TextView) findViewById(R.id.version);
+        img_menu = findViewById(R.id.img_menu);
+        rel_un =  findViewById(R.id.rel_un);
+        tv_close_ext =  findViewById(R.id.tv_close);
+        TextView version =  findViewById(R.id.version);
         try {
             version.setText(getResources().getString(R.string.MyPOSMate_Version) + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (Exception e) {

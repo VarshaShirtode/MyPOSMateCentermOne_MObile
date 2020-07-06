@@ -163,19 +163,19 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     RelativeLayout gif_frame;
 
     public void initUI() {
-        tv_status = (TextView) view.findViewById(R.id.tv_status);
-        tv_status_scan = (TextView) view.findViewById(R.id.tv_status_scan);
-        tv_status_scan_button = (Button) view.findViewById(R.id.tv_status_scan_button);
-        btn_back = (Button) view.findViewById(R.id.btn_back);
-        btn_front = (Button) view.findViewById(R.id.btn_front);
-        rel_membership=(RelativeLayout)view.findViewById(R.id.rel_membership);
-        progressbar = (ProgressBar) view.findViewById(R.id.progressbar);
+        tv_status = view.findViewById(R.id.tv_status);
+        tv_status_scan =  view.findViewById(R.id.tv_status_scan);
+        tv_status_scan_button =  view.findViewById(R.id.tv_status_scan_button);
+        btn_back =  view.findViewById(R.id.btn_back);
+        btn_front =  view.findViewById(R.id.btn_front);
+        rel_membership=view.findViewById(R.id.rel_membership);
+        progressbar =  view.findViewById(R.id.progressbar);
         progressbar.setVisibility(View.VISIBLE);
-        btn_reconnect = (Button) view.findViewById(R.id.btn_reconnect);
+        btn_reconnect =  view.findViewById(R.id.btn_reconnect);
         btn_reconnect.setOnClickListener(this);
-        gifTextView = (GifTextView) view.findViewById(R.id.img_gif);
-        gif_frame = (RelativeLayout) view.findViewById(R.id.gif_frame);
-        close_btn = (ImageView) view.findViewById(R.id.close_btn);
+        gifTextView =  view.findViewById(R.id.img_gif);
+        gif_frame =  view.findViewById(R.id.gif_frame);
+        close_btn =  view.findViewById(R.id.close_btn);
         close_btn.setOnClickListener(this);
         //tv_status_scan_button.setOnClickListener(this);
         btn_back.setOnClickListener(this);
