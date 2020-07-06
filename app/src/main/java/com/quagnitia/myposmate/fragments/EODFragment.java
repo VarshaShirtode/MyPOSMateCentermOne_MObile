@@ -38,22 +38,15 @@ import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.arke.TransactionNames;
 import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
 import com.quagnitia.myposmate.centrum.ThirtConst;
-import com.quagnitia.myposmate.printer.ApiDemo;
-import com.quagnitia.myposmate.printer.Printer;
 import com.quagnitia.myposmate.utils.AppConstants;
 import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
-import com.usdk.apiservice.aidl.printer.ASCScale;
-import com.usdk.apiservice.aidl.printer.ASCSize;
-import com.usdk.apiservice.aidl.printer.AlignMode;
-import com.usdk.apiservice.aidl.printer.HZScale;
-import com.usdk.apiservice.aidl.printer.HZSize;
-import com.usdk.apiservice.aidl.printer.OnPrintListener;
 
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,6 +89,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
     String activityName = "org.skate.pay.component.PayEntry";
     ComponentName comp = new ComponentName(packageName, activityName);
     private static final int REQ_PAY_SALE = 100;
+
     public EODFragment() {
         // Required empty public constructor
     }
@@ -153,39 +147,40 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
         progress.show();
     }
 
-    boolean isStart=false;
+    boolean isStart = false;
+
     public void initUI() {
 
         vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
         edt_end_datetime = view.findViewById(R.id.edt_end_datetime);
-        edt_start_datetime =  view.findViewById(R.id.edt_start_datetime);
-        edt_start_time =  view.findViewById(R.id.edt_start_time);
-        edt_end_time =  view.findViewById(R.id.edt_end_time);
+        edt_start_datetime = view.findViewById(R.id.edt_start_datetime);
+        edt_start_time = view.findViewById(R.id.edt_start_time);
+        edt_end_time = view.findViewById(R.id.edt_end_time);
 
-        isStart=true;
-callAuthToken();
-        btn_print =  view.findViewById(R.id.btn_print);
-        btn_settlement =  view.findViewById(R.id.btn_settlement);
-        btn_apply_filter =  view.findViewById(R.id.btn_apply_filter);
-        tv_payment_amount =  view.findViewById(R.id.tv_payment_amount);
-        tv_payment_count =  view.findViewById(R.id.tv_payment_count);
-        tv_refunded_amount =  view.findViewById(R.id.tv_refunded_amount);
-        tv_refund_count =  view.findViewById(R.id.tv_refund_count);
-        tv_total_transactions =  view.findViewById(R.id.tv_total_transactions);
+        isStart = true;
+        callAuthToken();
+        btn_print = view.findViewById(R.id.btn_print);
+        btn_settlement = view.findViewById(R.id.btn_settlement);
+        btn_apply_filter = view.findViewById(R.id.btn_apply_filter);
+        tv_payment_amount = view.findViewById(R.id.tv_payment_amount);
+        tv_payment_count = view.findViewById(R.id.tv_payment_count);
+        tv_refunded_amount = view.findViewById(R.id.tv_refunded_amount);
+        tv_refund_count = view.findViewById(R.id.tv_refund_count);
+        tv_total_transactions = view.findViewById(R.id.tv_total_transactions);
 
 
-        tv_ali_payment_amount =  view.findViewById(R.id.tv_ali_payment_amount);
-        tv_ali_payment_count =  view.findViewById(R.id.tv_ali_payment_count);
-        tv_ali_refund_amount =  view.findViewById(R.id.tv_ali_refund_amount);
-        tv_ali_refund_count =  view.findViewById(R.id.tv_ali_refund_count);
-        tv_we_payment_amount =  view.findViewById(R.id.tv_we_payment_amount);
-        tv_we_payment_count =  view.findViewById(R.id.tv_we_payment_count);
-        tv_we_refund_amount =  view.findViewById(R.id.tv_we_refund_amount);
-        tv_we_refund_count =  view.findViewById(R.id.tv_we_refund_count);
+        tv_ali_payment_amount = view.findViewById(R.id.tv_ali_payment_amount);
+        tv_ali_payment_count = view.findViewById(R.id.tv_ali_payment_count);
+        tv_ali_refund_amount = view.findViewById(R.id.tv_ali_refund_amount);
+        tv_ali_refund_count = view.findViewById(R.id.tv_ali_refund_count);
+        tv_we_payment_amount = view.findViewById(R.id.tv_we_payment_amount);
+        tv_we_payment_count = view.findViewById(R.id.tv_we_payment_count);
+        tv_we_refund_amount = view.findViewById(R.id.tv_we_refund_amount);
+        tv_we_refund_count = view.findViewById(R.id.tv_we_refund_count);
         tv_union_payment_amount = view.findViewById(R.id.tv_union_payment_amount);
-        tv_union_payment_count =  view.findViewById(R.id.tv_union_payment_count);
-        tv_union_refund_amount =  view.findViewById(R.id.tv_union_refund_amount);
-        tv_union_refund_count =  view.findViewById(R.id.tv_union_refund_count);
+        tv_union_payment_count = view.findViewById(R.id.tv_union_payment_count);
+        tv_union_refund_amount = view.findViewById(R.id.tv_union_refund_amount);
+        tv_union_refund_count = view.findViewById(R.id.tv_union_refund_count);
 
         edt_end_datetime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,9 +309,9 @@ callAuthToken();
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
-            Date d = df1.parse(ss1[0]+" "+ss1[1]);
-            String datetime= df2.format(d);
-            String ss[]=datetime.split(" ");
+            Date d = df1.parse(ss1[0] + " " + ss1[1]);
+            String datetime = df2.format(d);
+            String ss[] = datetime.split(" ");
 
             edt_start_datetime.setText(ss[0]);
             edt_end_datetime.setText(ss[0]);
@@ -337,7 +332,7 @@ callAuthToken();
         try {
             HashMap<String, String> jsonObject = new HashMap<>();
             jsonObject.put("zone_id", preferencesManager.getTimeZoneId());
-            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME+"?access_token="+preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -356,7 +351,8 @@ callAuthToken();
         openProgressDialog();
         try {
 
-
+            SimpleDateFormat mainConv = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS");
+            mainConv.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -370,14 +366,15 @@ callAuthToken();
 
 
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferencesManager.getMerchantId());
+            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("start_date", startTime.replace(" ", "T"));
-            hashMapKeys.put("end_date", endTime.replace(" ", "T"));
+            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "GetReports")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity())+"&access_token="+preferencesManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -385,10 +382,10 @@ callAuthToken();
     }
 
 
-
     private Context mContext;
 
-    boolean isApplyfilter=false;
+    boolean isApplyfilter = false;
+
     @Override
     public void onClick(View v) {
         mContext = getActivity();
@@ -409,7 +406,7 @@ callAuthToken();
 
                 break;
             case R.id.btn_apply_filter:
-                isApplyfilter=true;
+                isApplyfilter = true;
                 callAuthToken();
 
                 break;
@@ -455,16 +452,15 @@ callAuthToken();
         DecimalFormat twoDForm = new DecimalFormat("#0.00");
         return twoDForm.format(d);
     }
-    public void callAuthToken()
-    {
+
+    public void callAuthToken() {
         openProgressDialog();
-        HashMap<String,String> hashMap=new HashMap<>();
-        hashMap.put("grant_type","password");
-        hashMap.put("username",preferencesManager.getterminalId());
-        hashMap.put("password",preferencesManager.getuniqueId());
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("grant_type", "client_credentials");
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
+
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
 
@@ -479,18 +475,15 @@ callAuthToken();
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
             case "AuthToken":
-                if(jsonObject.has("access_token")&&!jsonObject.optString("access_token").equals(""))
-                {
+                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
-                if(isStart)
-                {
-                    isStart=false;
+                if (isStart) {
+                    isStart = false;
                     callTimeStamp();
                 }
-                if(isApplyfilter)
-                {
-                    isApplyfilter=false;
+                if (isApplyfilter) {
+                    isApplyfilter = false;
                     callGetReports();
                 }
                 break;
@@ -499,43 +492,51 @@ callAuthToken();
                 break;
             case "GetReports":
                 callAuthToken();
-                Double paymentamount = Double.parseDouble(jsonObject.optString("alipayPaymentAmount")) +
-                        Double.parseDouble(jsonObject.optString("wechatPaymentAmount")) +
-                        Double.parseDouble(jsonObject.optString("unionPaymentAmount"));
+                JSONObject alipaySummary = jsonObject.optJSONObject("alipaySummary");
+                JSONObject wechatSummary = jsonObject.optJSONObject("wechatSummary");
+                JSONObject unionpaySummary = jsonObject.optJSONObject("unionpaySummary");
 
-                Integer paymentcount = Integer.parseInt(jsonObject.optString("alipayPaymentCount")) +
-                        Integer.parseInt(jsonObject.optString("wechatPaymentCount")) +
-                        Integer.parseInt(jsonObject.optString("unionPaymentCount"));//+
+                Double paymentamount = Double.parseDouble(alipaySummary.optString("paymentAmount")) +
+                        Double.parseDouble(wechatSummary.optString("paymentAmount")) +
+                        Double.parseDouble(unionpaySummary.optString("paymentAmount"));
 
-                Integer totalTransactions = Integer.parseInt(jsonObject.optString("alipayRefundCount")) +
-                        Integer.parseInt(jsonObject.optString("wechatRefundCount")) +
-                        Integer.parseInt(jsonObject.optString("alipayPaymentCount")) +
-                        Integer.parseInt(jsonObject.optString("wechatPaymentCount")) +
-                        Integer.parseInt(jsonObject.optString("unionPaymentCount")) +
-                        Integer.parseInt(jsonObject.optString("unionRefundCount"));
+                Integer paymentcount = Integer.parseInt(alipaySummary.optString("paymentCount")) +
+                        Integer.parseInt(wechatSummary.optString("paymentCount")) +
+                        Integer.parseInt(unionpaySummary.optString("paymentCount"));//+
+
+                Integer totalTransactions = Integer.parseInt(alipaySummary.optString("paymentCount")) +
+                        Integer.parseInt(alipaySummary.optString("refundCount")) +
+                        Integer.parseInt(wechatSummary.optString("paymentCount")) +
+                        Integer.parseInt(wechatSummary.optString("refundCount")) +
+                        Integer.parseInt(unionpaySummary.optString("paymentCount")) +
+                        Integer.parseInt(unionpaySummary.optString("refundCount"));
 
                 tv_payment_amount.setText("$" + roundTwoDecimals(paymentamount));
                 tv_payment_count.setText(paymentcount + "");
-                tv_refunded_amount.setText("$" + jsonObject.optString("refundedAmount"));
-                tv_refund_count.setText(jsonObject.optString("refundCount"));
+                tv_refunded_amount.setText("$" + roundTwoDecimals(Double.parseDouble(jsonObject.optJSONObject("totalSummary").optString("refundAmount"))));
+                tv_refund_count.setText(jsonObject.optJSONObject("totalSummary").optString("refundCount"));
                 tv_total_transactions.setText(totalTransactions + "");
-                tv_ali_payment_amount.setText("$" + jsonObject.optString("alipayPaymentAmount"));
-                tv_ali_payment_count.setText(jsonObject.optString("alipayPaymentCount"));
-                tv_ali_refund_amount.setText("$" + jsonObject.optString("alipayRefundedAmount"));
-                tv_ali_refund_count.setText(jsonObject.optString("alipayRefundCount"));
-                tv_we_payment_amount.setText("$" + jsonObject.optString("wechatPaymentAmount"));
-                tv_we_payment_count.setText(jsonObject.optString("wechatPaymentCount"));
-                tv_we_refund_amount.setText("$" + jsonObject.optString("wechatRefundedAmount"));
-                tv_we_refund_count.setText(jsonObject.optString("wechatRefundCount"));
-                tv_union_payment_amount.setText("$" + jsonObject.optString("unionPaymentAmount"));
-                tv_union_payment_count.setText(jsonObject.optString("unionPaymentCount"));
-                tv_union_refund_amount.setText("$" + jsonObject.optString("unionRefundedAmount"));
-                tv_union_refund_count.setText(jsonObject.optString("unionRefundCount"));
+
+                tv_ali_payment_amount.setText("$" + roundTwoDecimals(Double.parseDouble(alipaySummary.optString("paymentAmount"))));
+                tv_ali_payment_count.setText(alipaySummary.optString("paymentCount"));
+                tv_ali_refund_amount.setText("$" + roundTwoDecimals(Double.parseDouble(alipaySummary.optString("refundAmount"))));
+                tv_ali_refund_count.setText(alipaySummary.optString("refundCount"));
+
+                tv_we_payment_amount.setText("$" + roundTwoDecimals(Double.parseDouble(wechatSummary.optString("paymentAmount"))));
+                tv_we_payment_count.setText(wechatSummary.optString("paymentCount"));
+                tv_we_refund_amount.setText("$" + roundTwoDecimals(Double.parseDouble(wechatSummary.optString("refundAmount"))));
+                tv_we_refund_count.setText(wechatSummary.optString("refundCount"));
+
+                tv_union_payment_amount.setText("$" + roundTwoDecimals(Double.parseDouble(unionpaySummary.optString("paymentAmount"))));
+                tv_union_payment_count.setText(unionpaySummary.optString("paymentCount"));
+                tv_union_refund_amount.setText("$" + roundTwoDecimals(Double.parseDouble(unionpaySummary.optString("refundAmount"))));
+                tv_union_refund_count.setText(unionpaySummary.optString("refundCount"));
 
                 break;
 
         }
     }
+
     /**
      * Print.
      */
@@ -750,6 +751,7 @@ callAuthToken();
     }
 
     public AidlDeviceManager manager = null;
+
     public void bindService() {
         Intent intent = new Intent();
         intent.setPackage("com.centerm.smartposservice");
@@ -776,9 +778,7 @@ callAuthToken();
             if (null != manager) {
                 try {
                     onDeviceConnected(manager);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
 
                 }
 
