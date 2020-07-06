@@ -302,8 +302,6 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             case R.id.close_btn:
                 gif_frame.setVisibility(View.GONE);
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-//                if (timer != null)
-//                    timer.cancel();
                 break;
         }
     }
@@ -316,8 +314,6 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             getActivity().unbindService(conn);
         }
         getActivity().stopService(intentService);
-//        if (timer != null)
-//            timer.cancel();
         super.onDestroy();
 
 
@@ -326,34 +322,11 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        // register connection status listener
 
     }
 
 
-    public class customTimerTask extends TimerTask {
-        Activity mycontext;
-        int i = 0;
 
-        public customTimerTask(Activity c) {
-            mycontext = c;
-        }
-
-        @Override
-        public void run() {
-            if (mycontext != null)
-                mycontext.runOnUiThread(new Runnable() {
-                    public void run() {
-                        // Display the images
-                        gifTextView.setBackgroundResource(imgarr.get(i));
-                        i++;
-                        if (i >= imgarr.size()) {
-                            i = 0;
-                        }
-                    }
-                });
-        }
-    }
 
     public class MyReceiver extends BroadcastReceiver {
         @Override
@@ -449,7 +422,8 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     public void callMembershipLoyality(String qr_data) {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("merchant_id", preferencesManager.getMerchantId());
+        hashMapKeys.put("access_id",preferencesManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
         hashMapKeys.put("config_id", preferencesManager.getConfigId());
         hashMapKeys.put("device_id", UUID.randomUUID().toString().replace("-",""));

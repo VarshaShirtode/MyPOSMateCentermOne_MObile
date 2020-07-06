@@ -2730,6 +2730,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public void callTransactionDetails() {
         //v2 signature implementation
         hashMapKeys.clear();
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
