@@ -43,6 +43,7 @@ import com.usdk.apiservice.aidl.scanner.OnScanListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -271,6 +272,10 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
             e.printStackTrace();
         }
     }
+    String roundTwoDecimals(double d) {
+        DecimalFormat twoDForm = new DecimalFormat("#0.00");
+        return twoDForm.format(d);
+    }
 
     boolean isRefundRequestSuccess = false, isCallRefund = false;
     public static String alipaywechatamount = "0.0";
@@ -366,19 +371,22 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
             case "TransactionDetails2":
 //                isCallRefund = true;
 //                callAuthToken();
+                refunded_amount=0.0;
                 JSONObject paymentJSONObject=jsonObject.optJSONObject("payment");
-
+if(alipaywechatamount.equals(""))alipaywechatamount="0.0";
                 if(jsonObject.has("refunds"))
                 {
                     JSONArray jsonArrayRefund=jsonObject.optJSONArray("refunds");
                     for(int i=0;i<jsonArrayRefund.length();i++)
                     {
                         refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
+                        refunded_amount=Double.parseDouble(roundTwoDecimals(refunded_amount));
 
                     }
-                    remaining_amount=Double.parseDouble(jsonObject.optString("grandTotal"))-refunded_amount;
+                    remaining_amount=Double.parseDouble(paymentJSONObject.optString("grandTotal"))-refunded_amount;
+                    remaining_amount=Double.parseDouble(roundTwoDecimals(remaining_amount));
                 }
-                if (Double.parseDouble(edt_amount1.getText().toString()) > remaining_amount){
+                if (Double.parseDouble(edt_amount1.getText().toString()) > remaining_amount && remaining_amount>0.0){
                     Toast.makeText(getActivity(), "Amount entered is greater than the original amount used in the transaction.", Toast.LENGTH_SHORT).show();
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.REFUND, null);
                 } else {
@@ -393,10 +401,10 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
                         Toast.makeText(getActivity(), "Enter refund password", Toast.LENGTH_SHORT).show();
                     } else if (!alipaywechatamount.equals("0.0") && Double.parseDouble(edt_amount1.getText().toString()) > Double.parseDouble(alipaywechatamount)) {
                         Toast.makeText(getActivity(), "Amount entered is greater than the original amount used in the transaction.", Toast.LENGTH_SHORT).show();
-                    } else if (jsonObjectTransactionDetails != null && Double.parseDouble(edt_amount1.getText().toString()) >
+                    } /*else if (jsonObjectTransactionDetails != null && Double.parseDouble(edt_amount1.getText().toString()) >
                             Double.parseDouble(jsonObjectTransactionDetails.optString("remaining_amount"))) {
                         Toast.makeText(getActivity(), "Entered amount is greater than remaining amount.", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }*/ else {
                         isCallRefund = true;
                         callAuthToken();
                     }
@@ -407,6 +415,7 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
 
             case "TransactionDetails1":
                 callAuthToken();
+                refunded_amount=0.0;
                 jsonObjectTransactionDetails = jsonObject.optJSONObject("payment");
                 JSONArray jsonArrayRefund=null;
                 if(jsonObject.has("refunds"))
@@ -415,11 +424,12 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
                     for(int i=0;i<jsonArrayRefund.length();i++)
                     {
                         refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
-
+                        refunded_amount=Double.parseDouble(roundTwoDecimals(refunded_amount));
                     }
-                    remaining_amount=Double.parseDouble(jsonObject.optString("grandTotal"))-refunded_amount;
+                    remaining_amount=Double.parseDouble(jsonObjectTransactionDetails.optString("grandTotal"))-refunded_amount;
+                    remaining_amount=Double.parseDouble(roundTwoDecimals(remaining_amount));
                 }
-                if (jsonObject.optString("paymentStatus").equals("REFUND")) {
+                if (jsonObjectTransactionDetails.optString("paymentStatus").equals("REFUND")) {
                     if (Double.parseDouble(jsonArrayRefund.optJSONObject(0).optString("receiptAmount")) >
                             refunded_amount) {
                         btn_save1.setEnabled(true);
@@ -435,9 +445,9 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
                         Toast.makeText(getActivity(), "This Transaction is already refunded", Toast.LENGTH_SHORT).show();
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.REFUND, null);
                     }
-                } else if (jsonObject.optString("paymentStatus").equals("SUCCESS")) {
+                } else if (jsonObjectTransactionDetails.optString("paymentStatus").equals("SUCCESS")) {
                     btn_save1.setEnabled(true);
-                    edt_amount1.setText(Double.parseDouble(jsonObject.optString("receiptAmount")) + "");
+                    edt_amount1.setText(Double.parseDouble(jsonObjectTransactionDetails.optString("receiptAmount")) + "");
 //                    if (!jsonObject.optString("ref1").equals("") &&
 //                            !jsonObject.optString("ref1").equals("null")) {
 //                        edt_reference1.setText(jsonObject.optString("ref1"));

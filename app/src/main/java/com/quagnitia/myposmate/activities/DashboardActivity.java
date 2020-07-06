@@ -98,13 +98,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private TextView tv_home;
     private TextView tv_timezone;
     private TextView tv_manual_entry;
-    private TextView tv_reset_settings;
     private TextView tv_refund;
     private TextView tv_refund1;
     private TextView tv_refund_unipay;
     private TextView tv_scan;
     private TextView tv_settings;
-    private TextView tv_help;
     private TextView tv_about;
     private TextView tv_close;
     private TextView tv_display_choices;
@@ -172,6 +170,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         //added for external apps 12/5/2019
         launchThroughExternalApps();
+
+        if(preferencesManager.getTimezoneAbrev().equals(""))
+        {
+            preferencesManager.setTimezoneAbrev("NZDT");
+        }
     }
 
     //added for external apps 12/5/2019
@@ -431,7 +434,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tv_scan.setOnClickListener((View v) -> funcMenuScan());
         tv_manual_entry.setOnClickListener((View v) -> funcMenuManualEntry());
         tv_settings.setOnClickListener((View v) -> funcMenuSettings());
-        tv_help.setOnClickListener((View v) -> funcMenuHelp());
         tv_about.setOnClickListener((View v) -> funcMenuAbout());
         tv_close.setOnClickListener((View v) -> funcMenuClose());
         tv_display_choices.setOnClickListener((View v) -> funcMenuDisplayChoices());
@@ -1026,7 +1028,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
             isLaunch = true;
             isDisplayChoicesDataSaved = true;
-
+            callAuthToken();
             dialog.dismiss();
         });
 
@@ -2642,17 +2644,25 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         } else
                             callUpdateBranchDetailsNew();
                     } else
-                        callDeleteTerminal();
+                    {
+                        if (isDisplayChoicesDataSaved) {
+                            isDisplayChoicesDataSaved = false;
+                            callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
+                        } else
+                            callUpdateBranchDetailsNew();
+//                        callDeleteTerminal();
+                    }
+
 
                 }
 
                 break;
 
             case "DeleteTerminal":
-                if (jsonObject.optBoolean("success")) {
+            //    if (jsonObject.optBoolean("success")) {
                     isTerminalInfoDeleted = true;
                     callAuthToken();
-                }
+            //    }
                 break;
 
             case "updateRequest":
@@ -3363,10 +3373,21 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         openProgressDialog();
         try {
-            new OkHttpHandler(DashboardActivity.this, this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
-                    + "?terminal_id=" + encryption(preferenceManager.getterminalId()));//encryption("47f17c5fe8d43843"));
+            hashMapKeys.clear();
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
+//            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, this));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
+//                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-        } catch (Exception e) {
+            new OkHttpHandler(DashboardActivity.this, this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

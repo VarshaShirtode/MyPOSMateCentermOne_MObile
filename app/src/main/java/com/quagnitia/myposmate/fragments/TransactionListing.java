@@ -308,7 +308,8 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         vasCallsArkeBusiness.doTransaction(interfaceId, new JSONObject(), this);
     }
 
-boolean isListingCalled=false;
+    boolean isListingCalled = false;
+
     public void callTimeStampConversion(String s) {
         try {
             JSONObject jsonObjectTimeNZ = new JSONObject(s);
@@ -328,8 +329,8 @@ boolean isListingCalled=false;
             edt_end_datetime.setText(ss[0]);
             edt_start_time.setText("00:00:00");
             edt_end_time.setText(ss[1]);
-            isListingCalled=true;
-callAuthToken();
+            isListingCalled = true;
+            callAuthToken();
 
 
         } catch (Exception e) {
@@ -355,13 +356,13 @@ callAuthToken();
 
 
         if (TransactionDetailsActivity.isReturnFromTransactionDetails) {
-            TransactionDetailsActivity.isReturnFromTransactionDetails=false;
+            TransactionDetailsActivity.isReturnFromTransactionDetails = false;
             try {
 
                 //added for external apps 12/5/2019
                 int REQ_PAY_SALE = 100;
                 DashboardActivity.isExternalApp = false;
-                ((DashboardActivity) getActivity()).getIntent().putExtra("result",TransactionDetailsActivity.jsonObjectReturnResult.toString());
+                ((DashboardActivity) getActivity()).getIntent().putExtra("result", TransactionDetailsActivity.jsonObjectReturnResult.toString());
                 ((DashboardActivity) getActivity()).setResult(REQ_PAY_SALE, ((DashboardActivity) getActivity()).getIntent());
                 ((DashboardActivity) getActivity()).finish();
                 return;
@@ -406,14 +407,14 @@ callAuthToken();
 
             startTime = df1.format(df2.parse(startTime));
             hashMapKeys.clear();
-            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
+            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df2.parse(endTime))+preferencesManager.getTimezoneAbrev(),"UTF-8"));
-            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df2.parse(startTime))+preferencesManager.getTimezoneAbrev(),"UTF-8"));
+            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("limit","1000");
+            hashMapKeys.put("limit", "1000");
 
             new OkHttpHandler(getActivity(), this, null, "TransactionListing")
                     .execute(AppConstants.BASE_URL2 + AppConstants.GET_RECENT_TRANSACTIONS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
@@ -450,10 +451,8 @@ callAuthToken();
                     } else if (TransactionListing.isInitialLaunch) {
                         isInitialLaunch = false;
                         callTimeStamp();
-                    }
-                    else if(isListingCalled)
-                    {
-                        isListingCalled=false;
+                    } else if (isListingCalled) {
+                        isListingCalled = false;
                         callTransactionList();
                     }
                 }

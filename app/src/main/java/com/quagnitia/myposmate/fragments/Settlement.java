@@ -305,11 +305,12 @@ public class Settlement extends Fragment implements OnTaskCompleted {
 
             hashMapKeys.put("access_id",preferencesManager.getuniqueId());
             hashMapKeys.put("branch_name", preferencesManager.getmerchant_name());
+            if(!datetime.equals(""))
             hashMapKeys.put("timezone", datetime);
             hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
             hashMapKeys.put("pos_id", preferencesManager.getPOSIdentifier());
             hashMapKeys.put("email", edt_email.getText().toString());
-            hashMapKeys.put("terminal_id", preferencesManager.getTerminalIdentifier());
+            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
@@ -355,9 +356,9 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     public void callTimeStampConversion(String s) {
         try {
             String ss1[] = s.split("T");
-            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
+            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
-            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
             Date d = df1.parse(ss1[0] + " " + ss1[1]);
             datetime = df2.format(d);

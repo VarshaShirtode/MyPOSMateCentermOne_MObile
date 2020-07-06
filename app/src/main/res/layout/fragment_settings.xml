@@ -100,6 +100,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
+            android:text="815b2486c067d1d8"
             android:inputType="textPassword"
             android:layout_weight="1"
             android:textSize="16sp" />

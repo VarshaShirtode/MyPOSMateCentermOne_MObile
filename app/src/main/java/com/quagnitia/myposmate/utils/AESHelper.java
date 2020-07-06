@@ -12,12 +12,12 @@ public class AESHelper {
 
 
     public static String encrypt(String text,String text1) {
-        return aesEncrypter.encryptAndEncode(text1);
+        return aesEncrypter.encrypt(text1);
     }
 
 
     public static String decrypt(String text,String text1) {
-        return aesEncrypter.decryptAndDecode(text1);
+        return aesEncrypter.decrypt(text1);
     }
 
     public static String encrypt2(String seed, String cleartext) throws Exception {

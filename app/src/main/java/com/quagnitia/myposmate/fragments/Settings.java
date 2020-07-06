@@ -902,6 +902,18 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
                     preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
+
+                    if (jsonObject1.has("ConfigId")) {
+                        preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
+                    }
+
+                    if (jsonObject1.has("MerchantId")) {
+                        preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+                    }
+
+
+
+
                 }
 
 
@@ -930,18 +942,40 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 preferencesManager.setConfigId(decryption(jsonObject.optString("configId")));
             }
 
+            if (jsonObject.has("config_id")) {
+                preferencesManager.setConfigId(decryption(jsonObject.optString("config_id")));
+            }
+
             if (jsonObject.has("merchant_id")) {
                 preferencesManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
             }
+
             if (jsonObject.has("terminalId")) {
                 preferencesManager.setterminalId(decryption(jsonObject.optString("terminalId")));
             }
+
+            if (jsonObject.has("terminal_id")) {
+                preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
+            }
+
+            if (jsonObject.has("branch_id")) {
+                preferencesManager.setMerchantId(decryption(jsonObject.optString("branch_id")));
+            }
+
+            if (jsonObject.has("branchId")) {
+                preferencesManager.setMerchantId(decryption(jsonObject.optString("branchId")));
+            }
+
 //            if (jsonObject.has("accessId")) {
 //                preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
 //            }
         }
     }
 
+
+
+
+    
 
     JSONObject jsonObject1 = null;
     boolean isUpdateNewDetails = false;

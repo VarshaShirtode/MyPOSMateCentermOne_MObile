@@ -55,6 +55,7 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -238,7 +239,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             //v2 signature implementation
             hashMapKeys.clear();
             hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("refund_time", refund_time);
@@ -280,7 +281,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         try {
             //v2 signature implementation
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("reference_id", getIntent().getStringExtra("reference_id"));
@@ -502,8 +504,11 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     Toast.makeText(TransactionDetailsActivity.this, "Please enter the refund reason", Toast.LENGTH_SHORT).show();
                 } else if (edt_password.getText().toString().equals("")) {
                     Toast.makeText(TransactionDetailsActivity.this, "Please enter the refund password", Toast.LENGTH_SHORT).show();
-                } else if (Double.parseDouble(edt_amount.getText().toString()) >
-                        Double.parseDouble(jsonObjectTransactionDetails.optString("remaining_amount"))) {
+                } else if ((newjson.has("Remaining Amount")&& !newjson.optString("Remaining Amount").equals("0.00"))&&Double.parseDouble(edt_amount.getText().toString()) >
+//                        Double.parseDouble(jsonObjectTransactionDetails.optString("remaining_amount"))) {
+                        Double.parseDouble(newjson.optString("Remaining Amount"))
+                && newjson.optString("Transaction Type").equals("REFUND")
+                ) {
                     Toast.makeText(TransactionDetailsActivity.this, "Entered amount is greater than remaining amount.", Toast.LENGTH_SHORT).show();
                 } else {
                     callRefundApi();
@@ -728,6 +733,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             case "TransactionDetails":
 
                 if (jsonObject.optBoolean("status")) {
+                    JSON_DATA = jsonObject.toString();
+                    jsonObjectTransactionDetails = jsonObject;
                     parseTransactionDetailsResponse(jsonObject);
 
                 } else {
@@ -1163,7 +1170,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                 Intent i = getIntent();
                 i.putExtra("reference_id", getIntent().getStringExtra("reference_id"));
-                i.putExtra("increment_id", getIntent().getStringExtra("increment_id"));
+//                i.putExtra("increment_id", getIntent().getStringExtra("increment_id"));
                 startActivity(i);
                 finish();
 
@@ -1174,12 +1181,14 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         }
     }
 
-
+    double remaining_amount=0.00;
+    double refunded_amount=0.00;
     public void parseTransactionDetailsResponse(JSONObject jsonObject) throws JSONException {
 
         JSONObject jsonObjectPayment = jsonObject.optJSONObject("payment");
         JSONObject json = new JSONObject();
-        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")) {
+        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")||
+                jsonObjectPayment.optString("paymentStatus").equals("REFUND")) {
             for (int i = 0; i < jsonObjectPayment.length(); i++) {
                 for (int j = 0; j < jsonObjectPayment.length(); j++) {
                     String value = jsonObjectPayment.optString(jsonObjectPayment.names().optString(j));
@@ -1226,7 +1235,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                             Double receipt_amount = Double.parseDouble(jsonObjectPayment.optString("receiptAmount"));
                             Double rate = Double.parseDouble(jsonObjectPayment.optString("rate"));
                             Double rmb_amount = receipt_amount * rate;
-                            json.put("Amount RMB", rmb_amount);
+                            json.put("Amount RMB", roundTwoDecimals(Float.valueOf(rmb_amount+"")));
                             break;
                         case "receiptAmount":
                             json.put("Receipt Amount", value);
@@ -1248,7 +1257,21 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             }
 
 
-            json.put("Amount Refunded", "0.00");
+            if(jsonObject.has("refunds"))
+            {
+                JSONArray jsonArrayRefund=jsonObject.optJSONArray("refunds");
+                for(int i=0;i<jsonArrayRefund.length();i++)
+                {
+                    refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
+                    refunded_amount=Double.parseDouble(roundTwoDecimals(refunded_amount));
+
+                }
+                remaining_amount=Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount"))-refunded_amount;
+                remaining_amount=Double.parseDouble(roundTwoDecimals(remaining_amount));
+            }
+
+            json.put("Amount Refunded", refunded_amount);
+            json.put("Remaining Amount",remaining_amount);
             newjson = json;
 
             if (json.optString("Transaction Successful").equals("false")) {
@@ -1320,7 +1343,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     }
 
 
-    String roundTwoDecimals(float d) {
+    String roundTwoDecimals(double d) {
         DecimalFormat twoDForm = new DecimalFormat("#0.00");
         return twoDForm.format(d);
     }
@@ -1392,6 +1415,10 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
 
         int fontSize = 24;
+        if(jsonObject.has("payment"))
+        {
+            jsonObject=jsonObject.optJSONObject("payment");
+        }
         try {
             if (jsonObject.has("responseCodeThirtyNine") || jsonObject.has("server_response") && !jsonObject.optString("server_response").equals("")) {
                 isUnionPay = true;
@@ -1424,21 +1451,21 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 
-            } else if (jsonObject.optString("status_description").equals("TRADE_SUCCESS")) {
+            } else if (jsonObject.optString("paymentStatus").equals("SUCCESS")) {
                 list.add(new PrintDataObject("------- " + "Successful" + " -------",
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
-            } else if (jsonObject.optString("status_description").equals("TRADE_REFUND")) {
+            } else if (jsonObject.optString("paymentStatus").equals("REFUND")) {
                 list.add(new PrintDataObject("------- " + "Refund Receipt" + " -------",
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
-            } else if (jsonObject.optString("status_description").equals("VOIDED") ||
+            } else if (jsonObject.optString("paymentStatus").equals("VOIDED") ||
                     jsonObject.optString("status_description").equals("UPI_SCAN_CODE_VOID") ||
                     jsonObject.optString("status_description").equals("VOID")) {
                 list.add(new PrintDataObject("------- " + "UnionPay Voided Receipt" + " -------",
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
-            } else if (jsonObject.optString("status_description").equals("REFUND") ||
+            } else if (jsonObject.optString("paymentStatus").equals("REFUND") ||
                     jsonObject.optString("status_description").equals("TRADE_REFUND")) {
                 list.add(new PrintDataObject("------- " + "UnionPay Refunded Receipt" + " -------",
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
@@ -1450,13 +1477,13 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             }
 
 
-            list.add(new PrintDataObject("Merchant Name:",
-                    fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-                    true));
-
-            list.add(new PrintDataObject(new JSONObject(preferenceManager.getmerchant_info()).optString("company"),
-                    fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-                    true));
+//            list.add(new PrintDataObject("Merchant Name:",
+//                    fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+//                    true));
+//
+//            list.add(new PrintDataObject(new JSONObject(preferenceManager.getmerchant_info()).optString("company"),
+//                    fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+//                    true));
 
 
             if (preferenceManager.getBranchName().equals("true")) {
@@ -1568,16 +1595,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
             }
 
+
             list.add(new PrintDataObject("Transaction Number:",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            list.add(new PrintDataObject(jsonObject.optString("increment_id"),
+            list.add(new PrintDataObject(jsonObject.optString("id"),
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
             list.add(new PrintDataObject("Reference Number:",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            list.add(new PrintDataObject(jsonObject.optString("reference_id"),
+            list.add(new PrintDataObject(jsonObject.optString("referenceId"),
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
@@ -1594,7 +1622,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 list.add(new PrintDataObject("Trade Number:",
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
-                list.add(new PrintDataObject(jsonObject.optString("trade_no"),
+                list.add(new PrintDataObject(jsonObject.optString("tradeNo"),
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }
@@ -1660,7 +1688,14 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     }
-                    list.add(new PrintDataObject(df1.format(d),
+                    else if (jsonObject.has("createDate")) {
+                        df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                        d = df.parse(jsonObject.optString("createDate"));
+                        df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
+                    }
+                    list.add(new PrintDataObject(df1.format(d).replace("T"," "),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
 
@@ -1683,46 +1718,46 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             list.add(new PrintDataObject("Paid Amount:",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            if (jsonObject.has("receipt_amount")) {
-                amountTotal = jsonObject.optString("receipt_amount");
+            if (jsonObject.has("receiptAmount")) {
+                amountTotal = jsonObject.optString("receiptAmount");
                 if (jsonObject.optString("channel").equals("UNION_PAY")) {
-                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))),
+                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receiptAmount"))),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
                 } else
-                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))) + " RMB " + jsonObject.optString("rmb_amount"),
+                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receiptAmount"))) + " RMB " + newjson.optString("Amount RMB"),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
-            } else if (jsonObject.has("grandtotal")) {
-                amountTotal = jsonObject.optString("grandtotal");
+            } else if (jsonObject.has("grandTotal")) {
+                amountTotal = jsonObject.optString("grandTotal");
                 if (jsonObject.optString("channel").equals("UNION_PAY")) {
-                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))),
+                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
                 } else
-                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))) + " RMB " + jsonObject.optString("rmb_amount"),
+                    list.add(new PrintDataObject(preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))) + " RMB " + newjson.optString("Amount RMB"),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
             }
 
 
-            if (jsonObject.has("original_amount") && !jsonObject.optString("original_amount").equals("0.0") &&
-                    !jsonObject.optString("original_amount").equals("0.00")) {
-                list.add(new PrintDataObject("Original Amount:" + preferenceManager.getcurrency() + " " + jsonObject.optString("original_amount"),
+            if (jsonObject.has("receiptAmount") && !jsonObject.optString("receiptAmount").equals("0.0") &&
+                    !jsonObject.optString("receiptAmount").equals("0.00")) {
+                list.add(new PrintDataObject("Original Amount:" + preferenceManager.getcurrency() + " " + jsonObject.optString("receiptAmount"),
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }
 
-            if (jsonObject.has("fee_amount") && !jsonObject.optString("fee_amount").equals("0.0") &&
-                    !jsonObject.optString("fee_amount").equals("0.00")) {
-                list.add(new PrintDataObject("Fee Amount:" + preferenceManager.getcurrency() + " " + jsonObject.optString("fee_amount"),
+            if (jsonObject.has("feeAmount") && !jsonObject.optString("feeAmount").equals("0.0") &&
+                    !jsonObject.optString("feeAmount").equals("0.00")) {
+                list.add(new PrintDataObject("Fee Amount:" + preferenceManager.getcurrency() + " " + jsonObject.optString("feeAmount"),
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }
 
-            if (jsonObject.has("fee_percentage") && !jsonObject.optString("fee_percentage").equals("0.0") &&
-                    !jsonObject.optString("fee_percentage").equals("0.00")) {
-                list.add(new PrintDataObject("Fee Percentage: " + jsonObject.optString("fee_percentage"),
+            if (jsonObject.has("feePercentage") && !jsonObject.optString("feePercentage").equals("0.0") &&
+                    !jsonObject.optString("feePercentage").equals("0.00")) {
+                list.add(new PrintDataObject("Fee Percentage: " + jsonObject.optString("feePercentage"),
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }
@@ -1735,8 +1770,18 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             }
 
 
-            if (jsonObject.has("refunds") && jsonObject.optJSONArray("refunds") != null)
-                if (jsonObject.optJSONArray("refunds").length() != 0) {
+            if (jsonObjectTransactionDetails.has("refunds") && jsonObjectTransactionDetails.optJSONArray("refunds") != null)
+                if (jsonObjectTransactionDetails.optJSONArray("refunds").length() != 0) {
+
+                    JSONArray jsonArrayRefund= jsonObjectTransactionDetails.optJSONArray("refunds");
+                    for(int i=0;i<jsonArrayRefund.length();i++)
+                    {
+                        refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
+                        refunded_amount=Double.parseDouble(roundTwoDecimals(refunded_amount));
+
+                    }
+                    remaining_amount=Double.parseDouble(jsonObject.optString("grandTotal"))-refunded_amount;
+                    remaining_amount=Double.parseDouble(roundTwoDecimals(remaining_amount));
 
                     list.add(new PrintDataObject("-----------------------------",
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
@@ -1748,17 +1793,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                             true));
                     Double amt = Double.parseDouble(amountTotal);
-                    for (int i = 0; i < jsonObject.optJSONArray("refunds").length(); i++) {
-                        JSONObject jsonObject1 = jsonObject.optJSONArray("refunds").optJSONObject(i);
-                        if (!jsonObject1.optString("refund_trade_no").equals("")
-                                && !jsonObject1.optString("refund_pay_time").equals("")
-                                && !jsonObject1.optString("refunded_amount").equals("0.0")
+                    for (int i = 0; i < jsonObjectTransactionDetails.optJSONArray("refunds").length(); i++) {
+                        JSONObject jsonObject1 = jsonObjectTransactionDetails.optJSONArray("refunds").optJSONObject(i);
+                        if (!jsonObject1.optString("refundTradeNo").equals("")
+                                && !jsonObject1.optString("createDate").equals("")
+                                && !jsonObject1.optString("refundFee").equals("0.0")
                         ) {
 
                             list.add(new PrintDataObject("Refund Trade No:",
                                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                                     true));
-                            list.add(new PrintDataObject(jsonObject1.optString("refund_trade_no"),
+                            list.add(new PrintDataObject(jsonObject1.optString("refundTradeNo"),
                                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                                     true));
                             list.add(new PrintDataObject("Refund Pay Time:",
@@ -1768,17 +1813,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             df.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            Date d = df.parse(jsonObject1.optString("refund_pay_time").replace("T", " "));
+                            Date d = df.parse(jsonObject1.optString("createDate").replace("T", " "));
                             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
 
                             list.add(new PrintDataObject(df1.format(d),
                                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                                     true));
-                            list.add(new PrintDataObject("Amount Refunded:" + preferenceManager.getcurrency() + " " + jsonObject1.optString("refunded_amount"),
+                            list.add(new PrintDataObject("Amount Refunded:" + preferenceManager.getcurrency() + " " + jsonObject1.optString("refundFee"),
                                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                                     true));
-                            amt = (Double.parseDouble(roundTwoDecimals(Float.valueOf(amt + "")))) - Double.parseDouble(jsonObject1.optString("refunded_amount"));
+                            amt = (Double.parseDouble(roundTwoDecimals(Float.valueOf(amt + "")))) - Double.parseDouble(jsonObject1.optString("refundFee"));
                             list.add(new PrintDataObject("Amount Available:" + preferenceManager.getcurrency() + " " + roundTwoDecimals(Float.valueOf(amt + "")),
                                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                                     true));
@@ -1799,7 +1844,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             if (jsonObject.optString("channel").equals("UNION_PAY")) {
                 text = newjson.optString("CUP Reference No");
             } else {
-                text = jsonObject.optString("reference_id");
+                text = jsonObject.optString("referenceId");
             }
 
 

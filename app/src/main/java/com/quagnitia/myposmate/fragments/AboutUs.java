@@ -852,17 +852,20 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     }
 
                     else
-                        callDeleteTerminal();
+                    {callUpdateBranchDetails();
+//                        callDeleteTerminal();
+                    }
+
                 }
                 break;
 
 
             case "DeleteTerminal":
-                if (jsonObject.optBoolean("success")) {
+              //  if (jsonObject.optBoolean("success")) {
                     isUpdateDetails = true;
                     isTerminalInfoDeleted = true;
                     callAuthToken();
-                }
+                //}
                 break;
 
 
@@ -965,10 +968,21 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
         openProgressDialog();
         try {
-            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
-                    + "?terminal_id=" + encryption(preferencesManager.getterminalId()));//encryption("47f17c5fe8d43843"));
+            hashMapKeys.clear();
+            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+//            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
+//                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-        } catch (Exception e) {
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

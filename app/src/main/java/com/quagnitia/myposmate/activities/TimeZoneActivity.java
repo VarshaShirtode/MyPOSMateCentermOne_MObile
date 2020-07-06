@@ -244,7 +244,8 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                 if(isUpdateDetails)
                 {
                     isUpdateDetails=false;
-                    callDeleteTerminal();
+//                    callDeleteTerminal();
+                    callUpdateBranchDetails(updateDetailsJson);
                 }
                 if(isTerminalInfoDeleted)
                 {
@@ -253,10 +254,10 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                 }
                 break;
             case "DeleteTerminal":
-                if (jsonObject.optBoolean("success")) {
+              //  if (jsonObject.optBoolean("success")) {
                     isTerminalInfoDeleted = true;
                     callAuthToken();
-                }
+               // }
                 break;
             case "UpdateBranchDetails":
                 if (jsonObject.has("otherData")) {

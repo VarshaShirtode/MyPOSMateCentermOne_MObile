@@ -775,6 +775,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
         //v2 signature implementation
         hashMapKeys.clear();
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
