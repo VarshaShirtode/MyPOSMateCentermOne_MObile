@@ -40,6 +40,7 @@ public class AppConstants {
     public static String VALIDATE_TERMINAL = "validateTerminal";
     public static String PAYUNIONPAY = "payUnionPay";
     public static String UPDATE_UNIONPAY_STATUS = "updateUnionPayStatus";
+    public static String SAVETRANSACTIONUNIONPAY = "saveTransaction";
     public static String SAVE_LOYALTY_INFO = "loyalty/saveLoyaltyInfo";
     public static String SAVE_TERMINAL_CONFIG = "saveTerminalConfig";
     public static String GET_TERMINAL_CONFIG = "getTerminalConfig";

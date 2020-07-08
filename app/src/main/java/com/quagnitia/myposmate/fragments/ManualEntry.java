@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,7 +46,6 @@ import com.google.zxing.integration.android.IntentResult;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
-//import com.quagnitia.myposmate.activities.PaymentExpressActivity;
 import com.quagnitia.myposmate.arke.TransactionNames;
 import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
 import com.quagnitia.myposmate.centrum.ThirtConst;
@@ -75,6 +75,8 @@ import java.util.UUID;
 import faranjit.currency.edittext.CurrencyEditText;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+
+//import com.quagnitia.myposmate.activities.PaymentExpressActivity;
 
 
 public class ManualEntry extends Fragment implements View.OnClickListener, OnTaskCompleted {
@@ -1879,7 +1881,131 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
+    public void callDP(String reference_id) {
+        preferenceManager.setreference_id(reference_id);
+        if (isUpayselected || isUnionPayQrSelected) {
+            preferenceManager.setupay_reference_id(reference_id);
+            if (countDownTimerxmpp != null)
+                countDownTimerxmpp.cancel();
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+            qrScan.initiateScan();
+        } else
+            beginBussiness(reference_id);
+    }
+
+
+    public static String server_response = "";
+    public static boolean is_success = false;
+    public static boolean is_payment = false;
+    public static String trade_no = "";
+
     public void callUnionPay() {
+        trade_no="";
+        is_success=false;
+        is_payment=false;
+        server_response="";
+        if (countDownTimerxmpp != null) {
+            countDownTimerxmpp.cancel();
+            tv_start_countdown.setVisibility(View.GONE);
+        }
+        callAuthToken();
+        String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
+        String amount = "";
+
+
+        hashMapKeys.clear();
+        if (!edt_reference.getText().toString().equals("")) {
+            hashMapKeys.put("ref_data1", edt_reference.getText().toString());
+        }
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+        hashMapKeys.put("system", preferenceManager.getterminalId());
+        hashMapKeys.put("channel", "UNION_PAY");
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("is_success", is_success + "");
+        hashMapKeys.put("is_payment", is_payment + "");
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+        hashMapKeys.put("trade_no", trade_no);
+        hashMapKeys.put("server_response", server_response);
+        hashMapKeys.put("rate","0");
+        hashMapKeys.put("currency","NZD");
+
+
+        if (preferenceManager.isConvenienceFeeSelected()
+                && preferenceManager.is_cnv_uni_display_and_add()) {
+            if (preferenceManager.getcnv_uni().equals("") || preferenceManager.getcnv_uni().equals("0.0") || preferenceManager.getcnv_uni().equals("0.00")) {
+
+                amount = convenience_amount_unionpay + "";
+                original_amount = edt_amount.getText().toString().replace(",", "");
+                fee_amount = convenience_amount_unionpay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
+                discount = "0";
+                fee_percentage = preferenceManager.getcnv_uni();
+
+            } else {
+                if (MyPOSMateApplication.isOpen) {
+                    amount = convenience_amount_unionpay + "";
+                    original_amount = original_xmpp_trigger_amount.replace(",", "");
+                    fee_amount = convenience_amount_unionpay - Double.parseDouble(original_xmpp_trigger_amount.replace(",", "")) + "";
+                    discount = "0";
+                    fee_percentage = preferenceManager.getcnv_uni();
+                } else {
+                    amount = convenience_amount_unionpay + "";
+                    original_amount = edt_amount.getText().toString().replace(",", "");
+                    fee_amount = convenience_amount_unionpay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
+                    discount = "0";
+                    fee_percentage = preferenceManager.getcnv_uni();
+                }
+
+            }
+
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
+            hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
+            hashMapKeys.put("fee_percentage",roundTwoDecimals(Double.parseDouble( fee_percentage)));
+            hashMapKeys.put("discount", discount);
+            callDP(reference_id);
+
+
+        } else if (preferenceManager.isConvenienceFeeSelected()
+                && !preferenceManager.is_cnv_uni_display_and_add()) {
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            callDP(reference_id);
+
+        } else {
+            if (MyPOSMateApplication.isOpen) {
+                amount = original_xmpp_trigger_amount.replace(",", "");
+            } else {
+                amount = edt_amount.getText().toString().replace(",", "");
+            }
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            callDP(reference_id);
+
+        }
+
+    }
+
+
+    /*public void callUnionPayOld() {
         if (countDownTimerxmpp != null) {
             countDownTimerxmpp.cancel();
             tv_start_countdown.setVisibility(View.GONE);
@@ -2111,17 +2237,43 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
 
 
-    }
+    }*/
 
 
     public void callUnionPayQRScan() {
+        trade_no="";
+        is_success=false;
+        is_payment=false;
+        server_response="";
+
         if (countDownTimerxmpp != null) {
             countDownTimerxmpp.cancel();
             tv_start_countdown.setVisibility(View.GONE);
         }
-        openProgressDialog();
+        callAuthToken();
         String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
         String amount = "";
+
+        hashMapKeys.clear();
+        if (!edt_reference.getText().toString().equals("")) {
+            hashMapKeys.put("ref_data1", edt_reference.getText().toString());
+        }
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+        hashMapKeys.put("system", preferenceManager.getterminalId());
+        hashMapKeys.put("channel", "UNION_PAY");
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("is_success", is_success + "");
+        hashMapKeys.put("is_payment", is_payment + "");
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+        hashMapKeys.put("trade_no", trade_no);
+        hashMapKeys.put("server_response", server_response);
+        hashMapKeys.put("rate","0");
+        hashMapKeys.put("currency","NZD");
+
+
+
         if (preferenceManager.isConvenienceFeeSelected()
                 && preferenceManager.cnv_unionpayqr_display_and_add()) {
             if (preferenceManager.getcnv_uniqr().equals("") || preferenceManager.getcnv_uniqr().equals("0.0") || preferenceManager.getcnv_uniqr().equals("0.00")) {
@@ -2149,133 +2301,34 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
             }
 
-            try {
-                if (!preferenceManager.gettriggerReferenceId().equals("")) {
 
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", preferenceManager.gettriggerReferenceId());
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    hashMapKeys.put("original_amount", original_amount);
-                    hashMapKeys.put("fee_amount", fee_amount);
-                    hashMapKeys.put("fee_percentage", fee_percentage);
-                    hashMapKeys.put("discount", "0");
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
+                if (!preferenceManager.gettriggerReferenceId().equals(""))
+                    reference_id = preferenceManager.gettriggerReferenceId();
+                else
+                    reference_id = new Date().getTime() + "";
 
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                hashMapKeys.put("reference_id", reference_id);
+                hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+                hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+                hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
+                hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
+                hashMapKeys.put("fee_percentage",roundTwoDecimals(Double.parseDouble( fee_percentage)));
+                hashMapKeys.put("discount", discount);
+                callDP(reference_id);
 
-                } else {
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", reference_id);
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    hashMapKeys.put("original_amount", original_amount);
-                    hashMapKeys.put("fee_amount", fee_amount);
-                    hashMapKeys.put("fee_percentage", fee_percentage);
-                    hashMapKeys.put("discount", "0");
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_unionpayqr_display_and_add()) {
-            try {
-                if (!preferenceManager.gettriggerReferenceId().equals("")) {
 
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", preferenceManager.gettriggerReferenceId());
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", edt_amount.getText().toString().replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                } else {
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", reference_id);
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", edt_amount.getText().toString().replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            callDP(reference_id);
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -2283,80 +2336,52 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             } else {
                 amount = edt_amount.getText().toString().replace(",", "");
             }
-            try {
-                if (!preferenceManager.gettriggerReferenceId().equals("")) {
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", preferenceManager.gettriggerReferenceId());
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                } else {
-
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", reference_id);
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            callDP(reference_id);
         }
-
 
     }
 
 
     public void callUplan() {
+        trade_no="";
+        is_success=false;
+        is_payment=false;
+        server_response="";
         if (countDownTimerxmpp != null) {
             countDownTimerxmpp.cancel();
             tv_start_countdown.setVisibility(View.GONE);
         }
-        openProgressDialog();
+        callAuthToken();
         String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
         String amount = "";
+
+        hashMapKeys.clear();
+        if (!edt_reference.getText().toString().equals("")) {
+            hashMapKeys.put("ref_data1", edt_reference.getText().toString());
+        }
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+        hashMapKeys.put("system", preferenceManager.getterminalId());
+        hashMapKeys.put("channel", "UNION_PAY");
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("is_success", is_success + "");
+        hashMapKeys.put("is_payment", is_payment + "");
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+        hashMapKeys.put("trade_no", trade_no);
+        hashMapKeys.put("server_response", server_response);
+        hashMapKeys.put("rate","0");
+        hashMapKeys.put("currency","NZD");
+
+
+
         if (preferenceManager.isConvenienceFeeSelected()
                 && preferenceManager.cnv_uplan_display_and_add()) {
             if (preferenceManager.getcnv_uplan().equals("") || preferenceManager.getcnv_uplan().equals("0.0") || preferenceManager.getcnv_uplan().equals("0.00")) {
@@ -2384,132 +2409,31 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
             }
 
-            try {
-                if (!preferenceManager.gettriggerReferenceId().equals("")) {
 
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", preferenceManager.gettriggerReferenceId());
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    hashMapKeys.put("original_amount", original_amount);
-                    hashMapKeys.put("fee_amount", fee_amount);
-                    hashMapKeys.put("fee_percentage", fee_percentage);
-                    hashMapKeys.put("discount", "0");
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
 
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-                } else {
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", reference_id);
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    hashMapKeys.put("original_amount", original_amount);
-                    hashMapKeys.put("fee_amount", fee_amount);
-                    hashMapKeys.put("fee_percentage", fee_percentage);
-                    hashMapKeys.put("discount", "0");
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
+            hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
+            hashMapKeys.put("fee_percentage",roundTwoDecimals(Double.parseDouble( fee_percentage)));
+            hashMapKeys.put("discount", discount);
+            callDP(reference_id);
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_uplan_display_and_add()) {
-            try {
-                if (!preferenceManager.gettriggerReferenceId().equals("")) {
-
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", preferenceManager.gettriggerReferenceId());
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", edt_amount.getText().toString().replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                } else {
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", reference_id);
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", edt_amount.getText().toString().replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            callDP(reference_id);
 
 
         } else {
@@ -2518,66 +2442,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             } else {
                 amount = edt_amount.getText().toString().replace(",", "");
             }
-            try {
-                if (!preferenceManager.gettriggerReferenceId().equals("")) {
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", preferenceManager.gettriggerReferenceId());
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                } else {
-
-
-                    hashMapKeys.clear();
-                    if (!edt_reference.getText().toString().equals("")) {
-                        hashMapKeys.put("refData1", edt_reference.getText().toString());
-                    }
-                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-                    hashMapKeys.put("is_mobile_device", "true");
-                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
-                        reference_id = new Date().getTime() + "";
-                    hashMapKeys.put("reference_id", reference_id);
-                    hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grandtotal", amount.replace(",", ""));
-                    if (!auth_code.equals(""))
-                        hashMapKeys.put("auth_code", auth_code);
-
-                    hashMapKeys.put("payment_channels", "UNION_PAY");
-                    hashMapKeys.put("selectedChannel", "UNION_PAY");
-                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-                    hashMapKeys.put("qrMode", "true");
-
-                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            callDP(reference_id);
         }
 
 
@@ -2594,6 +2466,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     "  \"body\":";
 
             JSONObject jsonObject = new JSONObject(json_data);
+
             if (jsonObject.has("responseCodeThirtyNine")) {
                 if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
                     if (jsonObject.optString("transactionType").equals("SALE") ||
@@ -2616,29 +2489,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
 
             }
+            jsonObject.put("status_id",status);
+            json_data=jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
-//            new OkHttpHandler(getActivity(), this, null, "unionpaystatus").
-//                    execute(AppConstants.BASE_URL + AppConstants.UNION_PAY_STATUS
-//                            + "?reference_id=" + jsonObject.optString("orderNumber")
-//                            + "&is_mobile_device=true"
-//                            + "&terminal_id=" + preferenceManager.getterminalId() +
-//                            "&access_id=" + preferenceManager.getuniqueId()
-//                            + "&json_data=" + URLEncoder.encode(s + json_data + "}", "UTF-8")
-//                            + "&status_id=" + status);
 
-            hashMapKeys.clear();
-            String randomStr = new Date().getTime() + "";
-
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("is_mobile_device", "true");
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
-            hashMapKeys.put("random_str", randomStr);
-            hashMapKeys.put("status_id", status);
-            hashMapKeys.put("json_data", s + json_data + "}");
-
+            hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
+            hashMapKeys.put("trade_no",jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_success",true+"");
+            hashMapKeys.put("is_payment",true+"");
 
             String s2 = "", s1 = "";
             int i1 = 0;
@@ -2651,7 +2509,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     s2 = s2 + key + "=" + hashMapKeys.get(key);
                 i1++;
             }
-            s2 = s2 + PreferencesManager.getInstance(context).getauthToken();//.getuniqueId();
+            s2 = s2 +AppConstants.CLIENT_ID+ PreferencesManager.getInstance(context).getauthToken();//.getuniqueId();
             String signature = MD5Class.MD5(s2);
 
 
@@ -2661,16 +2519,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     "  },\n" +
                     "  \"body\":";
 
-            hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("is_mobile_device", "true");
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
-            hashMapKeys.put("random_str", randomStr);
-            hashMapKeys.put("status_id", status);
-            hashMapKeys.put("json_data", URLEncoder.encode(s + json_data + "}", "UTF-8"));
+            trade_no=jsonObject.optString("referenceNumber");
+            hashMapKeys.put("server_response",android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
+            hashMapKeys.put("trade_no",jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_success",true+"");
+            hashMapKeys.put("is_payment",true+"");
             i1 = 0;
             Iterator<String> iterator1 = hashMapKeys.keySet().iterator();
             while (iterator1.hasNext()) {
@@ -2685,7 +2538,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             AppConstants.EXTERNAL_APP_UNIONPAY_RESPONSE = URLDecoder.decode(s + json_data + "}", "UTF-8");
 
             new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2730,7 +2583,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public void callTransactionDetails() {
         //v2 signature implementation
         hashMapKeys.clear();
-        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
@@ -3488,7 +3341,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 preferenceManager.setunion_pay_resp("");
 
 
-                if (jsonObject.optBoolean("success")) {
+                if (jsonObject.optBoolean("status")) {
                     Toast.makeText((DashboardActivity) getActivity(), jsonObject.optString("response") + ".", Toast.LENGTH_LONG).show();
 
 

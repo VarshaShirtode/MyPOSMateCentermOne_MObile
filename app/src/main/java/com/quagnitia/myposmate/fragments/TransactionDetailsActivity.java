@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -732,14 +733,14 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
             case "TransactionDetails":
 
-                if (jsonObject.optBoolean("status")) {
+                //if (jsonObject.optBoolean("status")) {
                     JSON_DATA = jsonObject.toString();
                     jsonObjectTransactionDetails = jsonObject;
                     parseTransactionDetailsResponse(jsonObject);
 
-                } else {
-                    Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
-                }
+//                } else {
+//                    Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
+//                }
                 break;
 
             case "TransactionDetails1":
@@ -1183,9 +1184,25 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
     double remaining_amount=0.00;
     double refunded_amount=0.00;
-    public void parseTransactionDetailsResponse(JSONObject jsonObject) throws JSONException {
+    public void parseTransactionDetailsResponse(JSONObject jsonObject) throws Exception {
 
         JSONObject jsonObjectPayment = jsonObject.optJSONObject("payment");
+        String serverResponse="";
+
+        //validation for unionpay
+        if(jsonObjectPayment.has("serverResponse"))
+        {
+            if(jsonObjectPayment.optString("serverResponse")!=null)
+            {
+                byte data[]=android.util.Base64.decode(android.util.Base64.decode(jsonObjectPayment.optString("serverResponse"), Base64.NO_WRAP),Base64.NO_WRAP);
+                serverResponse = new String(data, "UTF-8");
+                JSONObject jsonObjectServerResponse=new JSONObject(serverResponse);
+                jsonObjectGatewayResponse = jsonObjectServerResponse.optJSONObject("body");
+            }
+        }
+
+
+
         JSONObject json = new JSONObject();
         if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")||
                 jsonObjectPayment.optString("paymentStatus").equals("REFUND")) {
@@ -1272,6 +1289,37 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
             json.put("Amount Refunded", refunded_amount);
             json.put("Remaining Amount",remaining_amount);
+
+            if (!jsonObjectPayment.optString("original_amount").equals("0.0") &&
+                    !jsonObjectPayment.optString("original_amount").equals("0.00")) {
+                json.put("Original Amount", jsonObjectPayment.optString("original_amount"));
+            }
+            if (!jsonObjectPayment.optString("fee_amount").equals("0.0") &&
+                    !jsonObjectPayment.optString("fee_amount").equals("0.00")) {
+                json.put("Fee Amount", jsonObjectPayment.optString("fee_amount"));
+            }
+            if (!jsonObjectPayment.optString("fee_percentage").equals("0.0") &&
+                    !jsonObjectPayment.optString("fee_percentage").equals("0.00")) {
+                json.put("Fee Percentage", jsonObjectPayment.optString("fee_percentage"));
+            }
+            if (!jsonObjectPayment.optString("discount").equals("0.0") &&
+                    !jsonObjectPayment.optString("discount").equals("0.00")) {
+                json.put("Discount", jsonObjectPayment.optString("discount"));
+            }
+
+//            try {
+//                if(jsonObjectPayment.has("serverResponse"))
+//                {
+//                    if (jsonObjectPayment.has("serverResponse") && jsonObjectPayment.optJSONObject("serverResponse") != null) {
+//                        jsonObjectGatewayResponse = jsonObject.optJSONObject("serverResponse").optJSONObject("body");
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+
             newjson = json;
 
             if (json.optString("Transaction Successful").equals("false")) {
@@ -1409,7 +1457,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     Bitmap bitmap = null;
     boolean isUnionPay = false;
 
-    public void print() {
+    public void print() throws Exception {
 
 
         final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
@@ -1417,21 +1465,35 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         int fontSize = 24;
         if(jsonObject.has("payment"))
         {
-            jsonObject=jsonObject.optJSONObject("payment");
-        }
-        try {
-            if (jsonObject.has("responseCodeThirtyNine") || jsonObject.has("server_response") && !jsonObject.optString("server_response").equals("")) {
-                isUnionPay = true;
-                intentCen.setComponent(comp);
-                Bundle bundle = new Bundle();
-                bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_TYPE, ThirtConst.TransType.PRINT_ANY);
-                bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORI_VOUCHER_NO, new JSONObject(jsonObject.optString("server_response")).optJSONObject("body").optString("voucherNumber"));
-                intentCen.putExtras(bundle);
-                startActivityForResult(intentCen, REQ_PAY_SALE);
-                return;
+            if(jsonObject.optJSONObject("payment").has("serverResponse"))
+            {
+                if(jsonObject.optJSONObject("payment").optString("serverResponse")!=null)
+                {
+                    byte data[]=android.util.Base64.decode(android.util.Base64.decode(jsonObject.optJSONObject("payment").optString("serverResponse"), Base64.NO_WRAP),Base64.NO_WRAP);
+                    String serverResponse = new String(data, "UTF-8");
+                    jsonObject=new JSONObject(serverResponse).optJSONObject("body");
+
+                    //printing unionpay receipt
+                    if (jsonObject.has("responseCodeThirtyNine")) {
+                        isUnionPay = true;
+                        intentCen.setComponent(comp);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_TYPE, ThirtConst.TransType.PRINT_ANY);
+                        bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORI_VOUCHER_NO, jsonObject.optString("voucherNumber"));
+                        intentCen.putExtras(bundle);
+                        startActivityForResult(intentCen, REQ_PAY_SALE);
+                        return;
+                    }
+
+                }
+            }
+            else
+            {
+                jsonObject=jsonObject.optJSONObject("payment");
             }
 
-            //    printDev.spitPaper(50);
+        }
+        try {
 
             if (newjson.optString("Transaction Type").equals("VOIDED") ||
                     newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_VOID") ||
