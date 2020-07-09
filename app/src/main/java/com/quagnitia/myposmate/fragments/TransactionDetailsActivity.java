@@ -57,11 +57,9 @@ import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,18 +74,13 @@ import java.util.TreeMap;
 
 public class TransactionDetailsActivity extends AppCompatActivity implements View.OnClickListener, OnTaskCompleted {
 
-    private TextView tv_details_key, tv_details_value;
     private Button btn_refund, btn_close, btn_refund_uni, btn_print, btn_void;
     private ProgressDialog progress;
     private EditText edt_amount, edt_description, edt_password;
     private PreferencesManager preferenceManager;
     private RecyclerView recycler_view;
-    private static String arkeAppPackageName = "com.arke.hk_dp";
-    private static String sdkAppPackageName = "com.arke.sdk.demo";
-    private TransactionNames currenTransaction;
     private VASCallsArkeBusiness vasCallsArkeBusiness;
     TreeMap<String, String> hashMapKeys;
-    //  private VASCallsSdkBusiness vasCallsSdkBusiness;
     private String JSON_DATA = "";
     JSONObject jsonObjectSale;
     Intent intentCen = new Intent();
@@ -96,6 +89,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     ComponentName comp = new ComponentName(packageName, activityName);
     private static final int REQ_PAY_SALE = 100;
     boolean isStart = false;
+    public String refund_time = "", refund_trade_no = "";
+    public String referenecno = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,109 +158,67 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 Toast.makeText(this, jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
 
             }
+            jsonObject.put("status_id", status);
+            json_data = jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
-
-            hashMapKeys.clear();
-            String randomStr = new Date().getTime() + "";
-
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("is_mobile_device", "true");
+            hashMapKeys.put("system", preferenceManager.getterminalId());
+            hashMapKeys.put("channel", "UNION_PAY");
             hashMapKeys.put("access_id", preferenceManager.getuniqueId());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
-            hashMapKeys.put("random_str", randomStr);
-            hashMapKeys.put("status_id", status);
-            hashMapKeys.put("json_data", s + json_data + "}");
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("rate", "0");
+            hashMapKeys.put("currency", "NZD");
+            hashMapKeys.put("transaction_id", jsonObjectTransactionDetails.optJSONObject("payment").optString("id"));
 
+            if (jsonObject.optString("transactionType").equals("SALE") ||
+                    jsonObject.optString("transactionType").equals("COUPON_SALE") ||
+                    jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+            ) {
+                hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount"))));
+                hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount"))));
+            } else if (jsonObjectTransactionDetails.optJSONObject("payment").has("serverResponse")) {
+                if (!jsonObjectGatewayResponse.equals("")) {
+                    hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(jsonObjectGatewayResponse.optString("amount"))));
+                    hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(jsonObjectGatewayResponse.optString("amount"))));
+                    hashMapKeys.put("refund_amount", refund_amount + "");
+                    hashMapKeys.put("refund_trade_no", jsonObject.optString("referenceNumber") + "");
+                }
+            }
+
+            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
+            hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
+            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_success", true + "");
+            hashMapKeys.put("is_payment", false + "");
 
             String s2 = "", s1 = "";
             int i1 = 0;
             Iterator<String> iterator = hashMapKeys.keySet().iterator();
             while (iterator.hasNext()) {
                 String key = iterator.next();
-                if (i1 != hashMapKeys.size() - 1)
+                if (i1 != hashMapKeys.size() - 1) {
                     s2 = s2 + key + "=" + hashMapKeys.get(key) + "&";
-                else
-                    s2 = s2 + key + "=" + hashMapKeys.get(key);
-                i1++;
-            }
-            s2 = s2 + PreferencesManager.getInstance(this).getauthToken();//.getuniqueId();
-            String signature = MD5Class.MD5(s2);
-
-
-            s = "{\n" +
-                    "  \"head\": {\n" +
-                    "    \"version\": \"V1.2.0\"\n" +
-                    "  },\n" +
-                    "  \"body\":";
-
-            hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("is_mobile_device", "true");
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
-            hashMapKeys.put("random_str", randomStr);
-            hashMapKeys.put("status_id", status);
-            hashMapKeys.put("json_data", URLEncoder.encode(s + json_data + "}", "UTF-8"));
-            i1 = 0;
-            Iterator<String> iterator1 = hashMapKeys.keySet().iterator();
-            while (iterator1.hasNext()) {
-                String key = iterator1.next();
-                if (i1 != hashMapKeys.size() - 1)
                     s1 = s1 + key + "=" + hashMapKeys.get(key) + "&";
-                else
+                } else {
+                    s2 = s2 + key + "=" + hashMapKeys.get(key);
                     s1 = s1 + key + "=" + hashMapKeys.get(key);
+                }
                 i1++;
             }
-
-
-            new OkHttpHandler(TransactionDetailsActivity.this, this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+            s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(this).getauthToken();//.getuniqueId();
+            String signature = MD5Class.MD5(s2);
+            new OkHttpHandler(TransactionDetailsActivity.this, this, null, "saveTransaction")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public String refund_time = "", refund_trade_no = "";
-    public String referenecno = "";
-
-    public void callRefundUnionPay(String json_data) {
-        openProgressDialog();
-        try {
-            JSONObject jsonObject = new JSONObject(json_data);
-            //v2 signature implementation
-            hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("refund_time", refund_time);
-            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
-            hashMapKeys.put("reference_id", referenecno);
-            hashMapKeys.put("refund_fee", jsonObject.optString("amount"));
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("refund_password", preferenceManager.getterminal_refund_password());
-            hashMapKeys.put("refund_reason", jsonObject.optString("referenceNumber"));
-            hashMapKeys.put("is_mobile_device", "true");
-
-            new OkHttpHandler(TransactionDetailsActivity.this, this, null, "refundUnionPay")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND_UNION_PAY + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
-            callAuthToken();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
 
     public void callTransactionDetails() {
         openProgressDialog();
-        //v2 signature implementation
         hashMapKeys.clear();
         hashMapKeys.put("access_id", preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
@@ -280,9 +233,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     public void callRefundApi() {
         openProgressDialog();
         try {
-            //v2 signature implementation
             hashMapKeys.clear();
-            hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
             hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
@@ -308,23 +260,22 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
     public void initUI() {
         vasCallsArkeBusiness = new VASCallsArkeBusiness(TransactionDetailsActivity.this);
-        //vasCallsSdkBusiness = new VASCallsSdkBusiness(TransactionDetailsActivity.this);
-        btn_print =  findViewById(R.id.btn_print);
+        btn_print = findViewById(R.id.btn_print);
         btn_void = findViewById(R.id.btn_void);
-        btn_refund_uni =  findViewById(R.id.btn_refund_uni);
+        btn_refund_uni = findViewById(R.id.btn_refund_uni);
         btn_void.setVisibility(View.GONE);
-        ll =  findViewById(R.id.ll);
-        print1 =  findViewById(R.id.btn_print1);
-        btn_close1 =  findViewById(R.id.btn_close1);
+        ll = findViewById(R.id.ll);
+        print1 = findViewById(R.id.btn_print1);
+        btn_close1 = findViewById(R.id.btn_close1);
         btn_close1.setVisibility(View.GONE);
         print1.setVisibility(View.GONE);
         ll.setVisibility(View.GONE);
-        btn_refund =  findViewById(R.id.btn_refund);
-        btn_close =  findViewById(R.id.btn_close);
-        edt_amount =  findViewById(R.id.edt_amount);
-        edt_description =  findViewById(R.id.edt_description);
-        edt_password =  findViewById(R.id.edt_password);
-        recycler_view =  findViewById(R.id.recycler_view);
+        btn_refund = findViewById(R.id.btn_refund);
+        btn_close = findViewById(R.id.btn_close);
+        edt_amount = findViewById(R.id.edt_amount);
+        edt_description = findViewById(R.id.edt_description);
+        edt_password = findViewById(R.id.edt_password);
+        recycler_view = findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(TransactionDetailsActivity.this);
         recycler_view.setLayoutManager(mLayoutManager);
         recycler_view.setItemAnimator(new DefaultItemAnimator());
@@ -408,6 +359,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         }
     }
 
+    String refund_amount = "";
 
     @Override
     public void onClick(View v) {
@@ -415,6 +367,16 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         switch (v.getId()) {
 
             case R.id.btn_void:
+                if(newjson.has("Remaining Amount"))
+                {
+                    Double voidAmount=Double.parseDouble(newjson.optString("Remaining Amount"));
+                    Double originalAmount=Double.parseDouble(newjson.optString("Original Amount"));
+                    if(voidAmount!=0.00&&voidAmount<originalAmount)
+                    {
+                        Toast.makeText(TransactionDetailsActivity.this, "Void cannot be performed on partial amount", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
                 beginVoid(jsonObjectGatewayResponse);
                 break;
 
@@ -437,22 +399,35 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 dialog.setContentView(dialogview);
 
 
-                final EditText editAmount = (EditText) dialogview.findViewById(R.id.edt_amount_unionpay);
-                Button btn_close = (Button) dialogview.findViewById(R.id.btn_close);
-                Button btn_refund = (Button) dialogview.findViewById(R.id.btn_refund);
-
-
-                btn_close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
+                final EditText editAmount = dialogview.findViewById(R.id.edt_amount_unionpay);
+                Button btn_close = dialogview.findViewById(R.id.btn_close);
+                Button btn_refund =  dialogview.findViewById(R.id.btn_refund);
+                Double originalAmount=Double.parseDouble(newjson.optString("Receipt Amount"));
+                if(newjson.has("Remaining Amount"))
+                {
+                    Double remainingAmount=Double.parseDouble(newjson.optString("Remaining Amount"));
+                    if(remainingAmount!=0.00&&remainingAmount<originalAmount)
+                    {
+                       editAmount.setText(remainingAmount+"");
                     }
+                }
+
+                btn_close.setOnClickListener(View-> {
+                        dialog.dismiss();
                 });
 
-                btn_refund.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                btn_refund.setOnClickListener(View-> {
+
                         try {
+                            refund_amount = editAmount.getText().toString();
+
+                            if(Double.parseDouble(refund_amount)>originalAmount)
+                            {
+                                Toast.makeText(TransactionDetailsActivity.this, "Amount enter is greater than the receipt amount", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+
                             jsonObjectSale = new JSONObject();
                             jsonObjectSale.put("transactionType", "REFUND");
                             jsonObjectSale.put("amount", editAmount.getText().toString());
@@ -478,12 +453,11 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                             intentCen.putExtras(bundle);
                             startActivityForResult(intentCen, REQ_PAY_SALE);
-
+                            callAuthToken();
                             dialog.dismiss();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
                 });
 
 
@@ -505,10 +479,10 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     Toast.makeText(TransactionDetailsActivity.this, "Please enter the refund reason", Toast.LENGTH_SHORT).show();
                 } else if (edt_password.getText().toString().equals("")) {
                     Toast.makeText(TransactionDetailsActivity.this, "Please enter the refund password", Toast.LENGTH_SHORT).show();
-                } else if ((newjson.has("Remaining Amount")&& !newjson.optString("Remaining Amount").equals("0.00"))&&Double.parseDouble(edt_amount.getText().toString()) >
+                } else if ((newjson.has("Remaining Amount") && !newjson.optString("Remaining Amount").equals("0.00")) && Double.parseDouble(edt_amount.getText().toString()) >
 //                        Double.parseDouble(jsonObjectTransactionDetails.optString("remaining_amount"))) {
                         Double.parseDouble(newjson.optString("Remaining Amount"))
-                && newjson.optString("Transaction Type").equals("REFUND")
+                        && newjson.optString("Transaction Type").equals("REFUND")
                 ) {
                     Toast.makeText(TransactionDetailsActivity.this, "Entered amount is greater than remaining amount.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -528,11 +502,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     }
 
     public void callAuthToken() {
-        //   openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-//        hashMap.put("username", AppConstants.CLIENT_ID);
-//        hashMap.put("password",AppConstants.CLIENT_SECRET);
         new OkHttpHandler(TransactionDetailsActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
@@ -631,29 +602,21 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             case "AuthToken":
                 if (jsonO.has("access_token") && !jsonO.optString("access_token").equals("")) {
                     preferenceManager.setauthToken(jsonO.optString("access_token"));
-                    if (AppConstants.isRefundUnionpayDone) {
-                        AppConstants.isRefundUnionpayDone = false;
-                        callRefundUnionPay(unionpay);
-                    }
-
                 }
 
                 if (isStart) {
                     isStart = false;
                     callTransactionDetails();
                 }
-
-
                 break;
 
-
-//added on 28/02/2019
-            case "refundUnionPay":
-                // callAuthToken();
-                isRefundUnionPaySuccess = true;
+            case "saveTransaction":
+                callAuthToken();
                 if (progress != null && progress.isShowing())
                     progress.dismiss();
-                if (jsonObject.optBoolean("success")) {
+
+
+                if (jsonObject.optBoolean("status")) {
                     unionpay = "";
                     refund_time = "";
                     refund_trade_no = "";
@@ -664,19 +627,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     finish();
                 }
 
-                break;
-
-            case "unionpaystatus":
-
-                AppConstants.isRefundUnionpayDone = true;
-                callAuthToken();
-                if (progress != null && progress.isShowing())
-                    progress.dismiss();
-                Toast.makeText(TransactionDetailsActivity.this, "Transaction details updated successfully", Toast.LENGTH_SHORT).show();
-                //added on 28/02/2019
-                //callRefundUnionPay(unionpay);
-                //commented on 28/02/2019
-//                finish();
                 break;
             case "Arke":
                 callAuthToken();
@@ -696,15 +646,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                                     jsonObject.optString("transactionType").equals("COUPON_VOID")) {
                                 //added on 28/02/2019
                                 unionpay = result;
-
                                 callUnionPayStatus(result, "true");
+
                             }
 
                         }
-                    } else {
-                        //callUnionPayStatus(result, "false");
                     }
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -733,14 +680,14 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
             case "TransactionDetails":
 
-                //if (jsonObject.optBoolean("status")) {
+                if (jsonObject.optBoolean("status")) {
                     JSON_DATA = jsonObject.toString();
                     jsonObjectTransactionDetails = jsonObject;
                     parseTransactionDetailsResponse(jsonObject);
 
-//                } else {
-//                    Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
-//                }
+                } else {
+                    Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case "TransactionDetails1":
@@ -1182,29 +1129,27 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         }
     }
 
-    double remaining_amount=0.00;
-    double refunded_amount=0.00;
+    double remaining_amount = 0.00;
+    double refunded_amount = 0.00;
+
     public void parseTransactionDetailsResponse(JSONObject jsonObject) throws Exception {
 
         JSONObject jsonObjectPayment = jsonObject.optJSONObject("payment");
-        String serverResponse="";
+        String serverResponse = "";
 
         //validation for unionpay
-        if(jsonObjectPayment.has("serverResponse"))
-        {
-            if(jsonObjectPayment.optString("serverResponse")!=null)
-            {
-                byte data[]=android.util.Base64.decode(android.util.Base64.decode(jsonObjectPayment.optString("serverResponse"), Base64.NO_WRAP),Base64.NO_WRAP);
+        if (jsonObjectPayment.has("serverResponse")) {
+            if (jsonObjectPayment.optString("serverResponse") != null) {
+                byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonObjectPayment.optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
                 serverResponse = new String(data, "UTF-8");
-                JSONObject jsonObjectServerResponse=new JSONObject(serverResponse);
+                JSONObject jsonObjectServerResponse = new JSONObject(serverResponse);
                 jsonObjectGatewayResponse = jsonObjectServerResponse.optJSONObject("body");
             }
         }
 
 
-
         JSONObject json = new JSONObject();
-        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")||
+        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS") ||
                 jsonObjectPayment.optString("paymentStatus").equals("REFUND")) {
             for (int i = 0; i < jsonObjectPayment.length(); i++) {
                 for (int j = 0; j < jsonObjectPayment.length(); j++) {
@@ -1252,7 +1197,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                             Double receipt_amount = Double.parseDouble(jsonObjectPayment.optString("receiptAmount"));
                             Double rate = Double.parseDouble(jsonObjectPayment.optString("rate"));
                             Double rmb_amount = receipt_amount * rate;
-                            json.put("Amount RMB", roundTwoDecimals(Float.valueOf(rmb_amount+"")));
+                            json.put("Amount RMB", roundTwoDecimals(Float.valueOf(rmb_amount + "")));
                             break;
                         case "receiptAmount":
                             json.put("Receipt Amount", value);
@@ -1267,58 +1212,53 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                             json.put("Payment Reference", value);
                             break;
                         case "type":
-                            json.put("Transaction Type", value);
+                            if (jsonObjectPayment.has("serverResponse")) {
+
+                                json.put("Transaction Type", jsonObjectGatewayResponse.optString("transactionType"));
+                            } else
+                                json.put("Transaction Type", value);
+
                             break;
                     }
                 }
             }
 
 
-            if(jsonObject.has("refunds"))
-            {
-                JSONArray jsonArrayRefund=jsonObject.optJSONArray("refunds");
-                for(int i=0;i<jsonArrayRefund.length();i++)
-                {
-                    refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
-                    refunded_amount=Double.parseDouble(roundTwoDecimals(refunded_amount));
+            if (jsonObject.has("refunds")) {
+                JSONArray jsonArrayRefund = jsonObject.optJSONArray("refunds");
+                for (int i = 0; i < jsonArrayRefund.length(); i++) {
+                    if (json.optString("Payment By").equals("UNION_PAY")) {
+                        refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundedAmount"));
+                    } else {
+                        refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
+                    }
+
+                    refunded_amount = Double.parseDouble(roundTwoDecimals(refunded_amount));
 
                 }
-                remaining_amount=Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount"))-refunded_amount;
-                remaining_amount=Double.parseDouble(roundTwoDecimals(remaining_amount));
+                remaining_amount = Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount")) - refunded_amount;
+                remaining_amount = Double.parseDouble(roundTwoDecimals(remaining_amount));
             }
 
             json.put("Amount Refunded", refunded_amount);
-            json.put("Remaining Amount",remaining_amount);
+            json.put("Remaining Amount", remaining_amount);
 
-            if (!jsonObjectPayment.optString("original_amount").equals("0.0") &&
-                    !jsonObjectPayment.optString("original_amount").equals("0.00")) {
-                json.put("Original Amount", jsonObjectPayment.optString("original_amount"));
+            if (!jsonObjectPayment.optString("receiptAmount").equals("0.0") &&
+                    !jsonObjectPayment.optString("receiptAmount").equals("0.00")) {
+                json.put("Original Amount", jsonObjectPayment.optString("receiptAmount"));
             }
-            if (!jsonObjectPayment.optString("fee_amount").equals("0.0") &&
-                    !jsonObjectPayment.optString("fee_amount").equals("0.00")) {
-                json.put("Fee Amount", jsonObjectPayment.optString("fee_amount"));
+            if (!jsonObjectPayment.optString("feeAmount").equals("0.0") &&
+                    !jsonObjectPayment.optString("feeAmount").equals("0.00")) {
+                json.put("Fee Amount", jsonObjectPayment.optString("feeAmount"));
             }
-            if (!jsonObjectPayment.optString("fee_percentage").equals("0.0") &&
-                    !jsonObjectPayment.optString("fee_percentage").equals("0.00")) {
-                json.put("Fee Percentage", jsonObjectPayment.optString("fee_percentage"));
+            if (!jsonObjectPayment.optString("feePercentage").equals("0.0") &&
+                    !jsonObjectPayment.optString("feePercentage").equals("0.00")) {
+                json.put("Fee Percentage", jsonObjectPayment.optString("feePercentage"));
             }
             if (!jsonObjectPayment.optString("discount").equals("0.0") &&
                     !jsonObjectPayment.optString("discount").equals("0.00")) {
                 json.put("Discount", jsonObjectPayment.optString("discount"));
             }
-
-//            try {
-//                if(jsonObjectPayment.has("serverResponse"))
-//                {
-//                    if (jsonObjectPayment.has("serverResponse") && jsonObjectPayment.optJSONObject("serverResponse") != null) {
-//                        jsonObjectGatewayResponse = jsonObject.optJSONObject("serverResponse").optJSONObject("body");
-//                    }
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
 
             newjson = json;
 
@@ -1332,7 +1272,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 btn_refund_uni.setEnabled(true);
             }
 
-            if (newjson.optString("Payment Amount").equals(newjson.optString("Amount Refunded"))) {
+            if (Double.parseDouble(newjson.optString("Payment Amount"))
+                    == Double.parseDouble((newjson.optString("Amount Refunded")))) {
                 btn_refund.setVisibility(View.GONE);
                 findViewById(R.id.ll1).setVisibility(View.GONE);
                 findViewById(R.id.ll2).setVisibility(View.GONE);
@@ -1360,6 +1301,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 linearLayout.setWeightSum(2);
                 btn_refund_uni.setVisibility(View.GONE);
                 btn_void.setVisibility(View.GONE);
+                if (Double.parseDouble(newjson.optString("Payment Amount"))
+                        == Double.parseDouble((newjson.optString("Amount Refunded")))) {
+                    btn_refund.setVisibility(View.GONE);
+
+                    findViewById(R.id.ll1).setVisibility(View.GONE);
+                    findViewById(R.id.ll2).setVisibility(View.GONE);
+                    findViewById(R.id.ll3).setVisibility(View.GONE);
+                    linearLayout.setWeightSum(2);
+                    btn_refund_uni.setVisibility(View.GONE);
+                    btn_void.setVisibility(View.GONE);
+                }
             } else if (newjson.optString("Transaction Type").equals("SALE") ||
                     newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_SALE")
             ) {
@@ -1367,11 +1319,31 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 linearLayout.setWeightSum(4);
                 btn_void.setVisibility(View.VISIBLE);
                 btn_refund_uni.setVisibility(View.VISIBLE);
+                if (Double.parseDouble(newjson.optString("Payment Amount"))
+                        == Double.parseDouble((newjson.optString("Amount Refunded")))) {
+                    btn_refund.setVisibility(View.GONE);
+                    findViewById(R.id.ll1).setVisibility(View.GONE);
+                    findViewById(R.id.ll2).setVisibility(View.GONE);
+                    findViewById(R.id.ll3).setVisibility(View.GONE);
+                    linearLayout.setWeightSum(2);
+                    btn_refund_uni.setVisibility(View.GONE);
+                    btn_void.setVisibility(View.GONE);
+                }
             } else if (newjson.optString("Transaction Type").equals("COUPON_SALE")) {
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_void);
                 linearLayout.setWeightSum(3);
                 btn_void.setVisibility(View.VISIBLE);
                 btn_refund_uni.setVisibility(View.GONE);
+                if (Double.parseDouble(newjson.optString("Payment Amount"))
+                        == Double.parseDouble((newjson.optString("Amount Refunded")))) {
+                    btn_refund.setVisibility(View.GONE);
+                    findViewById(R.id.ll1).setVisibility(View.GONE);
+                    findViewById(R.id.ll2).setVisibility(View.GONE);
+                    findViewById(R.id.ll3).setVisibility(View.GONE);
+                    linearLayout.setWeightSum(2);
+                    btn_refund_uni.setVisibility(View.GONE);
+                    btn_void.setVisibility(View.GONE);
+                }
             } else {
                 btn_void.setVisibility(View.GONE);
                 btn_refund_uni.setVisibility(View.GONE);
@@ -1463,15 +1435,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
 
         int fontSize = 24;
-        if(jsonObject.has("payment"))
-        {
-            if(jsonObject.optJSONObject("payment").has("serverResponse"))
-            {
-                if(jsonObject.optJSONObject("payment").optString("serverResponse")!=null)
-                {
-                    byte data[]=android.util.Base64.decode(android.util.Base64.decode(jsonObject.optJSONObject("payment").optString("serverResponse"), Base64.NO_WRAP),Base64.NO_WRAP);
+        if (jsonObject.has("payment")) {
+            if (jsonObject.optJSONObject("payment").has("serverResponse")) {
+                if (jsonObject.optJSONObject("payment").optString("serverResponse") != null) {
+                    byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonObject.optJSONObject("payment").optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
                     String serverResponse = new String(data, "UTF-8");
-                    jsonObject=new JSONObject(serverResponse).optJSONObject("body");
+                    jsonObject = new JSONObject(serverResponse).optJSONObject("body");
 
                     //printing unionpay receipt
                     if (jsonObject.has("responseCodeThirtyNine")) {
@@ -1486,10 +1455,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     }
 
                 }
-            }
-            else
-            {
-                jsonObject=jsonObject.optJSONObject("payment");
+            } else {
+                jsonObject = jsonObject.optJSONObject("payment");
             }
 
         }
@@ -1749,15 +1716,14 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         d = df.parse(jsonObject.optString("created_on").replace("T", " "));
                         df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
-                    }
-                    else if (jsonObject.has("createDate")) {
+                    } else if (jsonObject.has("createDate")) {
                         df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                         df.setTimeZone(TimeZone.getTimeZone("UTC"));
                         d = df.parse(jsonObject.optString("createDate"));
                         df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                         df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     }
-                    list.add(new PrintDataObject(df1.format(d).replace("T"," "),
+                    list.add(new PrintDataObject(df1.format(d).replace("T", " "),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
 
@@ -1835,15 +1801,14 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             if (jsonObjectTransactionDetails.has("refunds") && jsonObjectTransactionDetails.optJSONArray("refunds") != null)
                 if (jsonObjectTransactionDetails.optJSONArray("refunds").length() != 0) {
 
-                    JSONArray jsonArrayRefund= jsonObjectTransactionDetails.optJSONArray("refunds");
-                    for(int i=0;i<jsonArrayRefund.length();i++)
-                    {
+                    JSONArray jsonArrayRefund = jsonObjectTransactionDetails.optJSONArray("refunds");
+                    for (int i = 0; i < jsonArrayRefund.length(); i++) {
                         refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
-                        refunded_amount=Double.parseDouble(roundTwoDecimals(refunded_amount));
+                        refunded_amount = Double.parseDouble(roundTwoDecimals(refunded_amount));
 
                     }
-                    remaining_amount=Double.parseDouble(jsonObject.optString("grandTotal"))-refunded_amount;
-                    remaining_amount=Double.parseDouble(roundTwoDecimals(remaining_amount));
+                    remaining_amount = Double.parseDouble(jsonObject.optString("grandTotal")) - refunded_amount;
+                    remaining_amount = Double.parseDouble(roundTwoDecimals(remaining_amount));
 
                     list.add(new PrintDataObject("-----------------------------",
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
@@ -2050,7 +2015,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        callAuthToken();
         if (isUnionPay) {
             isUnionPay = false;
             try {

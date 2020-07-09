@@ -1304,6 +1304,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
     public void callAllConvinenceFeeCalculations() {
+        if(edt_amount.getText().toString().equals(""))
+            return;
         calculateConvAlipay();
         calculateConvWeChat();
         calculateConvAlipayWeChatScan();
@@ -2492,7 +2494,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             jsonObject.put("status_id",status);
             json_data=jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
-
+            trade_no=jsonObject.optString("referenceNumber");
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
             hashMapKeys.put("trade_no",jsonObject.optString("referenceNumber"));
             hashMapKeys.put("is_success",true+"");
@@ -2512,18 +2514,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             s2 = s2 +AppConstants.CLIENT_ID+ PreferencesManager.getInstance(context).getauthToken();//.getuniqueId();
             String signature = MD5Class.MD5(s2);
 
-
-            s = "{\n" +
-                    "  \"head\": {\n" +
-                    "    \"version\": \"V1.2.0\"\n" +
-                    "  },\n" +
-                    "  \"body\":";
-
-            trade_no=jsonObject.optString("referenceNumber");
-            hashMapKeys.put("server_response",android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
-            hashMapKeys.put("trade_no",jsonObject.optString("referenceNumber"));
-            hashMapKeys.put("is_success",true+"");
-            hashMapKeys.put("is_payment",true+"");
             i1 = 0;
             Iterator<String> iterator1 = hashMapKeys.keySet().iterator();
             while (iterator1.hasNext()) {
@@ -3187,12 +3177,15 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public void onResume() {
         super.onResume();
         Log.d("", "");
-        edt_amount = (CurrencyEditText) view.findViewById(R.id.edt_amount);
+        edt_amount = view.findViewById(R.id.edt_amount);
+        if(edt_amount.getText().toString().equals(""))
+            edt_amount.setText("0.00");
+
         edt_amount.setLocale(new Locale("en", "US"));
-        edt_reference = (EditText) view.findViewById(R.id.edt_reference);
-        edt_amount1 = (CurrencyEditText) view.findViewById(R.id.edt_amount1);
+        edt_reference = view.findViewById(R.id.edt_reference);
+        edt_amount1 =  view.findViewById(R.id.edt_amount1);
         edt_amount1.setLocale(new Locale("en", "US"));
-        edt_reference1 = (EditText) view.findViewById(R.id.edt_reference1);
+        edt_reference1 =  view.findViewById(R.id.edt_reference1);
         edt_amount.requestFocus();
 
 

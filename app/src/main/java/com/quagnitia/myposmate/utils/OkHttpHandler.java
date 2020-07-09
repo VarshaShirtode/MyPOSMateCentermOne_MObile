@@ -18,7 +18,6 @@ import com.quagnitia.myposmate.R;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -32,8 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import okhttp3.OkHttpClient;
 
 
 public class OkHttpHandler extends AsyncTask {
@@ -82,7 +79,7 @@ public class OkHttpHandler extends AsyncTask {
         try {
 
 
-            if (TAG.equals("unionpaystatus")||TAG.equals("UpdateBranchDetails")) {
+            if (TAG.equals("unionpaystatus") || TAG.equals("UpdateBranchDetails")) {
                 url = new URL(requestURL);
             } else {
                 url = new URL(requestURL.replaceAll(" ", "%20"));
@@ -93,15 +90,14 @@ public class OkHttpHandler extends AsyncTask {
             conn.setConnectTimeout(15000);
 
             if (postDataParams != null) {
-                if(TAG.equals("AuthToken")||TAG.equals("AuthTokenCloseTrade"))
-                {
-                    String formData = "username="+preferencesManager.getMerchantId()+"&password="+preferencesManager.getConfigId()+"&grant_type=password";
+                if (TAG.equals("AuthToken") || TAG.equals("AuthTokenCloseTrade")) {
+                    String formData = "username=" + preferencesManager.getMerchantId() + "&password=" + preferencesManager.getConfigId() + "&grant_type=password";
 //                    String auth =new String(Base64.encode(( preferencesManager.getMerchantId() + ":" + preferencesManager.getConfigId()).getBytes(),Base64.URL_SAFE| Base64.NO_WRAP));
 
-                    String auth =new String(Base64.encode(( AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET).getBytes(),Base64.URL_SAFE| Base64.NO_WRAP));
+                    String auth = new String(Base64.encode((AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET).getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
 
                     conn.setRequestMethod("POST");
-                    conn.addRequestProperty("Authorization","Basic "+auth);
+                    conn.addRequestProperty("Authorization", "Basic " + auth);
                     conn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     //conn.setRequestProperty("charset", "utf-8");
                     //conn.setRequestProperty("Content-Length", Integer.toString(formData.length()));
@@ -114,9 +110,7 @@ public class OkHttpHandler extends AsyncTask {
                     writer.flush();
                     writer.close();
                     os.close();
-                }
-                else
-                {
+                } else {
                     conn.setRequestMethod("POST");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
