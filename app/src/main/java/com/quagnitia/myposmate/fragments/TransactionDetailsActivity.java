@@ -1256,22 +1256,22 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 remaining_amount = Double.parseDouble(roundTwoDecimals(remaining_amount));
             }
 
-            json.put("Amount Refunded", refunded_amount);
-            json.put("Remaining Amount", remaining_amount);
+            json.put("Amount Refunded", roundTwoDecimals(refunded_amount));
+            json.put("Remaining Amount", roundTwoDecimals(remaining_amount));
 
             if (!jsonObjectPayment.optString("receiptAmount").equals("0.0") &&
                     !jsonObjectPayment.optString("receiptAmount").equals("0.00")) {
                 json.put("Original Amount", jsonObjectPayment.optString("receiptAmount"));
             }
-            if (!jsonObjectPayment.optString("feeAmount").equals("0.0") &&
+            if (jsonObjectPayment.has("feeAmount")&&!jsonObjectPayment.optString("feeAmount").equals("0.0") &&
                     !jsonObjectPayment.optString("feeAmount").equals("0.00")) {
                 json.put("Fee Amount", jsonObjectPayment.optString("feeAmount"));
             }
-            if (!jsonObjectPayment.optString("feePercentage").equals("0.0") &&
+            if (jsonObjectPayment.has("feePercentage")&&!jsonObjectPayment.optString("feePercentage").equals("0.0") &&
                     !jsonObjectPayment.optString("feePercentage").equals("0.00")) {
                 json.put("Fee Percentage", jsonObjectPayment.optString("feePercentage"));
             }
-            if (!jsonObjectPayment.optString("discount").equals("0.0") &&
+            if (jsonObjectPayment.has("discount")&&!jsonObjectPayment.optString("discount").equals("0.0") &&
                     !jsonObjectPayment.optString("discount").equals("0.00")) {
                 json.put("Discount", jsonObjectPayment.optString("discount"));
             }
