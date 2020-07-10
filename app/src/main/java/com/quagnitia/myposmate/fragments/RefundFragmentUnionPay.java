@@ -103,11 +103,8 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     }
 
     public void callAuthToken() {
-        // openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-//        hashMap.put("username", AppConstants.CLIENT_ID);
-//        hashMap.put("password",AppConstants.CLIENT_SECRET);
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
@@ -115,7 +112,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.refund_fragment_unionpay, container, false);
         preferenceManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
@@ -184,55 +180,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
     public static boolean isScanned = false;
 
-    /**
-     * Start back scan.
-     */
-    private void startBackScan() throws RemoteException {
-        ScannerForBack.getInstance().startScan(30, new OnScanListener.Stub() {
-
-            @Override
-            public void onSuccess(String code) throws RemoteException {
-                Log.d(TAG, "--- onSuccess ---");
-                if (getActivity() != null)
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-
-                            edt_reference_id.setText(code + "");
-                            edt_reference_id.setEnabled(false);
-                            edt_order_no.setEnabled(false);
-                            edt_transaction_no.setEnabled(false);
-                            isScanned = true;
-                            callAuthToken();
-
-
-                        }
-                    });
-            }
-
-            @Override
-            public void onError(int error) throws RemoteException {
-                Log.d(TAG, "--- onError ---");
-
-
-            }
-
-            @Override
-            public void onTimeout() throws RemoteException {
-                Log.d(TAG, "--- onTimeout ---");
-
-
-            }
-
-            @Override
-
-
-            public void onCancel() throws RemoteException {
-                Log.d(TAG, "--- onCancel ---");
-
-
-            }
-        });
-    }
 
     private AidlQuickScanZbar aidlQuickScanService = null;
     private int bestWidth = 640;
@@ -562,7 +509,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 json.put("orderNumber", jsonObjectSale.optString("orderNumber"));
                 onTaskCompleted(json.toString(), "Arke");
             } catch (Exception e) {
-                //Handle exception here
             }
 
         }
@@ -583,7 +529,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     }
 
     JSONObject jsonObject;
-    private String payment_mode = "", qrMode = "";
     public static String qrcode = "";
     public static boolean isScannedUnionPayQr = false;
     public static double alipaywechatamount = 0.0;
@@ -631,7 +576,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 }
                 break;
             case "Arke":
-                //    callAuthToken();
                 if (jsonObject.has("responseCodeThirtyNine")) {
                     if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
                         preferenceManager.setunion_pay_resp(jsonObject.toString());
@@ -743,34 +687,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     public String refund_time = "", refund_trade_no = "";
     public String referenecno = "";
 
-    public void callRefundUnionPay(String json_data) {
-        openProgressDialog();
-        try {
-            JSONObject jsonObject = new JSONObject(json_data);
-            //v2 signature implementation
-            hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("refund_time", refund_time);
-            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
-            hashMapKeys.put("reference_id", referenecno);
-            hashMapKeys.put("refund_fee", jsonObject.optString("amount"));
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("refund_password", preferenceManager.getterminal_refund_password());
-            hashMapKeys.put("refund_reason", jsonObject.optString("referenceNumber"));
-            hashMapKeys.put("is_mobile_device", "true");
 
-            new OkHttpHandler(getActivity(), this, null, "refundUnionPay")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND_UNION_PAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-            callAuthToken();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
 
     public AidlDeviceManager manager = null;
