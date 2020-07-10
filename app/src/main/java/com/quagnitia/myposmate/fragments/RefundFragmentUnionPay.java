@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,6 +45,7 @@ import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 import com.usdk.apiservice.aidl.scanner.OnScanListener;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
@@ -141,13 +143,13 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         edt_amount1 = view.findViewById(R.id.edt_amount1);
         edt_order_no = view.findViewById(R.id.edt_order_no);
         edt_transaction_no = view.findViewById(R.id.edt_transaction_date);
-        edt_reference_id =  view.findViewById(R.id.edt_reference_no);
+        edt_reference_id = view.findViewById(R.id.edt_reference_no);
         btn_save1 = view.findViewById(R.id.btn_save1);
         btn_cancel1 = view.findViewById(R.id.btn_cancel1);
         edt_amount1.setInputType(InputType.TYPE_CLASS_NUMBER);
         btn_scan_reference = view.findViewById(R.id.btn_scan_reference);
-        ll_amount1 =  view.findViewById(R.id.ll_amount1);
-        ll_reference_id =  view.findViewById(R.id.ll_reference_id);
+        ll_amount1 = view.findViewById(R.id.ll_amount1);
+        ll_reference_id = view.findViewById(R.id.ll_reference_id);
         ll_transaction_no = view.findViewById(R.id.ll_transaction_no);
         ll_order_no = view.findViewById(R.id.ll_order_no);
         ll_se = view.findViewById(R.id.ll_se);
@@ -355,21 +357,17 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                     Toast.makeText(getActivity(), "Enter transaction date(MMDD)", Toast.LENGTH_SHORT).show();
                 } else if (edt_order_no.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter order no", Toast.LENGTH_SHORT).show();
-                }
-                else if(alipaywechatamount!=0.0&&Double.parseDouble(edt_amount1.getText().toString())>alipaywechatamount)
-                {
+                } else if (alipaywechatamount != 0.0 && Double.parseDouble(edt_amount1.getText().toString()) > alipaywechatamount) {
                     Toast.makeText(getActivity(), "Amount entered is greater than the original amount used in the transaction.", Toast.LENGTH_SHORT).show();
-                }
-
-                else {
+                } else {
                     try {
+                        refund_amount=edt_amount1.getText().toString();
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("transactionType", "REFUND");
                         jsonObject.put("amount", edt_amount1.getText().toString());
                         jsonObject.put("originalReferenceNumber", edt_reference_id.getText().toString());
                         jsonObject.put("orderNumber", edt_order_no.getText().toString());
                         jsonObject.put("originalTransactionDate", edt_transaction_no.getText().toString());
-
 
 
                         beginRefund(jsonObject);
@@ -385,10 +383,122 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         }
     }
 
+    String roundTwoDecimals(double d) {
+        DecimalFormat twoDForm = new DecimalFormat("#0.00");
+        return twoDForm.format(d);
+    }
 
     TreeMap<String, String> hashMapKeys;
+    String refund_amount="";
 
     public void callUnionPayStatus(String json_data, String status) {
+        openProgressDialog();
+        try {
+            String s = "{\n" +
+                    "  \"head\": {\n" +
+                    "    \"version\": \"V1.2.0\"\n" +
+                    "  },\n" +
+                    "  \"body\":";
+
+            JSONObject jsonObject = new JSONObject(json_data);
+            if (jsonObject.has("responseCodeThirtyNine")) {
+                if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
+                    if (jsonObject.optString("transactionType").equals("SALE") ||
+                            jsonObject.optString("transactionType").equals("COUPON_SALE") ||
+                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+                    ) {
+                        status = "20";
+                    } else if (jsonObject.optString("transactionType").equals("VOID") ||
+                            jsonObject.optString("transactionType").equals("REFUND") ||
+                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_VOID") ||
+                            jsonObject.optString("transactionType").equals("COUPON_VOID")) {
+                        status = "19"; //set 22 to 19 in case of void on 28/02/2019
+                    }
+
+                }
+            } else {
+                status = "23";
+                Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
+
+            }
+            jsonObject.put("status_id", status);
+            json_data = jsonObject.toString();
+            preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("system", preferenceManager.getterminalId());
+            hashMapKeys.put("channel", "UNION_PAY");
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("rate", "0");
+            hashMapKeys.put("currency", "NZD");
+            hashMapKeys.put("transaction_id", jsonObjectTransactionDetails.optJSONObject("payment").optString("id"));
+
+            if (jsonObject.optString("transactionType").equals("SALE") ||
+                    jsonObject.optString("transactionType").equals("COUPON_SALE") ||
+                    jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+            ) {
+                hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount"))));
+                hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount"))));
+            } else if (jsonObjectTransactionDetails.optJSONObject("payment").has("serverResponse")) {
+                if (!jsonObjectGatewayResponse.equals("")) {
+                    hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(jsonObjectGatewayResponse.optString("amount"))));
+                    hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(jsonObjectGatewayResponse.optString("amount"))));
+                    hashMapKeys.put("refund_amount", refund_amount + "");
+                    hashMapKeys.put("refund_trade_no", jsonObject.optString("referenceNumber") + "");
+                }
+            }
+
+            hashMapKeys.put("reference_id", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
+            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_success", true + "");
+            hashMapKeys.put("is_payment", false + "");
+
+            String s2 = "", s1 = "";
+            int i1 = 0;
+            Iterator<String> iterator = hashMapKeys.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                if (i1 != hashMapKeys.size() - 1) {
+                    s2 = s2 + key + "=" + hashMapKeys.get(key) + "&";
+                    s1 = s1 + key + "=" + hashMapKeys.get(key) + "&";
+                } else {
+                    s2 = s2 + key + "=" + hashMapKeys.get(key);
+                    s1 = s1 + key + "=" + hashMapKeys.get(key);
+                }
+                i1++;
+            }
+            s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(getActivity()).getauthToken();//.getuniqueId();
+            String signature = MD5Class.MD5(s2);
+            new OkHttpHandler(getActivity(), this, null, "saveTransaction")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void callTransactionDetails() {
+        openProgressDialog();
+        hashMapKeys.clear();
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        if (!edt_reference_id.getText().toString().equals(""))
+            hashMapKeys.put("reference_id", edt_reference_id.getText().toString());
+        else
+            return;
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+        new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
+                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+    }
+
+
+    public void callUnionPayStatus1(String json_data, String status) {
         openProgressDialog();
         try {
             String s = "{\n" +
@@ -543,9 +653,8 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
             bundle.putDouble(ThirtConst.RequestTag.THIRD_PATH_TRANS_AMOUNT, jsonObjectSale.optDouble("amount"));
             bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORDER_NO, jsonObjectSale.optString("orderNumber"));
 
-            if(isScannedUnionPayQr)
-            {
-                isScannedUnionPayQr=false;
+            if (isScannedUnionPayQr) {
+                isScannedUnionPayQr = false;
                 bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_SCAN_AUTH_PAY_CODE, qrcode);
             }
 
@@ -612,9 +721,13 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
     JSONObject jsonObject;
     private String payment_mode = "", qrMode = "";
-public static String qrcode="";
-public static boolean isScannedUnionPayQr=false;
-    public static double alipaywechatamount=0.0;
+    public static String qrcode = "";
+    public static boolean isScannedUnionPayQr = false;
+    public static double alipaywechatamount = 0.0;
+    JSONObject jsonObjectTransactionDetails;
+    JSONObject jsonObjectGatewayResponse;
+    double remaining_amount = 0.00;
+    double refunded_amount = 0.00;
 
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
@@ -639,7 +752,8 @@ public static boolean isScannedUnionPayQr=false;
 
                     if (isScanned) {
                         isScanned = false;
-                        callGetDetailsByRef(edt_reference_id.getText().toString());
+                        callTransactionDetails();
+                        // callGetDetailsByRef(edt_reference_id.getText().toString());
                     }
 
                     if (isUnionPayStatusUpdate) {
@@ -647,10 +761,9 @@ public static boolean isScannedUnionPayQr=false;
                         callUnionPayStatus(ManualEntry.val, "true");
                     }
 
-                    if(AppConstants.isRefundUnionpayDone)
-                    {
-                        AppConstants.isRefundUnionpayDone=false;
-                        callRefundUnionPay( ManualEntry.val);
+                    if (AppConstants.isRefundUnionpayDone) {
+                        AppConstants.isRefundUnionpayDone = false;
+                        callUnionPayStatus(ManualEntry.val, true + "");
                     }
 
                 }
@@ -673,14 +786,16 @@ public static boolean isScannedUnionPayQr=false;
                 break;
 
 
-            case "getDetailsByRef":
+            case "TransactionDetails":
                 callAuthToken();
-
-                if (jsonObject.has("server_response")) {
-
-                    if(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionType").equals("COUPON_SALE")||
-                            jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionType").equals("COUPON_VOID"))
-                    {
+                jsonObjectTransactionDetails = jsonObject;
+                if (jsonObject.optJSONObject("payment").has("serverResponse")) {
+                    byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonObject.optJSONObject("payment").optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
+                    String serverResponse = new String(data, "UTF-8");
+                    JSONObject jsonObjectServerResponse = new JSONObject(serverResponse);
+                    jsonObjectGatewayResponse = jsonObjectServerResponse.optJSONObject("body");
+                    if (jsonObjectGatewayResponse.optString("transactionType").equals("COUPON_SALE") ||
+                            jsonObjectGatewayResponse.optString("transactionType").equals("COUPON_VOID")) {
                         Toast.makeText(getActivity(), "Refund of coupon transaction cannot be done.", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -690,20 +805,40 @@ public static boolean isScannedUnionPayQr=false;
                     ll_transaction_no.setVisibility(View.VISIBLE);
                     ll_se.setVisibility(View.GONE);
                     ll_first1.setVisibility(View.VISIBLE);
-                    refund_time = jsonObject.optString("created_on");
-                    referenecno = jsonObject.optString("reference_id");
-                    DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-                    //  edt_amount1.setText(decimalFormat.format(Double.parseDouble(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("amount"))) + "");
-                    edt_order_no.setText(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("orderNumber"));
-                    if(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionType").equals("UPI_SCAN_CODE_SALE")
-                        && jsonObject.optJSONObject("server_response").optJSONObject("body").has("qrcode"))
-                    {
-                        isScannedUnionPayQr=true;
-                        qrcode=jsonObject.optJSONObject("server_response").optJSONObject("body").optString("qrcode");
+                    refund_time = jsonObjectGatewayResponse.optString("createdDate");
+                    referenecno = jsonObjectGatewayResponse.optString("referenceNumber");
+                    if (jsonObject.has("refunds")) {
+                        JSONArray jsonArrayRefund = jsonObject.optJSONArray("refunds");
+                        for (int i = 0; i < jsonArrayRefund.length(); i++) {
+
+                            if (jsonObject.optJSONObject("payment").optString("channel").equals("UNION_PAY")) {
+                                refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundedAmount"));
+                            } else {
+                                refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
+                            }
+
+                            refunded_amount = Double.parseDouble(roundTwoDecimals(refunded_amount));
+
+                        }
+                        remaining_amount = Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount")) - refunded_amount;
+                        remaining_amount = Double.parseDouble(roundTwoDecimals(remaining_amount));
+                        if(remaining_amount!=0.00)
+                            edt_amount1.setText(roundTwoDecimals(Double.parseDouble(remaining_amount+"")));
                     }
-                    alipaywechatamount=Double.parseDouble(jsonObject.optString("grandtotal"));
+                    else
+                    {
+                        edt_amount1.setText(roundTwoDecimals(Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
+                    }
+
+                    edt_order_no.setText(jsonObjectGatewayResponse.optString("orderNumber"));
+                    if (jsonObjectGatewayResponse.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+                            && jsonObjectGatewayResponse.has("qrcode")) {
+                        isScannedUnionPayQr = true;
+                        qrcode = jsonObjectGatewayResponse.optString("qrcode");
+                    }
+                    alipaywechatamount = Double.parseDouble(jsonObject.optJSONObject("payment").optString("grandTotal"));
 //                    alipaywechatamount=Double.parseDouble(jsonObject.optJSONObject("server_response").optJSONObject("body").optString("amount"));
-                    char formats1[] = jsonObject.optJSONObject("server_response").optJSONObject("body").optString("transactionDate").toString().toCharArray();//formatter5.format(date).toString().split("-");
+                    char formats1[] = jsonObjectGatewayResponse.optString("transactionDate").toCharArray();//formatter5.format(date).toString().split("-");
                     edt_transaction_no.setText(formats1[4] + "" + formats1[5] + "" + formats1[6] + "" + formats1[7] + "");
                 } else {
                     if (jsonObject.optString("message").equals("Invalid Trade ID")) {
@@ -717,7 +852,7 @@ public static boolean isScannedUnionPayQr=false;
                 break;
 
             case "refundUnionPay":
-                 callAuthToken();
+                callAuthToken();
                 if (jsonObject.optBoolean("success")) {
                     refund_time = "";
                     refund_trade_no = "";
@@ -731,26 +866,41 @@ public static boolean isScannedUnionPayQr=false;
                     Toast.makeText(getActivity(), "Transaction status not updated", Toast.LENGTH_SHORT).show();
                 }
 
-            case "unionpaystatus":
+            case "saveTransaction":
                 callAuthToken();
                 if (progress != null && progress.isShowing())
                     progress.dismiss();
 
-                if (jsonObject.optBoolean("success")) {
+//                if (jsonObject.optBoolean("status")) {
+//                    ManualEntry.shadaf = false;
+//                    AppConstants.isRefundUnionpayDone=true;
+//
+//                    Toast.makeText(getActivity(), "Details Updated Successfully", Toast.LENGTH_SHORT).show();
+//                } else
+//                    Toast.makeText(getActivity(), "Unsuccessful transaction update.", Toast.LENGTH_SHORT).show();
+
+                callAuthToken();
+                if (jsonObject.optBoolean("status")) {
+                    refund_time = "";
+                    refund_trade_no = "";
                     ManualEntry.shadaf = false;
-                    AppConstants.isRefundUnionpayDone=true;
+                    AppConstants.isRefundUnionpayDone = true;
 
-                    Toast.makeText(getActivity(), "Details Updated Successfully", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getActivity(), "Unsuccessful transaction update.", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(getActivity(), "Transaction status updated successfully", Toast.LENGTH_SHORT).show();
+                    if (preferenceManager.isManual()) {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                    } else {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Transaction status not updated", Toast.LENGTH_SHORT).show();
+                }
 
 
                 break;
 
         }
     }
-
 
 
     public String refund_time = "", refund_trade_no = "";
@@ -784,10 +934,6 @@ public static boolean isScannedUnionPayQr=false;
 
 
     }
-
-
-
-
 
 
     public AidlDeviceManager manager = null;

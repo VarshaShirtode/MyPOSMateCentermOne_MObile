@@ -2495,6 +2495,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             json_data=jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
             trade_no=jsonObject.optString("referenceNumber");
+            hashMapKeys.put("reference_id",trade_no);
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
             hashMapKeys.put("trade_no",jsonObject.optString("referenceNumber"));
             hashMapKeys.put("is_success",true+"");

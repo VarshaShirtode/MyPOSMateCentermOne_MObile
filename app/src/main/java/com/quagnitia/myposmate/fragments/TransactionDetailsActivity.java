@@ -187,7 +187,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 }
             }
 
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
+            hashMapKeys.put("reference_id", jsonObject.optString("referenceNumber"));
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
             hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
             hashMapKeys.put("is_success", true + "");
@@ -2047,7 +2047,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             isUnionPay = false;
             try {
                 String text = "";
-                if (jsonObject.optString("channel").equals("UNION_PAY")) {
+                if (jsonObjectTransactionDetails.optJSONObject("payment").optString("channel").equals("UNION_PAY")) {
                     text = newjson.optString("CUP Reference No");
                 } else {
                     text = jsonObject.optString("reference_id");
