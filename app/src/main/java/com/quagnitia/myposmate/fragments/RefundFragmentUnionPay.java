@@ -34,7 +34,6 @@ import com.centerm.smartpos.constant.Constant;
 import com.centerm.smartpos.util.LogUtil;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
-import com.quagnitia.myposmate.arke.TransactionNames;
 import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
 import com.quagnitia.myposmate.centrum.ThirtConst;
 import com.quagnitia.myposmate.scanner.ScannerForBack;
@@ -48,7 +47,6 @@ import com.usdk.apiservice.aidl.scanner.OnScanListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -332,7 +330,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 if (edt_reference_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter reference no", Toast.LENGTH_SHORT).show();
                 } else {
-                    callGetDetailsByRef(edt_reference_id.getText().toString());
+                    callTransactionDetails();
                 }
                 break;
 
@@ -361,7 +359,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                     Toast.makeText(getActivity(), "Amount entered is greater than the original amount used in the transaction.", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
-                        refund_amount=edt_amount1.getText().toString();
+                        refund_amount = edt_amount1.getText().toString();
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("transactionType", "REFUND");
                         jsonObject.put("amount", edt_amount1.getText().toString());
@@ -389,7 +387,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     }
 
     TreeMap<String, String> hashMapKeys;
-    String refund_amount="";
+    String refund_amount = "";
 
     public void callUnionPayStatus(String json_data, String status) {
         openProgressDialog();
@@ -497,120 +495,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
-
-    public void callUnionPayStatus1(String json_data, String status) {
-        openProgressDialog();
-        try {
-            String s = "{\n" +
-                    "  \"head\": {\n" +
-                    "    \"version\": \"V1.2.0\"\n" +
-                    "  },\n" +
-                    "  \"body\":";
-
-            JSONObject jsonObject = new JSONObject(json_data);
-            if (jsonObject.has("responseCodeThirtyNine")) {
-                if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
-                    if (jsonObject.optString("transactionType").equals("SALE") ||
-                            jsonObject.optString("transactionType").equals("COUPON_SALE") ||
-                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
-                    ) {
-                        status = "20";
-                    } else if (jsonObject.optString("transactionType").equals("VOID") ||
-                            jsonObject.optString("transactionType").equals("REFUND") ||
-                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_VOID") ||
-                            jsonObject.optString("transactionType").equals("COUPON_VOID")) {
-                        status = "19"; //set 22 to 19 in case of void on 28/02/2019
-                    }
-
-                }
-            } else {
-                status = "23";
-                Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
-
-            }
-            preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
-
-            hashMapKeys.clear();
-            String randomStr = new Date().getTime() + "";
-
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("is_mobile_device", "true");
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
-            hashMapKeys.put("random_str", randomStr);
-            hashMapKeys.put("status_id", status);
-            hashMapKeys.put("json_data", s + json_data + "}");
-
-
-            String s2 = "", s1 = "";
-            int i1 = 0;
-            Iterator<String> iterator = hashMapKeys.keySet().iterator();
-            while (iterator.hasNext()) {
-                String key = iterator.next();
-                if (i1 != hashMapKeys.size() - 1)
-                    s2 = s2 + key + "=" + hashMapKeys.get(key) + "&";
-                else
-                    s2 = s2 + key + "=" + hashMapKeys.get(key);
-                i1++;
-            }
-            s2 = s2 + PreferencesManager.getInstance(getActivity()).getauthToken();//.getuniqueId();
-            String signature = MD5Class.MD5(s2);
-
-
-            s = "{\n" +
-                    "  \"head\": {\n" +
-                    "    \"version\": \"V1.2.0\"\n" +
-                    "  },\n" +
-                    "  \"body\":";
-
-            hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-            hashMapKeys.put("is_mobile_device", "true");
-            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-            hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("orderNumber"));
-            hashMapKeys.put("random_str", randomStr);
-            hashMapKeys.put("status_id", status);
-            hashMapKeys.put("json_data", URLEncoder.encode(s + json_data + "}", "UTF-8"));
-            i1 = 0;
-            Iterator<String> iterator1 = hashMapKeys.keySet().iterator();
-            while (iterator1.hasNext()) {
-                String key = iterator1.next();
-                if (i1 != hashMapKeys.size() - 1)
-                    s1 = s1 + key + "=" + hashMapKeys.get(key) + "&";
-                else
-                    s1 = s1 + key + "=" + hashMapKeys.get(key);
-                i1++;
-            }
-
-
-            new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void callGetDetailsByRef(String trade_no) {
-        openProgressDialog();
-
-        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
-        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
-        hashMapKeys.put("config_id", preferenceManager.getConfigId());
-        hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
-        hashMapKeys.put("trade_no", trade_no);
-        hashMapKeys.put("is_mobile_device", "true");
-        hashMapKeys.put("random_str", new Date().getTime() + "");
-
-        new OkHttpHandler(getActivity(), this, null, "getDetailsByRef")
-                .execute(AppConstants.BASE_URL2 + AppConstants.getDetailsByRef + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -624,11 +508,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
     @Override
     public void onResume() {
-//        if (ManualEntry.shadaf) {
-//            isUnionPayStatusUpdate=true;
-//            callAuthToken();
-//
-//        }
         super.onResume();
     }
 
@@ -644,7 +523,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         hideSoftInput();
 
         try {
-            //doTransaction(TransactionNames.REFUND.name(), jsonObject);
             intentCen.setComponent(comp);
             Bundle bundle = new Bundle();
             bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_TYPE, ThirtConst.TransType.REFUND);
@@ -693,21 +571,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
 
     /**
-     * According to the choice, began to do the transaction
-     * <p>
-     * 根据选择，开始做交易
-     *
-     * @param interfaceId
-     */
-    private void doTransaction(String interfaceId, JSONObject jsonObject) {
-        if (TransactionNames.SALE_BY_SDK.name().equals(interfaceId)) {
-            vasCallsArkeBusiness.doTransaction(interfaceId, jsonObject, this);
-        } else {
-            vasCallsArkeBusiness.doTransaction(interfaceId, jsonObject, this);
-        }
-    }
-
-    /**
      * Hide soft keyboard
      * <p>
      * 隐藏软键盘
@@ -753,7 +616,6 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                     if (isScanned) {
                         isScanned = false;
                         callTransactionDetails();
-                        // callGetDetailsByRef(edt_reference_id.getText().toString());
                     }
 
                     if (isUnionPayStatusUpdate) {
@@ -772,7 +634,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 //    callAuthToken();
                 if (jsonObject.has("responseCodeThirtyNine")) {
                     if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
-                        // preferenceManager.setunion_pay_resp(jsonObject.toString());
+                        preferenceManager.setunion_pay_resp(jsonObject.toString());
                         ManualEntry.shadaf = true;
                         ManualEntry.val = jsonObject.toString();
                     }
@@ -822,11 +684,9 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                         }
                         remaining_amount = Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount")) - refunded_amount;
                         remaining_amount = Double.parseDouble(roundTwoDecimals(remaining_amount));
-                        if(remaining_amount!=0.00)
-                            edt_amount1.setText(roundTwoDecimals(Double.parseDouble(remaining_amount+"")));
-                    }
-                    else
-                    {
+                        if (remaining_amount != 0.00)
+                            edt_amount1.setText(roundTwoDecimals(Double.parseDouble(remaining_amount + "")));
+                    } else {
                         edt_amount1.setText(roundTwoDecimals(Double.parseDouble(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
                     }
 
@@ -851,35 +711,12 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
                 break;
 
-            case "refundUnionPay":
-                callAuthToken();
-                if (jsonObject.optBoolean("success")) {
-                    refund_time = "";
-                    refund_trade_no = "";
-                    Toast.makeText(getActivity(), "Transaction status updated successfully", Toast.LENGTH_SHORT).show();
-                    if (preferenceManager.isManual()) {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                    } else {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "Transaction status not updated", Toast.LENGTH_SHORT).show();
-                }
 
             case "saveTransaction":
                 callAuthToken();
                 if (progress != null && progress.isShowing())
                     progress.dismiss();
 
-//                if (jsonObject.optBoolean("status")) {
-//                    ManualEntry.shadaf = false;
-//                    AppConstants.isRefundUnionpayDone=true;
-//
-//                    Toast.makeText(getActivity(), "Details Updated Successfully", Toast.LENGTH_SHORT).show();
-//                } else
-//                    Toast.makeText(getActivity(), "Unsuccessful transaction update.", Toast.LENGTH_SHORT).show();
-
-                callAuthToken();
                 if (jsonObject.optBoolean("status")) {
                     refund_time = "";
                     refund_trade_no = "";
