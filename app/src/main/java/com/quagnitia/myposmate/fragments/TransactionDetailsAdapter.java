@@ -68,8 +68,13 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
                 } else if (jsonObject.optString("Transaction Type").equals("VOID") ||
                         jsonObject.optString("Transaction Type").equals("REFUND") ||
                         jsonObject.optString("Transaction Type").equals("COUPON_VOID")) {
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    Date d = df.parse(jsonObject.optString(jsonObject.names().getString(position)).replace("T", " "));
+                    SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
                     holder.tv_details_key.setText(jsonObject.names().getString(position));
-                    holder.tv_details_value.setText(jsonObject.optString(jsonObject.names().getString(position)).split(" ")[0]);
+                    holder.tv_details_value.setText(df1.format(d));
                     transactionDate = holder.tv_details_value.getText().toString();
                 } else if (jsonObject.optString("Transaction Type").equals("SALE")) {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

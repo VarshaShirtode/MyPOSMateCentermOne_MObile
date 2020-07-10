@@ -154,7 +154,7 @@ public LinearLayout parent;
                 {
                     Intent i = new Intent(mContext, TransactionDetailsActivity.class);
                     i.putExtra("reference_id",jsonObject.optString("referenceId"));
-                   // i.putExtra("increment_id",jsonObject.optString("increment_id"));
+                    i.putExtra("increment_id",jsonObject.optString("id"));
                     mContext.startActivity(i);
                 }
 

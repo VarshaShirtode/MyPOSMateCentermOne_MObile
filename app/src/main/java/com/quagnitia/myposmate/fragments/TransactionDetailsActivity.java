@@ -408,7 +408,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     Double remainingAmount=Double.parseDouble(newjson.optString("Remaining Amount"));
                     if(remainingAmount!=0.00&&remainingAmount<originalAmount)
                     {
-                       editAmount.setText(remainingAmount+"");
+                       editAmount.setText(roundTwoDecimals(remainingAmount));
                     }
                 }
 
@@ -1138,6 +1138,9 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         String serverResponse = "";
 
         //validation for unionpay
+      JSONObject refundJsonObject=null;
+
+
         if (jsonObjectPayment.has("serverResponse")) {
             if (jsonObjectPayment.optString("serverResponse") != null) {
                 byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonObjectPayment.optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
@@ -1212,12 +1215,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                             json.put("Payment Reference", value);
                             break;
                         case "type":
-                            if (jsonObjectPayment.has("serverResponse")) {
-
-                                json.put("Transaction Type", jsonObjectGatewayResponse.optString("transactionType"));
-                            } else
-                                json.put("Transaction Type", value);
-
+                                if (jsonObjectPayment.has("serverResponse")) {
+                                    if(getIntent().getStringExtra("increment_id").equals(jsonObjectPayment.optString("id")))
+                                        json.put("CUP Reference No", jsonObjectGatewayResponse.optString("referenceNumber"));
+                                    json.put("Transaction Type", jsonObjectGatewayResponse.optString("transactionType"));
+                                } else
+                                    json.put("Transaction Type", value);
                             break;
                     }
                 }
@@ -1227,6 +1230,19 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             if (jsonObject.has("refunds")) {
                 JSONArray jsonArrayRefund = jsonObject.optJSONArray("refunds");
                 for (int i = 0; i < jsonArrayRefund.length(); i++) {
+
+                    if(jsonObject.has("refunds")&&jsonObjectPayment.optString("channel").equals("UNION_PAY"))
+                    {
+                        byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonArrayRefund.optJSONObject(i).optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
+                        String s = new String(data, "UTF-8");
+                        refundJsonObject=new JSONObject(s);
+                        refundJsonObject=refundJsonObject.optJSONObject("body");
+
+                        if(getIntent().getStringExtra("increment_id").equals(jsonArrayRefund.optJSONObject(i).optString("id")))
+                        json.put("CUP Reference No", refundJsonObject.optString("referenceNumber"));
+                        json.put("Transaction Type", refundJsonObject.optString("transactionType"));
+                    }
+
                     if (json.optString("Payment By").equals("UNION_PAY")) {
                         refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundedAmount"));
                     } else {
@@ -1297,12 +1313,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_VOID") ||
                     newjson.optString("Transaction Type").equals("VOID") ||
                     newjson.optString("Transaction Type").equals("COUPON_VOID")) {
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_void);
-                linearLayout.setWeightSum(2);
-                btn_refund_uni.setVisibility(View.GONE);
-                btn_void.setVisibility(View.GONE);
+                LinearLayout linearLayout =  findViewById(R.id.ll_void);
+
                 if (Double.parseDouble(newjson.optString("Payment Amount"))
-                        == Double.parseDouble((newjson.optString("Amount Refunded")))) {
+                        == Double.parseDouble((newjson.optString("Amount Refunded")))
+                &&newjson.optString("Transaction Type").equals("REFUND")
+                ) {
                     btn_refund.setVisibility(View.GONE);
 
                     findViewById(R.id.ll1).setVisibility(View.GONE);
@@ -1312,6 +1328,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     btn_refund_uni.setVisibility(View.GONE);
                     btn_void.setVisibility(View.GONE);
                 }
+                if (Double.parseDouble(newjson.optString("Payment Amount"))
+                        == Double.parseDouble((newjson.optString("Amount Refunded")))
+                        &&newjson.optString("Transaction Type").equals("VOID")||
+                        newjson.optString("Transaction Type").equals("COUPON_VOID")
+                ||newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_VOID"))
+                {
+                    linearLayout.setWeightSum(2);
+                    btn_refund_uni.setVisibility(View.GONE);
+                    btn_void.setVisibility(View.GONE);
+                }
+
             } else if (newjson.optString("Transaction Type").equals("SALE") ||
                     newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_SALE")
             ) {
