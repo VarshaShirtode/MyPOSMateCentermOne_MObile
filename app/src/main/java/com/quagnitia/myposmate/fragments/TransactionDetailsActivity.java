@@ -690,7 +690,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 }
                 break;
 
-            case "TransactionDetails1":
+          /*  case "TransactionDetails1":
 
                 if (jsonObject.has("error") && jsonObject.optString("error").equals("invalid_token")) {
                     callTransactionDetails();
@@ -1080,7 +1080,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 }
 
 
-                break;
+                break;*/
 
 
             case "refundNow":
