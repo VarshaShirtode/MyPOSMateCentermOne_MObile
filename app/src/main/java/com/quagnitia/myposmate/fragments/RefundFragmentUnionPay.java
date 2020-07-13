@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static com.quagnitia.myposmate.fragments.ManualEntry.shadaf;
 import static com.quagnitia.myposmate.printer.ApiDemo.TAG;
 
 
@@ -579,11 +580,11 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 if (jsonObject.has("responseCodeThirtyNine")) {
                     if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
                         preferenceManager.setunion_pay_resp(jsonObject.toString());
-                        ManualEntry.shadaf = true;
+                        shadaf = true;
                         ManualEntry.val = jsonObject.toString();
                     }
                 }
-                if (ManualEntry.shadaf) {
+                if (shadaf) {
                     isUnionPayStatusUpdate = true;
                     callAuthToken();
 
@@ -664,10 +665,11 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 if (jsonObject.optBoolean("status")) {
                     refund_time = "";
                     refund_trade_no = "";
-                    ManualEntry.shadaf = false;
+                    shadaf = false;
                     AppConstants.isRefundUnionpayDone = true;
-
+                    preferenceManager.setunion_pay_resp("");
                     Toast.makeText(getActivity(), "Transaction status updated successfully", Toast.LENGTH_SHORT).show();
+                    shadaf=false;
                     if (preferenceManager.isManual()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     } else {

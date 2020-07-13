@@ -111,6 +111,9 @@ public class MyPOSMateApplication extends Application implements ConnectionListe
         handler.post(run);
 
 
+
+        preferencesManager.setIsConnected(true);
+        preferencesManager.setIsAuthenticated(true);
     }
 
 

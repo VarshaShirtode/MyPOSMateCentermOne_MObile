@@ -162,6 +162,13 @@ public class Settlement extends Fragment implements OnTaskCompleted {
         hashMapKeys = new TreeMap<>();
         initUI();
         initListener();
+        callAuthToken();
+        if(!preferencesManager.getcontact_email().equals(""))
+        {
+            isSettlementReport = true;
+            edt_email.setText(preferencesManager.getcontact_email());
+        }
+
     }
 
     public void openProgressDialog() {
@@ -174,8 +181,8 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     }
 
     public void initUI() {
-        isSettlementReport = true;
-        callAuthToken();
+
+
         ll_we = view.findViewById(R.id.ll_we);
         ll_we.setVisibility(View.GONE);
         tv_settled_on = view.findViewById(R.id.tv_settled_on);
@@ -245,7 +252,13 @@ public class Settlement extends Fragment implements OnTaskCompleted {
         openProgressDialog();
         try {
             hashMapKeys.clear();
+            if(edt_email.getText().toString().equals(""))
+            {
+                Toast.makeText(getActivity(), "Please enter the email id", Toast.LENGTH_SHORT).show();
+                return;
+            }
             hashMapKeys.put("email",edt_email.getText().toString());
+            hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
             hashMapKeys.put("access_id",preferencesManager.getuniqueId());
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
@@ -305,15 +318,24 @@ public class Settlement extends Fragment implements OnTaskCompleted {
 
             hashMapKeys.put("access_id",preferencesManager.getuniqueId());
             hashMapKeys.put("branch_name", preferencesManager.getmerchant_name());
-            if(!datetime.equals(""))
-            hashMapKeys.put("timezone", datetime);
+          //  if(!datetime.equals(""))
+          //  hashMapKeys.put("timezone", datetime.replace(" ","T"));
             hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
             hashMapKeys.put("pos_id", preferencesManager.getPOSIdentifier());
+            if(edt_email.getText().toString().equals(""))
+            {
+                Toast.makeText(getActivity(), "Please enter the email id", Toast.LENGTH_SHORT).show();
+                return;
+            }
             hashMapKeys.put("email", edt_email.getText().toString());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
+//            hashMapKeys.put("signature",MD5Class.generateSignatureString(hashMapKeys, getActivity()));
+//            hashMapKeys.put("access_token",preferencesManager.getauthToken());
+            HashMap hashMap=new HashMap();
+            hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, null, "Settle")
                     .execute(AppConstants.BASE_URL2 + AppConstants.SETTLE + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
 
@@ -426,36 +448,44 @@ public class Settlement extends Fragment implements OnTaskCompleted {
 
                     Double paymentamount = Double.parseDouble(jsonObjectSettlement.optString("alipayPaymentAmount")) +
                             Double.parseDouble(jsonObjectSettlement.optString("wechatPaymentAmount")) +
-                            Double.parseDouble(jsonObjectSettlement.optString("unionPaymentAmount"));
+                            Double.parseDouble(jsonObjectSettlement.optString("upPaymentAmount"));
+
+                    Double refundedAmount=Double.parseDouble(jsonObjectSettlement.optString("alipayRefundAmount"))+
+                            Double.parseDouble(jsonObjectSettlement.optString("wechatRefundAmount"))+
+                            Double.parseDouble(jsonObjectSettlement.optString("upRefundAmount"));
 
                     Integer paymentcount = Integer.parseInt(jsonObjectSettlement.optString("alipayPaymentCount")) +
                             Integer.parseInt(jsonObjectSettlement.optString("wechatPaymentCount")) +
-                            Integer.parseInt(jsonObjectSettlement.optString("unionPaymentCount"));//+
+                            Integer.parseInt(jsonObjectSettlement.optString("upPaymentCount"));//+
+
+                    Integer refundcount = Integer.parseInt(jsonObjectSettlement.optString("alipayRefundCount")) +
+                            Integer.parseInt(jsonObjectSettlement.optString("wechatRefundCount")) +
+                            Integer.parseInt(jsonObjectSettlement.optString("upRefundCount"));//+
 
                     Integer totalTransactions = Integer.parseInt(jsonObjectSettlement.optString("alipayRefundCount")) +
                             Integer.parseInt(jsonObjectSettlement.optString("wechatRefundCount")) +
                             Integer.parseInt(jsonObjectSettlement.optString("alipayPaymentCount")) +
                             Integer.parseInt(jsonObjectSettlement.optString("wechatPaymentCount")) +
-                            Integer.parseInt(jsonObjectSettlement.optString("unionPaymentCount")) +
-                            Integer.parseInt(jsonObjectSettlement.optString("unionRefundCount"));
+                            Integer.parseInt(jsonObjectSettlement.optString("upPaymentCount")) +
+                            Integer.parseInt(jsonObjectSettlement.optString("upRefundCount"));
 
                     tv_payment_amount.setText("$" + roundTwoDecimals(paymentamount));
                     tv_payment_count.setText(paymentcount + "");
-                    tv_refunded_amount.setText("$" + jsonObjectSettlement.optString("refundedAmount"));
-                    tv_refund_count.setText(jsonObjectSettlement.optString("refundCount"));
+                    tv_refunded_amount.setText("$" + roundTwoDecimals(refundedAmount));
+                    tv_refund_count.setText(refundcount+"");
                     tv_total_transactions.setText(totalTransactions + "");
                     tv_ali_payment_amount.setText("$" + jsonObjectSettlement.optString("alipayPaymentAmount"));
                     tv_ali_payment_count.setText(jsonObjectSettlement.optString("alipayPaymentCount"));
-                    tv_ali_refund_amount.setText("$" + jsonObjectSettlement.optString("alipayRefundedAmount"));
+                    tv_ali_refund_amount.setText("$" + jsonObjectSettlement.optString("alipayRefundAmount"));
                     tv_ali_refund_count.setText(jsonObjectSettlement.optString("alipayRefundCount"));
                     tv_we_payment_amount.setText("$" + jsonObjectSettlement.optString("wechatPaymentAmount"));
                     tv_we_payment_count.setText(jsonObjectSettlement.optString("wechatPaymentCount"));
-                    tv_we_refund_amount.setText("$" + jsonObjectSettlement.optString("wechatRefundedAmount"));
+                    tv_we_refund_amount.setText("$" + jsonObjectSettlement.optString("wechatRefundAmount"));
                     tv_we_refund_count.setText(jsonObjectSettlement.optString("wechatRefundCount"));
-                    tv_union_payment_amount.setText("$" + jsonObjectSettlement.optString("unionPaymentAmount"));
-                    tv_union_payment_count.setText(jsonObjectSettlement.optString("unionPaymentCount"));
-                    tv_union_refund_amount.setText("$" + jsonObjectSettlement.optString("unionRefundedAmount"));
-                    tv_union_refund_count.setText(jsonObjectSettlement.optString("unionRefundCount"));
+                    tv_union_payment_amount.setText("$" + jsonObjectSettlement.optString("upPaymentAmount"));
+                    tv_union_payment_count.setText(jsonObjectSettlement.optString("upPaymentCount"));
+                    tv_union_refund_amount.setText("$" + jsonObjectSettlement.optString("upRefundAmount"));
+                    tv_union_refund_count.setText(jsonObjectSettlement.optString("upRefundCount"));
                     // print(jsonObject);
                     btn_print_alipay.setVisibility(View.VISIBLE);
                     tv_settled_on.setVisibility(View.VISIBLE);
@@ -464,7 +494,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                     df1.setTimeZone(TimeZone.getTimeZone("UTC"));
                     SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
-                    tv_settled_on.setText("Settled On: " + df2.format(df1.parse(jsonObjectSettlement.optString("settlement_date"))).replace("T", " "));
+                    tv_settled_on.setText("Settled On: " + df2.format(df1.parse(jsonObjectSettlement.optString("settlementDate"))).replace("T", " "));
 
                 } else {
                     Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
@@ -481,7 +511,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                     df1.setTimeZone(TimeZone.getTimeZone("UTC"));
                     SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
-                    edt_last_settlement_date.setText(df2.format(df1.parse(jsonObject1.optString("settlement_date"))).replace("T", " "));
+                    edt_last_settlement_date.setText(df2.format(df1.parse(jsonObject1.optString("settlementDate"))).replace("T", " "));
                 }
                 break;
 
@@ -494,13 +524,13 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     public void print(JSONObject jsonObjectSettlement) throws RemoteException {
 
         try {
-            JSONObject jsonObject = new JSONObject(preferencesManager.getmerchant_info());
+//            JSONObject jsonObject = new JSONObject(preferencesManager.getmerchant_info());
             final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
 
             int fontSize = 24;
-            list.add(new PrintDataObject("Merchant Name: " + jsonObject.optString("company"),
-                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-                    true));
+//            list.add(new PrintDataObject("Merchant Name: " + jsonObject.optString("company"),
+//                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+//                    true));
             if (!preferencesManager.getmerchant_name().equals("")) {
                 list.add(new PrintDataObject("Branch Name: " + preferencesManager.getmerchant_name(),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
@@ -511,7 +541,8 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
-            list.add(new PrintDataObject("Settlement Date: " + df2.format(df1.parse(jsonObjectSettlement.optString("settlement_date"))).replace("T", " "),
+            list.add(new PrintDataObject("Settlement Date: " + df2.format(df1.parse(jsonObjectSettlement.optString("settlementDate" +
+                    ""))).replace("T", " "),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 //            list.add(new PrintDataObject("End: " + edt_end_datetime.getText().toString() + " " + edt_end_time.getText().toString(),

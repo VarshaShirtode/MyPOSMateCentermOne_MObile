@@ -373,10 +373,18 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     Double originalAmount=Double.parseDouble(newjson.optString("Original Amount"));
                     if(voidAmount!=0.00&&voidAmount<originalAmount)
                     {
+                        refund_amount=voidAmount+"";
                         Toast.makeText(TransactionDetailsActivity.this, "Void cannot be performed on partial amount", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    else
+                    {
+                        refund_amount=newjson.optString("Payment Amount")+"";
+                    }
+
                 }
+                else
+                    refund_amount=newjson.optString("Payment Amount")+"";
                 beginVoid(jsonObjectGatewayResponse);
                 break;
 
@@ -620,6 +628,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     unionpay = "";
                     refund_time = "";
                     refund_trade_no = "";
+                    preferenceManager.setunion_pay_resp("");
                     Toast.makeText(TransactionDetailsActivity.this, "Transaction status updated successfully", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
@@ -1152,8 +1161,8 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
 
         JSONObject json = new JSONObject();
-        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS") ||
-                jsonObjectPayment.optString("paymentStatus").equals("REFUND")) {
+//        if (jsonObjectPayment.optString("paymentStatus").equals("SUCCESS") ||
+//                jsonObjectPayment.optString("paymentStatus").equals("REFUND")) {
             for (int i = 0; i < jsonObjectPayment.length(); i++) {
                 for (int j = 0; j < jsonObjectPayment.length(); j++) {
                     String value = jsonObjectPayment.optString(jsonObjectPayment.names().optString(j));
@@ -1382,9 +1391,9 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             recycler_view.setAdapter(transactionDetailsAdapter);
 
 
-        } else {
-            Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
-        }
+//        } else {
+//            Toast.makeText(TransactionDetailsActivity.this, "Transaction Details Not Found", Toast.LENGTH_SHORT).show();
+//        }
 
 
     }
@@ -1486,6 +1495,19 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 jsonObject = jsonObject.optJSONObject("payment");
             }
 
+        }
+        else if(jsonObject.has("transactionType"))
+        {
+            if (jsonObject.has("responseCodeThirtyNine")) {
+                isUnionPay = true;
+                intentCen.setComponent(comp);
+                Bundle bundle = new Bundle();
+                bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_TYPE, ThirtConst.TransType.PRINT_ANY);
+                bundle.putString(ThirtConst.RequestTag.THIRD_PATH_TRANS_ORI_VOUCHER_NO, jsonObject.optString("voucherNumber"));
+                intentCen.putExtras(bundle);
+                startActivityForResult(intentCen, REQ_PAY_SALE);
+                return;
+            }
         }
         try {
 

@@ -556,11 +556,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-        if (preferencesManager.isAuthenticated()) {
+       // if (preferencesManager.isAuthenticated()) {
             callSetupFragment(SCREENS.POSMATECONNECTION, null);
-        } else {
-            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
-        }
+//        } else {
+//            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
+//        }
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
@@ -651,7 +651,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-        finish();
+//        finish();
+        System.exit(0);
     }
 
     boolean isDisplayChoicesDataSaved = false;
@@ -3131,8 +3132,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case POSMATECONNECTION:
-                fragment = PosMateConnectioFrag.newInstance("", "");
-                CURRENTFRAGMENT = SCREENS.POSMATECONNECTION.toString();
+//                fragment = PosMateConnectioFrag.newInstance("", "");
+//                CURRENTFRAGMENT = SCREENS.POSMATECONNECTION.toString();
+
+                if (data != null) {
+                    fragment = ManualEntry.newInstance(data.toString(), "");
+                } else
+                    fragment = ManualEntry.newInstance("", "");
+
+
+                CURRENTFRAGMENT = SCREENS.MANUALENTRY.toString();
+
                 break;
 
             case SETTINGS:
