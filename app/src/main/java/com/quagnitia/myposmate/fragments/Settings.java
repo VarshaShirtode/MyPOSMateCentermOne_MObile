@@ -834,8 +834,16 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     edt_unique_id.setText("");
                     preferencesManager.setuniqueId("");
                 } else {
-                    edt_unique_id.setText(decryption(jsonObject.optString("accessId")));
-                    preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
+                    if(!preferencesManager.getuniqueId().equals(""))
+                    {
+                        edt_unique_id.setText(preferencesManager.getuniqueId());
+                    }
+                    else
+                    {
+                        edt_unique_id.setText(decryption(jsonObject.optString("accessId")));
+                        preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
+                    }
+
                 }
 
 
