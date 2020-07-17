@@ -90,7 +90,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
         switch (view.getId()) {
 
             case R.id.btn_exit:
-                System.exit(0);
+               getActivity().finishAffinity();
                 break;
 
             case R.id.btn_already_registered:

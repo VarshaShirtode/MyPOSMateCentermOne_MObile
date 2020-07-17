@@ -394,7 +394,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                 break;
             case R.id.btn_exit:
-                ((DashboardActivity) getActivity()).finish();
+               // getActivity().finish();
+                getActivity().finishAffinity();
                 //    System.exit(0);
                 break;
         }
@@ -653,6 +654,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         try {
 
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("accessId",preferencesManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
@@ -856,8 +858,29 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 }
 
 
+
                 jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
+
+
+                    if (preferencesManager.isResetTerminal()) {
+                        edt_unique_id.setText("");
+                        preferencesManager.setuniqueId("");
+                    } else {
+                        if(!preferencesManager.getuniqueId().equals(""))
+                        {
+                            edt_unique_id.setText(preferencesManager.getuniqueId());
+                        }
+                        else
+                        {
+                            edt_unique_id.setText(decryption(jsonObject1.optString("accessId")));
+                            preferencesManager.setuniqueId(decryption(jsonObject1.optString("accessId")));
+                        }
+
+                    }
+
+
+
 
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
@@ -985,7 +1008,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
     
 
-    JSONObject jsonObject1 = null;
+    JSONObject jsonObject1 = null,UpdateBranchDetailsNewJsonObject=null;
     boolean isUpdateNewDetails = false;
 
     @Override
@@ -1025,6 +1048,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
             case "UpdateBranchDetailsNew":
+                UpdateBranchDetailsNewJsonObject=jsonObject;
                 if (AppConstants.isRegistered) {
                     preferencesManager.setaggregated_singleqr(true);
                     if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
@@ -1038,6 +1062,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     }
                 } else {
                     callGetBranchDetails_new();
+
                 }
 
                 break;
@@ -1061,7 +1086,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             case "DeleteTerminal":
                 preferencesManager.clearPreferences();
                 Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
-                ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
+               // ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
 
                 preferencesManager.setisResetTerminal(true);
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
@@ -1089,6 +1114,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 } else
                     _NewUser(jsonObject);
 
+                _NewUser(UpdateBranchDetailsNewJsonObject);
                 callAuthToken();
                 break;
 
@@ -1096,9 +1122,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 callAuthToken();
                 AppConstants.isRegistered = false;
                 preferencesManager.setuniqueId("");
-                if (jsonObject.optString("status").equals("false")) {
-                    Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
-                } else {
+
+                if (jsonObject.optBoolean("status")) {
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     username = jsonObject.optString("terminal_xmpp_jid").toString();
                     password = jsonObject.optString("terminal_xmpp_password").toString();
@@ -1309,6 +1334,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                     //  initChat(jsonObject.optString("terminal_xmpp_jid").toString(),jsonObject.optString("terminal_xmpp_password").toString());
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                }
+                else
+                {
+                        Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
                 }
 
                 if (preferencesManager.is_cnv_alipay_display_and_add() ||

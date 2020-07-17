@@ -315,11 +315,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         try {
-            if (((MyPOSMateApplication) getApplicationContext()).asbtractConnection != null)
-                ((MyPOSMateApplication) getApplicationContext()).asbtractConnection.disconnect();
-            preferencesManager.setIsAuthenticated(false);
-            preferencesManager.setIsConnected(false);
-            unregisterReceiver(openFragmentsReceiver);
+//            if (((MyPOSMateApplication) getApplicationContext()).asbtractConnection != null)
+//                ((MyPOSMateApplication) getApplicationContext()).asbtractConnection.disconnect();
+//            preferencesManager.setIsAuthenticated(false);
+//            preferencesManager.setIsConnected(false);
+           // unregisterReceiver(openFragmentsReceiver);
+            if(openFragmentsReceiver!=null)
+                unregisterReceiver(openFragmentsReceiver);
+            if(intentService!=null)
+                stopService(intentService);
+            if(printDev!=null)
+                printDev=null;
+
+            finishAffinity();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -652,7 +660,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
 //        finish();
-        System.exit(0);
+        if(openFragmentsReceiver!=null)
+        unregisterReceiver(openFragmentsReceiver);
+        if(intentService!=null)
+            stopService(intentService);
+        if(printDev!=null)
+            printDev=null;
+
+        finishAffinity();
     }
 
     boolean isDisplayChoicesDataSaved = false;
@@ -1891,6 +1906,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_wechat.setSelected(true);
         }
 
+        if(preferencesManager.isAlipayScan())
+        {
+            chk_alipay_qr_scan.setSelected(true);
+            chk_alipay_qr_scan.setChecked(true);
+        }
+
+
+        if(preferencesManager.isWeChatScan())
+        {
+            chk_wechat_qr_scan.setSelected(true);
+            chk_wechat_qr_scan.setChecked(true);
+        }
+
+        if(preferencesManager.isUplanSelected())
+        {
+            chk_uplan_qr.setSelected(true);
+            chk_uplan_qr.setChecked(true);
+        }
 
         //start added on 11/14/2019
         if (edt_ali_cv.getText().toString().equals("0.00") ||
@@ -2413,6 +2446,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public JSONObject funcPrepareDisplayChoicesJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("accessId",preferenceManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
@@ -3077,7 +3111,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 DashboardActivity.isExternalApp = false;
                 getIntent().putExtra("result", new JSONObject().toString());
                 setResult(REQ_PAY_SALE, getIntent());
-                finish();
+                finishAffinity();
+              //  finish();
                 break;
 
             default:
@@ -3249,6 +3284,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openProgressDialog();
         try {
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("accessId",preferenceManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
