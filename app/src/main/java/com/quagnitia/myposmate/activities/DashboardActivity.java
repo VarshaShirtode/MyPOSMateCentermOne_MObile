@@ -76,9 +76,11 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -277,7 +279,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openFragmentsReceiver = new OpenFragmentsReceiver();
         registerReceiver(openFragmentsReceiver, intentFilter);
         preferencesManager = PreferencesManager.getInstance(DashboardActivity.this);
-        isLaunch = true;
+       // isLaunch = true;
         callAuthToken();
         initUI();
         initListener();
@@ -2739,7 +2741,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case "UpdateBranchDetails":
                 callAuthToken();
                 if (jsonObject.has("otherData")) {
-                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                    JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
 
 
                     if (jsonObject1.has("ConfigId"))
@@ -3350,10 +3352,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
             hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
 
@@ -3391,16 +3393,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openProgressDialog();
         try {
             hashMapKeys.clear();
-            hashMapKeys.put("branchAddress", encryption(preferencesManager.getaddress()));
-            hashMapKeys.put("branchContactNo", encryption(preferencesManager.getcontact_no()));
-            hashMapKeys.put("branchName", encryption(preferencesManager.getmerchant_name()));
-            hashMapKeys.put("branchEmail", encryption(preferencesManager.getcontact_email()));
-            hashMapKeys.put("gstNo", encryption(preferencesManager.getgstno()));
+            hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
+            hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
+            hashMapKeys.put("branchName", preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
+            hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
 
@@ -3413,7 +3415,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             e.printStackTrace();
         }
     }
+    public String toHex(String arg) {
+        return String.format("%040x", new BigInteger(1, arg.getBytes()));
+    }
 
+    public String hextoString(String hexString) throws Exception
+    {
+        byte[] bytes=null;
+        try
+        {
+            bytes = Hex.decodeHex(hexString.toCharArray());
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new String(bytes, "UTF-8");
+    }
 
     public void callGetBranchDetails_new() {
 
@@ -3443,7 +3462,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             if (jsonObject.optString("success").equals("true")) {
 
 
-                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+//                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));

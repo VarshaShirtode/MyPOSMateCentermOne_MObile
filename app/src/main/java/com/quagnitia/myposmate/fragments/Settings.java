@@ -31,6 +31,7 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.apache.commons.codec.binary.Hex;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
@@ -43,6 +44,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -93,7 +95,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+boolean isGetBranchDetailsCalled=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -142,7 +144,13 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         }
         //added on 20th may 2019
         if (!AppConstants.isRegistered)
-            callGetBranchDetails_old();
+//            callGetBranchDetails_old();
+        {
+            isGetBranchDetailsCalled=true;
+            callAuthToken();
+        }
+
+
         else {
             edt_unique_id.setText(preferencesManager.getuniqueId());
             preferencesManager.setaggregated_singleqr(true);
@@ -362,6 +370,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 break;
 
             case R.id.btn_save:
+                if(config_id.equals(""))
+                {
+                    Toast.makeText(getActivity(),"TerminalID not registered",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 preferencesManager.setaggregated_singleqr(true);
                 if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Terminal Id and Access Id", Toast.LENGTH_LONG).show();
@@ -630,7 +644,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
 //            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
@@ -717,10 +731,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
             hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("otherData", toHex(jsonObject.toString()));//encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
 
@@ -817,8 +831,19 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         }
     }
 
-
+    String config_id="";
     public void _NewUser(JSONObject jsonObject) {
+        
+        if(jsonObject.has("configId"))
+        {
+             config_id=decryption(jsonObject.optString("configId"));
+            if(config_id.equals(""))
+            {
+                Toast.makeText(getActivity(), "TerminalID not registered", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        
         try {
             if (jsonObject.optString("success").equals("true")) {
                 preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
@@ -859,7 +884,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
 
-                jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+//                jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
 
 
@@ -873,8 +899,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                         }
                         else
                         {
-                            edt_unique_id.setText(decryption(jsonObject1.optString("accessId")));
-                            preferencesManager.setuniqueId(decryption(jsonObject1.optString("accessId")));
+                            edt_unique_id.setText(jsonObject1.optString("accessId"));
+                            preferencesManager.setuniqueId(jsonObject1.optString("accessId"));
                         }
 
                     }
@@ -1031,6 +1057,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
+                if(isGetBranchDetailsCalled)
+                {
+                    isGetBranchDetailsCalled=false;
+                    callGetBranchDetails_new();
+                }
                 if (isSaveAndOK) {
                     isSaveAndOK = false;
                     callValidateTerminal();
@@ -1048,6 +1079,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
             case "UpdateBranchDetailsNew":
+                if(!jsonObject.optBoolean("success"))
+                {
+                    Toast.makeText(getActivity(), "Failed to update terminal configuration."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 UpdateBranchDetailsNewJsonObject=jsonObject;
                 if (AppConstants.isRegistered) {
                     preferencesManager.setaggregated_singleqr(true);
@@ -1061,7 +1097,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                         callValidateTerminal();
                     }
                 } else {
-                    callGetBranchDetails_new();
+                    _NewUser(UpdateBranchDetailsNewJsonObject);
+                   // callGetBranchDetails_new();
 
                 }
 
@@ -1084,12 +1121,24 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
             case "DeleteTerminal":
-                preferencesManager.clearPreferences();
-                Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
-               // ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
+                callAuthToken();
+                if(jsonObject.optBoolean("status"))
+                {
+                    preferencesManager.clearPreferences();
+                    Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                    // ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
 
-                preferencesManager.setisResetTerminal(true);
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
+                    preferencesManager.setisResetTerminal(true);
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Terminal configuration not found on server.App data cleared successfully", Toast.LENGTH_SHORT).show();
+                    preferencesManager.clearPreferences();
+                    preferencesManager.setisResetTerminal(true);
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
+                }
+
                 break;
 
             case "DeleteTerminalOld":
@@ -1104,18 +1153,27 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 break;
 
             case "GetBranchDetailsNew":
+if(jsonObject.optBoolean("success"))
+{
+    if (jsonObject.has("multi_terminals")) {
+        if (jsonObject.optBoolean("multi_terminals")) {
+            AppConstants.configIdMatch = decryption(jsonObject.optString("configId"));
+            callConfigDialog();
+        } else
+            _NewUser(jsonObject);
+    } else
+        _NewUser(jsonObject);
 
-                if (jsonObject.has("multi_terminals")) {
-                    if (jsonObject.optBoolean("multi_terminals")) {
-                        AppConstants.configIdMatch = decryption(jsonObject.optString("configId"));
-                        callConfigDialog();
-                    } else
-                        _NewUser(jsonObject);
-                } else
-                    _NewUser(jsonObject);
+    // _NewUser(UpdateBranchDetailsNewJsonObject);
+    isUpdateNewDetails = true;
+    callAuthToken();
+}
+else
+{
+    callAuthToken();
+    Toast.makeText(getActivity(), "Terminal Configuration not found", Toast.LENGTH_SHORT).show();
+}
 
-                _NewUser(UpdateBranchDetailsNewJsonObject);
-                callAuthToken();
                 break;
 
             case "validateTerminal":
@@ -1347,6 +1405,26 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                 break;
         }
+    }
+
+
+    public String toHex(String arg) {
+        return String.format("%040x", new BigInteger(1, arg.getBytes()));
+    }
+
+    public String hextoString(String hexString) throws Exception
+    {
+        byte[] bytes=null;
+        try
+        {
+             bytes = Hex.decodeHex(hexString.toCharArray());
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new String(bytes, "UTF-8");
     }
 
 }

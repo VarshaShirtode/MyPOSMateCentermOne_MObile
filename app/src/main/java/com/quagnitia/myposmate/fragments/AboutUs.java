@@ -26,8 +26,10 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -690,7 +692,24 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         progress.setIndeterminate(true);
         progress.show();
     }
+    public String toHex(String arg) {
+        return String.format("%040x", new BigInteger(1, arg.getBytes()));
+    }
 
+    public String hextoString(String hexString) throws Exception
+    {
+        byte[] bytes=null;
+        try
+        {
+            bytes = Hex.decodeHex(hexString.toCharArray());
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new String(bytes, "UTF-8");
+    }
     boolean isUpdateDetails = false;
 
     public void callUpdateBranchDetails() {
@@ -760,10 +779,10 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             hashMapKeys.put("branchEmail", edt_contact_email.getText().toString().equals("") ? "nodata" : encryption(edt_contact_email.getText().toString()));
             hashMapKeys.put("gstNo", edt_gst_number.getText().toString().equals("") ? encryption("nodata") : encryption(edt_gst_number.getText().toString()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", preferencesManager.getConfigId());
+            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
 
@@ -893,7 +912,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                 MyPOSMateApplication.isActiveQrcode = false;
 
                 if (jsonObject.has("otherData")) {
-                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                    JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                     preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
 
 
@@ -1003,7 +1022,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                 preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
 
 
-                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));

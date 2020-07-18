@@ -20,9 +20,11 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
@@ -165,6 +167,25 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
+
+    public String toHex(String arg) {
+        return String.format("%040x", new BigInteger(1, arg.getBytes()));
+    }
+
+    public String hextoString(String hexString) throws Exception
+    {
+        byte[] bytes=null;
+        try
+        {
+            bytes = Hex.decodeHex(hexString.toCharArray());
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new String(bytes, "UTF-8");
+    }
     private PreferencesManager preferenceManager;
     TreeMap<String, String> hashMapKeys;
     JSONObject updateDetailsJson=null;
@@ -189,10 +210,10 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
             hashMapKeys.put("branchEmail", encryption(preferenceManager.getcontact_email()));
             hashMapKeys.put("gstNo",  encryption(preferenceManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
-            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
+            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferenceManager.getuniqueId()));
-            hashMapKeys.put("configId", preferenceManager.getConfigId());
+            hashMapKeys.put("configId", encryption(preferenceManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, TimeZoneActivity.this));
             hashMapKeys.put("access_token", preferenceManager.getauthToken());
 
@@ -261,7 +282,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                 break;
             case "UpdateBranchDetails":
                 if (jsonObject.has("otherData")) {
-                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+                    JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
 
 
                     if (jsonObject1.has("ConfigId"))
