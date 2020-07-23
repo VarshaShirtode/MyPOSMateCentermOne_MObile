@@ -395,7 +395,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         try {
 
             SimpleDateFormat mainConv = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS");
-            mainConv.setTimeZone(TimeZone.getTimeZone("UTC"));
+            mainConv.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -411,8 +411,8 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
-            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df1.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df1.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("limit", "1000");
 

@@ -119,7 +119,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private PreferencesManager preferenceManager;
     private TextView tv_transaction_log, tv_orders;
     private TextView tv_eod;
-    boolean isLaunch = false;
+    public static boolean isLaunch = false;
     public static boolean isExternalApp = false;
 
     //payment choices variables

@@ -112,44 +112,56 @@ public static boolean isUpdateDetails=false;
                         preferencesManager.setisTimeZoneChecked(true);
                         preferencesManager.setTimeZone(holder.tv_timezone.getText().toString());
                         preferencesManager.setTimeZoneId(arrayList.get(position));
+                        String s=TimeZone.getTimeZone(arrayList.get(position))
+                                .getDisplayName(false, TimeZone.SHORT);
                         if (arrayList.get(position).equals("Australia/Perth")) {
-                            preferencesManager.setTimezoneAbrev("AWST");
+//                            preferencesManager.setTimezoneAbrev("AWST");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Eucla")) {
-                            preferencesManager.setTimezoneAbrev("ACWST");
+//                            preferencesManager.setTimezoneAbrev("ACWST");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Darwin")) {
-                            preferencesManager.setTimezoneAbrev("ACST");
+//                            preferencesManager.setTimezoneAbrev("ACST");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Brisbane")) {
-                            preferencesManager.setTimezoneAbrev("AEST");
+//                            preferencesManager.setTimezoneAbrev("AEST");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Adelaide")) {
-                            preferencesManager.setTimezoneAbrev("ACDT");
+//                            preferencesManager.setTimezoneAbrev("ACDT");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Sydney")) {
-                            preferencesManager.setTimezoneAbrev("AEDT");
+//                            preferencesManager.setTimezoneAbrev("AEDT");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Lord_Howe")) {
-                            preferencesManager.setTimezoneAbrev("LHDT");
+//                            preferencesManager.setTimezoneAbrev("LHDT");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Fiji")) {
-                            preferencesManager.setTimezoneAbrev("FJT");
+//                            preferencesManager.setTimezoneAbrev("FJT");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Auckland")) {
-                            preferencesManager.setTimezoneAbrev("NZDT");
+                            preferencesManager.setTimezoneAbrev(s);
+                            //"NZDT");
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Chatham")) {
-                            preferencesManager.setTimezoneAbrev("CHADT");
+//                            preferencesManager.setTimezoneAbrev("CHADT");
+                            preferencesManager.setTimezoneAbrev(s);
                         }
 
 

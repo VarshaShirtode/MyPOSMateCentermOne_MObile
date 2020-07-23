@@ -1081,7 +1081,7 @@ boolean isGetBranchDetailsCalled=false;
             case "UpdateBranchDetailsNew":
                 if(!jsonObject.optBoolean("success"))
                 {
-                    Toast.makeText(getActivity(), "Failed to update terminal configuration."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getActivity(), "Failed to update terminal configuration."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 UpdateBranchDetailsNewJsonObject=jsonObject;
@@ -1177,6 +1177,7 @@ else
                 break;
 
             case "validateTerminal":
+                DashboardActivity.isLaunch=true;
                 callAuthToken();
                 AppConstants.isRegistered = false;
                 preferencesManager.setuniqueId("");
@@ -1196,6 +1197,9 @@ else
                     preferencesManager.setisUnipaySelected(true);
                     preferencesManager.setisUnionPaySelected(true);
                     preferencesManager.setisUplanSelected(false);
+                    preferencesManager.setisAlipaySelected(true);
+                    preferencesManager.setisWechatSelected(true);
+                    preferencesManager.setisUnionPayQrCodeDisplaySelected(true);
                     preferencesManager.setIsHome(false);
                     preferencesManager.setIsBack(false);
                     preferencesManager.setIsFront(false);
@@ -1403,7 +1407,10 @@ else
                     preferencesManager.setisAlipaySelected(true);
                 }
 
+
+
                 break;
+
         }
     }
 

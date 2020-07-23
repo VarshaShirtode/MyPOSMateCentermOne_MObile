@@ -105,7 +105,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
                 if (edt_config_id.getText().toString().equals("")
                         || edt_access_id.getText().toString().equals("")
                         || edt_merchant_id.getText().toString().equals("")
-                        || edt_terminal_id.getText().toString().equals("")
+
                 ) {
 
                     if (edt_config_id.getText().toString().equals(""))
@@ -117,8 +117,8 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
                     if (edt_merchant_id.getText().toString().equals(""))
                         edt_merchant_id.setError("Please enter merchant id");
 
-                    if (edt_terminal_id.getText().toString().equals(""))
-                        edt_terminal_id.setError("Please enter terminal id");
+//                    if (edt_terminal_id.getText().toString().equals(""))
+//                        edt_terminal_id.setError("Please enter terminal id");
 
                 } else {
 
@@ -187,15 +187,17 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
                 }
                 break;
             case "Registration":
-                if (jsonObject.optString("success").equals("false")) {
-                    Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
-                } else {
+                if (jsonObject.optBoolean("status")||
+                        jsonObject.optBoolean("success")) {
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     AppConstants.isRegistered = true;
                     preferencesManager.setMerchantId(edt_merchant_id.getText().toString());
                     preferencesManager.setConfigId(edt_config_id.getText().toString());
                     preferencesManager.setuniqueId(edt_access_id.getText().toString());
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
+                } else {
+                    Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
+
                 }
 
                 break;

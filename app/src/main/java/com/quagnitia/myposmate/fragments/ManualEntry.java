@@ -76,8 +76,6 @@ import faranjit.currency.edittext.CurrencyEditText;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-//import com.quagnitia.myposmate.activities.PaymentExpressActivity;
-
 
 public class ManualEntry extends Fragment implements View.OnClickListener, OnTaskCompleted {
     private static final String ARG_PARAM1 = "param1";
@@ -182,7 +180,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
     public void funcAfterUIRender() {
-
         callAuthToken();
         initUI(view);
         initListener();
@@ -943,6 +940,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         img_alipay = view.findViewById(R.id.img_alipay);
         img_wechat = view.findViewById(R.id.img_wechat);
         img_unipay = view.findViewById(R.id.img_unipay);
+
         img_upay = view.findViewById(R.id.img_upay);
         img_unionpay_qr = view.findViewById(R.id.img_unionpay_qr);
         tv_enable_payment = view.findViewById(R.id.tv_enable_payment);
@@ -1304,7 +1302,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
     public void callAllConvinenceFeeCalculations() {
-        if(edt_amount.getText().toString().equals(""))
+        if (edt_amount.getText().toString().equals(""))
             return;
         calculateConvAlipay();
         calculateConvWeChat();
@@ -1903,10 +1901,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public static String trade_no = "";
 
     public void callUnionPay() {
-        trade_no="";
-        is_success=false;
-        is_payment=false;
-        server_response="";
+        trade_no = "";
+        is_success = false;
+        is_payment = false;
+        server_response = "";
         if (countDownTimerxmpp != null) {
             countDownTimerxmpp.cancel();
             tv_start_countdown.setVisibility(View.GONE);
@@ -1931,8 +1929,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("trade_no", trade_no);
         hashMapKeys.put("server_response", server_response);
-        hashMapKeys.put("rate","0");
-        hashMapKeys.put("currency","NZD");
+        hashMapKeys.put("rate", "0");
+        hashMapKeys.put("currency", "NZD");
 
 
         if (preferenceManager.isConvenienceFeeSelected()
@@ -1968,10 +1966,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 reference_id = new Date().getTime() + "";
             hashMapKeys.put("reference_id", reference_id);
             hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
-            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
             hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
-            hashMapKeys.put("fee_percentage",roundTwoDecimals(Double.parseDouble( fee_percentage)));
+            hashMapKeys.put("fee_percentage", roundTwoDecimals(Double.parseDouble(fee_percentage)));
             hashMapKeys.put("discount", discount);
             callDP(reference_id);
 
@@ -1999,7 +1997,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 reference_id = new Date().getTime() + "";
             hashMapKeys.put("reference_id", reference_id);
             hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
-            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             callDP(reference_id);
 
         }
@@ -2007,14 +2005,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
-
-
-
     public void callUnionPayQRScan() {
-        trade_no="";
-        is_success=false;
-        is_payment=false;
-        server_response="";
+        trade_no = "";
+        is_success = false;
+        is_payment = false;
+        server_response = "";
 
         if (countDownTimerxmpp != null) {
             countDownTimerxmpp.cancel();
@@ -2039,9 +2034,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("trade_no", trade_no);
         hashMapKeys.put("server_response", server_response);
-        hashMapKeys.put("rate","0");
-        hashMapKeys.put("currency","NZD");
-
+        hashMapKeys.put("rate", "0");
+        hashMapKeys.put("currency", "NZD");
 
 
         if (preferenceManager.isConvenienceFeeSelected()
@@ -2072,20 +2066,19 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             }
 
 
-                if (!preferenceManager.gettriggerReferenceId().equals(""))
-                    reference_id = preferenceManager.gettriggerReferenceId();
-                else
-                    reference_id = new Date().getTime() + "";
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
 
-                hashMapKeys.put("reference_id", reference_id);
-                hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
-                hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
-                hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
-                hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
-                hashMapKeys.put("fee_percentage",roundTwoDecimals(Double.parseDouble( fee_percentage)));
-                hashMapKeys.put("discount", discount);
-                callDP(reference_id);
-
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
+            hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
+            hashMapKeys.put("fee_percentage", roundTwoDecimals(Double.parseDouble(fee_percentage)));
+            hashMapKeys.put("discount", discount);
+            callDP(reference_id);
 
 
         } else if (preferenceManager.isConvenienceFeeSelected()
@@ -2112,7 +2105,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 reference_id = new Date().getTime() + "";
             hashMapKeys.put("reference_id", reference_id);
             hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
-            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             callDP(reference_id);
         }
 
@@ -2120,10 +2113,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
     public void callUplan() {
-        trade_no="";
-        is_success=false;
-        is_payment=false;
-        server_response="";
+        trade_no = "";
+        is_success = false;
+        is_payment = false;
+        server_response = "";
         if (countDownTimerxmpp != null) {
             countDownTimerxmpp.cancel();
             tv_start_countdown.setVisibility(View.GONE);
@@ -2147,9 +2140,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("trade_no", trade_no);
         hashMapKeys.put("server_response", server_response);
-        hashMapKeys.put("rate","0");
-        hashMapKeys.put("currency","NZD");
-
+        hashMapKeys.put("rate", "0");
+        hashMapKeys.put("currency", "NZD");
 
 
         if (preferenceManager.isConvenienceFeeSelected()
@@ -2187,10 +2179,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
             hashMapKeys.put("reference_id", reference_id);
             hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
-            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
             hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
-            hashMapKeys.put("fee_percentage",roundTwoDecimals(Double.parseDouble( fee_percentage)));
+            hashMapKeys.put("fee_percentage", roundTwoDecimals(Double.parseDouble(fee_percentage)));
             hashMapKeys.put("discount", discount);
             callDP(reference_id);
 
@@ -2218,7 +2210,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 reference_id = new Date().getTime() + "";
             hashMapKeys.put("reference_id", reference_id);
             hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
-            hashMapKeys.put("receiptAmount",roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))) );
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             callDP(reference_id);
         }
 
@@ -2244,35 +2236,35 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
                     ) {
                         status = "20";
-                        is_success=true;
+                        is_success = true;
                     } else if (jsonObject.optString("transactionType").equals("VOID") ||
-                            jsonObject.optString("transactionType").equals("REFUND")||
+                            jsonObject.optString("transactionType").equals("REFUND") ||
                             jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_VOID") ||
                             jsonObject.optString("transactionType").equals("COUPON_VOID")) {
                         status = "19"; //set 22 to 19 in case of void on 28/02/2019
-                        is_success=true;
+                        is_success = true;
                     }
 
                 } else {
                     status = "23";
-                    is_success=false;
+                    is_success = false;
                     Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
                 }
             } else {
                 status = "23";
-                is_success=false;
+                is_success = false;
                 Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
 
             }
-            jsonObject.put("status_id",status);
-            json_data=jsonObject.toString();
+            jsonObject.put("status_id", status);
+            json_data = jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
-            trade_no=jsonObject.optString("referenceNumber");
-            hashMapKeys.put("reference_id",trade_no);
+            trade_no = jsonObject.optString("referenceNumber");
+            hashMapKeys.put("reference_id", trade_no);
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
-            hashMapKeys.put("trade_no",jsonObject.optString("referenceNumber"));
-            hashMapKeys.put("is_success",is_success+"");
-            hashMapKeys.put("is_payment",true+"");
+            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_success", is_success + "");
+            hashMapKeys.put("is_payment", true + "");
 
             String s2 = "", s1 = "";
             int i1 = 0;
@@ -2285,7 +2277,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     s2 = s2 + key + "=" + hashMapKeys.get(key);
                 i1++;
             }
-            s2 = s2 +AppConstants.CLIENT_ID+ PreferencesManager.getInstance(context).getauthToken();//.getuniqueId();
+            s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(context).getauthToken();//.getuniqueId();
             String signature = MD5Class.MD5(s2);
 
             i1 = 0;
@@ -2426,7 +2418,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public void callMembershipLoyality(String qr_data) {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
@@ -2953,14 +2945,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         super.onResume();
         Log.d("", "");
         edt_amount = view.findViewById(R.id.edt_amount);
-        if(edt_amount.getText().toString().equals(""))
+        if (edt_amount.getText().toString().equals(""))
             edt_amount.setText("0.00");
 
         edt_amount.setLocale(new Locale("en", "US"));
         edt_reference = view.findViewById(R.id.edt_reference);
-        edt_amount1 =  view.findViewById(R.id.edt_amount1);
+        edt_amount1 = view.findViewById(R.id.edt_amount1);
         edt_amount1.setLocale(new Locale("en", "US"));
-        edt_reference1 =  view.findViewById(R.id.edt_reference1);
+        edt_reference1 = view.findViewById(R.id.edt_reference1);
         edt_amount.requestFocus();
 
 
@@ -3110,7 +3102,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
                 if (jsonObject.optBoolean("status")) {
-                    Toast.makeText( getActivity(), jsonObject.optString("message") + ".", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), jsonObject.optString("message") + ".", Toast.LENGTH_LONG).show();
 
 
                     //added for external apps 12/5/2019
