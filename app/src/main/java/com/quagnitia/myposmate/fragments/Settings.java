@@ -130,7 +130,7 @@ boolean isGetBranchDetailsCalled=false;
         edt_terminal_id =  view.findViewById(R.id.edt_terminal_id);
         edt_terminal_ip =  view.findViewById(R.id.edt_terminal_ip);
         edt_unique_id =  view.findViewById(R.id.edt_unique_id);
-        edt_terminal_id.setText(android_id + "");//("TEST_TERMINAL");
+        edt_terminal_id.setText("71283458bfce2b86");
         edt_terminal_ip.setText(getLocalIpAddress());
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
 //        preferencesManager.setMerchantId("29");
@@ -259,7 +259,7 @@ boolean isGetBranchDetailsCalled=false;
     }
 
 
-    public void callDeleteTerminalOld() {
+    public void callDeleteTerminalOld() throws Exception {
         String s = decryption(encryption(edt_terminal_id.getText().toString()));
         openProgressDialog();
         try {
@@ -490,7 +490,7 @@ boolean isGetBranchDetailsCalled=false;
     }
 
 
-    public String encryption_old(String strNormalText) {
+    public String encryption_old(String strNormalText) throws Exception {
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -498,11 +498,11 @@ boolean isGetBranchDetailsCalled=false;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return normalTextEnc;
+        return toHex(normalTextEnc);
     }
 
 
-    public String encryption(String strNormalText) {
+    public String encryption(String strNormalText) throws Exception{
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -510,25 +510,25 @@ boolean isGetBranchDetailsCalled=false;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return normalTextEnc;
+        return toHex(normalTextEnc);
     }
 
-    public String decryption(String strEncryptedText) {
+    public String decryption(String strEncryptedText) throws Exception{
         String seedValue = "YourSecKey";
-        String strDecryptedText = "";
+        String strDecryptedText = hextoString(strEncryptedText);
         try {
-            strDecryptedText = AESHelper.decrypt(seedValue, strEncryptedText);
+            strDecryptedText = AESHelper.decrypt(seedValue, strDecryptedText);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return strDecryptedText;
     }
 
-    public String decryption_old(String strEncryptedText) {
+    public String decryption_old(String strEncryptedText) throws Exception {
         String seedValue = "YourSecKey";
-        String strDecryptedText = "";
+        String strDecryptedText = hextoString(strEncryptedText);
         try {
-            strDecryptedText = AESHelper.decrypt2(seedValue, strEncryptedText);
+            strDecryptedText = AESHelper.decrypt2(seedValue, strDecryptedText);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -661,7 +661,7 @@ boolean isGetBranchDetailsCalled=false;
     }
 
 
-    public void callUpdateBranchDetailsNew() {
+    public void callUpdateBranchDetailsNew() throws Exception{
 
         openProgressDialog();
 
@@ -731,7 +731,7 @@ boolean isGetBranchDetailsCalled=false;
             hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
             hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", toHex(jsonObject.toString()));//encryption(jsonObject.toString()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));//encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
             hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
@@ -832,7 +832,7 @@ boolean isGetBranchDetailsCalled=false;
     }
 
     String config_id="";
-    public void _NewUser(JSONObject jsonObject) {
+    public void _NewUser(JSONObject jsonObject) throws Exception {
         
         if(jsonObject.has("configId"))
         {
@@ -884,8 +884,8 @@ boolean isGetBranchDetailsCalled=false;
 
 
 
-//                jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
-                jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
+                jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
+//                jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
 
 
@@ -1182,7 +1182,15 @@ else
                 AppConstants.isRegistered = false;
                 preferencesManager.setuniqueId("");
 
+                if(jsonObject.has("branchInfo"))
+                {
+                    if(jsonObject.optJSONObject("branchInfo").has("fullname"))
+                    {
+                        preferencesManager.setMerchantName(jsonObject.optJSONObject("branchInfo").optString("fullname"));
+                    }
+                }
                 if (jsonObject.optBoolean("status")) {
+                    preferencesManager.setisRegistered(true);
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     username = jsonObject.optString("terminal_xmpp_jid").toString();
                     password = jsonObject.optString("terminal_xmpp_password").toString();

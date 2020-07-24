@@ -2260,9 +2260,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             json_data = jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
             trade_no = jsonObject.optString("referenceNumber");
+            if(trade_no.equals("null"))
+            {
+                trade_no=new Date().getTime()+"";
+            }
             hashMapKeys.put("reference_id", trade_no);
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
-            hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("trade_no", trade_no);
             hashMapKeys.put("is_success", is_success + "");
             hashMapKeys.put("is_payment", true + "");
 
@@ -2546,6 +2550,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public static boolean isUnionPayQrSelected = false;
     public static boolean isBack = false;
     public static boolean isFront = false;
+    public static String unionpay_payment_option="";
     private Context mContext;
     String channel = "";
 
@@ -2785,7 +2790,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.scanqr_unionpay:
-
+                unionpay_payment_option="DP-QR";
                 selected_screen = 4;
                 isUpayselected = false;
                 if (preferenceManager.getunion_pay_resp().equals("")) {
@@ -2810,7 +2815,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
             case R.id.img_upay:
 
-
+                unionpay_payment_option="DP-Uplan";
                 selected_screen = 4;
                 isunionPayQrScanSelectedForSale = false;
                 if (preferenceManager.getunion_pay_resp().equals("")) {
@@ -2835,7 +2840,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
             case R.id.img_unipay:
                 selected_screen = 4;
-
+                unionpay_payment_option="DP-Card";
                 isUpayselected = false;
                 isUnionPayQrSelected = false;
                 if (preferenceManager.getunion_pay_resp().equals("")) {
@@ -3333,7 +3338,62 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
                             !preferenceManager.is_cnv_wechat_display_and_add()) {
                         jsonObject.put("amount", edt_amount.getText().toString().trim());
-                    } else
+                    }
+
+                    else if (preferenceManager.is_cnv_alipay_display_and_add() &&
+                            preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                        if (isPayNowScanCalled) {
+                            if (selected_channel.equals("ALIPAY"))
+                                jsonObject.put("amount", convenience_amount_alipay_scan + "");
+                            else if (selected_channel.equals("WECHAT"))
+                                jsonObject.put("amount", convenience_amount_wechat_scan + "");
+                            else
+                                jsonObject.put("amount", xmppAmount);
+                        } else {
+                            if (payment_mode.equals("ALIPAY"))
+                                jsonObject.put("amount", convenience_amount_alipay + "");
+                            else if(payment_mode.equals("WECHAT"))
+                                jsonObject.put("amount", convenience_amount_wechat + "");
+                                else
+                                jsonObject.put("amount", xmppAmount);
+                        }
+                    }
+
+
+                    else if (preferenceManager.is_cnv_alipay_display_and_add() &&
+                            !preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                        if (isPayNowScanCalled) {
+                            if (selected_channel.equals("ALIPAY"))
+                                jsonObject.put("amount", convenience_amount_alipay_scan + "");
+                            else
+                                jsonObject.put("amount", xmppAmount);
+                        } else {
+                            if (payment_mode.equals("ALIPAY"))
+                                jsonObject.put("amount", convenience_amount_alipay + "");
+                            else
+                                jsonObject.put("amount", xmppAmount);
+                        }
+                    }
+
+                    else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
+                            preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                        if (isPayNowScanCalled) {
+                            if (selected_channel.equals("WECHAT"))
+                                jsonObject.put("amount", convenience_amount_wechat_scan + "");
+                            else
+                                jsonObject.put("amount", xmppAmount);
+                        } else {
+                            if (payment_mode.equals("WECHAT"))
+                                jsonObject.put("amount", convenience_amount_wechat + "");
+                            else
+                                jsonObject.put("amount", xmppAmount);
+                        }
+                    }
+
+                    else
                         jsonObject.put("amount", edt_amount.getText().toString().trim());
                     String qrcode = jsonObject.optString("codeUrl");
                     HashMap hashmap = new HashMap();
@@ -3496,15 +3556,15 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         try {
             jsonObjectCouponSale = new JSONObject();
             Calendar c = Calendar.getInstance();
-            if (preferenceManager.cnv_uplan_display_and_add()) {
+            if (preferenceManager.cnv_uplan_display_and_add() && unionpay_payment_option.equals("DP-Uplan")) {
                 jsonObjectCouponSale.put("transactionType", "COUPON_SALE");
                 jsonObjectCouponSale.put("couponInformation", couponInformation);
                 jsonObjectCouponSale.put("amount", convenience_amount_uplan + "");
                 jsonObjectCouponSale.put("orderNumber", reference_id);
-            } else if (preferenceManager.is_cnv_uni_display_and_add()) {
+            } else if (preferenceManager.cnv_unionpayqr_display_and_add()  && unionpay_payment_option.equals("DP-QR")) {
                 jsonObjectCouponSale.put("transactionType", "COUPON_SALE");
                 jsonObjectCouponSale.put("couponInformation", couponInformation);
-                jsonObjectCouponSale.put("amount", convenience_amount_unionpay + "");
+                jsonObjectCouponSale.put("amount", convenience_amount_unionpayqrscan + "");
                 jsonObjectCouponSale.put("orderNumber", reference_id);
             } else {
                 jsonObjectCouponSale.put("transactionType", "COUPON_SALE");

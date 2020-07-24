@@ -52,6 +52,7 @@ public class PreferencesManager {
     private String displayAdsTime="displayAdsTime";
     private String increment_id="increment_id";
     private String merchant_name="merchant_name";
+    private String MerchantName="MerchantName";
     private String contact_no="contact_no";
     private String contact_email="contact_email";
     private String address="address";
@@ -146,6 +147,24 @@ public class PreferencesManager {
     //convience fee for wechat
     private String cnv_wechat_display_and_add="cnv_wechat_display_and_add";
     private String cnv_wechat_display_only="cnv_wechat_display_only";
+
+
+    //already registered flag
+    private String isRegistered="isRegistered";
+
+
+
+    public boolean isRegistered() {
+        return sharedPreferences.getBoolean(isRegistered, false);
+    }
+
+    public void setisRegistered(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isRegistered, text);
+        editor.apply();
+
+    }
+
 
 
 
@@ -947,7 +966,16 @@ public class PreferencesManager {
 
     }
 
+    public String getMerchantName() {
+        return sharedPreferences.getString(MerchantName, "");
+    }
 
+    public void setMerchantName(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MerchantName, text);
+        editor.apply();
+
+    }
 
 
 

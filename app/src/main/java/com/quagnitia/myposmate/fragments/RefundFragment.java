@@ -433,7 +433,7 @@ if(alipaywechatamount.equals(""))alipaywechatamount="0.0";
                     if (Double.parseDouble(jsonArrayRefund.optJSONObject(0).optString("receiptAmount")) >
                             refunded_amount) {
                         btn_save1.setEnabled(true);
-                        edt_amount1.setText(remaining_amount + "");
+                        edt_amount1.setText(roundTwoDecimals(remaining_amount) + "");
                         if (!jsonArrayRefund.optJSONObject(jsonArrayRefund.length()-1).optString("refundReason").equals("") &&
                                 !jsonArrayRefund.optJSONObject(jsonArrayRefund.length()-1).optString("refundReason").equals("null")) {
                             edt_reference1.setText(jsonArrayRefund.optJSONObject(jsonArrayRefund.length()-1).optString("refundReason"));

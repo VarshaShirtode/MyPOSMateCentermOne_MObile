@@ -91,7 +91,13 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         hashMapKeys = new TreeMap<>();
         mContext = getActivity();
         callAuthToken();
-        initUI();
+        try
+        {
+            initUI();
+        }
+        catch (Exception e)
+        { }
+
         initLIstenere();
         view.findViewById(R.id.activity_main).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -107,7 +113,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     }
 
 
-    public void initUI() {
+    public void initUI() throws Exception{
 
 
         edt_merchant_name = view.findViewById(R.id.edt_merchant_name);
@@ -779,7 +785,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             hashMapKeys.put("branchEmail", edt_contact_email.getText().toString().equals("") ? "nodata" : encryption(edt_contact_email.getText().toString()));
             hashMapKeys.put("gstNo", edt_gst_number.getText().toString().equals("") ? encryption("nodata") : encryption(edt_gst_number.getText().toString()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
             hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
@@ -798,7 +804,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
     }
 
 
-    public String encryption(String strNormalText) {
+    public String encryption(String strNormalText) throws Exception{
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -808,14 +814,14 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             e.printStackTrace();
         }
 
-        return normalTextEnc;
+        return toHex(normalTextEnc);
     }
 
-    public String decryption(String strEncryptedText) {
+    public String decryption(String strEncryptedText) throws Exception {
         String seedValue = "YourSecKey";
-        String strDecryptedText = "";
+        String strDecryptedText = hextoString(strEncryptedText);
         try {
-            strDecryptedText = AESHelper.decrypt(seedValue, strEncryptedText);
+            strDecryptedText = AESHelper.decrypt(seedValue, strDecryptedText);
 //            strDecryptedText = AESHelper.decrypt(strEncryptedText, seedValue);
         } catch (Exception e) {
             e.printStackTrace();
@@ -912,7 +918,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                 MyPOSMateApplication.isActiveQrcode = false;
 
                 if (jsonObject.has("otherData")) {
-                    JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                     preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
 
 
@@ -1007,7 +1013,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         }
     }
 
-    public void _NewUser(JSONObject jsonObject) {
+    public void _NewUser(JSONObject jsonObject) throws Exception {
         try {
             if (jsonObject.optString("success").equals("true")) {
                 preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
@@ -1022,7 +1028,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                 preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
 
 
-                JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
+                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));

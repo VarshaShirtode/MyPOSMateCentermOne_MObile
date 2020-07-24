@@ -376,10 +376,13 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         }
 
         if (TransactionDetailsActivity.isRefundUnionPaySuccess) {
-
-            callAuthToken();
+            TransactionDetailsActivity.isRefundUnionPaySuccess=false;
+            isInitialLaunch=true;
+callAuthToken();
         } else
             callTransactionList();
+
+
 
 
     }

@@ -99,7 +99,7 @@ public LinearLayout parent;
         {
             if(jsonObject.optString("channel").equals("UNION_PAY"))
             {
-                holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundedAmount"))));
+                holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee"))));
             }
             else
             {

@@ -159,7 +159,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
 
     public void callRegistartionAPI() {
         openProgressDialog();
-        hashMapKeys.put("terminal_id", android_id);
+        hashMapKeys.put("terminal_id","71283458bfce2b86");
         hashMapKeys.put("access_id", edt_access_id.getText().toString());
         hashMapKeys.put("config_id", edt_config_id.getText().toString());
         hashMapKeys.put("branch_id", edt_merchant_id.getText().toString());
@@ -194,6 +194,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
                     preferencesManager.setMerchantId(edt_merchant_id.getText().toString());
                     preferencesManager.setConfigId(edt_config_id.getText().toString());
                     preferencesManager.setuniqueId(edt_access_id.getText().toString());
+                    preferencesManager.setisRegistered(true);
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
                 } else {
                     Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();

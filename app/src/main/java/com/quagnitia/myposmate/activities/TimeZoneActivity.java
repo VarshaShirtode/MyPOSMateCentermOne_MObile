@@ -139,7 +139,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         progress.show();
     }
 
-    public String encryption(String strNormalText) {
+    public String encryption(String strNormalText) throws Exception {
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -147,14 +147,14 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return normalTextEnc;
+        return toHex(normalTextEnc);
     }
 
-    public String decryption(String strEncryptedText) {
+    public String decryption(String strEncryptedText) throws Exception{
         String seedValue = "YourSecKey";
-        String strDecryptedText = "";
+        String strDecryptedText = hextoString(strEncryptedText);
         try {
-            strDecryptedText = AESHelper.decrypt(seedValue, strEncryptedText);
+            strDecryptedText = AESHelper.decrypt(seedValue, strDecryptedText);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,7 +210,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
             hashMapKeys.put("branchEmail", encryption(preferenceManager.getcontact_email()));
             hashMapKeys.put("gstNo",  encryption(preferenceManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
-            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferenceManager.getuniqueId()));
             hashMapKeys.put("configId", encryption(preferenceManager.getConfigId()));
@@ -282,7 +282,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                 break;
             case "UpdateBranchDetails":
                 if (jsonObject.has("otherData")) {
-                    JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 
 
                     if (jsonObject1.has("ConfigId"))

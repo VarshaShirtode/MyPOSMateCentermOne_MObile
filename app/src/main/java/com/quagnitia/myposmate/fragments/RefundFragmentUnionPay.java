@@ -619,7 +619,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                         for (int i = 0; i < jsonArrayRefund.length(); i++) {
 
                             if (jsonObject.optJSONObject("payment").optString("channel").equals("UNION_PAY")) {
-                                refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundedAmount"));
+                                refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
                             } else {
                                 refunded_amount = refunded_amount + Double.parseDouble(jsonArrayRefund.optJSONObject(i).optString("refundFee"));
                             }

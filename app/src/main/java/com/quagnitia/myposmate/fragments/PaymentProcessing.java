@@ -141,7 +141,9 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                             || jsonObject.optString("responseCodeThirtyNine").equals("00")
 
                     ) {
-                        if (jsonObject.optJSONObject("payment").optString("paymentStatus").equals("FAILED")) {
+                        if (jsonObject.optJSONObject("payment").optString("paymentStatus").equals("FAILED")||
+                                jsonObject.optJSONObject("payment").optString("paymentStatus").equals("CLOSED")
+                        ) {
                             payment_tag.setText("Payment Unsuccessful");
                             status = "Unsuccessful";
                             payment_image.setImageResource(R.drawable.unsuccessful_icon);
@@ -283,11 +285,9 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         list.add(new PrintDataObject("Merchant Name:",
                 fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                 true));
-        if (jsonObject.has("merchant_info")) {
-            list.add(new PrintDataObject(jsonObject.optJSONObject("merchant_info").optString("company"),
+            list.add(new PrintDataObject(preferencesManager.getMerchantName(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-        }
 
         if (preferencesManager.getBranchName().equals("true")) {
             list.add(new PrintDataObject("Branch Name:",

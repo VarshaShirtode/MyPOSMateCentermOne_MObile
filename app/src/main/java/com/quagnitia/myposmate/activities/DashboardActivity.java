@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
@@ -175,7 +176,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         if(preferencesManager.getTimezoneAbrev().equals(""))
         {
-            preferencesManager.setTimezoneAbrev("NZDT");
+           String s= TimeZone.getTimeZone("Pacific/Auckland")
+                    .getDisplayName(false, TimeZone.SHORT);
+            preferencesManager.setTimezoneAbrev(s);
         }
     }
 
@@ -284,12 +287,22 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         initUI();
         initListener();
         img_menu.setEnabled(true);
+
+        if(preferencesManager.isRegistered())
+        {
+            callSetupFragment(SCREENS.MANUALENTRY, null);
+        }
+        else {
+            callSetupFragment(SCREENS.REGISTRATION, null);
+        }
+/*
         if (!preferencesManager.getUsername().equals("")) {
 
             callSetupFragment(SCREENS.POSMATECONNECTION, null);
         } else {
             callSetupFragment(SCREENS.REGISTRATION, null);
         }
+*/
         findViewById(R.id.activity_main).setOnTouchListener((View v, MotionEvent event) -> {
             if (mPopupWindow.isShowing()) {
                 mPopupWindow.dismiss();
@@ -2511,7 +2524,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    public String encryption(String strNormalText) {
+    public String encryption(String strNormalText) throws Exception{
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -2519,14 +2532,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return normalTextEnc;
+        return toHex(normalTextEnc);
     }
 
-    public String decryption(String strEncryptedText) {
+    public String decryption(String strEncryptedText) throws Exception {
         String seedValue = "YourSecKey";
-        String strDecryptedText = "";
+        String strDecryptedText = hextoString(strEncryptedText);
         try {
-            strDecryptedText = AESHelper.decrypt(seedValue, strEncryptedText);
+            strDecryptedText = AESHelper.decrypt(seedValue, strDecryptedText);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2741,7 +2754,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case "UpdateBranchDetails":
                 callAuthToken();
                 if (jsonObject.has("otherData")) {
-                    JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
+                    JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 
 
                     if (jsonObject1.has("ConfigId"))
@@ -3352,7 +3365,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
             hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
             hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
@@ -3399,7 +3412,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
             hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
             hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
-            hashMapKeys.put("otherData", toHex(jsonObject.toString()));
+            hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
             hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
@@ -3457,13 +3470,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void _NewUser(JSONObject jsonObject) {
+    public void _NewUser(JSONObject jsonObject) throws Exception{
         try {
             if (jsonObject.optString("success").equals("true")) {
 
 
 //                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
-                JSONObject jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
+                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
