@@ -130,7 +130,7 @@ boolean isGetBranchDetailsCalled=false;
         edt_terminal_id =  view.findViewById(R.id.edt_terminal_id);
         edt_terminal_ip =  view.findViewById(R.id.edt_terminal_ip);
         edt_unique_id =  view.findViewById(R.id.edt_unique_id);
-        edt_terminal_id.setText("71283458bfce2b86");
+        edt_terminal_id.setText(android_id);//"71283458bfce2b86");
         edt_terminal_ip.setText(getLocalIpAddress());
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
 //        preferencesManager.setMerchantId("29");
