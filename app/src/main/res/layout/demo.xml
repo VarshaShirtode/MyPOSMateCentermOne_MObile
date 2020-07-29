@@ -633,7 +633,6 @@
                                     android:layout_height="70dp"
                                     android:layout_alignParentTop="true"
                                     android:layout_marginRight="5dp"
-                                    android:layout_marginBottom="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="10dp"
                                     android:src="@drawable/unionpay_qr" />
@@ -733,6 +732,7 @@
                         <LinearLayout
                             android:layout_width="330dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:layout_gravity="center"
                             android:weightSum="3">
                             <faranjit.currency.edittext.CurrencyEditText

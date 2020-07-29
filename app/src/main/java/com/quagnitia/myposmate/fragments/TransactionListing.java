@@ -145,16 +145,16 @@ public class TransactionListing extends Fragment implements View.OnClickListener
 
     public void initUI() {
         vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
-        btn_apply_filter =  view.findViewById(R.id.btn_apply_filter);
+        btn_apply_filter = view.findViewById(R.id.btn_apply_filter);
         btn_reprint = view.findViewById(R.id.btn_reprint);
-        edt_end_datetime =  view.findViewById(R.id.edt_end_datetime);
-        edt_start_datetime =  view.findViewById(R.id.edt_start_datetime);
-        edt_start_time =  view.findViewById(R.id.edt_start_time);
-        edt_end_time =  view.findViewById(R.id.edt_end_time);
+        edt_end_datetime = view.findViewById(R.id.edt_end_datetime);
+        edt_start_datetime = view.findViewById(R.id.edt_start_datetime);
+        edt_start_time = view.findViewById(R.id.edt_start_time);
+        edt_end_time = view.findViewById(R.id.edt_end_time);
 
         //  callTimeStamp();
 
-        recycler_view =  view.findViewById(R.id.recycler_view);
+        recycler_view = view.findViewById(R.id.recycler_view);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recycler_view.setLayoutManager(mLayoutManager);
@@ -376,13 +376,11 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         }
 
         if (TransactionDetailsActivity.isRefundUnionPaySuccess) {
-            TransactionDetailsActivity.isRefundUnionPaySuccess=false;
-            isInitialLaunch=true;
-callAuthToken();
+            TransactionDetailsActivity.isRefundUnionPaySuccess = false;
+            isInitialLaunch = true;
+            callAuthToken();
         } else
             callTransactionList();
-
-
 
 
     }
@@ -414,13 +412,22 @@ callAuthToken();
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df1.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
-            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df1.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("end_date", mainConv.format(df1.parse(endTime)) + preferencesManager.getTimezoneAbrev());
+            hashMapKeys.put("start_date", mainConv.format(df1.parse(startTime)) + preferencesManager.getTimezoneAbrev());
+
+//            hashMapKeys.put("end_date", "20200725T000000.000GMT+12:00");
+//            hashMapKeys.put("start_date", "20200727T000000.000GMT+12:00");
+
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("limit", "1000");
 
+//            hashMapKeys.put("signature", MD5Class.generateSignatureString(hashMapKeys, getActivity()));
+//            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+//            HashMap<String, String> hashMap = new HashMap<>();
+//            hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, null, "TransactionListing")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_RECENT_TRANSACTIONS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_RECENT_TRANSACTIONS
+            + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
 
 
         } catch (Exception e) {

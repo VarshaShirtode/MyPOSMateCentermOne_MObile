@@ -12,6 +12,7 @@
     <string name="sale_amount">"Sale amount NZ"</string>
     <string name="terminalIp">"Terminal IP *"</string>
     <string name="merchant_id">"Merchant ID *"</string>
+    <string name="branchID">"Branch ID *"</string>
     <string name="configId">"Config ID *"</string>
     <string name="save_and_ok">"Save &amp; Ok"</string>
     <string name="ok">"Ok"</string>

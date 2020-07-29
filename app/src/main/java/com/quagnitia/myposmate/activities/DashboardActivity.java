@@ -128,6 +128,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private CheckBox chk_alipay;
     private CheckBox chk_wechat;
     private CheckBox chk_unionpay_qr;
+    private CheckBox chk_up_upi_qr_display_and_add;
+    private CheckBox chk_upi_qr_display_only;
     private CheckBox chk_uplan_qr;
     private CheckBox chk_alipay_qr_scan;
     private CheckBox chk_wechat_qr_scan;
@@ -147,6 +149,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private EditText edt_unionpay_card_cv;
     private EditText edt_unionpay_qr_cv;
     private EditText edt_uplan_cv;
+    private EditText edt_up_upi_qr_cv;
 
 
     @Override
@@ -176,9 +179,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         if(preferencesManager.getTimezoneAbrev().equals(""))
         {
-           String s= TimeZone.getTimeZone("Pacific/Auckland")
-                    .getDisplayName(false, TimeZone.SHORT);
-            preferencesManager.setTimezoneAbrev(s);
+//           String s= TimeZone.getTimeZone("Pacific/Auckland")
+//                    .getDisplayName(false, TimeZone.SHORT);
+            preferencesManager.setTimezoneAbrev("NZST");
         }
     }
 
@@ -1122,36 +1125,157 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void funcPCViewInitialize(View dialogview) {
-        chk_unionpay_card = dialogview.findViewById(R.id.chk_unionpay_card);
-        chk_alipay = dialogview.findViewById(R.id.chk_alipay);
-        chk_wechat = dialogview.findViewById(R.id.chk_wechat);
-        chk_unionpay_qr = dialogview.findViewById(R.id.chk_unionpay_qr);
-        chk_uplan_qr = dialogview.findViewById(R.id.chk_uplan_qr);
-        chk_alipay_qr_scan = dialogview.findViewById(R.id.chk_alipay_qr_scan);
-        chk_wechat_qr_scan = dialogview.findViewById(R.id.chk_wechat_qr_scan);
-        chk_unionpay_qr_code = dialogview.findViewById(R.id.chk_unionpay_qr_code);
-
-        chk_ali_display_and_add = dialogview.findViewById(R.id.chk_ali_display_and_add);
-        chk_ali_display_only = dialogview.findViewById(R.id.chk_ali_display_only);
-        chk_wechat_display_and_add = dialogview.findViewById(R.id.chk_wechat_display_and_add);
-        chk_wechat_display_only = dialogview.findViewById(R.id.chk_wechat_display_only);
-        chk_unionpay_card_display_and_add = dialogview.findViewById(R.id.chk_unionpay_card_display_and_add);
-        chk_unionpay_card_display_only = dialogview.findViewById(R.id.chk_unionpay_card_display_only);
-        chk_unionpay_qr_display_and_add = dialogview.findViewById(R.id.chk_unionpay_qr_display_and_add);
-        chk_unionpay_qr_display_only = dialogview.findViewById(R.id.chk_unionpay_qr_display_only);
-        chk_uplan_display_and_add = dialogview.findViewById(R.id.chk_uplan_display_and_add);
-        chk_uplan_display_only = dialogview.findViewById(R.id.chk_uplan_display_only);
-
-        edt_ali_cv = dialogview.findViewById(R.id.edt_ali_cv);
-        edt_wechat_cv = dialogview.findViewById(R.id.edt_wechat_cv);
-        edt_unionpay_card_cv = dialogview.findViewById(R.id.edt_unionpay_card_cv);
-        edt_unionpay_qr_cv = dialogview.findViewById(R.id.edt_unionpay_qr_cv);
-        edt_uplan_cv = dialogview.findViewById(R.id.edt_uplan_cv);
+    //Method for initializing all the views of payment choices option.
+    public void funcPCViewInitialize(View dialogView) {
+        pcAlipay(dialogView);
+        pcWeChat(dialogView);
+        pcUPCardDPApp(dialogView);
+        pcUPQRScanDPApp(dialogView);
+        pcUPUplanScanDPApp(dialogView);
+        pcUP_UPIQRScan_MPMCloud(dialogView);
     }
 
-    public void funcSetPCChkListeners() {
+    private void pcAlipay(View dialogView)
+    {
+        //ALIPAY
+        chk_alipay = dialogView.findViewById(R.id.chk_alipay);
+        chk_alipay_qr_scan = dialogView.findViewById(R.id.chk_alipay_qr_scan);
+        chk_ali_display_and_add = dialogView.findViewById(R.id.chk_ali_display_and_add);
+        chk_ali_display_only = dialogView.findViewById(R.id.chk_ali_display_only);
+        edt_ali_cv = dialogView.findViewById(R.id.edt_ali_cv);
+    }
 
+    private void pcWeChat(View dialogView)
+    {
+        //WECHAT
+        chk_wechat = dialogView.findViewById(R.id.chk_wechat);
+        chk_wechat_qr_scan = dialogView.findViewById(R.id.chk_wechat_qr_scan);
+        chk_wechat_display_and_add = dialogView.findViewById(R.id.chk_wechat_display_and_add);
+        chk_wechat_display_only = dialogView.findViewById(R.id.chk_wechat_display_only);
+        edt_wechat_cv = dialogView.findViewById(R.id.edt_wechat_cv);
+    }
+
+    private void pcUPCardDPApp(View dialogView)
+    {
+        //UNION_PAY CARD DP APP INVOKING PAYMENT CHOICES IDS
+        chk_unionpay_card = dialogView.findViewById(R.id.chk_unionpay_card);
+        chk_unionpay_card_display_and_add = dialogView.findViewById(R.id.chk_unionpay_card_display_and_add);
+        chk_unionpay_card_display_only = dialogView.findViewById(R.id.chk_unionpay_card_display_only);
+        edt_unionpay_card_cv = dialogView.findViewById(R.id.edt_unionpay_card_cv);
+    }
+
+    private void pcUPQRScanDPApp(View dialogView)
+    {
+        //UNION_PAY CUSTOMER WALLET QR SCAN AND DP APP INVOKING FOR PAYMENT ITS PAYMENT CHOICES IDS
+        chk_unionpay_qr_code = dialogView.findViewById(R.id.chk_unionpay_qr_code);
+        chk_unionpay_qr_display_and_add = dialogView.findViewById(R.id.chk_unionpay_qr_display_and_add);
+        chk_unionpay_qr_display_only = dialogView.findViewById(R.id.chk_unionpay_qr_display_only);
+        edt_unionpay_qr_cv = dialogView.findViewById(R.id.edt_unionpay_qr_cv);
+    }
+
+    private void pcUPUplanScanDPApp(View dialogView)
+    {
+        //U-PLAN SCANNING COUPON OPTION AND PAYMENT THROUGH DP APP AND ITS PAYMENT CHOICES IDS
+        chk_uplan_qr = dialogView.findViewById(R.id.chk_uplan_qr);
+        chk_uplan_display_and_add = dialogView.findViewById(R.id.chk_uplan_display_and_add);
+        chk_uplan_display_only = dialogView.findViewById(R.id.chk_uplan_display_only);
+        edt_uplan_cv = dialogView.findViewById(R.id.edt_uplan_cv);
+    }
+
+    private void pcUP_UPIQRScan_MPMCloud(View dialogView)
+    {
+        //DP CUSTOMER WALLET QR SCAN AND PAYMENT THROUGH MPM CLOUD AND ITS PAYMENT CHOICES IDS
+        chk_unionpay_qr = dialogView.findViewById(R.id.chk_unionpay_qr);
+        chk_up_upi_qr_display_and_add= dialogView.findViewById(R.id.chk_up_upi_qr_display_and_add);
+        chk_upi_qr_display_only= dialogView.findViewById(R.id.chk_upi_qr_display_only);
+        edt_up_upi_qr_cv= dialogView.findViewById(R.id.edt_up_upi_qr_cv);
+    }
+
+
+    public void funcSetPCChkListeners() {
+        //Alipay PC Listeners
+        _alipay_chkListener();
+        _alipay_QRScan_chkListener();
+        _alipay_DAADD_DONLY_chkListener();
+
+        //WeChat PC Listeners
+        _weChat_chkListener();
+        _weChat_QRScan_chkListener();
+        _weChat_DAADD_DONLY_chkListener();
+
+        //UnionPay Card DP App PC Listeners
+        _upCard_chkListener();
+        _upCard_DPAPP_DAADD_DONLY_chkListener();
+
+        //UnionPay QR Scan DP App PC Listeners
+        _upQrScan_chkListener();
+        _upQrScan_DPAPP_DAADD_DONLY_chkListener();
+
+        //Uplan Coupon SCan DP App PC Listeners
+        _uplan_chkListener();
+        _uplan_DAADD_DONLY_chkListener();
+
+        //UP UPI QR Scan using MPMCloud PC Listener
+        _up_UPIQRScan_MPMCloud_chkListener();
+        _up_UPIQRScan_MPMCloud_DPAPP_DAADD_DONLY_chkListener();
+
+    }
+
+    //WeChat PC Listeners
+    private void _weChat_chkListener()
+    {
+        chk_wechat.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_wechat.setChecked(true);
+                preferencesManager.setisWechatSelected(true);
+
+
+            } else {
+                //case 2
+                chk_wechat.setChecked(false);
+                preferencesManager.setisWechatSelected(false);
+
+                if (!chk_wechat_qr_scan.isChecked()) {
+                    chk_wechat_display_and_add.setChecked(false);
+                    chk_wechat_display_only.setChecked(false);
+                    preferencesManager.setcnv_wechat_display_only(false);
+                    preferencesManager.setcnv_wechat_display_and_add(false);
+                    preferencesManager.setcnv_wechat("0.00");
+                    edt_wechat_cv.setText("0.00");
+                }
+            }
+        });
+    }
+    private void _weChat_QRScan_chkListener()
+    {
+        chk_wechat_qr_scan.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_wechat_qr_scan.setChecked(true);
+                preferencesManager.setisWeChatScan(true);
+//                chk_alipay_qr_scan.setChecked(false);
+//                preferencesManager.setisAlipayScan(false);
+
+            } else {
+                //case 2
+                chk_wechat_qr_scan.setChecked(false);
+                preferencesManager.setisWeChatScan(false);
+
+                if (!chk_wechat.isChecked()) {
+                    chk_wechat_display_and_add.setChecked(false);
+                    chk_wechat_display_only.setChecked(false);
+                    preferencesManager.setcnv_wechat_display_only(false);
+                    preferencesManager.setcnv_wechat_display_and_add(false);
+                    preferencesManager.setcnv_wechat("0.00");
+                    edt_wechat_cv.setText("0.00");
+                }
+
+
+            }
+        });
+
+    }
+    private void _weChat_DAADD_DONLY_chkListener()
+    {
         chk_wechat_display_and_add.setOnClickListener((View v) -> {
             if ((chk_wechat.isChecked() || chk_wechat_qr_scan.isChecked()) ||
                     (chk_wechat.isChecked() && chk_wechat_qr_scan.isChecked())) {
@@ -1236,7 +1360,63 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
         });
+    }
 
+    //Alipay PC Listeners
+    private void _alipay_chkListener()
+    {
+        chk_alipay.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_alipay.setChecked(true);
+                preferencesManager.setisAlipaySelected(true);
+
+
+            } else {
+                //case 2
+                chk_alipay.setChecked(false);
+                preferencesManager.setisAlipaySelected(false);
+
+                if (!chk_alipay_qr_scan.isChecked()) {
+                    chk_ali_display_and_add.setChecked(false);
+                    chk_ali_display_only.setChecked(false);
+                    preferencesManager.setcnv_alipay_diaplay_and_add(false);
+                    preferencesManager.setcnv_alipay_diaplay_only(false);
+                    preferencesManager.setcnv_alipay("0.00");
+                    edt_ali_cv.setText("0.00");
+                }
+
+
+            }
+        });
+    }
+    private void _alipay_QRScan_chkListener()
+    {
+        chk_alipay_qr_scan.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_alipay_qr_scan.setChecked(true);
+                preferencesManager.setisAlipayScan(true);
+//                chk_wechat_qr_scan.setChecked(false);
+//                preferencesManager.setisWeChatScan(false);
+
+            } else {
+                //case 2
+                chk_alipay_qr_scan.setChecked(false);
+                preferencesManager.setisAlipayScan(false);
+
+                if (!chk_alipay.isChecked()) {
+                    chk_ali_display_and_add.setChecked(false);
+                    chk_ali_display_only.setChecked(false);
+                    preferencesManager.setcnv_alipay_diaplay_and_add(false);
+                    preferencesManager.setcnv_alipay_diaplay_only(false);
+                    preferencesManager.setcnv_alipay("0.00");
+                    edt_ali_cv.setText("0.00");
+                }
+            }
+        });
+
+    }
+    private void _alipay_DAADD_DONLY_chkListener()
+    {
         chk_ali_display_and_add.setOnClickListener((View v) -> {
 
             if ((chk_alipay.isChecked() || chk_alipay_qr_scan.isChecked()) ||
@@ -1322,94 +1502,143 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
         });
+    }
 
+    //UnionPay Card DP App PC Listeners
+    private void _upCard_chkListener()
+    {
+        chk_unionpay_card.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                preferencesManager.setisUnionPaySelected(true);
+            } else {
+                preferencesManager.setisUnionPaySelected(false);
+                chk_unionpay_card.setChecked(false);
+                chk_unionpay_card_display_and_add.setChecked(false);
+                chk_unionpay_card_display_only.setChecked(false);
+                preferencesManager.setcnv_uni_display_and_add(false);
+                preferencesManager.setcnv_uni_display_only(false);
+                preferencesManager.setcnv_uni("0.00");
+                edt_unionpay_card_cv.setText("0.00");
+            }
+        });
+    }
+    private void _upCard_DPAPP_DAADD_DONLY_chkListener()
+    {
+        chk_unionpay_card_display_and_add.setOnClickListener((View v) -> {
 
-        chk_uplan_display_and_add.setOnClickListener((View v) -> {
-
-            if (chk_uplan_qr.isChecked()) {
-                if (edt_uplan_cv.getText().toString().equals("0.0") ||
-                        edt_uplan_cv.getText().toString().equals("0.00") ||
-                        edt_uplan_cv.getText().toString().equals("")
-                        || edt_uplan_cv.getText().toString().equals(" ")) {
-                    chk_uplan_display_and_add.setChecked(false);
-                    chk_uplan_display_and_add.setSelected(false);
+            if (chk_unionpay_card.isChecked()) {
+                if (edt_unionpay_card_cv.getText().toString().equals("0.0") ||
+                        edt_unionpay_card_cv.getText().toString().equals("0.00") ||
+                        edt_unionpay_card_cv.getText().toString().equals("")
+                        || edt_unionpay_card_cv.getText().toString().equals(" ")) {
+                    chk_unionpay_card_display_and_add.setChecked(false);
+                    chk_unionpay_card_display_and_add.setSelected(false);
                     Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-                    //is chkIos checked?
-                    String s = edt_uplan_cv.getText().toString();
+                    String s = edt_unionpay_card_cv.getText().toString();
                     if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
-                        chk_uplan_display_and_add.setChecked(false);
-                        chk_uplan_display_and_add.setSelected(false);
+                        chk_unionpay_card_display_and_add.setChecked(false);
+                        chk_unionpay_card_display_and_add.setSelected(false);
                         return;
                     }
-                    if (chk_uplan_display_only.isChecked()) {
-                        chk_uplan_display_only.setChecked(false);
-                        preferenceManager.setcnv_uplan_display_only(false);
-                        preferenceManager.setcnv_uplan_display_and_add(true);
+                    if (chk_unionpay_card_display_only.isChecked()) {
+                        chk_unionpay_card_display_only.setChecked(false);
+                        preferenceManager.setcnv_uni_display_only(false);
+                        preferenceManager.setcnv_uni_display_and_add(true);
                     } else {
                         //case 2
-                        chk_uplan_display_only.setChecked(false);
-                        preferenceManager.setcnv_uplan_display_only(false);
-                        preferenceManager.setcnv_uplan_display_and_add(true);
+                        chk_unionpay_card_display_only.setChecked(false);
+                        preferenceManager.setcnv_uni_display_only(false);
+                        preferenceManager.setcnv_uni_display_and_add(true);
                     }
                 }
-                preferenceManager.setcnv_uplan(edt_uplan_cv.getText().toString());
+                preferenceManager.setcnv_uni(edt_unionpay_card_cv.getText().toString());
             } else {
-                chk_uplan_display_and_add.setChecked(false);
-                chk_uplan_display_and_add.setSelected(false);
-                preferenceManager.setcnv_uplan("0.00");
-                Toast.makeText(DashboardActivity.this, "Please select the uplan", Toast.LENGTH_SHORT).show();
+                chk_unionpay_card_display_and_add.setChecked(false);
+                chk_unionpay_card_display_and_add.setSelected(false);
+                preferenceManager.setcnv_uni("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
                 return;
             }
 
         });
 
 
-        chk_uplan_display_only.setOnClickListener((View v) -> {
+        chk_unionpay_card_display_only.setOnClickListener((View v) -> {
 
-            if (chk_uplan_qr.isChecked()) {
-                if (edt_uplan_cv.getText().toString().equals("0.0") ||
-                        edt_uplan_cv.getText().toString().equals("0.00") ||
-                        edt_uplan_cv.getText().toString().equals("")
-                        || edt_uplan_cv.getText().toString().equals(" ")) {
-                    chk_uplan_display_only.setChecked(false);
-                    chk_uplan_display_only.setSelected(false);
+            if (chk_unionpay_card.isChecked()) {
+                if (edt_unionpay_card_cv.getText().toString().equals("0.0") ||
+                        edt_unionpay_card_cv.getText().toString().equals("0.00") ||
+                        edt_unionpay_card_cv.getText().toString().equals("")
+                        || edt_unionpay_card_cv.getText().toString().equals(" ")) {
+                    chk_unionpay_card_display_only.setChecked(false);
+                    chk_unionpay_card_display_only.setSelected(false);
                     Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-
-                    //is chkIos checked?
-                    String s = edt_uplan_cv.getText().toString();
+                    String s = edt_unionpay_card_cv.getText().toString();
                     if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
-                        chk_uplan_display_only.setChecked(false);
-                        chk_uplan_display_only.setSelected(false);
+                        chk_unionpay_card_display_only.setChecked(false);
+                        chk_unionpay_card_display_only.setSelected(false);
                         return;
                     }
-                    if (chk_uplan_display_and_add.isChecked()) {
-                        chk_uplan_display_and_add.setChecked(false);
-                        preferenceManager.setcnv_uplan_display_only(true);
-                        preferenceManager.setcnv_uplan_display_and_add(false);
+                    if (chk_unionpay_card_display_and_add.isChecked()) {
+                        chk_unionpay_card_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_uni_display_only(true);
+                        preferenceManager.setcnv_uni_display_and_add(false);
                     } else {
                         //case 2
-                        chk_uplan_display_and_add.setChecked(false);
-                        preferenceManager.setcnv_uplan_display_only(true);
-                        preferenceManager.setcnv_uplan_display_and_add(false);
+                        chk_unionpay_card_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_uni_display_only(true);
+                        preferenceManager.setcnv_uni_display_and_add(false);
                     }
-
                 }
-                preferenceManager.setcnv_uplan(edt_uplan_cv.getText().toString());
+                preferenceManager.setcnv_uni(edt_unionpay_card_cv.getText().toString());
             } else {
-                chk_uplan_display_only.setChecked(false);
-                chk_uplan_display_only.setSelected(false);
-                preferenceManager.setcnv_uplan("0.00");
-                Toast.makeText(DashboardActivity.this, "Please select uplan", Toast.LENGTH_SHORT).show();
+                chk_unionpay_card_display_only.setChecked(false);
+                chk_unionpay_card_display_only.setSelected(false);
+                preferenceManager.setcnv_uni("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
                 return;
             }
-
         });
+    }
+
+    //UnionPay QR Scan DP App PC Listeners
+    private void _upQrScan_chkListener()
+    {
+        chk_unionpay_qr.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_unionpay_qr.setChecked(true);
+                preferencesManager.setUnionPayQrSelected(true);
 
 
+            } else {
+                //case 2
+                chk_unionpay_qr.setChecked(false);
+                preferencesManager.setUnionPayQrSelected(false);
+                chk_unionpay_qr_display_and_add.setChecked(false);
+                chk_unionpay_qr_display_only.setChecked(false);
+                preferencesManager.setcnv_unionpayqr_display_only(false);
+                preferencesManager.setcnv_unionpayqr_display_and_add(false);
+                preferencesManager.setcnv_uniqr("0.00");
+                edt_unionpay_qr_cv.setText("0.00");
+
+                /*if (!chk_unionpay_qr_code.isChecked()) {
+                    chk_unionpay_qr_display_and_add.setChecked(false);
+                    chk_unionpay_qr_display_only.setChecked(false);
+                    preferencesManager.setcnv_unionpayqr_display_only(false);
+                    preferencesManager.setcnv_unionpayqr_display_and_add(false);
+                    preferencesManager.setcnv_uniqr("0.00");
+                    edt_unionpay_qr_cv.setText("0.00");
+
+                }*/
+            }
+        });
+    }
+    private void _upQrScan_DPAPP_DAADD_DONLY_chkListener()
+    {
         chk_unionpay_qr_display_and_add.setOnClickListener((View v) -> {
 
 
@@ -1495,103 +1724,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
         });
+    }
 
-
-        chk_unionpay_card_display_and_add.setOnClickListener((View v) -> {
-
-            if (chk_unionpay_card.isChecked()) {
-                if (edt_unionpay_card_cv.getText().toString().equals("0.0") ||
-                        edt_unionpay_card_cv.getText().toString().equals("0.00") ||
-                        edt_unionpay_card_cv.getText().toString().equals("")
-                        || edt_unionpay_card_cv.getText().toString().equals(" ")) {
-                    chk_unionpay_card_display_and_add.setChecked(false);
-                    chk_unionpay_card_display_and_add.setSelected(false);
-                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    String s = edt_unionpay_card_cv.getText().toString();
-                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
-                        chk_unionpay_card_display_and_add.setChecked(false);
-                        chk_unionpay_card_display_and_add.setSelected(false);
-                        return;
-                    }
-                    if (chk_unionpay_card_display_only.isChecked()) {
-                        chk_unionpay_card_display_only.setChecked(false);
-                        preferenceManager.setcnv_uni_display_only(false);
-                        preferenceManager.setcnv_uni_display_and_add(true);
-                    } else {
-                        //case 2
-                        chk_unionpay_card_display_only.setChecked(false);
-                        preferenceManager.setcnv_uni_display_only(false);
-                        preferenceManager.setcnv_uni_display_and_add(true);
-                    }
-                }
-                preferenceManager.setcnv_uni(edt_unionpay_card_cv.getText().toString());
-            } else {
-                chk_unionpay_card_display_and_add.setChecked(false);
-                chk_unionpay_card_display_and_add.setSelected(false);
-                preferenceManager.setcnv_uni("0.00");
-                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-        });
-
-
-        chk_unionpay_card_display_only.setOnClickListener((View v) -> {
-
-            if (chk_unionpay_card.isChecked()) {
-                if (edt_unionpay_card_cv.getText().toString().equals("0.0") ||
-                        edt_unionpay_card_cv.getText().toString().equals("0.00") ||
-                        edt_unionpay_card_cv.getText().toString().equals("")
-                        || edt_unionpay_card_cv.getText().toString().equals(" ")) {
-                    chk_unionpay_card_display_only.setChecked(false);
-                    chk_unionpay_card_display_only.setSelected(false);
-                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    String s = edt_unionpay_card_cv.getText().toString();
-                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
-                        chk_unionpay_card_display_only.setChecked(false);
-                        chk_unionpay_card_display_only.setSelected(false);
-                        return;
-                    }
-                    if (chk_unionpay_card_display_and_add.isChecked()) {
-                        chk_unionpay_card_display_and_add.setChecked(false);
-                        preferenceManager.setcnv_uni_display_only(true);
-                        preferenceManager.setcnv_uni_display_and_add(false);
-                    } else {
-                        //case 2
-                        chk_unionpay_card_display_and_add.setChecked(false);
-                        preferenceManager.setcnv_uni_display_only(true);
-                        preferenceManager.setcnv_uni_display_and_add(false);
-                    }
-                }
-                preferenceManager.setcnv_uni(edt_unionpay_card_cv.getText().toString());
-            } else {
-                chk_unionpay_card_display_only.setChecked(false);
-                chk_unionpay_card_display_only.setSelected(false);
-                preferenceManager.setcnv_uni("0.00");
-                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
-
-
-        chk_unionpay_card.setOnClickListener((View v) -> {
-            if (((CheckBox) v).isChecked()) {
-                preferencesManager.setisUnionPaySelected(true);
-            } else {
-                preferencesManager.setisUnionPaySelected(false);
-                chk_unionpay_card.setChecked(false);
-                chk_unionpay_card_display_and_add.setChecked(false);
-                chk_unionpay_card_display_only.setChecked(false);
-                preferencesManager.setcnv_uni_display_and_add(false);
-                preferencesManager.setcnv_uni_display_only(false);
-                preferencesManager.setcnv_uni("0.00");
-                edt_unionpay_card_cv.setText("0.00");
-            }
-        });
+    //Uplan Coupon SCan DP App PC Listeners
+    private void _uplan_chkListener()
+    {
         chk_uplan_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_uplan_qr.setChecked(true);
@@ -1612,29 +1749,99 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        chk_unionpay_qr.setOnClickListener((View v) -> {
-            if (((CheckBox) v).isChecked()) {
-                chk_unionpay_qr.setChecked(true);
-                preferencesManager.setUnionPayQrSelected(true);
+    }
+    private void _uplan_DAADD_DONLY_chkListener()
+    {
+        chk_uplan_display_and_add.setOnClickListener((View v) -> {
 
-
-            } else {
-                //case 2
-                chk_unionpay_qr.setChecked(false);
-                preferencesManager.setUnionPayQrSelected(false);
-                if (!chk_unionpay_qr_code.isChecked()) {
-                    chk_unionpay_qr_display_and_add.setChecked(false);
-                    chk_unionpay_qr_display_only.setChecked(false);
-                    preferencesManager.setcnv_unionpayqr_display_only(false);
-                    preferencesManager.setcnv_unionpayqr_display_and_add(false);
-                    preferencesManager.setcnv_uniqr("0.00");
-                    edt_unionpay_qr_cv.setText("0.00");
-
+            if (chk_uplan_qr.isChecked()) {
+                if (edt_uplan_cv.getText().toString().equals("0.0") ||
+                        edt_uplan_cv.getText().toString().equals("0.00") ||
+                        edt_uplan_cv.getText().toString().equals("")
+                        || edt_uplan_cv.getText().toString().equals(" ")) {
+                    chk_uplan_display_and_add.setChecked(false);
+                    chk_uplan_display_and_add.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    //is chkIos checked?
+                    String s = edt_uplan_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_uplan_display_and_add.setChecked(false);
+                        chk_uplan_display_and_add.setSelected(false);
+                        return;
+                    }
+                    if (chk_uplan_display_only.isChecked()) {
+                        chk_uplan_display_only.setChecked(false);
+                        preferenceManager.setcnv_uplan_display_only(false);
+                        preferenceManager.setcnv_uplan_display_and_add(true);
+                    } else {
+                        //case 2
+                        chk_uplan_display_only.setChecked(false);
+                        preferenceManager.setcnv_uplan_display_only(false);
+                        preferenceManager.setcnv_uplan_display_and_add(true);
+                    }
                 }
+                preferenceManager.setcnv_uplan(edt_uplan_cv.getText().toString());
+            } else {
+                chk_uplan_display_and_add.setChecked(false);
+                chk_uplan_display_and_add.setSelected(false);
+                preferenceManager.setcnv_uplan("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select the uplan", Toast.LENGTH_SHORT).show();
+                return;
             }
+
         });
 
 
+        chk_uplan_display_only.setOnClickListener((View v) -> {
+
+            if (chk_uplan_qr.isChecked()) {
+                if (edt_uplan_cv.getText().toString().equals("0.0") ||
+                        edt_uplan_cv.getText().toString().equals("0.00") ||
+                        edt_uplan_cv.getText().toString().equals("")
+                        || edt_uplan_cv.getText().toString().equals(" ")) {
+                    chk_uplan_display_only.setChecked(false);
+                    chk_uplan_display_only.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+
+                    //is chkIos checked?
+                    String s = edt_uplan_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_uplan_display_only.setChecked(false);
+                        chk_uplan_display_only.setSelected(false);
+                        return;
+                    }
+                    if (chk_uplan_display_and_add.isChecked()) {
+                        chk_uplan_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_uplan_display_only(true);
+                        preferenceManager.setcnv_uplan_display_and_add(false);
+                    } else {
+                        //case 2
+                        chk_uplan_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_uplan_display_only(true);
+                        preferenceManager.setcnv_uplan_display_and_add(false);
+                    }
+
+                }
+                preferenceManager.setcnv_uplan(edt_uplan_cv.getText().toString());
+            } else {
+                chk_uplan_display_only.setChecked(false);
+                chk_uplan_display_only.setSelected(false);
+                preferenceManager.setcnv_uplan("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select uplan", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+
+    }
+
+    //UP UPI QR Scan using MPMCloud PC Listener
+    private void _up_UPIQRScan_MPMCloud_chkListener()
+    {
         chk_unionpay_qr_code.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_unionpay_qr_code.setChecked(true);
@@ -1645,9 +1852,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 //case 2
                 chk_unionpay_qr_code.setChecked(false);
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
+                chk_upi_qr_display_only.setChecked(false);
+                chk_up_upi_qr_display_and_add.setChecked(false);
+                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                edt_up_upi_qr_cv.setText("0.00");
 
-
-                if (!chk_unionpay_qr.isChecked()) {
+               /* if (!chk_unionpay_qr.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
                     chk_unionpay_qr_display_only.setChecked(false);
                     preferencesManager.setcnv_unionpayqr_display_only(false);
@@ -1655,108 +1867,102 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setcnv_uniqr("0.00");
                     edt_unionpay_qr_cv.setText("0.00");
 
-                }
+                }*/
 
             }
         });
-
-        chk_alipay.setOnClickListener((View v) -> {
-            if (((CheckBox) v).isChecked()) {
-                chk_alipay.setChecked(true);
-                preferencesManager.setisAlipaySelected(true);
-
-
-            } else {
-                //case 2
-                chk_alipay.setChecked(false);
-                preferencesManager.setisAlipaySelected(false);
-
-                if (!chk_alipay_qr_scan.isChecked()) {
-                    chk_ali_display_and_add.setChecked(false);
-                    chk_ali_display_only.setChecked(false);
-                    preferencesManager.setcnv_alipay_diaplay_and_add(false);
-                    preferencesManager.setcnv_alipay_diaplay_only(false);
-                    preferencesManager.setcnv_alipay("0.00");
-                    edt_ali_cv.setText("0.00");
-                }
-
-
-            }
-        });
-
-
-        chk_wechat.setOnClickListener((View v) -> {
-            if (((CheckBox) v).isChecked()) {
-                chk_wechat.setChecked(true);
-                preferencesManager.setisWechatSelected(true);
-
-
-            } else {
-                //case 2
-                chk_wechat.setChecked(false);
-                preferencesManager.setisWechatSelected(false);
-
-                if (!chk_wechat_qr_scan.isChecked()) {
-                    chk_wechat_display_and_add.setChecked(false);
-                    chk_wechat_display_only.setChecked(false);
-                    preferencesManager.setcnv_wechat_display_only(false);
-                    preferencesManager.setcnv_wechat_display_and_add(false);
-                    preferencesManager.setcnv_wechat("0.00");
-                    edt_wechat_cv.setText("0.00");
-                }
-            }
-        });
-
-        chk_wechat_qr_scan.setOnClickListener((View v) -> {
-            if (((CheckBox) v).isChecked()) {
-                chk_wechat_qr_scan.setChecked(true);
-                preferencesManager.setisWeChatScan(true);
-//                chk_alipay_qr_scan.setChecked(false);
-//                preferencesManager.setisAlipayScan(false);
-
-            } else {
-                //case 2
-                chk_wechat_qr_scan.setChecked(false);
-                preferencesManager.setisWeChatScan(false);
-
-                if (!chk_wechat.isChecked()) {
-                    chk_wechat_display_and_add.setChecked(false);
-                    chk_wechat_display_only.setChecked(false);
-                    preferencesManager.setcnv_wechat_display_only(false);
-                    preferencesManager.setcnv_wechat_display_and_add(false);
-                    preferencesManager.setcnv_wechat("0.00");
-                    edt_wechat_cv.setText("0.00");
-                }
-
-
-            }
-        });
-
-        chk_alipay_qr_scan.setOnClickListener((View v) -> {
-            if (((CheckBox) v).isChecked()) {
-                chk_alipay_qr_scan.setChecked(true);
-                preferencesManager.setisAlipayScan(true);
-//                chk_wechat_qr_scan.setChecked(false);
-//                preferencesManager.setisWeChatScan(false);
-
-            } else {
-                //case 2
-                chk_alipay_qr_scan.setChecked(false);
-                preferencesManager.setisAlipayScan(false);
-
-                if (!chk_alipay.isChecked()) {
-                    chk_ali_display_and_add.setChecked(false);
-                    chk_ali_display_only.setChecked(false);
-                    preferencesManager.setcnv_alipay_diaplay_and_add(false);
-                    preferencesManager.setcnv_alipay_diaplay_only(false);
-                    preferencesManager.setcnv_alipay("0.00");
-                    edt_ali_cv.setText("0.00");
-                }
-            }
-        });
-
 
     }
+    private void _up_UPIQRScan_MPMCloud_DPAPP_DAADD_DONLY_chkListener()
+    {
+        chk_up_upi_qr_display_and_add.setOnClickListener((View v) -> {
+
+
+            if (chk_unionpay_qr_code.isChecked()) {
+                if (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+                        edt_up_upi_qr_cv.getText().toString().equals("0.00") ||
+                        edt_up_upi_qr_cv.getText().toString().equals("")
+                        || edt_up_upi_qr_cv.getText().toString().equals(" ")) {
+                    chk_up_upi_qr_display_and_add.setChecked(false);
+                    chk_up_upi_qr_display_and_add.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    //is chkIos checked?
+                    String s = edt_up_upi_qr_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_up_upi_qr_display_and_add.setChecked(false);
+                        chk_up_upi_qr_display_and_add.setSelected(false);
+                        return;
+                    }
+                    if (chk_upi_qr_display_only.isChecked()) {
+                        chk_upi_qr_display_only.setChecked(false);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(true);
+                    } else {
+                        //case 2
+                        chk_upi_qr_display_only.setChecked(false);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(true);
+                    }
+                }
+                preferenceManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString());
+            } else {
+                chk_up_upi_qr_display_and_add.setChecked(false);
+                chk_up_upi_qr_display_and_add.setSelected(false);
+                preferenceManager.setcnv_up_upiqr_mpmcloud("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+
+
+        chk_upi_qr_display_only.setOnClickListener((View v) -> {
+
+            if (chk_unionpay_qr_code.isChecked()) {
+                if (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+                        edt_up_upi_qr_cv.getText().toString().equals("0.00") ||
+                        edt_up_upi_qr_cv.getText().toString().equals("")
+                        || edt_up_upi_qr_cv.getText().toString().equals(" ")) {
+                    chk_upi_qr_display_only.setChecked(false);
+                    chk_upi_qr_display_only.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+
+                    //is chkIos checked?
+                    String s = edt_up_upi_qr_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_upi_qr_display_only.setChecked(false);
+                        chk_upi_qr_display_only.setSelected(false);
+                        return;
+                    }
+                    if (chk_up_upi_qr_display_and_add.isChecked()) {
+                        chk_up_upi_qr_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(true);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    } else {
+                        //case 2
+                        chk_up_upi_qr_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(true);
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    }
+
+                }
+                preferenceManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString());
+            } else {
+                chk_upi_qr_display_only.setChecked(false);
+                chk_upi_qr_display_only.setSelected(false);
+                preferenceManager.setcnv_up_upiqr_mpmcloud("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+    }
+
+
 
     public void funcPCPrefChecks() {
         if (preferencesManager.is_cnv_uni_display_only() ||

@@ -130,7 +130,7 @@ boolean isGetBranchDetailsCalled=false;
         edt_terminal_id =  view.findViewById(R.id.edt_terminal_id);
         edt_terminal_ip =  view.findViewById(R.id.edt_terminal_ip);
         edt_unique_id =  view.findViewById(R.id.edt_unique_id);
-        edt_terminal_id.setText(android_id);//"71283458bfce2b86");
+        edt_terminal_id.setText(android_id);
         edt_terminal_ip.setText(getLocalIpAddress());
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
 //        preferencesManager.setMerchantId("29");
@@ -370,9 +370,13 @@ boolean isGetBranchDetailsCalled=false;
                 break;
 
             case R.id.btn_save:
-                if(config_id.equals(""))
+                if (edt_unique_id.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                else if(config_id.equals(""))
                 {
-                    Toast.makeText(getActivity(),"TerminalID not registered",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Config ID not present",Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -383,7 +387,10 @@ boolean isGetBranchDetailsCalled=false;
                     Toast.makeText(getActivity(), "Please enter Terminal Id", Toast.LENGTH_LONG).show();
                 } else if (edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
-                } else {
+                }
+
+
+                else {
                     preferencesManager.setterminalId(edt_terminal_id.getText().toString());
                     preferencesManager.setuniqueId(edt_unique_id.getText().toString());
                     isSaveAndOK = true;
@@ -839,7 +846,7 @@ boolean isGetBranchDetailsCalled=false;
              config_id=decryption(jsonObject.optString("configId"));
             if(config_id.equals(""))
             {
-                Toast.makeText(getActivity(), "TerminalID not registered", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "ConfigID not found", Toast.LENGTH_SHORT).show();
                 return;
             }
         }

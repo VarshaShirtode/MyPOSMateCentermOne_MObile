@@ -115,53 +115,53 @@ public static boolean isUpdateDetails=false;
                         String s=TimeZone.getTimeZone(arrayList.get(position))
                                 .getDisplayName(false, TimeZone.SHORT);
                         if (arrayList.get(position).equals("Australia/Perth")) {
-//                            preferencesManager.setTimezoneAbrev("AWST");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("AWST");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Eucla")) {
-//                            preferencesManager.setTimezoneAbrev("ACWST");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("ACWST");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Darwin")) {
-//                            preferencesManager.setTimezoneAbrev("ACST");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("ACST");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Brisbane")) {
-//                            preferencesManager.setTimezoneAbrev("AEST");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("AEST");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Adelaide")) {
-//                            preferencesManager.setTimezoneAbrev("ACDT");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("ACDT");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Sydney")) {
-//                            preferencesManager.setTimezoneAbrev("AEDT");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("AEDT");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Lord_Howe")) {
-//                            preferencesManager.setTimezoneAbrev("LHDT");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("LHDT");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Fiji")) {
-//                            preferencesManager.setTimezoneAbrev("FJT");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("FJT");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Auckland")) {
-                            preferencesManager.setTimezoneAbrev(s);
-                            //"NZDT");
+//                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("NZST");
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Chatham")) {
-//                            preferencesManager.setTimezoneAbrev("CHADT");
-                            preferencesManager.setTimezoneAbrev(s);
+                            preferencesManager.setTimezoneAbrev("CHADT");
+//                            preferencesManager.setTimezoneAbrev(s);
                         }
 
 

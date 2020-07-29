@@ -66,7 +66,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_weight="2"
-                    android:text="@string/merchant_id" />
+                    android:text="@string/branchID" />
 
                 <EditText
                     android:id="@+id/edt_merchant_id"

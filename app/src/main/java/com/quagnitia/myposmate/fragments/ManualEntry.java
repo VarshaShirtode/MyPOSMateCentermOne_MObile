@@ -719,24 +719,45 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         payment_mode = "nochannel";
                         qrMode = "False";
                         edt_amount.setText(preferenceManager.getupay_amount());
-                        if (MyPOSMateApplication.isOpen) {
-                            if (preferenceManager.isConvenienceFeeSelected()) {
-                                convenience_amount_unionpayqrscan = Double.parseDouble(preferenceManager.getupay_amount());
-                            } else {
-                                edt_amount.setText(preferenceManager.getupay_amount());
-                            }
-                            beginBussinessPreAuthorization(preferenceManager.getupay_reference_id(), auth_code);
-                            //callQRCode();
 
+                        if (unionpay_payment_option.equals("UPI-QRScan")) {
+                            if (MyPOSMateApplication.isOpen) {
+                                if (preferenceManager.isConvenienceFeeSelected()) {
+                                    convenience_amount_unionpayqrdisplay = Double.parseDouble(preferenceManager.getupay_amount());
+                                } else {
+                                    edt_amount.setText(preferenceManager.getupay_amount());
+                                }
+                                callUnionPayUPIQRScan();
+
+                            } else {
+                                if (edt_amount.getText().toString().equals("") || edt_amount.getText().toString().equals("0.00")) {
+                                    Toast.makeText(getActivity(), "Please enter the amount.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    callUnionPayUPIQRScan();
+                                }
+
+                            }
                         } else {
-                            if (edt_amount.getText().toString().equals("") || edt_amount.getText().toString().equals("0.00")) {
-                                Toast.makeText(getActivity(), "Please enter the amount.", Toast.LENGTH_LONG).show();
-                            } else {
-                                //    callQRCode();
+                            if (MyPOSMateApplication.isOpen) {
+                                if (preferenceManager.isConvenienceFeeSelected()) {
+                                    convenience_amount_unionpayqrscan = Double.parseDouble(preferenceManager.getupay_amount());
+                                } else {
+                                    edt_amount.setText(preferenceManager.getupay_amount());
+                                }
                                 beginBussinessPreAuthorization(preferenceManager.getupay_reference_id(), auth_code);
-                            }
+                                //callQRCode();
 
+                            } else {
+                                if (edt_amount.getText().toString().equals("") || edt_amount.getText().toString().equals("0.00")) {
+                                    Toast.makeText(getActivity(), "Please enter the amount.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    //    callQRCode();
+                                    beginBussinessPreAuthorization(preferenceManager.getupay_reference_id(), auth_code);
+                                }
+
+                            }
                         }
+
 
                     }
                     break;
@@ -1221,6 +1242,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         img_unipay.setOnClickListener(this);
         img_upay.setOnClickListener(this);
         rel_unionpay.setOnClickListener(this);
+        img_unionpay_qr.setOnClickListener(this);
         rel_alipay_static_qr.setOnClickListener(this);
 
 
@@ -2112,6 +2134,115 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
+    public void callUnionPayUPIQRScan() {
+        openProgressDialog();
+        if (countDownTimerxmpp != null) {
+            countDownTimerxmpp.cancel();
+            tv_start_countdown.setVisibility(View.GONE);
+        }
+        callAuthToken();
+        String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
+        String amount = "";
+
+        hashMapKeys.clear();
+        if (!edt_reference.getText().toString().equals("")) {
+            hashMapKeys.put("ref_data1", edt_reference.getText().toString());
+        }
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+        hashMapKeys.put("system", preferenceManager.getterminalId());
+        hashMapKeys.put("channel", "UNION_PAY");
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+
+
+        if (preferenceManager.isConvenienceFeeSelected()
+                && preferenceManager.cnv_unionpayqr_display_and_add()) {
+            if (preferenceManager.getcnv_uniqr().equals("") || preferenceManager.getcnv_uniqr().equals("0.0") || preferenceManager.getcnv_uniqr().equals("0.00")) {
+
+                amount = convenience_amount_unionpayqrdisplay + "";
+                original_amount = edt_amount.getText().toString().replace(",", "");
+                fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
+                discount = "0";
+                fee_percentage = preferenceManager.getcnv_uniqr();
+
+            } else {
+                if (MyPOSMateApplication.isOpen) {
+                    amount = convenience_amount_unionpayqrdisplay + "";
+                    original_amount = original_xmpp_trigger_amount.replace(",", "");
+                    fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(original_xmpp_trigger_amount.replace(",", "")) + "";
+                    discount = "0";
+                    fee_percentage = preferenceManager.getcnv_uniqr();
+                } else {
+                    amount = convenience_amount_unionpayqrdisplay + "";
+                    original_amount = edt_amount.getText().toString().replace(",", "");
+                    fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
+                    discount = "0";
+                    fee_percentage = preferenceManager.getcnv_uniqr();
+                }
+
+            }
+
+
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("original_amount", roundTwoDecimals(Double.parseDouble(original_amount)));
+            hashMapKeys.put("fee_amount", roundTwoDecimals(Double.parseDouble(fee_amount)));
+            hashMapKeys.put("fee_percentage", roundTwoDecimals(Double.parseDouble(fee_percentage)));
+            hashMapKeys.put("discount", discount);
+            hashMapKeys.put("qr_mode", false + "");
+            hashMapKeys.put("auth_code", auth_code);
+
+            new OkHttpHandler(getActivity(), this, null, "paynow")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+
+
+        } else if (preferenceManager.isConvenienceFeeSelected()
+                && !preferenceManager.cnv_unionpayqr_display_and_add()) {
+
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
+            hashMapKeys.put("qr_mode", false + "");
+            hashMapKeys.put("auth_code", auth_code);
+
+            new OkHttpHandler(getActivity(), this, null, "paynow")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+
+        } else {
+            if (MyPOSMateApplication.isOpen) {
+                amount = original_xmpp_trigger_amount.replace(",", "");
+            } else {
+                amount = edt_amount.getText().toString().replace(",", "");
+            }
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                reference_id = preferenceManager.gettriggerReferenceId();
+            else
+                reference_id = new Date().getTime() + "";
+            hashMapKeys.put("reference_id", reference_id);
+            hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
+            hashMapKeys.put("qr_mode", false + "");
+            hashMapKeys.put("auth_code", auth_code);
+
+            new OkHttpHandler(getActivity(), this, null, "paynow")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+        }
+
+    }
+
+
     public void callUplan() {
         trade_no = "";
         is_success = false;
@@ -2260,9 +2391,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             json_data = jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
             trade_no = jsonObject.optString("referenceNumber");
-            if(trade_no.equals("null"))
-            {
-                trade_no=new Date().getTime()+"";
+            if (trade_no.equals("null")) {
+                trade_no = new Date().getTime() + "";
             }
             hashMapKeys.put("reference_id", trade_no);
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
@@ -2550,7 +2680,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public static boolean isUnionPayQrSelected = false;
     public static boolean isBack = false;
     public static boolean isFront = false;
-    public static String unionpay_payment_option="";
+    public static String unionpay_payment_option = "";
     private Context mContext;
     String channel = "";
 
@@ -2569,22 +2699,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.btn_front:
-                edt_amount.setText("0.00");
-                edt_amount1.setText("0.00");
-                try {
-                    if (preferenceManager.getLaneIdentifier().equals("")) {
-                        Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
-                        Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
-                    } else {
-                        isFront = true;
-                        callAuthToken();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                _funcFrontCameraScan();
                 break;
+
             case R.id.tv_status_scan_button:
                 try {
                     if (preferenceManager.getLaneIdentifier().equals("")) {
@@ -2604,266 +2721,336 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.btn_back:
-                edt_amount.setText("0.00");
-                edt_amount1.setText("0.00");
-                try {
-                    if (preferenceManager.getLaneIdentifier().equals("")) {
-                        Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
-                        Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
-                    } else {
-                        isBack = true;
-                        callAuthToken();
-
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                _funcBackButton();
                 break;
 
 
             case R.id.scanqr:
-//                if (preferenceManager.isAlipayScan()) {
-//                    selected_channel = "ALIPAY";
-                isUnionPayQrSelected = false;
-                isUpayselected = false;
-                if (MyPOSMateApplication.isOpen) {
-                    payment_mode = "";
-                    qrMode = "False";
-                    open();
-                } else {
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        payment_mode = "";
-                        qrMode = "False";
-                        open();
-                    }
-                }
-
-//                }
+                _funcAlipayWeChatQRScan();
                 break;
-//            case R.id.scanqr_wechat:
-//                if (preferenceManager.isWeChatScan()) {
-//                    selected_channel = "WECHAT";
-//                    isUnionPayQrSelected = false;
-//                    isUpayselected = false;
-//                    if (MyPOSMateApplication.isOpen) {
-//                        payment_mode = "";
-//                        qrMode = "False";
-//                        open();
-//                    } else {
-//                        if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
-//                            Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-//                        } else {
-//                            payment_mode = "";
-//                            qrMode = "False";
-//                            open();
-//                        }
-//                    }
-//
-//                }
-//
-//                break;
+
             case R.id.btn_save1:
             case R.id.img_wechat:
-                channel = "WECHAT";
-                selected_screen = 2;
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                View view1 = getActivity().getCurrentFocus();
-
-                if (view1 != null) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-                    assert imm != null;
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-
-                if (selected_screen == 0) {
-                    Toast.makeText(getActivity(), "Please select the payment type", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (preferenceManager.is_cnv_wechat_display_and_add())
-                    xmppAmount = convenience_amount_wechat + "";
-                else
-                    xmppAmount = edt_amount.getText().toString();
-
-
-                payment_mode = "WECHAT";
-                qrMode = "True";
-                auth_code = "";
-                if (MyPOSMateApplication.isOpen) {
-                    callTerminalPayWeChat();
-
-                } else {
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        callTerminalPayWeChat();
-                    }
-                }
-
+                _funcWeChat();
                 break;
 
             case R.id.img_alipay:
-                channel = "ALIPAY";
-                selected_screen = 2;
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                View view2 = getActivity().getCurrentFocus();
-
-                if (view2 != null) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-                    assert imm != null;
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-
-                if (selected_screen == 0) {
-                    Toast.makeText(getActivity(), "Please select the payment type", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (preferenceManager.is_cnv_alipay_display_and_add())
-                    xmppAmount = convenience_amount_alipay + "";
-                else
-                    xmppAmount = edt_amount.getText().toString();
-
-
-                payment_mode = "ALIPAY";
-                qrMode = "True";
-                auth_code = "";
-                if (MyPOSMateApplication.isOpen) {
-                    callTerminalPayAlipay();
-                } else {
-                    if (preferenceManager.isaggregated_singleqr() && !preferenceManager.isUnipaySelected()) {
-                    }
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        callTerminalPayAlipay();
-                    }
-                }
-
-
+                _funcAlipay();
                 break;
+
             case R.id.btn_cancel:
             case R.id.btn_cancel1:
-
-                if (DashboardActivity.isExternalApp) {
-                    TransactionDetailsActivity.isReturnFromTransactionDetails = false;
-                    try {
-                        isTransactionDone = true;
-                        //added for external apps 12/5/2019
-                        int REQ_PAY_SALE = 100;
-                        DashboardActivity.isExternalApp = false;
-                        getActivity().getIntent().putExtra("result", new JSONObject().toString());
-                        getActivity().setResult(REQ_PAY_SALE, getActivity().getIntent());
-                        getActivity().finishAndRemoveTask();
-                        return;
-                        //added for external apps
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-
-                if (countDownTimerxmpp != null) {
-                    countDownTimerxmpp.cancel();
-                    tv_start_countdown.setVisibility(View.GONE);
-                    AppConstants.xmppamountforscan = "";
-                }
-                AppConstants.xmppamountforscan = "";
-                edt_amount.setText("");
-                edt_reference.setText("");
-                edt_amount1.setText("");
-                edt_reference1.setText("");
-                if (MyPOSMateApplication.isOpen) {
-                    MyPOSMateApplication.isOpen = false;
-                    MyPOSMateApplication.isActiveQrcode = false;
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                }
-                MyPOSMateApplication.isOpen = false;
-                MyPOSMateApplication.isActiveQrcode = false;
+                _funcCancelButton();
                 break;
 
             case R.id.scanqr_unionpay:
-                unionpay_payment_option="DP-QR";
-                selected_screen = 4;
-                isUpayselected = false;
-                if (preferenceManager.getunion_pay_resp().equals("")) {
-                    payment_mode = "";
-                    qrMode = "False";
-                    preferenceManager.setupay_amount(edt_amount.getText().toString());
-                    xmppAmount = convenience_amount_unionpayqrscan + "";
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        isUnionPayQrSelected = true;
-                        isunionPayQrScanSelectedForSale = true;
-                        auth_code = "";
-                        callUnionPayQRScan();
-                    }
-                } else {
-                    AppConstants.isUnionQrSelected = true;
-                    callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
-                }
-
-
+                _funcDPQRScan();
                 break;
+
             case R.id.img_upay:
-
-                unionpay_payment_option="DP-Uplan";
-                selected_screen = 4;
-                isunionPayQrScanSelectedForSale = false;
-                if (preferenceManager.getunion_pay_resp().equals("")) {
-                    payment_mode = "";
-                    qrMode = "False";
-                    preferenceManager.setupay_amount(edt_amount.getText().toString());
-                    xmppAmount = convenience_amount_uplan + "";
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        isUpayselected = true;
-                        auth_code = "";
-                        callUplan();
-                    }
-                } else {
-                    AppConstants.isUplanselected = true;
-                    callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
-                }
-
-
+                _funcDPUplanForCoupon();
                 break;
 
             case R.id.img_unipay:
-                selected_screen = 4;
-                unionpay_payment_option="DP-Card";
-                isUpayselected = false;
-                isUnionPayQrSelected = false;
-                if (preferenceManager.getunion_pay_resp().equals("")) {
-                    payment_mode = "";
-                    qrMode = "False";
-                    xmppAmount = convenience_amount_unionpay + "";
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
+                _funcDPCard();
+                break;
 
-                        callUnionPay();
-                    }
+            case R.id.img_unionpay_qr:
+                _funcUPIQRScan();
+                break;
+
+        }
+    }
+
+
+    private void _funcUPIQRScan() {
+        //Scan customer wallet qr code and perfom
+        //transaction through MyPOSMate cloud
+        unionpay_payment_option = "UPI-QRScan";
+        selected_screen = 4;
+        isUpayselected = false;
+        isUnionPayQrSelected = true;
+        if (preferenceManager.getunion_pay_resp().equals("")) {
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_unionpayqrdisplay + "";
+
+            if (MyPOSMateApplication.isOpen) {
+                payment_mode = "UPI-QRScan";
+                qrMode = "False";
+                open();
+            } else {
+                if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
                 } else {
-                    AppConstants.isUnionpayselected = true;
-                    callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+                    payment_mode = "UPI-QRScan";
+                    qrMode = "False";
+                    open();
                 }
+            }
+
+        } else {
+            AppConstants.isUnionQrSelected = true;
+            callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+        }
+    }
 
 
-                break;
-            case R.id.img_scan:
-                selected_screen = 3;
+    private void _funcDPCard() {
+        //Perform UnionPay Transaction using
+        //Dynamic Pay appplication
+        selected_screen = 4;
+        unionpay_payment_option = "DP-Card";
+        isUpayselected = false;
+        isUnionPayQrSelected = false;
+        if (preferenceManager.getunion_pay_resp().equals("")) {
+            payment_mode = "";
+            qrMode = "False";
+            xmppAmount = convenience_amount_unionpay + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
 
-                break;
+                callUnionPay();
+            }
+        } else {
+            AppConstants.isUnionpayselected = true;
+            callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+        }
+    }
+
+
+    private void _funcDPUplanForCoupon() {
+        //Scan coupon and perform transaction using
+        //Dynamic Pay app
+        unionpay_payment_option = "DP-Uplan";
+        selected_screen = 4;
+        isunionPayQrScanSelectedForSale = false;
+        if (preferenceManager.getunion_pay_resp().equals("")) {
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_uplan + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                isUpayselected = true;
+                auth_code = "";
+                callUplan();
+            }
+        } else {
+            AppConstants.isUplanselected = true;
+            callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+        }
+
+    }
+
+    private void _funcDPQRScan() {
+        //Scan customer wallet qr code and perfom
+        //transaction through Dynamic Pay App
+        unionpay_payment_option = "DP-QR";
+        selected_screen = 4;
+        isUpayselected = false;
+        if (preferenceManager.getunion_pay_resp().equals("")) {
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_unionpayqrscan + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                isUnionPayQrSelected = true;
+                isunionPayQrScanSelectedForSale = true;
+                auth_code = "";
+                callUnionPayQRScan();
+            }
+        } else {
+            AppConstants.isUnionQrSelected = true;
+            callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+        }
+
+    }
+
+
+    private void _funcAlipay() {
+        //Perform alipay transaction by generating QR code on terminal
+        channel = "ALIPAY";
+        selected_screen = 2;
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        View view2 = getActivity().getCurrentFocus();
+
+        if (view2 != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
+        if (selected_screen == 0) {
+            Toast.makeText(getActivity(), "Please select the payment type", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (preferenceManager.is_cnv_alipay_display_and_add())
+            xmppAmount = convenience_amount_alipay + "";
+        else
+            xmppAmount = edt_amount.getText().toString();
+
+
+        payment_mode = "ALIPAY";
+        qrMode = "True";
+        auth_code = "";
+        if (MyPOSMateApplication.isOpen) {
+            callTerminalPayAlipay();
+        } else {
+            if (preferenceManager.isaggregated_singleqr() && !preferenceManager.isUnipaySelected()) {
+            }
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                callTerminalPayAlipay();
+            }
+        }
+
+    }
+
+    private void _funcWeChat() {
+        //Perform wechat transaction by generating QR code on terminal
+        channel = "WECHAT";
+        selected_screen = 2;
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        View view1 = getActivity().getCurrentFocus();
+
+        if (view1 != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
+        if (selected_screen == 0) {
+            Toast.makeText(getActivity(), "Please select the payment type", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (preferenceManager.is_cnv_wechat_display_and_add())
+            xmppAmount = convenience_amount_wechat + "";
+        else
+            xmppAmount = edt_amount.getText().toString();
+
+
+        payment_mode = "WECHAT";
+        qrMode = "True";
+        auth_code = "";
+        if (MyPOSMateApplication.isOpen) {
+            callTerminalPayWeChat();
+
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                callTerminalPayWeChat();
+            }
+        }
+    }
+
+
+    private void _funcAlipayWeChatQRScan() {
+        //Scanning qr from customer wallet and performing transaction
+        //through MyPOSMate cloud
+        isUnionPayQrSelected = false;
+        isUpayselected = false;
+        if (MyPOSMateApplication.isOpen) {
+            payment_mode = "";
+            qrMode = "False";
+            open();
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                payment_mode = "";
+                qrMode = "False";
+                open();
+            }
+        }
+    }
+
+
+    private void _funcCancelButton() {
+        if (DashboardActivity.isExternalApp) {
+            TransactionDetailsActivity.isReturnFromTransactionDetails = false;
+            try {
+                isTransactionDone = true;
+                //added for external apps 12/5/2019
+                int REQ_PAY_SALE = 100;
+                DashboardActivity.isExternalApp = false;
+                getActivity().getIntent().putExtra("result", new JSONObject().toString());
+                getActivity().setResult(REQ_PAY_SALE, getActivity().getIntent());
+                getActivity().finishAndRemoveTask();
+                return;
+                //added for external apps
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        if (countDownTimerxmpp != null) {
+            countDownTimerxmpp.cancel();
+            tv_start_countdown.setVisibility(View.GONE);
+            AppConstants.xmppamountforscan = "";
+        }
+        AppConstants.xmppamountforscan = "";
+        edt_amount.setText("");
+        edt_reference.setText("");
+        edt_amount1.setText("");
+        edt_reference1.setText("");
+        if (MyPOSMateApplication.isOpen) {
+            MyPOSMateApplication.isOpen = false;
+            MyPOSMateApplication.isActiveQrcode = false;
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+        }
+        MyPOSMateApplication.isOpen = false;
+        MyPOSMateApplication.isActiveQrcode = false;
+    }
+
+    private void _funcBackButton() {
+        edt_amount.setText("0.00");
+        edt_amount1.setText("0.00");
+        try {
+            if (preferenceManager.getLaneIdentifier().equals("")) {
+                Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+            } else if (preferenceManager.getPOSIdentifier().equals("")) {
+                Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+            } else {
+                isBack = true;
+                callAuthToken();
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void _funcFrontCameraScan() {
+        edt_amount.setText("0.00");
+        edt_amount1.setText("0.00");
+        try {
+            if (preferenceManager.getLaneIdentifier().equals("")) {
+                Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+            } else if (preferenceManager.getPOSIdentifier().equals("")) {
+                Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+            } else {
+                isFront = true;
+                callAuthToken();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -3064,446 +3251,447 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         switch (TAG) {
 
             case "AuthToken":
-                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
-                }
-                if (isBack) {
-                    isBack = false;
-                    stsartFastScan(true);//Back
-                }
-                if (isFront) {
-                    isFront = false;
-                    stsartFastScan(false);//front
-                }
-                if (isTransactionDetails) {
-                    isTransactionDetails = false;
-                    callTransactionDetails();
-                }
+                _parseAuthCodeResponse(jsonObject);
                 break;
 
             case "saveLoyaltyInfo":
-                callAuthToken();
-                progress.dismiss();
-                if (jsonObject.optBoolean("status")) {
-                    tv_status_scan.setVisibility(View.VISIBLE);
-                    tv_status_scan.setText("Thank you for using Membership/Loyality");
-                    tv_status_scan_button.setText("Rescan Membership/Loyality");
-                    Toast.makeText(getActivity(), "Loyality data uploaded successfully ", Toast.LENGTH_SHORT).show();
-                } else {
-                    tv_status_scan.setVisibility(View.VISIBLE);
-                    tv_status_scan.setText("Membership/Loyality could not be scanned");
-                    tv_status_scan_button.setText("Rescan Membership/Loyality");
-                    Toast.makeText(getActivity(), "Loyality data upload failed ", Toast.LENGTH_SHORT).show();
-                }
+                _parseSaveLoyalityInfoResponse(jsonObject);
                 break;
-
 
             case "unionpaystatus":
-                callAuthToken();
-                reference_id = "";
-                preferenceManager.setreference_id("");
-                preferenceManager.settriggerReferenceId("");
-                preferenceManager.setunion_pay_resp("");
-
-
-                if (jsonObject.optBoolean("status")) {
-                    Toast.makeText(getActivity(), jsonObject.optString("message") + ".", Toast.LENGTH_LONG).show();
-
-
-                    //added for external apps 12/5/2019
-
-                    if (DashboardActivity.isExternalApp) {
-                        AppConstants.showDialog = true;
-                        isTransactionDone = true;
-                        ((DashboardActivity) getActivity()).callProgressDialogForUnionPay();
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                        returnDataToExternalApp(hashMapKeys, URLDecoder.decode(AppConstants.EXTERNAL_APP_UNIONPAY_RESPONSE));
-                    } else {
-                        AppConstants.showDialog = true;
-                        ((DashboardActivity) getActivity()).callProgressDialogForUnionPay();
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                    }
-
-
-                } else {
-                    Toast.makeText(getActivity(), "Failed to update the transaction", Toast.LENGTH_LONG).show();
-                }
-
-
-                if (AppConstants.isUnionQrSelected) {
-                    AppConstants.isUnionQrSelected = false;
-                    payment_mode = "";
-                    qrMode = "False";
-                    preferenceManager.setupay_amount(edt_amount.getText().toString());
-                    xmppAmount = convenience_amount_unionpayqrscan + "";
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        isUnionPayQrSelected = true;
-                        callUnionPayQRScan();
-                    }
-                }
-
-
-                if (AppConstants.isUplanselected) {
-                    AppConstants.isUplanselected = false;
-                    payment_mode = "";
-                    qrMode = "False";
-                    preferenceManager.setupay_amount(edt_amount.getText().toString());
-                    xmppAmount = convenience_amount_uplan + "";
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-                        isUpayselected = true;
-
-                        callUplan();
-                    }
-                }
-
-
-                if (AppConstants.isUnionpayselected) {
-                    AppConstants.isUnionpayselected = false;
-                    payment_mode = "";
-                    qrMode = "False";
-                    xmppAmount = convenience_amount_unionpay + "";
-                    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-                    } else {
-
-                        callUnionPay();
-                    }
-                }
+                _parseUnionPayStatusResponse(jsonObject);
                 break;
-
 
             case "Arke":
-                callAuthToken();
-
-                if (jsonObject.has("responseCodeThirtyNine")) {
-                    if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
-                        ManualEntry.shadaf = true;
-                        if (isunionPayQrScanSelectedForSale) {
-                            isunionPayQrScanSelectedForSale = false;
-                            JSONObject jsonObject = new JSONObject(result);
-                            jsonObject.put("transactionType", "UPI_SCAN_CODE_SALE");
-                            jsonObject.put("qrcode", auth_code);
-                            preferenceManager.setunion_pay_resp(jsonObject.toString());
-                            ManualEntry.val = jsonObject.toString();
-                        } else {
-                            preferenceManager.setunion_pay_resp(jsonObject.toString());
-                            ManualEntry.val = jsonObject.toString();
-                        }
-
-                    } else {
-                        ManualEntry.shadaf = true;
-                        preferenceManager.setunion_pay_resp(jsonObject.toString());
-                        ManualEntry.val = jsonObject.toString();
-                    }
-
-                } else {
-                    ManualEntry.shadaf = true;
-                    if (isunionPayQrScanSelectedForSale) {
-                        isunionPayQrScanSelectedForSale = false;
-                        JSONObject jsonObject = new JSONObject(result);
-                        jsonObject.put("transactionType", "UPI_SCAN_CODE_SALE");
-                        jsonObject.put("qrcode", auth_code);
-                        preferenceManager.setunion_pay_resp(jsonObject.toString());
-                        ManualEntry.val = jsonObject.toString();
-                    } else {
-                        preferenceManager.setunion_pay_resp(jsonObject.toString());
-                        ManualEntry.val = jsonObject.toString();
-                    }
-
-                    Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
-
-                }
-                auth_code = "";
+                _parseArkeResponse(result);
                 break;
-
 
             case "TransactionDetails":
-                callAuthToken();
-
-                if (!jsonObject.optString("status_id").equals("USERPAYING") && !jsonObject.optString("status_description").equals("WAIT_BUYER_PAY")) {
-                    if (jsonObject.optString("status").equalsIgnoreCase("true") && !jsonObject.optString("status_description").equals("TRADE_NOT_PAY")) {
-                        if (progress1.isShowing())
-                            progress1.dismiss();
-                        if (MyPOSMateApplication.isOpen) {
-                            jsonObject.put("grandtotal", xmppAmount);
-                        } else
-                            jsonObject.put("grandtotal", edt_amount.getText().toString());
-                        selected_screen = 0;
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
-                        if (progress.isShowing())
-                            progress.dismiss();
-                        countDownTimer.cancel();
-                    } else if (jsonObject.optString("status_description").equals("TRADE_REVOKED")) {
-                        if (progress1.isShowing())
-                            progress1.dismiss();
-                        if (progress.isShowing())
-                            progress.dismiss();
-                        showDialog("Transaction revoked. Try again.");
-                        countDownTimer.cancel();
-
-                    }
-                } else {
-                    if (jsonObject.optString("status_description").equals("TRADE_CLOSED")) {
-                        showDialog("Your transaction is closed.");
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
-                        if (progress.isShowing())
-                            progress.dismiss();
-                        if (progress1.isShowing())
-                            progress1.dismiss();
-                        countDownTimer.cancel();
-                    }
-
-                }
-
+                _parseTransactionDetailsResponse(jsonObject);
                 break;
 
-
-            case "terminalPay":
-            case "payQr":
             case "paynow":
-                callAuthToken();
-                AppConstants.xmppamountforscan = ""; //added on 12th march 2019
-                if (!jsonObject.has("reference_id")) {
-                    jsonObject.putOpt("referenceId", reference_id);
-                }
-                if (jsonObject.optBoolean("status") == false) {
-                    edt_amount.setText("");
-                    edt_amount1.setText("");
-                    preferenceManager.setreference_id("");
-                    reference_id = "";
-                    Toast.makeText(getActivity(), jsonObject.optString("message") + ".Please try again", Toast.LENGTH_LONG).show();
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                    return;
-                }
-                if (progress.isShowing())
-                    progress.dismiss();
-                reference_id = jsonObject.optString("referenceId");
-                preferenceManager.setreference_id(reference_id);
-                preferenceManager.setincrement_id(jsonObject.optString("incrementId"));
-                if (!payment_mode.equals("nochannel")) {
-                    if (MyPOSMateApplication.isOpen) {
-                        if (preferenceManager.is_cnv_alipay_display_and_add() &&
-                                preferenceManager.is_cnv_wechat_display_and_add()) {
-                            if (isPayNowScanCalled) {
-                                if (selected_channel.equals("ALIPAY"))
-                                    jsonObject.put("amount", convenience_amount_alipay_scan + "");
-                                else if (selected_channel.equals("WECHAT"))
-                                    jsonObject.put("amount", convenience_amount_wechat_scan + "");
-                                else
-                                    jsonObject.put("amount", xmppAmount);
-                            } else {
-                                if (selected_channel.equals("ALIPAY"))
-                                    jsonObject.put("amount", convenience_amount_alipay + "");
-                                else if (selected_channel.equals("WECHAT"))
-                                    jsonObject.put("amount", convenience_amount_wechat + "");
-                                else
-                                    jsonObject.put("amount", xmppAmount);
-                            }
-                        } else if (preferenceManager.is_cnv_alipay_display_and_add() &&
-                                !preferenceManager.is_cnv_wechat_display_and_add()) {
-
-                            if (isPayNowScanCalled) {
-                                if (selected_channel.equals("ALIPAY"))
-                                    jsonObject.put("amount", convenience_amount_alipay_scan + "");
-                                else
-                                    jsonObject.put("amount", xmppAmount);
-                            } else {
-                                if (selected_channel.equals("ALIPAY"))
-                                    jsonObject.put("amount", convenience_amount_alipay + "");
-                                else
-                                    jsonObject.put("amount", xmppAmount);
-                            }
-                        } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
-                                preferenceManager.is_cnv_wechat_display_and_add()) {
-
-                            if (isPayNowScanCalled) {
-                                if (selected_channel.equals("WECHAT"))
-                                    jsonObject.put("amount", convenience_amount_wechat_scan + "");
-                                else
-                                    jsonObject.put("amount", xmppAmount);
-                            } else {
-                                if (selected_channel.equals("WECHAT"))
-                                    jsonObject.put("amount", convenience_amount_wechat + "");
-                                else
-                                    jsonObject.put("amount", xmppAmount);
-                            }
-                        } else {
-                            jsonObject.put("amount", xmppAmount);
-                        }
-
-                    } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
-                            !preferenceManager.is_cnv_wechat_display_and_add()) {
-                        jsonObject.put("amount", edt_amount.getText().toString().trim());
-                    }
-
-                    else if (preferenceManager.is_cnv_alipay_display_and_add() &&
-                            preferenceManager.is_cnv_wechat_display_and_add()) {
-
-                        if (isPayNowScanCalled) {
-                            if (selected_channel.equals("ALIPAY"))
-                                jsonObject.put("amount", convenience_amount_alipay_scan + "");
-                            else if (selected_channel.equals("WECHAT"))
-                                jsonObject.put("amount", convenience_amount_wechat_scan + "");
-                            else
-                                jsonObject.put("amount", xmppAmount);
-                        } else {
-                            if (payment_mode.equals("ALIPAY"))
-                                jsonObject.put("amount", convenience_amount_alipay + "");
-                            else if(payment_mode.equals("WECHAT"))
-                                jsonObject.put("amount", convenience_amount_wechat + "");
-                                else
-                                jsonObject.put("amount", xmppAmount);
-                        }
-                    }
-
-
-                    else if (preferenceManager.is_cnv_alipay_display_and_add() &&
-                            !preferenceManager.is_cnv_wechat_display_and_add()) {
-
-                        if (isPayNowScanCalled) {
-                            if (selected_channel.equals("ALIPAY"))
-                                jsonObject.put("amount", convenience_amount_alipay_scan + "");
-                            else
-                                jsonObject.put("amount", xmppAmount);
-                        } else {
-                            if (payment_mode.equals("ALIPAY"))
-                                jsonObject.put("amount", convenience_amount_alipay + "");
-                            else
-                                jsonObject.put("amount", xmppAmount);
-                        }
-                    }
-
-                    else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
-                            preferenceManager.is_cnv_wechat_display_and_add()) {
-
-                        if (isPayNowScanCalled) {
-                            if (selected_channel.equals("WECHAT"))
-                                jsonObject.put("amount", convenience_amount_wechat_scan + "");
-                            else
-                                jsonObject.put("amount", xmppAmount);
-                        } else {
-                            if (payment_mode.equals("WECHAT"))
-                                jsonObject.put("amount", convenience_amount_wechat + "");
-                            else
-                                jsonObject.put("amount", xmppAmount);
-                        }
-                    }
-
-                    else
-                        jsonObject.put("amount", edt_amount.getText().toString().trim());
-                    String qrcode = jsonObject.optString("codeUrl");
-                    HashMap hashmap = new HashMap();
-                    hashmap.put("result", jsonObject.toString());
-                    hashmap.put("payment_mode", payment_mode);
-
-                    if (payment_mode.equalsIgnoreCase("DPS")) {
-                        if (jsonObject.optBoolean("success")) {
-                            String url = jsonObject.optString("url");
-//                            Intent intent = new Intent(getActivity(), PaymentExpressActivity.class);
-//                            intent.putExtra("url", url);
-//                            startActivity(intent);
-                        } else {
-                            Toast.makeText(getActivity(), "Oops!! Something went wrong.", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.ALIPAYPAYMENT, hashmap);
-                    }
-
-
-                    if (progress.isShowing())
-                        progress.dismiss();
-                    countDownTimer.cancel();
-                } else {
-                    if (!jsonObject.optBoolean("status")) {
-                        progress.dismiss();
-                        openProgressDialog();
-
-                        progress.setMessage("Please wait while processing the transaction..");
-                        progress1 = new ProgressDialog(getActivity());
-                        progress1.setMessage("Please wait while processing the transaction..");
-                        progress1.setCancelable(false);
-                        progress1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progress1.setIndeterminate(true);
-                        progress1.show();
-                        countDownTimer = new CountDownTimer(30000, 1000) { //40000 milli seconds is total time, 1000 milli seconds is time interval
-
-                            public void onTick(long millisUntilFinished) {
-//                                isTransactionDetails=true;
-//                                callAuthToken();
-                                if (progress2.isShowing())
-                                    progress2.dismiss();
-                                callTransactionDetails();
-                            }
-
-                            public void onFinish() {
-                                try {
-                                    showDialog("Try again");
-                                    if (progress.isShowing())
-                                        progress.dismiss();
-//                                    if(progresdismiss();
-                                    countDownTimer.cancel();
-
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        };
-                        countDownTimer.start();
-
-
-                    } else {
-                        if (MyPOSMateApplication.isOpen) {
-                            jsonObject.put("grandtotal", xmppAmount);
-                        } else
-                            jsonObject.put("grandtotal", edt_amount.getText().toString());
-                        if (progress.isShowing())
-                            progress.dismiss();
-                        openProgressDialog();
-
-                        progress.setMessage("Please wait while processing the transaction..");
-                        progress1 = new ProgressDialog(getActivity());
-                        progress1.setMessage("Please wait while processing the transaction..");
-                        progress1.setCancelable(false);
-                        progress1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progress1.setIndeterminate(true);
-                        progress1.show();
-                        countDownTimer = new CountDownTimer(30000, 1000) { //40000 milli seconds is total time, 1000 milli seconds is time interval
-
-                            public void onTick(long millisUntilFinished) {
-//                                isTransactionDetails=true;
-//                                callAuthToken();
-                                if (progress2.isShowing())
-                                    progress2.dismiss();
-                                callTransactionDetails();
-                            }
-
-                            public void onFinish() {
-                                try {
-                                    showDialog("Try again");
-                                    if (progress.isShowing())
-                                        progress.dismiss();
-//                                    if (progress1.isShowing())
-//                                        progress1.dismiss();
-                                    countDownTimer.cancel();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        };
-                        countDownTimer.start();
-
-                    }
-                }
+                _parsePayNowResponse(jsonObject);
                 break;
         }
     }
+
+    private void _parseAuthCodeResponse(JSONObject jsonObject) {
+        if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
+            preferenceManager.setauthToken(jsonObject.optString("access_token"));
+        }
+        if (isBack) {
+            isBack = false;
+            stsartFastScan(true);//Back
+        }
+        if (isFront) {
+            isFront = false;
+            stsartFastScan(false);//front
+        }
+        if (isTransactionDetails) {
+            isTransactionDetails = false;
+            callTransactionDetails();
+        }
+    }
+
+    private void _parseSaveLoyalityInfoResponse(JSONObject jsonObject) {
+        callAuthToken();
+        progress.dismiss();
+        if (jsonObject.optBoolean("status")) {
+            tv_status_scan.setVisibility(View.VISIBLE);
+            tv_status_scan.setText("Thank you for using Membership/Loyality");
+            tv_status_scan_button.setText("Rescan Membership/Loyality");
+            Toast.makeText(getActivity(), "Loyality data uploaded successfully ", Toast.LENGTH_SHORT).show();
+        } else {
+            tv_status_scan.setVisibility(View.VISIBLE);
+            tv_status_scan.setText("Membership/Loyality could not be scanned");
+            tv_status_scan_button.setText("Rescan Membership/Loyality");
+            Toast.makeText(getActivity(), "Loyality data upload failed ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void _parseUnionPayStatusResponse(JSONObject jsonObject) {
+        callAuthToken();
+        reference_id = "";
+        preferenceManager.setreference_id("");
+        preferenceManager.settriggerReferenceId("");
+        preferenceManager.setunion_pay_resp("");
+
+
+        if (jsonObject.optBoolean("status")) {
+            Toast.makeText(getActivity(), jsonObject.optString("message") + ".", Toast.LENGTH_LONG).show();
+
+
+            //added for external apps 12/5/2019
+
+            if (DashboardActivity.isExternalApp) {
+                AppConstants.showDialog = true;
+                isTransactionDone = true;
+                ((DashboardActivity) getActivity()).callProgressDialogForUnionPay();
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                returnDataToExternalApp(hashMapKeys, URLDecoder.decode(AppConstants.EXTERNAL_APP_UNIONPAY_RESPONSE));
+            } else {
+                AppConstants.showDialog = true;
+                ((DashboardActivity) getActivity()).callProgressDialogForUnionPay();
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            }
+
+
+        } else {
+            Toast.makeText(getActivity(), "Failed to update the transaction", Toast.LENGTH_LONG).show();
+        }
+
+
+        if (AppConstants.isUnionQrSelected) {
+            AppConstants.isUnionQrSelected = false;
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_unionpayqrscan + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                isUnionPayQrSelected = true;
+                callUnionPayQRScan();
+            }
+        }
+
+
+        if (AppConstants.isUplanselected) {
+            AppConstants.isUplanselected = false;
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_uplan + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                isUpayselected = true;
+
+                callUplan();
+            }
+        }
+
+
+        if (AppConstants.isUnionpayselected) {
+            AppConstants.isUnionpayselected = false;
+            payment_mode = "";
+            qrMode = "False";
+            xmppAmount = convenience_amount_unionpay + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+
+                callUnionPay();
+            }
+        }
+    }
+
+    private void _parseArkeResponse(String result) throws JSONException {
+        callAuthToken();
+
+        if (jsonObject.has("responseCodeThirtyNine")) {
+            if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
+                ManualEntry.shadaf = true;
+                if (isunionPayQrScanSelectedForSale) {
+                    isunionPayQrScanSelectedForSale = false;
+                    JSONObject jsonObject = new JSONObject(result);
+                    jsonObject.put("transactionType", "UPI_SCAN_CODE_SALE");
+                    jsonObject.put("qrcode", auth_code);
+                    preferenceManager.setunion_pay_resp(jsonObject.toString());
+                    ManualEntry.val = jsonObject.toString();
+                } else {
+                    preferenceManager.setunion_pay_resp(jsonObject.toString());
+                    ManualEntry.val = jsonObject.toString();
+                }
+
+            } else {
+                ManualEntry.shadaf = true;
+                preferenceManager.setunion_pay_resp(jsonObject.toString());
+                ManualEntry.val = jsonObject.toString();
+            }
+
+        } else {
+            ManualEntry.shadaf = true;
+            if (isunionPayQrScanSelectedForSale) {
+                isunionPayQrScanSelectedForSale = false;
+                JSONObject jsonObject = new JSONObject(result);
+                jsonObject.put("transactionType", "UPI_SCAN_CODE_SALE");
+                jsonObject.put("qrcode", auth_code);
+                preferenceManager.setunion_pay_resp(jsonObject.toString());
+                ManualEntry.val = jsonObject.toString();
+            } else {
+                preferenceManager.setunion_pay_resp(jsonObject.toString());
+                ManualEntry.val = jsonObject.toString();
+            }
+
+            Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
+
+        }
+        auth_code = "";
+    }
+
+    private void _parseTransactionDetailsResponse(JSONObject jsonObject) throws JSONException {
+        callAuthToken();
+
+        if (!jsonObject.optString("status_id").equals("USERPAYING") && !jsonObject.optString("status_description").equals("WAIT_BUYER_PAY")) {
+            if (jsonObject.optString("status").equalsIgnoreCase("true") && !jsonObject.optString("status_description").equals("TRADE_NOT_PAY")) {
+                if (progress1.isShowing())
+                    progress1.dismiss();
+                if (MyPOSMateApplication.isOpen) {
+                    jsonObject.put("grandtotal", xmppAmount);
+                } else
+                    jsonObject.put("grandtotal", edt_amount.getText().toString());
+                selected_screen = 0;
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
+                if (progress.isShowing())
+                    progress.dismiss();
+                countDownTimer.cancel();
+            } else if (jsonObject.optString("status_description").equals("TRADE_REVOKED")) {
+                if (progress1.isShowing())
+                    progress1.dismiss();
+                if (progress.isShowing())
+                    progress.dismiss();
+                showDialog("Transaction revoked. Try again.");
+                countDownTimer.cancel();
+
+            }
+        } else {
+            if (jsonObject.optString("status_description").equals("TRADE_CLOSED")) {
+                showDialog("Your transaction is closed.");
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
+                if (progress.isShowing())
+                    progress.dismiss();
+                if (progress1.isShowing())
+                    progress1.dismiss();
+                countDownTimer.cancel();
+            }
+
+        }
+
+    }
+
+
+    private void _parsePayNowResponse(JSONObject jsonObject) throws JSONException, Exception {
+        callAuthToken();
+        AppConstants.xmppamountforscan = ""; //added on 12th march 2019
+        if (!jsonObject.has("reference_id")) {
+            jsonObject.putOpt("referenceId", reference_id);
+        }
+        if (jsonObject.optBoolean("status") == false) {
+            edt_amount.setText("");
+            edt_amount1.setText("");
+            preferenceManager.setreference_id("");
+            reference_id = "";
+            Toast.makeText(getActivity(), jsonObject.optString("message") + ".Please try again", Toast.LENGTH_LONG).show();
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            return;
+        }
+        if (progress.isShowing())
+            progress.dismiss();
+        reference_id = jsonObject.optString("referenceId");
+        preferenceManager.setreference_id(reference_id);
+        preferenceManager.setincrement_id(jsonObject.optString("incrementId"));
+        if (!payment_mode.equals("nochannel")) {
+            if (MyPOSMateApplication.isOpen) {
+                if (preferenceManager.is_cnv_alipay_display_and_add() &&
+                        preferenceManager.is_cnv_wechat_display_and_add()) {
+                    if (isPayNowScanCalled) {
+                        if (selected_channel.equals("ALIPAY"))
+                            jsonObject.put("amount", convenience_amount_alipay_scan + "");
+                        else if (selected_channel.equals("WECHAT"))
+                            jsonObject.put("amount", convenience_amount_wechat_scan + "");
+                        else
+                            jsonObject.put("amount", xmppAmount);
+                    } else {
+                        if (selected_channel.equals("ALIPAY"))
+                            jsonObject.put("amount", convenience_amount_alipay + "");
+                        else if (selected_channel.equals("WECHAT"))
+                            jsonObject.put("amount", convenience_amount_wechat + "");
+                        else
+                            jsonObject.put("amount", xmppAmount);
+                    }
+                } else if (preferenceManager.is_cnv_alipay_display_and_add() &&
+                        !preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                    if (isPayNowScanCalled) {
+                        if (selected_channel.equals("ALIPAY"))
+                            jsonObject.put("amount", convenience_amount_alipay_scan + "");
+                        else
+                            jsonObject.put("amount", xmppAmount);
+                    } else {
+                        if (selected_channel.equals("ALIPAY"))
+                            jsonObject.put("amount", convenience_amount_alipay + "");
+                        else
+                            jsonObject.put("amount", xmppAmount);
+                    }
+                } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
+                        preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                    if (isPayNowScanCalled) {
+                        if (selected_channel.equals("WECHAT"))
+                            jsonObject.put("amount", convenience_amount_wechat_scan + "");
+                        else
+                            jsonObject.put("amount", xmppAmount);
+                    } else {
+                        if (selected_channel.equals("WECHAT"))
+                            jsonObject.put("amount", convenience_amount_wechat + "");
+                        else
+                            jsonObject.put("amount", xmppAmount);
+                    }
+                } else {
+                    jsonObject.put("amount", xmppAmount);
+                }
+
+            } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
+                    !preferenceManager.is_cnv_wechat_display_and_add()) {
+                jsonObject.put("amount", edt_amount.getText().toString().trim());
+            } else if (preferenceManager.is_cnv_alipay_display_and_add() &&
+                    preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                if (isPayNowScanCalled) {
+                    if (selected_channel.equals("ALIPAY"))
+                        jsonObject.put("amount", convenience_amount_alipay_scan + "");
+                    else if (selected_channel.equals("WECHAT"))
+                        jsonObject.put("amount", convenience_amount_wechat_scan + "");
+                    else
+                        jsonObject.put("amount", xmppAmount);
+                } else {
+                    if (payment_mode.equals("ALIPAY"))
+                        jsonObject.put("amount", convenience_amount_alipay + "");
+                    else if (payment_mode.equals("WECHAT"))
+                        jsonObject.put("amount", convenience_amount_wechat + "");
+                    else
+                        jsonObject.put("amount", xmppAmount);
+                }
+            } else if (preferenceManager.is_cnv_alipay_display_and_add() &&
+                    !preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                if (isPayNowScanCalled) {
+                    if (selected_channel.equals("ALIPAY"))
+                        jsonObject.put("amount", convenience_amount_alipay_scan + "");
+                    else
+                        jsonObject.put("amount", xmppAmount);
+                } else {
+                    if (payment_mode.equals("ALIPAY"))
+                        jsonObject.put("amount", convenience_amount_alipay + "");
+                    else
+                        jsonObject.put("amount", xmppAmount);
+                }
+            } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
+                    preferenceManager.is_cnv_wechat_display_and_add()) {
+
+                if (isPayNowScanCalled) {
+                    if (selected_channel.equals("WECHAT"))
+                        jsonObject.put("amount", convenience_amount_wechat_scan + "");
+                    else
+                        jsonObject.put("amount", xmppAmount);
+                } else {
+                    if (payment_mode.equals("WECHAT"))
+                        jsonObject.put("amount", convenience_amount_wechat + "");
+                    else
+                        jsonObject.put("amount", xmppAmount);
+                }
+            } else
+                jsonObject.put("amount", edt_amount.getText().toString().trim());
+            String qrcode = jsonObject.optString("codeUrl");
+            HashMap hashmap = new HashMap();
+            hashmap.put("result", jsonObject.toString());
+            hashmap.put("payment_mode", payment_mode);
+
+            if (payment_mode.equalsIgnoreCase("UNION_PAY")) {
+
+            } else {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.ALIPAYPAYMENT, hashmap);
+            }
+
+
+            if (progress.isShowing())
+                progress.dismiss();
+            countDownTimer.cancel();
+        } else {
+            if (!jsonObject.optBoolean("status")) {
+                progress.dismiss();
+                Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+               /* openProgressDialog();
+
+                progress.setMessage("Please wait while processing the transaction..");
+                progress1 = new ProgressDialog(getActivity());
+                progress1.setMessage("Please wait while processing the transaction..");
+                progress1.setCancelable(false);
+                progress1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progress1.setIndeterminate(true);
+                progress1.show();
+                countDownTimer = new CountDownTimer(30000, 1000) { //40000 milli seconds is total time, 1000 milli seconds is time interval
+
+                    public void onTick(long millisUntilFinished) {
+//                                isTransactionDetails=true;
+//                                callAuthToken();
+                        if (progress2.isShowing())
+                            progress2.dismiss();
+                        callTransactionDetails();
+                    }
+
+                    public void onFinish() {
+                        try {
+                            showDialog("Try again");
+                            if (progress.isShowing())
+                                progress.dismiss();
+//                                    if(progresdismiss();
+                            countDownTimer.cancel();
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                };
+                countDownTimer.start();*/
+
+
+            } else {
+                if (MyPOSMateApplication.isOpen) {
+                    jsonObject.put("grandtotal", xmppAmount);
+                } else
+                    jsonObject.put("grandtotal", edt_amount.getText().toString());
+                if (progress.isShowing())
+                    progress.dismiss();
+                openProgressDialog();
+
+                progress.setMessage("Please wait while processing the transaction..");
+                progress1 = new ProgressDialog(getActivity());
+                progress1.setMessage("Please wait while processing the transaction..");
+                progress1.setCancelable(false);
+                progress1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progress1.setIndeterminate(true);
+                progress1.show();
+                countDownTimer = new CountDownTimer(30000, 1000) { //40000 milli seconds is total time, 1000 milli seconds is time interval
+
+                    public void onTick(long millisUntilFinished) {
+                        if (progress2.isShowing())
+                            progress2.dismiss();
+                        callTransactionDetails();
+                    }
+
+                    public void onFinish() {
+                        try {
+                            showDialog("Try again");
+                            if (progress.isShowing())
+                                progress.dismiss();
+                            countDownTimer.cancel();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                };
+                countDownTimer.start();
+
+            }
+        }
+    }
+
 
     JSONObject jsonObjectSale, jsonObjectCouponSale;
     Intent intentCen = new Intent();
@@ -3561,7 +3749,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 jsonObjectCouponSale.put("couponInformation", couponInformation);
                 jsonObjectCouponSale.put("amount", convenience_amount_uplan + "");
                 jsonObjectCouponSale.put("orderNumber", reference_id);
-            } else if (preferenceManager.cnv_unionpayqr_display_and_add()  && unionpay_payment_option.equals("DP-QR")) {
+            } else if (preferenceManager.cnv_unionpayqr_display_and_add() && unionpay_payment_option.equals("DP-QR")) {
                 jsonObjectCouponSale.put("transactionType", "COUPON_SALE");
                 jsonObjectCouponSale.put("couponInformation", couponInformation);
                 jsonObjectCouponSale.put("amount", convenience_amount_unionpayqrscan + "");

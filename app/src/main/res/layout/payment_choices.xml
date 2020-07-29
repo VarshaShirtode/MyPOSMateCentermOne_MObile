@@ -332,9 +332,11 @@
         android:id="@+id/rel_unionpay_qr_pc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <!-- android:id="@+id/chk_unionpay_qr_code"-->
         <CheckBox
+            android:enabled="false"
             android:layout_marginTop="2dp"
-            android:id="@+id/chk_unionpay_qr_code"
+           android:id="@+id/chk_unionpay_qr_merchant_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/holo_red_light"
@@ -350,6 +352,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             >
+            <!--android:id="@+id/chk_unionpay_qr"-->
             <CheckBox
                 android:id="@+id/chk_unionpay_qr"
                 android:layout_width="wrap_content"
@@ -577,12 +580,13 @@
 
 
 
-            <TextView
+            <CheckBox
+                android:enabled="false"
                 android:layout_marginTop="2dp"
                 android:id="@+id/chk_upi_card"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginLeft="32dp"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_light"
                 android:layout_alignParentLeft="true"
                 android:gravity="center|left"
                 android:text="UPI QR"
@@ -595,16 +599,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 >
+                <!-- android:id="@+id/chk_upi_qr"-->
                 <CheckBox
-                    android:enabled="false"
-                    android:id="@+id/chk_upi_qr"
+                   android:id="@+id/chk_unionpay_qr_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     />
                 <faranjit.currency.edittext.CurrencyEditText
-                    android:layout_toRightOf="@+id/chk_upi_qr"
-                    android:id="@+id/edt_upi_card_cv"
+                    android:layout_toRightOf="@+id/chk_unionpay_qr_code"
+                    android:id="@+id/edt_up_upi_qr_cv"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
                     android:background="@drawable/edt_border"
@@ -617,7 +621,7 @@
                     android:id="@+id/tv_perupi_card"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_toRightOf="@+id/edt_upi_card_cv"
+                    android:layout_toRightOf="@+id/edt_up_upi_qr_cv"
                     android:gravity="center"
                     android:text="%"
                     android:textColor="@color/colorBlack" />
@@ -626,8 +630,7 @@
 
 
                 <CheckBox
-                    android:enabled="false"
-                    android:id="@+id/chk_upi_card_display_and_add"
+                    android:id="@+id/chk_up_upi_qr_display_and_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|left"
@@ -639,14 +642,13 @@
                     android:textStyle="bold" />
 
                 <CheckBox
-                    android:enabled="false"
-                    android:id="@+id/chk_upi_card_display_only"
+                    android:id="@+id/chk_upi_qr_display_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
                     android:layout_gravity="center|left"
                     android:layout_marginRight="20dp"
-                    android:layout_toRightOf="@+id/chk_upi_card_display_and_add"
+                    android:layout_toRightOf="@+id/chk_up_upi_qr_display_and_add"
                     android:gravity="center"
                     android:textSize="16sp"
                     android:textStyle="bold" />

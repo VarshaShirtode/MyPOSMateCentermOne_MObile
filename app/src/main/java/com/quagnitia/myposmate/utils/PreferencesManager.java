@@ -75,6 +75,7 @@ public class PreferencesManager {
     private String cnv_uni="cnv_uni";
     private String cnv_uniqr="cnv_uniqr";
     private String cnv_uplan="cnv_uplan";
+    private String cnv_up_upiqr_mpmcloud="cnv_up_upiqr_mpmcloud";
     private String cnv_uni_display_and_add="cnv_uni_display_and_add";
     private String cnv_uni_display_only="cnv_uni_display_only";
     private String timezone="timezone";
@@ -147,6 +148,12 @@ public class PreferencesManager {
     //convience fee for wechat
     private String cnv_wechat_display_and_add="cnv_wechat_display_and_add";
     private String cnv_wechat_display_only="cnv_wechat_display_only";
+
+
+
+    //convience fee for mpm upi qr code scan
+    private String cnv_up_upi_qrscan_mpmcloud_display_and_add="cnv_up_upi_qrscan_mpmcloud_display_and_add";
+    private String cnv_up_upi_qrscan_mpmcloud_display_only="cnv_up_upi_qrscan_mpmcloud_display_only";
 
 
     //already registered flag
@@ -230,6 +237,29 @@ public class PreferencesManager {
 
 
 
+    //MPM UPI QR SCAN DISPLAY ONLY
+    public boolean cnv_up_upi_qrscan_mpmcloud_display_only() {
+        return sharedPreferences.getBoolean(cnv_up_upi_qrscan_mpmcloud_display_only, false);
+    }
+
+    public void setcnv_up_upi_qrscan_mpmcloud_display_only(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_up_upi_qrscan_mpmcloud_display_only, text);
+        editor.apply();
+
+    }
+
+    //MPM UPI QR SCAN DISPLAY AND ADD
+    public boolean cnv_up_upi_qrscan_mpmcloud_display_and_add() {
+        return sharedPreferences.getBoolean(cnv_up_upi_qrscan_mpmcloud_display_and_add, false);
+    }
+
+    public void setcnv_up_upi_qrscan_mpmcloud_display_and_add(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_up_upi_qrscan_mpmcloud_display_and_add, text);
+        editor.apply();
+
+    }
 
 
 
@@ -704,6 +734,18 @@ public class PreferencesManager {
     public void setcnv_uniqr(String text) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(cnv_uniqr, text);
+        editor.apply();
+
+    }
+
+    //MPM CLOUD SCAN UPI QR PREF
+    public String getcnv_up_upiqr_mpmcloud() {
+        return sharedPreferences.getString(cnv_up_upiqr_mpmcloud, "");
+    }
+
+    public void setcnv_up_upiqr_mpmcloud(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_up_upiqr_mpmcloud, text);
         editor.apply();
 
     }
