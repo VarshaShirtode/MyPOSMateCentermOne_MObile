@@ -468,7 +468,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
         if (jsonObject.has("receiptAmount")) {
             if (jsonObject.optString("channel").equals("UNION_PAY")) {
-                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receipt_amount"))),
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("receiptAmount"))),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 
@@ -493,7 +493,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
         } else if (jsonObject.has("grandTotal")) {
             if (jsonObject.optString("channel").equals("UNION_PAY")) {
-                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandtotal"))),
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 

@@ -3669,8 +3669,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 countDownTimer = new CountDownTimer(30000, 1000) { //40000 milli seconds is total time, 1000 milli seconds is time interval
 
                     public void onTick(long millisUntilFinished) {
-                        if (progress2.isShowing())
+                        if (progress2!=null)
+                        {
+                            if(progress2.isShowing())
                             progress2.dismiss();
+                        }
+
                         callTransactionDetails();
                     }
 
