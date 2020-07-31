@@ -60,10 +60,10 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
     private PreferencesManager preferenceManager;
     private Button btn_save1, btn_cancel1;
-    private EditText edt_amount1,edt_description,edt_password, edt_transaction_no, edt_order_no, edt_reference_id;
+    private EditText edt_amount1, edt_description, edt_password, edt_transaction_no, edt_order_no, edt_reference_id;
     private View view;
     private ProgressDialog progress;
-    private LinearLayout ll_se, ll_first1, ll_refund_reason,ll_refund_password,ll_amount1, ll_reference_id, ll_order_no, ll_transaction_no;
+    private LinearLayout ll_se, ll_first1, ll_refund_reason, ll_refund_password, ll_amount1, ll_reference_id, ll_order_no, ll_transaction_no;
     private Button btn_save2, btn_cancel2;
 
     private Button btn_scan_reference;
@@ -138,8 +138,8 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         btn_save1 = view.findViewById(R.id.btn_save1);
         btn_cancel1 = view.findViewById(R.id.btn_cancel1);
         edt_amount1.setInputType(InputType.TYPE_CLASS_NUMBER);
-        edt_description=view.findViewById(R.id.edt_description);
-        edt_password=view.findViewById(R.id.edt_password);
+        edt_description = view.findViewById(R.id.edt_description);
+        edt_password = view.findViewById(R.id.edt_password);
         btn_scan_reference = view.findViewById(R.id.btn_scan_reference);
         ll_amount1 = view.findViewById(R.id.ll_amount1);
         ll_reference_id = view.findViewById(R.id.ll_reference_id);
@@ -147,7 +147,8 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         ll_order_no = view.findViewById(R.id.ll_order_no);
         ll_refund_password = view.findViewById(R.id.ll_refund_password);
         ll_refund_reason = view.findViewById(R.id.ll_refund_desc);
-
+        ll_refund_reason.setVisibility(View.GONE);
+        ll_refund_password.setVisibility(View.GONE);
 
         ll_se = view.findViewById(R.id.ll_se);
         ll_first1 = view.findViewById(R.id.ll_first1);
@@ -255,6 +256,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
             e.printStackTrace();
         }
     }
+
     public void callRefundApi() {
         openProgressDialog();
         try {
@@ -324,24 +326,20 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                     Toast.makeText(getActivity(), "Enter amount", Toast.LENGTH_SHORT).show();
                 } else if (edt_reference_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter reference no", Toast.LENGTH_SHORT).show();
-                } else if (isThirdParty&&edt_transaction_no.getText().toString().equals("")) {
+                } else if (isThirdParty && edt_transaction_no.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter transaction date(MMDD)", Toast.LENGTH_SHORT).show();
-                } else if (isThirdParty&&edt_order_no.getText().toString().equals("")) {
+                } else if (isThirdParty && edt_order_no.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter order no", Toast.LENGTH_SHORT).show();
-                }
-                else if (!isThirdParty&&edt_password.getText().toString().equals("")) {
+                } else if (!isThirdParty && edt_password.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter refund password", Toast.LENGTH_SHORT).show();
-                }
-                else if (!isThirdParty&&edt_description.getText().toString().equals("")) {
+                } else if (!isThirdParty && edt_description.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Enter refund description", Toast.LENGTH_SHORT).show();
-                }
-                else if (alipaywechatamount != 0.0 && Double.parseDouble(edt_amount1.getText().toString()) > alipaywechatamount) {
+                } else if (alipaywechatamount != 0.0 && Double.parseDouble(edt_amount1.getText().toString()) > alipaywechatamount) {
                     Toast.makeText(getActivity(), "Amount entered is greater than the original amount used in the transaction.", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         refund_amount = edt_amount1.getText().toString();
-                        if(isThirdParty)
-                        {
+                        if (isThirdParty) {
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("transactionType", "REFUND");
                             jsonObject.put("amount", edt_amount1.getText().toString());
@@ -349,9 +347,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                             jsonObject.put("orderNumber", edt_order_no.getText().toString());
                             jsonObject.put("originalTransactionDate", edt_transaction_no.getText().toString());
                             beginRefund(jsonObject);
-                        }
-                        else
-                        {
+                        } else {
                             callRefundApi();
                         }
 
@@ -571,7 +567,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     public static String qrcode = "";
     public static boolean isScannedUnionPayQr = false;
     public static double alipaywechatamount = 0.0;
-    private static boolean isThirdParty=false;
+    private static boolean isThirdParty = false;
     JSONObject jsonObjectTransactionDetails;
     JSONObject jsonObjectGatewayResponse;
     double remaining_amount = 0.00;
@@ -639,13 +635,13 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
                     if (jsonObject.optJSONObject("payment").has("thirdParty") &&
                             jsonObject.optJSONObject("payment").optBoolean("thirdParty")) {
-                        isThirdParty=true;
+                        isThirdParty = true;
 
                         _parseDpAppResponse(jsonObject);
 
 
                     } else {
-                        isThirdParty=false;
+                        isThirdParty = false;
 
                         _parseMPMCloudResponse(jsonObject);
                     }
@@ -662,7 +658,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
                 break;
             case "refundNow":
-
+                callAuthToken();
                 if (progress != null && progress.isShowing())
                     progress.dismiss();
 

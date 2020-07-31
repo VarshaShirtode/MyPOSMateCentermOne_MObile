@@ -862,14 +862,15 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
         if(jsonObjectPayment.has("thirdParty"))
         {
-            if(jsonObjectPayment.optBoolean("thirdParty"))
+            if(jsonObjectPayment.optBoolean("thirdParty") && jsonObjectPayment.optString("channel").equals("UNION_PAY"))
             {
                 json.put("PC Used","DP - QR (Using DP App)");
             }
-            else
+            else if(!jsonObjectPayment.optBoolean("thirdParty") && jsonObjectPayment.optString("channel").equals("UNION_PAY"))
             {
                 json.put("PC Used","UPI - QR (Using MPM cloud)");
             }
+
         }
 
         if (jsonObject.has("refunds")) {
@@ -1573,7 +1574,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         refunded_amount = Double.parseDouble(roundTwoDecimals(refunded_amount));
 
                     }
-                    remaining_amount = Double.parseDouble(jsonObject.optString("grandTotal")) - refunded_amount;
+                    remaining_amount = Double.parseDouble(jsonObject.optString("receiptAmount")) - refunded_amount;
                     remaining_amount = Double.parseDouble(roundTwoDecimals(remaining_amount));
 
                     list.add(new PrintDataObject("-----------------------------",
