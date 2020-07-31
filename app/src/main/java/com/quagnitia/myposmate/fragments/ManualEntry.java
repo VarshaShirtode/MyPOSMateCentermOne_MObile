@@ -3515,6 +3515,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         } else {
             if (jsonObject.optString("status_description").equals("TRADE_CLOSED")) {
                 showDialog("Your transaction is closed.");
+                callTransactionDetails();
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
                 if (progress.isShowing())
                     progress.dismiss();
