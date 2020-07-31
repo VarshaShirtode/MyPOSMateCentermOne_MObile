@@ -226,6 +226,9 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
 
                             jsonObject.put("isUpdated", true);
+                            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+                            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+                            jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud());
 
                             isUpdateDetails=true;
                             ((TimeZoneActivity) mContext).callUpdateBranchDetails(jsonObject);

@@ -1462,15 +1462,15 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
     public void calculateConvFeeUnionPayQRDisplay() {
-        if (preferenceManager.cnv_unionpayqr_display_and_add()
-                || preferenceManager.cnv_unionpayqr_display_only()) {
+        if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()
+                || preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only()) {
 
-            if (!preferenceManager.getcnv_uniqr().equals("") ||
-                    !preferenceManager.getcnv_uniqr().equals("0.0") ||
-                    !preferenceManager.getcnv_uniqr().equals("0.00")) {
+            if (!preferenceManager.getcnv_up_upiqr_mpmcloud().equals("") ||
+                    !preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.0") ||
+                    !preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.00")) {
 
                 convenience_amount_unionpayqrdisplay = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
-                        (1 - (Double.parseDouble(preferenceManager.getcnv_uniqr()) / 100));
+                        (1 - (Double.parseDouble(preferenceManager.getcnv_up_upiqr_mpmcloud()) / 100));
 
                 tv_unionpay_qr_cv.setText("" + roundTwoDecimals(convenience_amount_unionpayqrdisplay));
             }
@@ -1595,9 +1595,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         hashMapKeys.put("channel", selected_channel);
                     //   hashMapKeys.put("channel", channel);
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -1624,9 +1629,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         hashMapKeys.put("channel", selected_channel);
                     //   hashMapKeys.put("channel", channel);
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -1678,9 +1688,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     if (!selected_channel.equals(""))
                         hashMapKeys.put("channel", selected_channel);
                     //    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -1708,9 +1723,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     if (!selected_channel.equals(""))
                         hashMapKeys.put("channel", selected_channel);
                     // hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -1779,9 +1799,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         hashMapKeys.put("channel", selected_channel);
                     //   hashMapKeys.put("channel", channel);
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -1808,9 +1833,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         hashMapKeys.put("channel", selected_channel);
                     //   hashMapKeys.put("channel", channel);
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -1862,9 +1892,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     if (!selected_channel.equals(""))
                         hashMapKeys.put("channel", selected_channel);
                     //    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -1892,9 +1927,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     if (!selected_channel.equals(""))
                         hashMapKeys.put("channel", selected_channel);
                     // hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -2158,14 +2198,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
         if (preferenceManager.isConvenienceFeeSelected()
-                && preferenceManager.cnv_unionpayqr_display_and_add()) {
-            if (preferenceManager.getcnv_uniqr().equals("") || preferenceManager.getcnv_uniqr().equals("0.0") || preferenceManager.getcnv_uniqr().equals("0.00")) {
+                && preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
+            if (preferenceManager.getcnv_up_upiqr_mpmcloud().equals("") || preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.0") || preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.00")) {
 
                 amount = convenience_amount_unionpayqrdisplay + "";
                 original_amount = edt_amount.getText().toString().replace(",", "");
                 fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
                 discount = "0";
-                fee_percentage = preferenceManager.getcnv_uniqr();
+                fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud();
 
             } else {
                 if (MyPOSMateApplication.isOpen) {
@@ -2173,13 +2213,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     original_amount = original_xmpp_trigger_amount.replace(",", "");
                     fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(original_xmpp_trigger_amount.replace(",", "")) + "";
                     discount = "0";
-                    fee_percentage = preferenceManager.getcnv_uniqr();
+                    fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud();
                 } else {
                     amount = convenience_amount_unionpayqrdisplay + "";
                     original_amount = edt_amount.getText().toString().replace(",", "");
                     fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
                     discount = "0";
-                    fee_percentage = preferenceManager.getcnv_uniqr();
+                    fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud();
                 }
 
             }
@@ -2200,12 +2240,17 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("qr_mode", false + "");
             hashMapKeys.put("auth_code", auth_code);
 
-            new OkHttpHandler(getActivity(), this, null, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+            hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+            HashMap<String,String> hashMap=new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+
+            new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
-                && !preferenceManager.cnv_unionpayqr_display_and_add()) {
+                && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
 
             if (!preferenceManager.gettriggerReferenceId().equals(""))
                 reference_id = preferenceManager.gettriggerReferenceId();
@@ -2216,9 +2261,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString().replace(",", ""))));
             hashMapKeys.put("qr_mode", false + "");
             hashMapKeys.put("auth_code", auth_code);
+            hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-            new OkHttpHandler(getActivity(), this, null, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+            HashMap<String,String> hashMap=new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+
+            new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -2235,9 +2285,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             hashMapKeys.put("qr_mode", false + "");
             hashMapKeys.put("auth_code", auth_code);
+            hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+            hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-            new OkHttpHandler(getActivity(), this, null, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+            HashMap<String,String> hashMap=new HashMap<>();
+            hashMap.putAll(hashMapKeys);
+
+            new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }
@@ -2399,6 +2454,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("trade_no", trade_no);
             hashMapKeys.put("is_success", is_success + "");
             hashMapKeys.put("is_payment", true + "");
+            hashMapKeys.put("thirdParty",true+"");
 
             String s2 = "", s1 = "";
             int i1 = 0;
@@ -3896,9 +3952,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("qr_mode", true + "");
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -3920,10 +3981,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("qr_mode", true + "");
                     hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
 
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -3971,9 +4036,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("channel", channel);
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -3993,9 +4063,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("qr_mode", true + "");
                     hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -4063,9 +4138,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("qr_mode", true + "");
                     hashMapKeys.put("channel", channel);
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -4086,9 +4166,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("qr_mode", true + "");
                     hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 }
 
@@ -4136,9 +4221,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("qr_mode", true + "");
                     hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -4159,9 +4249,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 //                    hashMapKeys.put("auth_code", auth_code);
                     hashMapKeys.put("qr_mode", true + "");
                     hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature",MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
-                    new OkHttpHandler(getActivity(), this, null, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW );//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {

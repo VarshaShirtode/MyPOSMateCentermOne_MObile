@@ -90,11 +90,12 @@ public class OkHttpHandler extends AsyncTask {
             conn.setConnectTimeout(15000);
 
             if (postDataParams != null) {
+                String auth = new String(Base64.encode((AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET).getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
                 if (TAG.equals("AuthToken") || TAG.equals("AuthTokenCloseTrade")) {
                     String formData = "username=" + preferencesManager.getMerchantId() + "&password=" + preferencesManager.getConfigId() + "&grant_type=password";
 //                    String auth =new String(Base64.encode(( preferencesManager.getMerchantId() + ":" + preferencesManager.getConfigId()).getBytes(),Base64.URL_SAFE| Base64.NO_WRAP));
 
-                    String auth = new String(Base64.encode((AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET).getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
+
 
                     conn.setRequestMethod("POST");
                     conn.addRequestProperty("Authorization", "Basic " + auth);
@@ -112,6 +113,8 @@ public class OkHttpHandler extends AsyncTask {
                     os.close();
                 } else {
                     conn.setRequestMethod("POST");
+                    conn.addRequestProperty("Authorization", "Basic " + auth);
+                    conn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
                     OutputStream os = conn.getOutputStream();

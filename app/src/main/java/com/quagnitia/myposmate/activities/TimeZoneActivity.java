@@ -339,6 +339,10 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     preferenceManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
                     preferenceManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
                     preferenceManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferenceManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
                 }
 
                 break;

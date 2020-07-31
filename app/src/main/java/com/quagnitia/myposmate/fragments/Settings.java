@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.utils.AESHelper;
@@ -43,13 +41,11 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -95,7 +91,9 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-boolean isGetBranchDetailsCalled=false;
+
+    boolean isGetBranchDetailsCalled = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -125,11 +123,11 @@ boolean isGetBranchDetailsCalled=false;
                 android.provider.Settings.Secure.ANDROID_ID);
         btn_save = view.findViewById(R.id.btn_save);
         btn_exit = view.findViewById(R.id.btn_exit);
-        btn_reset =  view.findViewById(R.id.btn_reset);
-        btn_cancel =view.findViewById(R.id.btn_cancel);
-        edt_terminal_id =  view.findViewById(R.id.edt_terminal_id);
-        edt_terminal_ip =  view.findViewById(R.id.edt_terminal_ip);
-        edt_unique_id =  view.findViewById(R.id.edt_unique_id);
+        btn_reset = view.findViewById(R.id.btn_reset);
+        btn_cancel = view.findViewById(R.id.btn_cancel);
+        edt_terminal_id = view.findViewById(R.id.edt_terminal_id);
+        edt_terminal_ip = view.findViewById(R.id.edt_terminal_ip);
+        edt_unique_id = view.findViewById(R.id.edt_unique_id);
         edt_terminal_id.setText(android_id);
         edt_terminal_ip.setText(getLocalIpAddress());
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
@@ -146,12 +144,9 @@ boolean isGetBranchDetailsCalled=false;
         if (!AppConstants.isRegistered)
 //            callGetBranchDetails_old();
         {
-            isGetBranchDetailsCalled=true;
+            isGetBranchDetailsCalled = true;
             callAuthToken();
-        }
-
-
-        else {
+        } else {
             edt_unique_id.setText(preferencesManager.getuniqueId());
             preferencesManager.setaggregated_singleqr(true);
             if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
@@ -225,8 +220,6 @@ boolean isGetBranchDetailsCalled=false;
         progress.setIndeterminate(true);
         progress.show();
     }
-
-
 
 
     public void callAuthToken() {
@@ -373,10 +366,8 @@ boolean isGetBranchDetailsCalled=false;
                 if (edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
                     return;
-                }
-                else if(config_id.equals(""))
-                {
-                    Toast.makeText(getActivity(),"Config ID not present",Toast.LENGTH_SHORT).show();
+                } else if (config_id.equals("")) {
+                    Toast.makeText(getActivity(), "Config ID not present", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -387,10 +378,7 @@ boolean isGetBranchDetailsCalled=false;
                     Toast.makeText(getActivity(), "Please enter Terminal Id", Toast.LENGTH_LONG).show();
                 } else if (edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
-                }
-
-
-                else {
+                } else {
                     preferencesManager.setterminalId(edt_terminal_id.getText().toString());
                     preferencesManager.setuniqueId(edt_unique_id.getText().toString());
                     isSaveAndOK = true;
@@ -415,7 +403,7 @@ boolean isGetBranchDetailsCalled=false;
 
                 break;
             case R.id.btn_exit:
-               // getActivity().finish();
+                // getActivity().finish();
                 getActivity().finishAffinity();
                 //    System.exit(0);
                 break;
@@ -509,7 +497,7 @@ boolean isGetBranchDetailsCalled=false;
     }
 
 
-    public String encryption(String strNormalText) throws Exception{
+    public String encryption(String strNormalText) throws Exception {
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -520,7 +508,7 @@ boolean isGetBranchDetailsCalled=false;
         return toHex(normalTextEnc);
     }
 
-    public String decryption(String strEncryptedText) throws Exception{
+    public String decryption(String strEncryptedText) throws Exception {
         String seedValue = "YourSecKey";
         String strDecryptedText = hextoString(strEncryptedText);
         try {
@@ -668,14 +656,14 @@ boolean isGetBranchDetailsCalled=false;
     }
 
 
-    public void callUpdateBranchDetailsNew() throws Exception{
+    public void callUpdateBranchDetailsNew() throws Exception {
 
         openProgressDialog();
 
         try {
 
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("accessId",preferencesManager.getuniqueId());
+            jsonObject.put("accessId", preferencesManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
@@ -728,7 +716,9 @@ boolean isGetBranchDetailsCalled=false;
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
 
-
+            jsonObject.put("CnvUPIQrMPMCloudDAADD", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+            jsonObject.put("CnvUPIQrMPMCloudDOnly", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+            jsonObject.put("CnvUPIQrMPMCloudValue", preferencesManager.getcnv_up_upiqr_mpmcloud());
 
 
             hashMapKeys.clear();
@@ -754,9 +744,6 @@ boolean isGetBranchDetailsCalled=false;
             e.printStackTrace();
         }
     }
-
-
-
 
 
     public void _oldUser(JSONObject jsonObject) {
@@ -823,6 +810,10 @@ boolean isGetBranchDetailsCalled=false;
                     preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
                     preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+
                 }
 
 
@@ -838,19 +829,18 @@ boolean isGetBranchDetailsCalled=false;
         }
     }
 
-    String config_id="";
+    String config_id = "";
+
     public void _NewUser(JSONObject jsonObject) throws Exception {
-        
-        if(jsonObject.has("configId"))
-        {
-             config_id=decryption(jsonObject.optString("configId"));
-            if(config_id.equals(""))
-            {
+
+        if (jsonObject.has("configId")) {
+            config_id = decryption(jsonObject.optString("configId"));
+            if (config_id.equals("")) {
                 Toast.makeText(getActivity(), "ConfigID not found", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
-        
+
         try {
             if (jsonObject.optString("success").equals("true")) {
                 preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
@@ -868,12 +858,9 @@ boolean isGetBranchDetailsCalled=false;
                     edt_unique_id.setText("");
                     preferencesManager.setuniqueId("");
                 } else {
-                    if(!preferencesManager.getuniqueId().equals(""))
-                    {
+                    if (!preferencesManager.getuniqueId().equals("")) {
                         edt_unique_id.setText(preferencesManager.getuniqueId());
-                    }
-                    else
-                    {
+                    } else {
                         edt_unique_id.setText(decryption(jsonObject.optString("accessId")));
                         preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
                     }
@@ -890,7 +877,6 @@ boolean isGetBranchDetailsCalled=false;
                 }
 
 
-
                 jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 //                jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
@@ -900,19 +886,14 @@ boolean isGetBranchDetailsCalled=false;
                         edt_unique_id.setText("");
                         preferencesManager.setuniqueId("");
                     } else {
-                        if(!preferencesManager.getuniqueId().equals(""))
-                        {
+                        if (!preferencesManager.getuniqueId().equals("")) {
                             edt_unique_id.setText(preferencesManager.getuniqueId());
-                        }
-                        else
-                        {
+                        } else {
                             edt_unique_id.setText(jsonObject1.optString("accessId"));
                             preferencesManager.setuniqueId(jsonObject1.optString("accessId"));
                         }
 
                     }
-
-
 
 
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
@@ -967,6 +948,10 @@ boolean isGetBranchDetailsCalled=false;
                     preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
 
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+
                     if (jsonObject1.has("ConfigId")) {
                         preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
                     }
@@ -974,8 +959,6 @@ boolean isGetBranchDetailsCalled=false;
                     if (jsonObject1.has("MerchantId")) {
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
                     }
-
-
 
 
                 }
@@ -1037,11 +1020,7 @@ boolean isGetBranchDetailsCalled=false;
     }
 
 
-
-
-    
-
-    JSONObject jsonObject1 = null,UpdateBranchDetailsNewJsonObject=null;
+    JSONObject jsonObject1 = null, UpdateBranchDetailsNewJsonObject = null;
     boolean isUpdateNewDetails = false;
 
     @Override
@@ -1064,9 +1043,8 @@ boolean isGetBranchDetailsCalled=false;
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
-                if(isGetBranchDetailsCalled)
-                {
-                    isGetBranchDetailsCalled=false;
+                if (isGetBranchDetailsCalled) {
+                    isGetBranchDetailsCalled = false;
                     callGetBranchDetails_new();
                 }
                 if (isSaveAndOK) {
@@ -1086,12 +1064,11 @@ boolean isGetBranchDetailsCalled=false;
 
 
             case "UpdateBranchDetailsNew":
-                if(!jsonObject.optBoolean("success"))
-                {
-                   // Toast.makeText(getActivity(), "Failed to update terminal configuration."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                if (!jsonObject.optBoolean("success")) {
+                    // Toast.makeText(getActivity(), "Failed to update terminal configuration."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                UpdateBranchDetailsNewJsonObject=jsonObject;
+                UpdateBranchDetailsNewJsonObject = jsonObject;
                 if (AppConstants.isRegistered) {
                     preferencesManager.setaggregated_singleqr(true);
                     if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
@@ -1105,7 +1082,7 @@ boolean isGetBranchDetailsCalled=false;
                     }
                 } else {
                     _NewUser(UpdateBranchDetailsNewJsonObject);
-                   // callGetBranchDetails_new();
+                    // callGetBranchDetails_new();
 
                 }
 
@@ -1129,17 +1106,14 @@ boolean isGetBranchDetailsCalled=false;
 
             case "DeleteTerminal":
                 callAuthToken();
-                if(jsonObject.optBoolean("status"))
-                {
+                if (jsonObject.optBoolean("status")) {
                     preferencesManager.clearPreferences();
                     Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
                     // ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
 
                     preferencesManager.setisResetTerminal(true);
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
-                }
-                else
-                {
+                } else {
                     Toast.makeText(getActivity(), "Terminal configuration not found on server.App data cleared successfully", Toast.LENGTH_SHORT).show();
                     preferencesManager.clearPreferences();
                     preferencesManager.setisResetTerminal(true);
@@ -1156,43 +1130,38 @@ boolean isGetBranchDetailsCalled=false;
             case "GetBranchDetailsOld":
 //                isUpdateNewDetails = true;
 //                callAuthToken();
-                   _oldUser(jsonObject);
+                _oldUser(jsonObject);
                 break;
 
             case "GetBranchDetailsNew":
-if(jsonObject.optBoolean("success"))
-{
-    if (jsonObject.has("multi_terminals")) {
-        if (jsonObject.optBoolean("multi_terminals")) {
-            AppConstants.configIdMatch = decryption(jsonObject.optString("configId"));
-            callConfigDialog();
-        } else
-            _NewUser(jsonObject);
-    } else
-        _NewUser(jsonObject);
+                if (jsonObject.optBoolean("success")) {
+                    if (jsonObject.has("multi_terminals")) {
+                        if (jsonObject.optBoolean("multi_terminals")) {
+                            AppConstants.configIdMatch = decryption(jsonObject.optString("configId"));
+                            callConfigDialog();
+                        } else
+                            _NewUser(jsonObject);
+                    } else
+                        _NewUser(jsonObject);
 
-    // _NewUser(UpdateBranchDetailsNewJsonObject);
-    isUpdateNewDetails = true;
-    callAuthToken();
-}
-else
-{
-    callAuthToken();
-    Toast.makeText(getActivity(), "Terminal Configuration not found", Toast.LENGTH_SHORT).show();
-}
+                    // _NewUser(UpdateBranchDetailsNewJsonObject);
+                    isUpdateNewDetails = true;
+                    callAuthToken();
+                } else {
+                    callAuthToken();
+                    Toast.makeText(getActivity(), "Terminal Configuration not found", Toast.LENGTH_SHORT).show();
+                }
 
                 break;
 
             case "validateTerminal":
-                DashboardActivity.isLaunch=true;
+                DashboardActivity.isLaunch = true;
                 callAuthToken();
                 AppConstants.isRegistered = false;
                 preferencesManager.setuniqueId("");
 
-                if(jsonObject.has("branchInfo"))
-                {
-                    if(jsonObject.optJSONObject("branchInfo").has("fullname"))
-                    {
+                if (jsonObject.has("branchInfo")) {
+                    if (jsonObject.optJSONObject("branchInfo").has("fullname")) {
                         preferencesManager.setMerchantName(jsonObject.optJSONObject("branchInfo").optString("fullname"));
                     }
                 }
@@ -1273,6 +1242,9 @@ else
                                 !jsonObject1.optBoolean("Back") &&
                                 !jsonObject1.optBoolean("Front") &&
                                 !jsonObject1.optBoolean("ConvenienceFee") &&
+                                !jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD") &&
+                                !jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly") &&
+                                jsonObject1.optString("CnvUPIQrMPMCloudValue").equals("") &&
                                 jsonObject1.optString("AlipayWechatvalue").equals("") &&
                                 jsonObject1.optString("UnionPayvalue").equals("") &&
                                 jsonObject1.optString("EnableBranchName").equals("") &&
@@ -1323,6 +1295,10 @@ else
                             preferencesManager.setisTimeZoneChecked(true);
                             preferencesManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
                             preferencesManager.setTimeZoneId("Pacific/Auckland");
+                            preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                            preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                            preferencesManager.setcnv_up_upiqr_mpmcloud("");
+
                             if (jsonObject1.has("MerchantId") && !jsonObject1.optString("MerchantId").equals(""))
                                 preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
                             if (jsonObject1.has("ConfigId") && !jsonObject1.optString("ConfigId").equals(""))
@@ -1407,21 +1383,22 @@ else
                         preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
                         preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
+                        preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                        preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                        preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+
                     }
 
                     //  initChat(jsonObject.optString("terminal_xmpp_jid").toString(),jsonObject.optString("terminal_xmpp_password").toString());
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                }
-                else
-                {
-                        Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
                 }
 
                 if (preferencesManager.is_cnv_alipay_display_and_add() ||
                         preferencesManager.is_cnv_alipay_display_only()) {
                     preferencesManager.setisAlipaySelected(true);
                 }
-
 
 
                 break;
@@ -1434,16 +1411,12 @@ else
         return String.format("%040x", new BigInteger(1, arg.getBytes()));
     }
 
-    public String hextoString(String hexString) throws Exception
-    {
-        byte[] bytes=null;
-        try
-        {
-             bytes = Hex.decodeHex(hexString.toCharArray());
+    public String hextoString(String hexString) throws Exception {
+        byte[] bytes = null;
+        try {
+            bytes = Hex.decodeHex(hexString.toCharArray());
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new String(bytes, "UTF-8");

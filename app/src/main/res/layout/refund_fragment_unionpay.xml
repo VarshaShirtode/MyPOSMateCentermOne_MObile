@@ -188,6 +188,58 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_refund_desc"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="@string/refund_reason" />
+
+        <EditText
+            android:id="@+id/edt_description"
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:inputType="text"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_refund_password"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="*Refund Password" />
+
+        <EditText
+            android:id="@+id/edt_password"
+            style="@style/EditTextStyle"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            android:layout_weight="1"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/edt_xmpp_amount1"
         android:layout_width="230dp"

@@ -1974,7 +1974,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.is_cnv_wechat_display_and_add() ||
                 preferencesManager.is_cnv_wechat_display_only() ||
                 preferencesManager.is_cnv_alipay_display_only() ||
-                preferencesManager.is_cnv_alipay_display_and_add()) {
+                preferencesManager.is_cnv_alipay_display_and_add()||
+                preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()||
+                preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only()
+        ) {
 
 
             if (preferencesManager.cnv_uplan_display_and_add()) {
@@ -1996,6 +1999,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_unionpay_qr_display_only.setChecked(true);
                 chk_unionpay_qr_display_only.setSelected(true);
             }
+
+
+            if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
+                chk_up_upi_qr_display_and_add.setChecked(true);
+                chk_up_upi_qr_display_and_add.setSelected(true);
+            }
+
+            if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only()) {
+                chk_upi_qr_display_only.setChecked(true);
+                chk_upi_qr_display_only.setSelected(true);
+            }
+
 
 
             if (preferenceManager.is_cnv_alipay_display_and_add()) {
@@ -2048,6 +2063,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             edt_uplan_cv.setText(preferenceManager.getcnv_uplan());
             edt_ali_cv.setText(preferenceManager.getcnv_alipay());
             edt_wechat_cv.setText(preferenceManager.getcnv_wechat());
+            edt_up_upi_qr_cv.setText(preferenceManager.getcnv_up_upiqr_mpmcloud());
         }
 
 
@@ -2093,6 +2109,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_unionpay_qr_display_only.setChecked(true);
             chk_unionpay_qr_display_only.setSelected(true);
         }
+
+
+        if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
+            chk_up_upi_qr_display_and_add.setChecked(true);
+            chk_up_upi_qr_display_and_add.setSelected(true);
+        }
+
+        if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only()) {
+            chk_upi_qr_display_only.setChecked(true);
+            chk_upi_qr_display_only.setSelected(true);
+        }
+
 
         if (preferencesManager.isUnipaySelected() &&
                 preferencesManager.isUnionPaySelected()) {
@@ -2196,7 +2224,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_unionpay_qr_display_and_add.isChecked() ||
                 chk_unionpay_qr_display_only.isChecked() ||
                 chk_uplan_display_only.isChecked() ||
-                chk_uplan_display_and_add.isChecked()
+                chk_uplan_display_and_add.isChecked()||
+                chk_up_upi_qr_display_and_add.isChecked()||
+                chk_upi_qr_display_only.isChecked()
         ) {
             preferencesManager.setisConvenienceFeeSelected(true);
 
@@ -2236,7 +2266,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             //if unionpayqr or unionpay qr scan is selected then only
             // display and add And display only option will be checked
             // based on the convinence fee value
-            if (chk_unionpay_qr.isChecked() || chk_unionpay_qr_code.isChecked()) {
+            if (chk_unionpay_qr.isChecked()) {
                 if (!edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                         !edt_unionpay_qr_cv.getText().toString().equals("0.00")
                         || !edt_unionpay_qr_cv.getText().toString().equals("")) {
@@ -2253,6 +2283,26 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                 }
             }
+
+
+            if (chk_unionpay_qr_code.isChecked()) {
+                if (!edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+                        !edt_up_upi_qr_cv.getText().toString().equals("0.00")
+                        || !edt_up_upi_qr_cv.getText().toString().equals("")) {
+                    //display and add of union pay qr
+                    if (chk_up_upi_qr_display_and_add.isChecked())
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(true);
+                    else
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    //display only of union pay qr
+                    if (chk_upi_qr_display_only.isChecked())
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(true);
+                    else
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+
+                }
+            }
+
 
 
             if (chk_uplan_qr.isChecked()) {
@@ -2350,6 +2400,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     (edt_unionpay_card_cv.getText().toString().equals("0.00") ||
                             edt_unionpay_card_cv.getText().toString().equals("0.0") ||
                             edt_unionpay_card_cv.getText().toString().equals("")) &&
+                    (edt_unionpay_qr_cv.getText().toString().equals("") &&
+                            (edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
+                                    edt_unionpay_qr_cv.getText().toString().equals("0.00")))&&
+                    (edt_up_upi_qr_cv.getText().toString().equals("") &&
+                            (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+                                    edt_up_upi_qr_cv.getText().toString().equals("0.00")))&&
                     (edt_uplan_cv.getText().toString().equals("0.00") ||
                             edt_uplan_cv.getText().toString().equals("0.0") ||
                             edt_uplan_cv.getText().toString().equals(""))
@@ -2359,6 +2415,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setcnv_wechat("0.00");
                 preferencesManager.setcnv_uplan("0.00");
                 preferencesManager.setcnv_uni("0.00");
+                preferencesManager.setcnv_uniqr("0.00");
+                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
             } else {
                 if (!edt_ali_cv.getText().toString().equals("") &&
                         (!edt_ali_cv.getText().toString().equals("0.0") ||
@@ -2391,6 +2449,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 } else {
                     preferencesManager.setcnv_uniqr("0.00");
                 }
+
+                if (!edt_up_upi_qr_cv.getText().toString().equals("") &&
+                        (!edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+                                !edt_up_upi_qr_cv.getText().toString().equals("0.00"))) {
+                    preferencesManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString().replace(",", ""));
+                } else {
+                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                }
+
 
                 if (!edt_uplan_cv.getText().toString().equals("") &&
                         (!edt_uplan_cv.getText().toString().equals("0.0")
@@ -2426,6 +2493,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setcnv_unionpayqr_display_and_add(false);
             if (!chk_unionpay_qr_display_only.isChecked())
                 preferencesManager.setcnv_unionpayqr_display_only(false);
+
+
+            if (!chk_up_upi_qr_display_and_add.isChecked())
+                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+            if (!chk_upi_qr_display_only.isChecked())
+                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+
 
             if (!chk_uplan_display_and_add.isChecked())
                 preferencesManager.setcnv_uplan_display_and_add(false);
@@ -2723,6 +2797,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
+
+            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+            jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -3020,6 +3099,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
                     preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
                     preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
 
                     if (preferencesManager.isManual()) {
                         callSetupFragment(SCREENS.MANUALENTRY, null);
@@ -3564,6 +3647,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
 
+            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+            jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
+
+
+
+
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -3736,6 +3826,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
                     preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
                     preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
 
                 }
 
