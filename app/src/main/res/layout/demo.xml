@@ -345,8 +345,14 @@
                                     android:layout_width="103dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
+                                        <!--android:text="Click To Scan UnionPay QR"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"-->
 
-                                    <TextView
+
+
+                                    <RelativeLayout
                                         android:id="@+id/scanqr_unionpay"
                                         android:layout_width="103dp"
                                         android:layout_height="70dp"
@@ -355,14 +361,32 @@
                                         android:layout_marginLeft="5dp"
                                         android:layout_marginBottom="5dp"
                                         android:background="@drawable/rec_bg"
-                                        android:drawableTop="@drawable/scanner"
                                         android:gravity="center"
-                                        android:paddingTop="5dp"
-                                        android:text="Click To Scan UnionPay QR"
-                                        android:textColor="@color/colorBlack"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold"
-                                        android:visibility="visible" />
+                                        android:visibility="visible" >
+                                        <ImageView
+                                            android:src="@drawable/scanner"
+                                            android:layout_alignParentLeft="true"
+                                            android:layout_centerInParent="true"
+                                            android:layout_marginTop="4dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_width="40dp"
+                                            android:layout_height="30dp">
+
+                                        </ImageView>
+
+                                        <ImageView
+                                            android:src="@drawable/ic_unipay"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_centerInParent="true"
+                                            android:layout_marginBottom="2dp"
+                                            android:layout_width="45dp"
+                                            android:layout_marginRight="10dp"
+                                            android:layout_height="40dp">
+
+                                        </ImageView>
+
+
+                                    </RelativeLayout>
 
                                     <TextView
                                         android:id="@+id/tv_scan_uni_disabled"
@@ -488,21 +512,42 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
-                                <TextView
+                                <RelativeLayout
                                     android:id="@+id/scanqr"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_bg"
-                                    android:drawableTop="@drawable/scanner"
-                                    android:gravity="center"
-                                    android:paddingTop="5dp"
-                                    android:text="Click To Scan\nAlipay / WeChat"
-                                    android:textColor="@color/colorBlack"
-                                    android:textSize="11sp"
-                                    android:textStyle="bold"
-                                    android:visibility="visible" />
+
+                                    android:visibility="visible" >
+
+                                    <ImageView
+                                        android:layout_alignParentTop="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
+                                        android:src="@drawable/scanner" />
+                                    <ImageView
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_width="30dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:layout_height="30dp"
+                                        android:src="@drawable/alipay_logo" />
+
+                                    <ImageView
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_width="30dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:layout_height="30dp"
+                                        android:src="@drawable/wechat_logo" />
+
+                                </RelativeLayout>
 
                                 <TextView
                                     android:id="@+id/tv_scanqr_disabled"
@@ -577,19 +622,48 @@
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
                                 android:textStyle="bold" />
-                            <faranjit.currency.edittext.CurrencyEditText
+
+                            <LinearLayout
+                                android:id="@+id/tv_ali_cv2"
+                                android:gravity="center"
+                                android:weightSum="2"
+                                android:orientation="horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <ImageView
+                                    android:layout_weight="1"
+                                    android:src="@drawable/arrow_alipay"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginRight="2dp"
+                                    android:layout_width="60dp"
+                                    android:layout_height="20dp"></ImageView>
+                                <ImageView
+                                    android:layout_marginLeft="2dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/arrow_wechat"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_width="60dp"
+                                    android:layout_height="20dp"></ImageView>
+                            </LinearLayout>
+
+
+
+                         <!--  <faranjit.currency.edittext.CurrencyEditText
                                 android:textSize="14sp"
                                 android:layout_height="18dp"
                                 android:id="@+id/tv_ali_cv2"
                                 android:layout_width="match_parent"
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
-                                android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
                                 android:gravity="center"
                                 android:text="0.00"
+                               android:visibility="gone"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
+                                android:textStyle="bold" />-->
                             <faranjit.currency.edittext.CurrencyEditText
                                 android:textSize="14sp"
                                 android:layout_height="18dp"
@@ -628,6 +702,7 @@
                                 android:layout_height="wrap_content">
 
                                 <ImageView
+                                    android:visibility="invisible"
                                     android:id="@+id/img_unionpay_qr"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
@@ -737,6 +812,7 @@
                             android:weightSum="3">
                             <faranjit.currency.edittext.CurrencyEditText
                                 android:textSize="14sp"
+                                android:visibility="invisible"
                                 android:layout_height="18dp"
                                 android:id="@+id/tv_unionpay_qr_cv"
                                 android:layout_width="match_parent"

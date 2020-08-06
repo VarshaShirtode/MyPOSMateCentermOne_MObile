@@ -238,7 +238,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("reference_id", getIntent().getStringExtra("reference_id"));
-            hashMapKeys.put("refund_amount", edt_amount.getText().toString());
+            hashMapKeys.put("refund_amount", roundTwoDecimals(Double.parseDouble(edt_amount.getText().toString())));
             hashMapKeys.put("refund_password", edt_password.getText().toString());
             hashMapKeys.put("refund_reason", edt_description.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");

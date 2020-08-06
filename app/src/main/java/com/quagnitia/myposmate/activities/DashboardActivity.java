@@ -1613,6 +1613,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_unionpay_qr.setChecked(true);
                 preferencesManager.setUnionPayQrSelected(true);
 
+                //if unionpay qr is selected then disable the upi qr
+                chk_unionpay_qr_code.setChecked(false);
+                preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
+                chk_upi_qr_display_only.setChecked(false);
+                chk_up_upi_qr_display_and_add.setChecked(false);
+                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                edt_up_upi_qr_cv.setText("0.00");
+
+
 
             } else {
                 //case 2
@@ -1847,6 +1858,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_unionpay_qr_code.setChecked(true);
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(true);
 
+                //if upi qr is selected then disable the unionpay qr
+                chk_unionpay_qr.setChecked(false);
+                preferencesManager.setUnionPayQrSelected(false);
+                chk_unionpay_qr_display_and_add.setChecked(false);
+                chk_unionpay_qr_display_only.setChecked(false);
+                preferencesManager.setcnv_unionpayqr_display_only(false);
+                preferencesManager.setcnv_unionpayqr_display_and_add(false);
+                preferencesManager.setcnv_uniqr("0.00");
+                edt_unionpay_qr_cv.setText("0.00");
 
             } else {
                 //case 2
@@ -3577,10 +3597,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-//        hashMap.put("username", AppConstants.CLIENT_ID);
-//        hashMap.put("password",AppConstants.CLIENT_SECRET);
         new OkHttpHandler(DashboardActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
-
     }
 
 
@@ -3593,17 +3610,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
             jsonObject.put("CnvAlipayDisplayOnly", preferenceManager.is_cnv_alipay_display_only());
-
             jsonObject.put("WeChatSelected", preferenceManager.isWechatSelected());
             jsonObject.put("WeChatValue", preferenceManager.getcnv_wechat());
             jsonObject.put("CnvWeChatDisplayAndAdd", preferenceManager.is_cnv_wechat_display_and_add());
             jsonObject.put("CnvWeChatDisplayOnly", preferenceManager.is_cnv_wechat_display_only());
-
-
             jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
             jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
-
-
             jsonObject.put("MerchantId", preferencesManager.getMerchantId());
             jsonObject.put("ConfigId", preferencesManager.getConfigId());
             jsonObject.put("UnionPay", preferencesManager.isUnionPaySelected());
@@ -3646,14 +3658,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
-
             jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
             jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
-
-
-
-
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -3667,12 +3674,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
-
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(DashboardActivity.this, this, hashMap, "UpdateBranchDetailsNew")
                     .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
-
 
         } catch (Exception e) {
             e.printStackTrace();

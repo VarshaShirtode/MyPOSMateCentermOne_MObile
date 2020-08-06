@@ -586,7 +586,7 @@
                 android:id="@+id/chk_upi_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/holo_red_light"
+                android:textColor="@android:color/black"
                 android:layout_alignParentLeft="true"
                 android:gravity="center|left"
                 android:text="UPI QR"

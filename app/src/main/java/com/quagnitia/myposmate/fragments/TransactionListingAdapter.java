@@ -68,13 +68,16 @@ public LinearLayout parent;
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         JSONObject jsonObject=jsonArray.optJSONObject(position);
-        if(jsonObject.optString("paymentStatus").equals("SUCCESS"))
+        if(jsonObject.optString("paymentStatus").equals("SUCCESS")||
+
+                jsonObject.optString("refundStatus").equals("SUCCESS")
+                )
         {
-            holder.parent.setBackgroundColor(Color.parseColor("#82e0aa"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#82e0aa"));
         }
         else
         {
-            holder.parent.setBackgroundColor(Color.parseColor("#EEEEEE"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#EEEEEE"));
         }
         holder.tv_reference_id.setText(jsonObject.optString("referenceId"));
         try
