@@ -65,7 +65,7 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
-        <activity android:name="com.quagnitia.myposmate.activities.PaymentExpressActivity" />
+       <!-- <activity android:name="com.quagnitia.myposmate.activities.PaymentExpressActivity" />-->
         <activity android:name="com.quagnitia.myposmate.activities.UnionPayActivity" />
         <activity android:name="com.quagnitia.myposmate.activities.UnionPayScreen" />
         <activity android:name="com.quagnitia.myposmate.fragments.TransactionDetailsActivity" />
@@ -76,6 +76,17 @@
 
         <receiver
             android:name="com.quagnitia.myposmate.utils.NetworkChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.quagnitia.myposmate.utils.ConnectivityReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

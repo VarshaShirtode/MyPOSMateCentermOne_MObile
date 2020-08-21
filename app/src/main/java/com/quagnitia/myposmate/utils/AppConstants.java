@@ -49,7 +49,7 @@ public class AppConstants {
     public static String REFUND_UNION_PAY = "refundUnionPay";
     public static String getDetailsByRef = "getDetailsByRef";
     public static String REGISTRATION = "registerTerminal";
-    public static String UPDATE_REQUEST = "updateRequest";
+    public static String UPDATE_REQUEST = "updateTerminalRequest";
     public static String EXTERNAL_APP_UNIONPAY_RESPONSE="EXTERNAL_APP_UNIONPAY_RESPONSE";
 
 

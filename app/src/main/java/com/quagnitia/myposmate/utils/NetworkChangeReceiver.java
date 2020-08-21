@@ -32,7 +32,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver implements OnTaskCo
             if (!preferenceManager.getunion_pay_resp().equals("")) {
                 Toast.makeText(context, "Network Available data sync started", Toast.LENGTH_LONG).show();
                 callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
-                if (((MyPOSMateApplication) context.getApplicationContext()).asbtractConnection.isConnected()) {
+                if (((MyPOSMateApplication) context.getApplicationContext()).mStompClient.isConnected()) {
 //                    ((MyPOSMateApplication) context.getApplicationContext()).asbtractConnection.disconnect();
 
                 }

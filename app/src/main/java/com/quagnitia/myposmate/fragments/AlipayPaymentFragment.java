@@ -368,8 +368,8 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 //                 callAuthToken();
                 if (countDownTimerxmpp != null)
                     countDownTimerxmpp.cancel();
-                if (((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.isConnected()) {
-                    ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
+                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
+                    ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
                 }
 
                 MyPOSMateApplication.isActiveQrcode = false;
@@ -888,8 +888,8 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             case R.id.btn_save:
                 //countDownTimerxmpp.cancel();
                 if (isTimeOut) {
-                    if (((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.isConnected()) {
-                        ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
+                    if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
+                        ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
                     }
                     isTimeOut = false;
                     if (countDownTimerxmpp != null)

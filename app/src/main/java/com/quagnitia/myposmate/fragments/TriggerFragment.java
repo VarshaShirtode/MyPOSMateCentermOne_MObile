@@ -181,6 +181,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("request_id", request_id);
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("executed", executed+"");
 

@@ -12,11 +12,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.quagnitia.myposmate.MyPOSMateApplication;
+import com.quagnitia.myposmate.activities.DashboardActivity;
 
 public class ConnectivityReceiver
-        extends BroadcastReceiver {
+        extends BroadcastReceiver{
 
-    public static ConnectivityReceiverListener connectivityReceiverListener;
 
     public ConnectivityReceiver() {
         super();
@@ -29,23 +29,23 @@ public class ConnectivityReceiver
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null
                 && activeNetwork.isConnectedOrConnecting();
+        PreferencesManager preferencesManager=PreferencesManager.getInstance(context);
+        if (isConnected) {
+            MyPOSMateApplication.mStompClient=null;
+            Intent i = new Intent();
+            i.setAction("RECONNECT");
+            i.putExtra("NetON","true");
+            context.sendBroadcast(i);
+            // initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
+        } else {
+            Intent i = new Intent();
+            i.setAction("NetConnectionOff");
+            context.sendBroadcast(i);
 
-        if (connectivityReceiverListener != null) {
-            connectivityReceiverListener.onNetworkConnectionChanged(isConnected);
         }
     }
 
-    public static boolean isConnected() {
-        ConnectivityManager
-                cm = (ConnectivityManager) MyPOSMateApplication.getInstance().getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null
-                && activeNetwork.isConnectedOrConnecting();
-    }
 
 
-    public interface ConnectivityReceiverListener {
-        void onNetworkConnectionChanged(boolean isConnected);
-    }
+
 }

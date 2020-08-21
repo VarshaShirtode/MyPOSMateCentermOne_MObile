@@ -1,2 +1,2 @@
-include ':app', ':printer-utils'
+include ':app', ':printer-utils', ':lib'
 rootProject.name='MyPOSMateCentermOne'

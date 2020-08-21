@@ -88,6 +88,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
+import static com.quagnitia.myposmate.MyPOSMateApplication.mStompClient;
 import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
 
 //import com.quagnitia.myposmate.fragments.DemoFragment;
@@ -291,21 +292,29 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         initListener();
         img_menu.setEnabled(true);
 
-        if(preferencesManager.isRegistered())
-        {
-            callSetupFragment(SCREENS.MANUALENTRY, null);
-        }
-        else {
-            callSetupFragment(SCREENS.REGISTRATION, null);
-        }
-/*
-        if (!preferencesManager.getUsername().equals("")) {
+//        if(preferencesManager.isRegistered())
+//        {
+//            callSetupFragment(SCREENS.MANUALENTRY, null);
+//        }
+//        else {
+//            callSetupFragment(SCREENS.REGISTRATION, null);
+//        }
+if(mStompClient!=null)
+{
+    if (mStompClient.isConnected()) {
+        callSetupFragment(SCREENS.POSMATECONNECTION, null);
+    } else {
+        callSetupFragment(SCREENS.REGISTRATION, null);
+    }
 
-            callSetupFragment(SCREENS.POSMATECONNECTION, null);
-        } else {
-            callSetupFragment(SCREENS.REGISTRATION, null);
-        }
-*/
+}
+else
+{
+    preferencesManager.setIsConnected(false);
+    preferencesManager.setIsAuthenticated(false);
+    callSetupFragment(SCREENS.POSMATECONNECTION, null);
+}
+
         findViewById(R.id.activity_main).setOnTouchListener((View v, MotionEvent event) -> {
             if (mPopupWindow.isShowing()) {
                 mPopupWindow.dismiss();
@@ -330,14 +339,26 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         POSMATECONNECTION, ORDERS, SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP
     }
 
+
+    public void connectStomp()
+    {
+        isNetConnectionOn=true;
+        callAuthToken();
+    }
+
+
     @Override
     protected void onDestroy() {
         try {
-//            if (((MyPOSMateApplication) getApplicationContext()).asbtractConnection != null)
-//                ((MyPOSMateApplication) getApplicationContext()).asbtractConnection.disconnect();
-//            preferencesManager.setIsAuthenticated(false);
-//            preferencesManager.setIsConnected(false);
-           // unregisterReceiver(openFragmentsReceiver);
+            if(mStompClient!=null)
+            {
+                if(mStompClient.isConnected())
+                {
+                    mStompClient.disconnect();
+                    preferencesManager.setIsAuthenticated(false);
+                    preferencesManager.setIsConnected(false);
+                }
+            }
             if(openFragmentsReceiver!=null)
                 unregisterReceiver(openFragmentsReceiver);
             if(intentService!=null)
@@ -2981,6 +3002,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
+
+                if(isNetConnectionOn)
+                {
+                    isNetConnectionOn=false;
+                    Log.v("Dashboard","Dashboard Called connection");
+//                    if(mStompClient==null)
+//                    {
+                            ((MyPOSMateApplication)this.getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+//                    }
+
+                }
+
                 if (isTriggerReceived) {
 
                     callUpdateRequestAPI(request_id, false);
@@ -3294,9 +3327,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             //v2 signature implementation
 
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
             hashMapKeys.put("request_id", request_id);
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("executed", executed + "");
@@ -3311,7 +3345,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             e.printStackTrace();
         }
     }
-
+boolean isNetConnectionOn=false;
     JSONObject triggerjsonObject;
     public static boolean isTriggerReceived = false;
     public static String request_id = "";
@@ -3387,17 +3421,25 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
 
                 case "RECONNECT":
-                    if (((MyPOSMateApplication) getApplicationContext()).asbtractConnection.isConnected()) {
-                        if (preferencesManager.isManual()) {
-                            callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                        } else {
-                            callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                        }
-                    } else {
+                    if(mStompClient==null)
+                    {
                         preferencesManager.setIsAuthenticated(false);
                         preferencesManager.setIsConnected(false);
-                        ((MyPOSMateApplication) getApplicationContext()).initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
-                        callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                        connectStomp();
+                    }
+                    else
+                    {
+                        if (((MyPOSMateApplication) getApplicationContext()).mStompClient.isConnected()) {
+                            if (preferencesManager.isManual()) {
+                                callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                            } else {
+                                callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                            }
+                        } else {
+                            preferencesManager.setIsAuthenticated(false);
+                            preferencesManager.setIsConnected(false);
+                            callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                        }
                     }
 
                     break;
@@ -3491,16 +3533,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case POSMATECONNECTION:
-//                fragment = PosMateConnectioFrag.newInstance("", "");
-//                CURRENTFRAGMENT = SCREENS.POSMATECONNECTION.toString();
+                fragment = PosMateConnectioFrag.newInstance("", "");
+                CURRENTFRAGMENT = SCREENS.POSMATECONNECTION.toString();
 
-                if (data != null) {
-                    fragment = ManualEntry.newInstance(data.toString(), "");
-                } else
-                    fragment = ManualEntry.newInstance("", "");
-
-
-                CURRENTFRAGMENT = SCREENS.MANUALENTRY.toString();
+//                if (data != null) {
+//                    fragment = ManualEntry.newInstance(data.toString(), "");
+//                } else
+//                    fragment = ManualEntry.newInstance("", "");
+//
+//
+//                CURRENTFRAGMENT = SCREENS.MANUALENTRY.toString();
 
                 break;
 

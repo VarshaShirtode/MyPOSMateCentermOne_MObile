@@ -1,7 +1,6 @@
 package com.quagnitia.myposmate.fragments;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -14,7 +13,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -37,43 +35,33 @@ import com.centerm.smartpos.util.LogUtil;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
-import com.quagnitia.myposmate.scanner.ScannerForBack;
-import com.quagnitia.myposmate.scanner.ScannerForFront;
 import com.quagnitia.myposmate.utils.AppConstants;
 import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
-import com.usdk.apiservice.aidl.scanner.OnScanListener;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import pl.droidsonroids.gif.GifTextView;
 
-import static com.quagnitia.myposmate.printer.ApiDemo.TAG;
-
 public class PosMateConnectioFrag extends Fragment implements View.OnClickListener, OnTaskCompleted {
 
     private View view;
-    private AbstractXMPPConnection asbtractConnection;
-    private String serverIp = AppConstants.serverIp;
-    private Handler handler;
     private PreferencesManager preferencesManager;
     private TextView tv_status, tv_status_scan;
     private IntentFilter intentFilter;
     private ProgressBar progressbar;
     private MyReceiver myReceiver;
-    private Button btn_reconnect,btn_back,btn_front, tv_status_scan_button;
+    private Button btn_reconnect, btn_back, btn_front, tv_status_scan_button;
     private RelativeLayout rel_membership;
     private ArrayList<Integer> imgarr = null;
     private GifTextView gifTextView;
@@ -104,7 +92,6 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         getActivity().registerReceiver(myReceiver, intentFilter);
         preferencesManager = PreferencesManager.getInstance(getActivity());
         preferencesManager.setisResetTerminal(false);
-        handler = new Handler();
         initUI();
         bindService();
         if (preferencesManager.isAuthenticated()) {
@@ -113,33 +100,11 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             tv_status.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             progressbar.setVisibility(View.GONE);
 
-            if (preferencesManager.isDisplayAds()) {
-                int seconds = Integer.parseInt(preferencesManager.getdisplayAdsTime()) * 1000;
-
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        gif_frame.setVisibility(View.VISIBLE);
-//                        if (imgarr != null && imgarr.size() > 0) {
-//                            timer = new Timer();
-//    /*
-//    Schedule a task for repeated fixed-rate execution after a specific delay has passed.
-//    Parameters
-//    task  the task to schedule.
-//    delay  amount of time in milliseconds before first execution.
-//    period  amount of time in milliseconds between subsequent executions.
-//    */
-//                            timer.scheduleAtFixedRate(new customTimerTask(getActivity()), 4000, 4000);
-//                        }
-//                    }
-//                }, seconds);
-            }
-
-
         } else {
-            checkAvaliability();
-            ((MyPOSMateApplication) getActivity().getApplicationContext()).initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
+//            checkAvaliability();
+            Log.v("Called","POSMateConnectionFrag OnCreateView");
+            isNetConnectionOn = true;
+            callAuthToken();
         }
         imgarr = new ArrayList<>();
         imgarr.add(R.drawable.unionpay_ad);
@@ -164,18 +129,18 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
     public void initUI() {
         tv_status = view.findViewById(R.id.tv_status);
-        tv_status_scan =  view.findViewById(R.id.tv_status_scan);
-        tv_status_scan_button =  view.findViewById(R.id.tv_status_scan_button);
-        btn_back =  view.findViewById(R.id.btn_back);
-        btn_front =  view.findViewById(R.id.btn_front);
-        rel_membership=view.findViewById(R.id.rel_membership);
-        progressbar =  view.findViewById(R.id.progressbar);
+        tv_status_scan = view.findViewById(R.id.tv_status_scan);
+        tv_status_scan_button = view.findViewById(R.id.tv_status_scan_button);
+        btn_back = view.findViewById(R.id.btn_back);
+        btn_front = view.findViewById(R.id.btn_front);
+        rel_membership = view.findViewById(R.id.rel_membership);
+        progressbar = view.findViewById(R.id.progressbar);
         progressbar.setVisibility(View.VISIBLE);
-        btn_reconnect =  view.findViewById(R.id.btn_reconnect);
+        btn_reconnect = view.findViewById(R.id.btn_reconnect);
         btn_reconnect.setOnClickListener(this);
-        gifTextView =  view.findViewById(R.id.img_gif);
-        gif_frame =  view.findViewById(R.id.gif_frame);
-        close_btn =  view.findViewById(R.id.close_btn);
+        gifTextView = view.findViewById(R.id.img_gif);
+        gif_frame = view.findViewById(R.id.gif_frame);
+        close_btn = view.findViewById(R.id.close_btn);
         close_btn.setOnClickListener(this);
         //tv_status_scan_button.setOnClickListener(this);
         btn_back.setOnClickListener(this);
@@ -191,40 +156,31 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 //        }
 
 
-        if(preferencesManager.isMembershipHome())
-        {
+        if (preferencesManager.isMembershipHome()) {
             rel_membership.setVisibility(View.VISIBLE);
             tv_status_scan.setVisibility(View.INVISIBLE);
             tv_status_scan_button.setVisibility(View.VISIBLE);
-            if(preferencesManager.isFront())
-            {
+            if (preferencesManager.isFront()) {
                 btn_front.setVisibility(View.VISIBLE);
                 btn_back.setVisibility(View.GONE);
             }
-             if(preferencesManager.isBack())
-            {
+            if (preferencesManager.isBack()) {
                 btn_front.setVisibility(View.GONE);
                 btn_back.setVisibility(View.VISIBLE);
             }
-             if(preferencesManager.isBack() && preferencesManager.isFront())
-            {
+            if (preferencesManager.isBack() && preferencesManager.isFront()) {
                 btn_front.setVisibility(View.VISIBLE);
                 btn_back.setVisibility(View.VISIBLE);
             }
-             if(!preferencesManager.isBack() && !preferencesManager.isFront())
-            {
+            if (!preferencesManager.isBack() && !preferencesManager.isFront()) {
                 rel_membership.setVisibility(View.GONE);
             }
 
-        }
-        else
-        {
+        } else {
             rel_membership.setVisibility(View.GONE);
             tv_status_scan.setVisibility(View.GONE);
             tv_status_scan_button.setVisibility(View.GONE);
         }
-
-
 
 
     }
@@ -239,8 +195,6 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     @Override
     public void onDestroyView() {
         gif_frame.setVisibility(View.GONE);
-//        if (timer != null)
-//            timer.cancel();
         super.onDestroyView();
     }
 
@@ -261,7 +215,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     } else if (preferencesManager.getPOSIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                     } else {
-                        isFront=true;
+                        isFront = true;
                         callAuthToken();
                     }
 
@@ -271,7 +225,6 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 break;
 
 
-
             case R.id.btn_back:
                 try {
                     if (preferencesManager.getLaneIdentifier().equals("")) {
@@ -279,7 +232,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     } else if (preferencesManager.getPOSIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                     } else {
-                        isBack=true;
+                        isBack = true;
                         callAuthToken();
                     }
 
@@ -292,7 +245,8 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 if (isNetworkAvailable()) {
                     progressbar.setVisibility(View.VISIBLE);
                     tv_status.setText("MyPOSMate® is online. Please wait while connecting.");
-                    ((MyPOSMateApplication) getActivity().getApplicationContext()).initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
+                    isNetConnectionOn = true;
+                    callAuthToken();
                 } else {
                     progressbar.setVisibility(View.GONE);
                     tv_status.setText("MyPOSMate® is offline. Please make sure your internet connection is ON.");
@@ -326,14 +280,17 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     }
 
 
-
+    boolean isNetConnectionOn = false;
 
     public class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String ac = intent.getAction();
             switch (ac) {
+
                 case "NetConnectionOn":
+                    Log.v("Called","NetConnectionOn");
+
                     tv_status.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
                     tv_status.setText("MyPOSMate® is online.\nAuthentication is in progress.");
                     btn_reconnect.setVisibility(View.GONE);
@@ -343,14 +300,14 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     tv_status.setText("Please check your network connection.");
                     progressbar.setVisibility(View.GONE);
                     btn_reconnect.setVisibility(View.VISIBLE);
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+//                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     break;
                 case "Connected":
-                    tv_status.setText("MyPOSMate® is connected successfully. Please wait while authenticating.");
-                    tv_status.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
-                    btn_reconnect.setVisibility(View.GONE);
-                    break;
-                case "Authenticated":
+//                    tv_status.setText("MyPOSMate® is connected successfully. Please wait while authenticating.");
+//                    tv_status.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
+//                    btn_reconnect.setVisibility(View.GONE);
+//
+                    progressbar.setVisibility(View.GONE);
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     tv_status.setText("MyPOSMate® is authenticated successfully.");
                     tv_status.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
@@ -371,14 +328,31 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
                         }
 
+                    }
+                    break;
+                case "Authenticated":
+                    progressbar.setVisibility(View.GONE);
+                    ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
+                    tv_status.setText("MyPOSMate® is authenticated successfully.");
+                    tv_status.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                    progressbar.setVisibility(View.GONE);
+                    btn_reconnect.setVisibility(View.GONE);
+                    //  preferencesManager.setIsManual(true);
 
+                    if (preferencesManager.isManual()) {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                    } else {
+
+                        if (AppConstants.isNetOff) {
+                            AppConstants.isNetOff = false;
+                            tv_status.setText("Connection is closed.Please reconnect.");
+                            tv_status.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            progressbar.setVisibility(View.GONE);
+                            btn_reconnect.setVisibility(View.VISIBLE);
+
+                        }
 
                     }
-
-
-                    if (preferencesManager.isDisplayAds()) {
-                    }
-
 
                     break;
                 case "ConnectionClosed":
@@ -389,7 +363,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     break;
                 case "ConnectionClosedOnError":
                     tv_status.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                    tv_status.setText("Connection is closed.Please reconnect.");
+                    tv_status.setText("Connection is closed on error.Please reconnect.");
                     progressbar.setVisibility(View.GONE);
                     btn_reconnect.setVisibility(View.VISIBLE);
                     break;
@@ -397,7 +371,10 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     if (isNetworkAvailable()) {
                         progressbar.setVisibility(View.VISIBLE);
                         tv_status.setText("MyPOSMate® is online. Please wait while connecting.");
-                        ((MyPOSMateApplication) getActivity().getApplicationContext()).initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
+                        Log.v("Called","Reconnect");
+                        isNetConnectionOn = true;
+                        callAuthToken();
+
                     } else {
                         progressbar.setVisibility(View.GONE);
                         tv_status.setText("MyPOSMate® is offline. Please make sure your internet connection is ON.");
@@ -422,11 +399,11 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     public void callMembershipLoyality(String qr_data) {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("access_id",preferencesManager.getuniqueId());
+        hashMapKeys.put("access_id", preferencesManager.getuniqueId());
         hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
         hashMapKeys.put("config_id", preferencesManager.getConfigId());
-        hashMapKeys.put("device_id", UUID.randomUUID().toString().replace("-",""));
+        hashMapKeys.put("device_id", UUID.randomUUID().toString().replace("-", ""));
         hashMapKeys.put("qr_data", qr_data);
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
@@ -434,6 +411,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         new OkHttpHandler(getActivity(), this, null, "saveLoyaltyInfo")
                 .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
     }
+
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
@@ -442,8 +420,10 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
+
     public static boolean isBack = false;
     public static boolean isFront = false;
+
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
 
@@ -453,14 +433,21 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
-                if(isBack)
-                {
-                    isBack=false;
+                if (isNetConnectionOn) {
+                    isNetConnectionOn = false;
+//                    if(MyPOSMateApplication.mStompClient==null)
+//                    {
+                    Log.v("ConnectFrag","ConnectFrag Called connection");
+                            ((MyPOSMateApplication) getActivity().getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+//                    }
+
+                }
+                if (isBack) {
+                    isBack = false;
                     stsartFastScan(true);//Back
                 }
-                if(isFront)
-                {
-                    isFront=false;
+                if (isFront) {
+                    isFront = false;
                     stsartFastScan(false);//front
                 }
                 break;
@@ -485,16 +472,15 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     }
 
 
-
-
     private AidlQuickScanZbar aidlQuickScanService = null;
     private int bestWidth = 640;
     private int bestHeight = 480;
     private int spinDegree = 90;
     private int cameraDisplayEffect = 0;
+
     private void switchCameraDisplayEffect(boolean cameraBack) {
         try {
-            aidlQuickScanService.switchCameraDisplayEffect(cameraBack?0:1, cameraDisplayEffect);
+            aidlQuickScanService.switchCameraDisplayEffect(cameraBack ? 0 : 1, cameraDisplayEffect);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -504,12 +490,12 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         final long startTime = System.currentTimeMillis();
         try {
             CameraBeanZbar cameraBean = new com.centerm.smartpos.aidl.qrscan.CameraBeanZbar(0, bestWidth, bestHeight, 4, Integer.MAX_VALUE, spinDegree, 1);
-            if(cameraBack){
+            if (cameraBack) {
                 cameraBean.setCameraId(0);
-            }else{
+            } else {
                 cameraBean.setCameraId(1);
             }
-            HashMap<String,Object> externalMap = new HashMap<String,Object>();
+            HashMap<String, Object> externalMap = new HashMap<String, Object>();
             externalMap.put("ShowPreview", true);
             cameraBean.setExternalMap(externalMap);
             switchCameraDisplayEffect(cameraBack);//2018-03-06 增加切换摄像头显示效果 linpeita@centerm.com
@@ -549,9 +535,6 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                         });
 
 
-
-
-
                 }
             });
         } catch (Exception e) {
@@ -562,14 +545,14 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
     public AidlDeviceManager manager = null;
     Intent intentService;
+
     public void bindService() {
-         intentService = new Intent();
+        intentService = new Intent();
         intentService.setPackage("com.centerm.smartposservice");
         intentService.setAction("com.centerm.smartpos.service.MANAGER_SERVICE");
         getActivity().bindService(intentService, conn, Context.BIND_AUTO_CREATE);
 
     }
-
 
 
     /**
@@ -591,9 +574,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             if (null != manager) {
                 try {
                     onDeviceConnected(manager);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
 
                 }
 

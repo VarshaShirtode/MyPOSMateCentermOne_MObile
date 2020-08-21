@@ -643,7 +643,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
     }
 
     private Context mContext;
-
+    boolean isNetConnectionOn=false;
     @Override
     public void onClick(View view) {
         mContext = getActivity();
@@ -657,7 +657,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 //added for external apps 12/5/2019
                 returnDataToExternalApp();
 
-                if (((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.isConnected()) {
+                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
                     if (preferencesManager.isManual()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     } else {
@@ -666,7 +666,9 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 } else {
                     preferencesManager.setIsAuthenticated(false);
                     preferencesManager.setIsConnected(false);
-                    ((MyPOSMateApplication) getActivity().getApplicationContext()).initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
+                    isNetConnectionOn=true;
+                    callAuthToken();
+
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                 }
 
@@ -725,6 +727,15 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 //                    progress.dismiss();
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                }
+                if(isNetConnectionOn)
+                {
+                    isNetConnectionOn=false;
+                    Log.v("PaymentProcessing","PaymentProcessing Called connection");
+//                    if(MyPOSMateApplication.mStompClient==null)
+//                    {
+                            ((MyPOSMateApplication)getActivity().getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+//                    }
                 }
                 break;
 
