@@ -200,8 +200,34 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
     }
 
 
+    public void callRequestTerminal(String type) {
+        openProgressDialog();
+        try {
+            hashMapKeys.clear();
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("reference_id",cancelReferenceId);
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("executed", "false");
+            hashMapKeys.put("request_type",type);
+
+            new OkHttpHandler(getActivity(), this, null, "requestTerminal")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.REQUEST_TERMINAL +
+                            MD5Class.generateSignatureString(hashMapKeys, getActivity())
+                            + "&access_token=" + preferenceManager.getauthToken());
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+boolean isCancel=false;
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -242,6 +268,19 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
 
             case R.id.btn_cancel1:
             case R.id.btn_cancel2:
+//                if (triggerjsonObject.optString("channel")
+//                        .equalsIgnoreCase("ALIPAY") ||
+//                        triggerjsonObject.optString("channel")
+//                                .equalsIgnoreCase("WECHAT")) {
+//                    cancelReferenceId=triggerjsonObject.optString("referenceId");
+//                }
+//                else if (triggerjsonObject.optString("channel")
+//                        .equalsIgnoreCase("UNION_PAY")) {
+//                    cancelReferenceId=jsonObjectGatewayResponse.optString("referenceNumber");
+//
+//                }
+//                isCancel=true;
+//                callAuthToken();
                 if (preferenceManager.isManual()) {
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                 } else {
@@ -250,6 +289,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
                 break;
         }
     }
+    String cancelReferenceId="";
 
 
     public void beginRefund(JSONObject jsonObject1) {
@@ -438,7 +478,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
 
     boolean isEpaymentsRefund = false;
     boolean isEndOfProcedure=false;
-
+boolean isUpdateCancelStatus=false;
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
         if (progress.isShowing())
@@ -455,13 +495,21 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
 //                    isStart = false;
 //                    callTransactionDetails(triggerjsonObject);
 //                }
+
+                if(isCancel)
+                {
+                    callRequestTerminal("CANCEL");
+                }
+
+
                 if (isEpaymentsRefund) {
                     callTransactionDetails(triggerjsonObject);
                 }
 
-                if(isTriggerReceived)
+                if(isTriggerReceived ||isUpdateCancelStatus)
                 {
                     isTriggerReceived=false;
+                    isUpdateCancelStatus=false;
                     callUpdateRequestAPI(request_id,false);
                 }
 
@@ -471,14 +519,22 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
                 }
                 break;
 
+            case "requestTerminal":
+                if(jsonObject.optBoolean("status"))
+                {
+                    isUpdateCancelStatus=true;
+                    callAuthToken();
+                }
+                break;
 
             case "updateRequest":
                 if(jsonObject.optBoolean("status"))
                 {
                     callAuthToken();
-                    if(isEndOfProcedure)
+                    if(isEndOfProcedure||isCancel)
                     {
                         isEndOfProcedure=false;
+                        isCancel=false;
                         callSwitchFragment();
                     }
                 }

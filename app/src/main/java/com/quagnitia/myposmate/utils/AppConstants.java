@@ -53,6 +53,7 @@ public class AppConstants {
     public static String ORDER_LIST="order/list";
     public static String ORDER_DETAILS="order/details";
     public static String UPDATE_ORDER_DETAILS="order/update";
+    public static String REQUEST_TERMINAL="requestTerminal";
     public static String EXTERNAL_APP_UNIONPAY_RESPONSE="EXTERNAL_APP_UNIONPAY_RESPONSE";
 
 

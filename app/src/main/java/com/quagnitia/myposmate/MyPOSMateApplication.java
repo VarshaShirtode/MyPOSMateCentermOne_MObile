@@ -320,6 +320,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                     sendBroadcast(intent);
                                     break;
 
+
+
                             }
 
                         }
