@@ -368,13 +368,13 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 //                 callAuthToken();
                 if (countDownTimerxmpp != null)
                     countDownTimerxmpp.cancel();
-                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
-                    ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
-                }
+//                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
+//                    ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
+//                }
 
                 MyPOSMateApplication.isActiveQrcode = false;
-                preferenceManager.setIsAuthenticated(false);
-                preferenceManager.setIsConnected(false);
+//                preferenceManager.setIsAuthenticated(false);
+//                preferenceManager.setIsConnected(false);
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                 break;
 

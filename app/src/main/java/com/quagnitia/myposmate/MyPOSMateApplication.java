@@ -163,17 +163,18 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
                         case OPENED:
-                            Log.v("MyPOSMate®", "Connected....");
-                            toast("Stomp connection opened");
                             preferencesManager.setIsConnected(true);
                             preferencesManager.setIsAuthenticated(true);
+                            Log.v("MyPOSMate®", "Connected....");
+                            toast("Stomp connection opened");
                             Intent i = new Intent();
                             i.setAction("Connected");
                             sendBroadcast(i);
                             onSubscribe();
-
                             break;
                         case ERROR:
+                            preferencesManager.setIsConnected(false);
+                            preferencesManager.setIsAuthenticated(false);
                             Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
                             toast("Stomp connection error");
                             Log.v("MyPOSMate®", "ConnectionClosedOnError....");
@@ -181,20 +182,20 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                             Intent i2 = new Intent();
                             i2.setAction("ConnectionClosedOnError");
                             sendBroadcast(i2);
-                            preferencesManager.setIsConnected(false);
-                            preferencesManager.setIsAuthenticated(false);
                             break;
                         case CLOSED:
+                            preferencesManager.setIsConnected(false);
+                            preferencesManager.setIsAuthenticated(false);
                             toast("Stomp connection closed");
                             Log.v("MyPOSMate®", "ConnectionClosed....");
                             Intent i1 = new Intent();
                             i1.setAction("ConnectionClosed");
                             sendBroadcast(i1);
-                            preferencesManager.setIsConnected(false);
-                            preferencesManager.setIsAuthenticated(false);
                             resetSubscriptions();
                             break;
                         case FAILED_SERVER_HEARTBEAT:
+                            preferencesManager.setIsConnected(false);
+                            preferencesManager.setIsAuthenticated(false);
                             toast("Stomp failed server heartbeat");
                             break;
 
@@ -220,6 +221,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
                     Log.d(TAG, "Received " + topicMessage.getPayload());
+                    callAuthToken();
                     funcTrigger(topicMessage);
                     // addItem(mGson.fromJson(topicMessage.getPayload(), EchoModel.class));
                 }, throwable -> {

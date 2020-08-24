@@ -276,12 +276,23 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    public TreeMap<String, String> getHashMapKeysUniversal() {
+        return hashMapKeysUniversal;
+    }
+
+    public void setHashMapKeysUniversal(TreeMap<String, String> hashMapKeysUniversal) {
+        this.hashMapKeysUniversal .putAll(hashMapKeysUniversal);
+    }
+
+    private TreeMap<String,String> hashMapKeysUniversal=null;
+
+
 
     public void funcInitialSetup() {
         mContext = DashboardActivity.this;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         preferenceManager = PreferencesManager.getInstance(this);
-
+        hashMapKeysUniversal=new TreeMap<>();
         applyIntentFilter();
         openFragmentsReceiver = new OpenFragmentsReceiver();
         registerReceiver(openFragmentsReceiver, intentFilter);

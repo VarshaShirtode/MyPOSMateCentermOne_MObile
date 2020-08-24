@@ -186,7 +186,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 }
             }
 
-            hashMapKeys.put("reference_id", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("reference_id", getIntent().getStringExtra("reference_id"));//jsonObject.optString("referenceNumber"));
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
             hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
             hashMapKeys.put("is_success", true + "");
@@ -1788,13 +1788,16 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             try {
                 String text = "";
                 if (jsonObjectTransactionDetails.optJSONObject("payment").optString("channel").equals("UNION_PAY")) {
-                    text = newjson.optString("CUP Reference No");
+                    text = newjson.optString("Reference Number");
                 } else {
                     text = jsonObject.optString("reference_id");
                 }
 
 
                 if (preferenceManager.isQR()) {
+
+
+
                     if (!text.equals("")) {
                         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                         try {
@@ -1814,6 +1817,13 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                 }
                 if (preferenceManager.isQR()) {
+                    if (jsonObjectTransactionDetails.optJSONObject("payment").optString("channel").equals("UNION_PAY")) {
+                        final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
+                        list.add(new PrintDataObject("Reference Number:"+newjson.optString("Reference Number"),
+                                24, true, PrintDataObject.ALIGN.LEFT, false,
+                                true));
+                        int ret = printDev.printTextEffect(list);
+                    }
                     printDev.printBmpFast(bitmap, Constant.ALIGN.LEFT, callback);
                     bitmap.recycle();
 

@@ -50,6 +50,9 @@ public class AppConstants {
     public static String getDetailsByRef = "getDetailsByRef";
     public static String REGISTRATION = "registerTerminal";
     public static String UPDATE_REQUEST = "updateTerminalRequest";
+    public static String ORDER_LIST="order/list";
+    public static String ORDER_DETAILS="order/details";
+    public static String UPDATE_ORDER_DETAILS="order/update";
     public static String EXTERNAL_APP_UNIONPAY_RESPONSE="EXTERNAL_APP_UNIONPAY_RESPONSE";
 
 

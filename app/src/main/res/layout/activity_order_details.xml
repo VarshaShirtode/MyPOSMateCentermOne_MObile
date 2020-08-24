@@ -33,7 +33,7 @@
 
 
         <EditText
-            android:id="@+id/edt_merchant_name"
+            android:id="@+id/edt_order_number"
             style="@style/EditTextStyle"
             android:paddingRight="10dp"
             android:textStyle="bold"
@@ -41,7 +41,6 @@
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:gravity="center|right"
-            android:text="TBK126"
             android:inputType="text"
             android:minLines="2"
             android:textSize="12sp" />
@@ -65,9 +64,9 @@
 
 
         <EditText
+            android:id="@+id/edt_order_time"
             style="@style/EditTextStyle"
             android:gravity="center|right"
-            android:text="19:55:34  20/02/2020"
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:layout_height="20dp"
@@ -96,10 +95,10 @@
 
 
         <EditText
+            android:id="@+id/edt_name"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:gravity="center|right"
-            android:text="James Brown"
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:layout_marginRight="20dp"
@@ -127,10 +126,10 @@
 
 
         <EditText
+            android:id="@+id/edt_phoneno"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:gravity="center|right"
-            android:text="02 722334455"
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:layout_marginRight="20dp"
@@ -158,6 +157,7 @@
 
 
         <EditText
+            android:id="@+id/edt_email"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:layout_marginRight="20dp"
@@ -166,7 +166,6 @@
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:gravity="center|right"
-            android:text="jbrown@jbrownacmzac.com"
             android:minLines="2"
             android:textSize="12sp" />
 
@@ -190,6 +189,7 @@
 
 
         <EditText
+            android:id="@+id/edt_pickup"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:layout_marginRight="20dp"
@@ -198,7 +198,6 @@
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:gravity="center|right"
-            android:text="HungryPanda"
             android:minLines="2"
             android:textSize="12sp" />
 
@@ -221,6 +220,7 @@
 
 
         <EditText
+            android:id="@+id/edt_id"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:layout_marginRight="20dp"
@@ -229,7 +229,6 @@
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:gravity="center|right"
-            android:text="123101"
             android:minLines="2"
             android:textSize="12sp" />
 
@@ -252,6 +251,7 @@
 
 
         <EditText
+            android:id="@+id/edt_status"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:layout_marginRight="20dp"
@@ -260,7 +260,6 @@
             android:paddingRight="10dp"
             android:textStyle="bold"
             android:gravity="center|right"
-            android:text="To Review"
             android:minLines="2"
             android:textSize="12sp" />
 
@@ -284,6 +283,7 @@
 
 
         <EditText
+            android:id="@+id/edt_ready_by"
             style="@style/EditTextStyle"
             android:layout_height="20dp"
             android:layout_marginRight="20dp"
@@ -316,7 +316,7 @@
 
         <TextView
             android:id="@+id/tv_id"
-            android:layout_width="25dp"
+            android:layout_width="50dp"
             android:layout_height="25dp"
             android:layout_weight="1"
             android:gravity="center"
@@ -329,7 +329,7 @@
         <TextView
             android:layout_toRightOf="@+id/tv_id"
             android:id="@+id/tv_qty"
-            android:layout_width="25dp"
+            android:layout_width="30dp"
             android:layout_height="25dp"
             android:layout_weight="1"
             android:gravity="center"
@@ -406,6 +406,7 @@
 
 
         <TextView
+            android:id="@+id/tv_subtotal"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -447,12 +448,11 @@
              />
 
 
-
         <TextView
             android:id="@+id/tv_discount"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:text="$ 6.10"
             android:textColor="@color/colorBlack"
             android:textSize="12sp"
@@ -548,6 +548,7 @@
 
 
         <TextView
+            android:id="@+id/tv_total"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

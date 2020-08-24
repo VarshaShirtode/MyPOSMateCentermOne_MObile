@@ -71,11 +71,11 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                 "\n" +
                 "]";
 
-        try {
-            this.jsonArray = new JSONArray(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.jsonArray = new JSONArray(s);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         preferencesManager = PreferencesManager.getInstance(mContext);
     }
@@ -96,29 +96,34 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         JSONObject jsonObject = jsonArray.optJSONObject(position);
-
-        holder.tv_id.setText(jsonObject.optString("id"));
+//        "itemId": 952,
+//                "menuID": null,
+//                "quantity": "1",
+//                "item": "item1",
+//                "itemNotes": null,
+//                "price": "100"
+        holder.tv_id.setText("("+jsonObject.optString("itemId")+")");
         holder.tv_item.setText(jsonObject.optString("item"));
-        holder.tv_price.setText(jsonObject.optString("price"));
-        holder.tv_qty.setText(jsonObject.optString("qty"));
+        holder.tv_price.setText("$"+jsonObject.optString("price"));
+        holder.tv_qty.setText(jsonObject.optString("quantity"));
         holder.tv_add_on.setVisibility(View.GONE);
-        if(position==0)
-        {
-            holder.tv_add_on.setText("Extra creme, Chill level 3, No pickle");
-            holder.tv_add_on.setVisibility(View.VISIBLE);
-        }
-
-        if(position==2)
-        {
-            holder.tv_add_on.setText("Chili level 5");
-            holder.tv_add_on.setVisibility(View.VISIBLE);
-        }
-
-        if(position==3)
-        {
-            holder.tv_add_on.setText("No almonds");
-            holder.tv_add_on.setVisibility(View.VISIBLE);
-        }
+//        if(position==0)
+//        {
+//            holder.tv_add_on.setText("Extra creme, Chill level 3, No pickle");
+//            holder.tv_add_on.setVisibility(View.VISIBLE);
+//        }
+//
+//        if(position==2)
+//        {
+//            holder.tv_add_on.setText("Chili level 5");
+//            holder.tv_add_on.setVisibility(View.VISIBLE);
+//        }
+//
+//        if(position==3)
+//        {
+//            holder.tv_add_on.setText("No almonds");
+//            holder.tv_add_on.setVisibility(View.VISIBLE);
+//        }
 
 
 
@@ -135,7 +140,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     public int getItemCount() {
         int size = 4;
 
-        return size;
+        return jsonArray.length();
     }
 
 }

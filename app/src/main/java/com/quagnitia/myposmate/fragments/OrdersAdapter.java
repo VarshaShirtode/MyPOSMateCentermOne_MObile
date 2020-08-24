@@ -104,11 +104,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
                 "\n" +
                 "]";
 
-        try {
-            this.jsonArray = new JSONArray(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.jsonArray = new JSONArray(s);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         preferencesManager = PreferencesManager.getInstance(mContext);
     }
@@ -136,31 +136,32 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
         holder.tv_ready_by.setTextColor(Color.parseColor("#000000"));
         holder.tv_from.setTextColor(Color.parseColor("#000000"));
 
-        if (jsonObject.optString("status").equals("To Review")) {
+        if (jsonObject.optString("status").equalsIgnoreCase("Reviewed")) {
             holder.parent.setBackgroundColor(Color.parseColor("#5797CD"));
             holder.tv_id.setTextColor(Color.parseColor("#ffffff"));
             holder.tv_order_number.setTextColor(Color.parseColor("#ffffff"));
             holder.tv_status.setTextColor(Color.parseColor("#ffffff"));
             holder.tv_ready_by.setTextColor(Color.parseColor("#ffffff"));
             holder.tv_from.setTextColor(Color.parseColor("#ffffff"));
-        } else if (jsonObject.optString("status").equals("Accepted")) {
+        } else if (jsonObject.optString("status").equalsIgnoreCase("Accepted")) {
             holder.parent.setBackgroundColor(Color.parseColor("#F4C200"));
-        } else if (jsonObject.optString("status").equals("Completed")) {
+        } else if (jsonObject.optString("status").equalsIgnoreCase("Completed")) {
             holder.parent.setBackgroundColor(Color.parseColor("#198E14"));
-        } else if (jsonObject.optString("status").equals("Rejected")) {
+        } else if (jsonObject.optString("status").equalsIgnoreCase("Rejected")) {
             holder.parent.setBackgroundColor(Color.parseColor("#E92F1C"));
         }
-        holder.tv_id.setText(jsonObject.optString("id"));
-        holder.tv_order_number.setText(jsonObject.optString("order_no"));
+        holder.tv_id.setText(jsonObject.optString("myPOSMateOrderID"));
+        holder.tv_order_number.setText(jsonObject.optString("orderNumber"));
         holder.tv_status.setText(jsonObject.optString("status"));
-        holder.tv_ready_by.setText(jsonObject.optString("ready_by"));
-        holder.tv_from.setText(jsonObject.optString("from"));
+//        holder.tv_ready_by.setText(jsonObject.optString("ready_by"));
+        holder.tv_from.setText(jsonObject.optString("pickupFrom"));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                     Intent i = new Intent(mContext, OrderDetailsActivity.class);
+                    i.putExtra("myPOSMateOrderID",jsonObject.optString("myPOSMateOrderID"));
                     mContext.startActivity(i);
 
             }
@@ -169,9 +170,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        int size = 9;
+      //  int size = 9;
 
-        return size;
+        return jsonArray.length();
     }
 
 }

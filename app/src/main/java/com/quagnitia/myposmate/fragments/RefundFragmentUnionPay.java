@@ -343,7 +343,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("transactionType", "REFUND");
                             jsonObject.put("amount", edt_amount1.getText().toString());
-                            jsonObject.put("originalReferenceNumber", edt_reference_id.getText().toString());
+                            jsonObject.put("originalReferenceNumber", referenecno);//edt_reference_id.getText().toString());
                             jsonObject.put("orderNumber", edt_order_no.getText().toString());
                             jsonObject.put("originalTransactionDate", edt_transaction_no.getText().toString());
                             beginRefund(jsonObject);
@@ -430,7 +430,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                 }
             }
 
-            hashMapKeys.put("reference_id", jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("reference_id", edt_reference_id.getText().toString());//jsonObject.optString("referenceNumber"));
             hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
             hashMapKeys.put("trade_no", jsonObject.optString("referenceNumber"));
             hashMapKeys.put("is_success", true + "");

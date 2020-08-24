@@ -39,10 +39,13 @@
     </TextView>
 
     <Button
+        android:id="@+id/btn_complete"
         android:background="#198E14"
         android:textStyle="bold"
         android:text="Completed"
         android:textAllCaps="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         android:layout_marginLeft="10dp"
@@ -54,9 +57,12 @@
     </Button>
 
     <Button
+        android:id="@+id/btn_rejected"
         android:background="#E92F1C"
         android:textStyle="bold"
         android:text="Rejected"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         android:textAllCaps="false"
@@ -70,10 +76,13 @@
 
 
     <Button
+        android:id="@+id/btn_review"
         android:background="#5797CD"
         android:textStyle="bold"
         android:textAllCaps="false"
         android:text="To Review"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         android:layout_marginLeft="10dp"
@@ -86,12 +95,15 @@
 
 
     <Button
+        android:id="@+id/btn_accept"
         android:background="#F4C200"
         android:textStyle="bold"
         android:text="Accept"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -114,6 +126,7 @@ android:id="@+id/spinner"
              />
 
         <TextView
+            android:id="@+id/tv_time"
             android:layout_toRightOf="@+id/spinner"
             android:layout_marginLeft="20dp"
             android:textStyle="bold"

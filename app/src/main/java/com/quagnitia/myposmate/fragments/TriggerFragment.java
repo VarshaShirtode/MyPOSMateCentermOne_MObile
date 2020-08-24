@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -150,10 +152,11 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
         try {
             //v2 signature implementation
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
-            hashMapKeys.put("reference_id", jsonObject.optString("reference_id"));
+            hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
             hashMapKeys.put("refund_amount", edt_amount.getText().toString());
             hashMapKeys.put("refund_password", edt_refund_password.getText().toString());
             hashMapKeys.put("refund_reason", "test");
@@ -177,7 +180,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             //v2 signature implementation
 
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("request_id", request_id);
@@ -398,10 +401,11 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
         openProgressDialog();
         //v2 signature implementation
         hashMapKeys.clear();
-        hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
-        hashMapKeys.put("reference_id", jsonObject.optString("reference_id"));
+        hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
                 .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS
@@ -417,9 +421,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
     public void callAuthToken() {
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("grant_type", "password");
-        hashMap.put("username", preferenceManager.getterminalId());
-        hashMap.put("password", preferenceManager.getuniqueId());
+        hashMap.put("grant_type", "client_credentials");
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
 
     }
@@ -500,7 +502,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
                 AppConstants.isRefundUnionpayDone = true;
                 if (progress != null && progress.isShowing())
                     progress.dismiss();
-                if (jsonObject.optBoolean("success")) {
+                if (jsonObject.optBoolean("status")) {
                     isEndOfProcedure=true;
                     Toast.makeText(getActivity(), "Transaction details updated successfully", Toast.LENGTH_SHORT).show();
                     callAuthToken();
@@ -513,16 +515,30 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             case "TransactionDetails":
                 callAuthToken();
                 jsonObjectResponse = new JSONObject(result);
-                if (jsonObjectResponse.has("server_response") &&
-                        jsonObjectResponse.optJSONObject("server_response") != null) {
-                    jsonObjectGatewayResponse = jsonObjectResponse.optJSONObject("server_response").optJSONObject("body");
+                if (jsonObject.optJSONObject("payment").has("serverResponse") &&
+                        jsonObject.optJSONObject("payment").optJSONObject("serverResponse") != null) {
+                    byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonObject.optJSONObject("payment").optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
+                    String serverResponse = new String(data, "UTF-8");
+                    JSONObject jsonObjectServerResponse = new JSONObject(serverResponse);
+                    jsonObjectGatewayResponse = jsonObjectServerResponse.optJSONObject("body");
                 }
-
-                if (triggerjsonObject.optString("channel").equalsIgnoreCase("UNION_PAY")) {
+                triggerjsonObject.put("channel",jsonObject.optJSONObject("payment").optString("channel"));
+                edt_scheme.setText(triggerjsonObject.optString("channel"));
+                if(jsonObject.optJSONObject("payment").optString("channel").equals("UNION_PAY"))
+                {
+                    ll_refund_password.setVisibility(View.GONE);
                     edt_cup_reference_id.setText(jsonObjectGatewayResponse.optString("referenceNumber"));
-                } else {
-                    edt_transaction_reference.setText(jsonObject.optString("trade_no"));
                 }
+                else
+                {
+                    ll_refund_password.setVisibility(View.VISIBLE);
+                    edt_transaction_reference.setText(jsonObject.optJSONObject("payment").optString("tradeNo"));
+                }
+//                if (triggerjsonObject.optString("channel").equalsIgnoreCase("UNION_PAY")) {
+//                    edt_cup_reference_id.setText(jsonObjectGatewayResponse.optString("referenceNumber"));
+//                } else {
+//                    edt_transaction_reference.setText(jsonObject.optString("trade_no"));
+//                }
 
 
                 if (isEpaymentsRefund) {
@@ -573,7 +589,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
     }
 
 
-    public void callUnionPayStatus(String json_data, String status) {
+   /* public void callUnionPayStatus(String json_data, String status) {
         openProgressDialog();
         try {
             String s = "{\n" +
@@ -608,7 +624,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.clear();
             String randomStr = new Date().getTime() + "";
 
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("is_mobile_device", "true");
             hashMapKeys.put("access_id", preferenceManager.getuniqueId());
@@ -641,7 +657,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
                     "  \"body\":";
 
             hashMapKeys.clear();
-            hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
             hashMapKeys.put("is_mobile_device", "true");
             hashMapKeys.put("access_id", preferenceManager.getuniqueId());
@@ -668,6 +684,99 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+   String roundTwoDecimals(double d) {
+       DecimalFormat twoDForm = new DecimalFormat("#0.00");
+       return twoDForm.format(d);
+   }
+    public void callUnionPayStatus(String json_data, String status) {
+        openProgressDialog();
+        try {
+            String s = "{\n" +
+                    "  \"head\": {\n" +
+                    "    \"version\": \"V1.2.0\"\n" +
+                    "  },\n" +
+                    "  \"body\":";
+
+            JSONObject jsonObject = new JSONObject(json_data);
+            if (jsonObject.has("responseCodeThirtyNine")) {
+                if (jsonObject.has("responseCodeThirtyNine") && jsonObject.optString("responseCodeThirtyNine").equals("00")) {
+                    if (jsonObject.optString("transactionType").equals("SALE") ||
+                            jsonObject.optString("transactionType").equals("COUPON_SALE") ||
+                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+                    ) {
+                        status = "20";
+                    } else if (jsonObject.optString("transactionType").equals("VOID") ||
+                            jsonObject.optString("transactionType").equals("REFUND") ||
+                            jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_VOID") ||
+                            jsonObject.optString("transactionType").equals("COUPON_VOID")) {
+                        status = "19"; //set 22 to 19 in case of void on 28/02/2019
+                    }
+
+                }
+            } else {
+                status = "23";
+                Toast.makeText(getActivity(), jsonObject.optString("responseMessage"), Toast.LENGTH_LONG).show();
+
+            }
+            jsonObject.put("status_id", status);
+            json_data = jsonObject.toString();
+            preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("system", preferenceManager.getterminalId());
+            hashMapKeys.put("channel", "UNION_PAY");
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("rate", "0");
+            hashMapKeys.put("currency", "NZD");
+            hashMapKeys.put("transaction_id", jsonObjectResponse.optJSONObject("payment").optString("id"));
+
+            if (jsonObject.optString("transactionType").equals("SALE") ||
+                    jsonObject.optString("transactionType").equals("COUPON_SALE") ||
+                    jsonObject.optString("transactionType").equals("UPI_SCAN_CODE_SALE")
+            ) {
+                hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount"))));
+                hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount"))));
+            } else if (jsonObjectResponse.optJSONObject("payment").has("serverResponse")) {
+                if (!jsonObjectGatewayResponse.equals("")) {
+                    hashMapKeys.put("grand_total", roundTwoDecimals(Double.parseDouble(jsonObjectGatewayResponse.optString("amount"))));
+                    hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(jsonObjectGatewayResponse.optString("amount"))));
+                    hashMapKeys.put("refund_amount", edt_amount.getText().toString() + "");
+                    hashMapKeys.put("refund_trade_no", jsonObject.optString("referenceNumber") + "");
+                }
+            }
+
+
+            hashMapKeys.put("reference_id", triggerjsonObject.optString("referenceId"));//jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("server_response", android.util.Base64.encodeToString((s + json_data + "}").getBytes(), Base64.NO_WRAP));
+            hashMapKeys.put("trade_no", triggerjsonObject.optString("referenceId"));//jsonObject.optString("referenceNumber"));
+            hashMapKeys.put("is_success", true + "");
+            hashMapKeys.put("is_payment", false + "");
+            hashMapKeys.put("thirdParty", true + "");
+            String s2 = "", s1 = "";
+            int i1 = 0;
+            Iterator<String> iterator = hashMapKeys.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                if (i1 != hashMapKeys.size() - 1) {
+                    s2 = s2 + key + "=" + hashMapKeys.get(key) + "&";
+                    s1 = s1 + key + "=" + hashMapKeys.get(key) + "&";
+                } else {
+                    s2 = s2 + key + "=" + hashMapKeys.get(key);
+                    s1 = s1 + key + "=" + hashMapKeys.get(key);
+                }
+                i1++;
+            }
+            s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(getActivity()).getauthToken();//.getuniqueId();
+            String signature = MD5Class.MD5(s2);
+            new OkHttpHandler(getActivity(), this, null, "saveTransaction")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 public static String request_id="";
@@ -684,7 +793,7 @@ public static String request_id="";
                         request_id=triggerjsonObject.optString("request_id");
                         edt_scheme.setText(triggerjsonObject.optString("channel"));
                         edt_amount.setText(triggerjsonObject.optString("amount"));
-                        edt_mpm_reference.setText(triggerjsonObject.optString("reference_id"));
+                        edt_mpm_reference.setText(triggerjsonObject.optString("referenceId"));
                         edt_cup_reference_id.setText(triggerjsonObject.optString(""));
                         edt_transaction_reference.setText(triggerjsonObject.optString(""));
                         edt_reason.setText(triggerjsonObject.optString(""));

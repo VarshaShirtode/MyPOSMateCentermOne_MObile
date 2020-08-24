@@ -672,8 +672,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         ll_reference1.setVisibility(View.GONE);
                         rel_alipay_static_qr.setVisibility(View.GONE);
                         JSONObject jsonObject = new JSONObject(intent.getStringExtra("data"));
-                        if (jsonObject.has("reference_id")) {
-                            reference_id = jsonObject.optString("reference_id");
+                        if (jsonObject.has("referenceId")) {
+                            reference_id = jsonObject.optString("referenceId");
                             preferenceManager.setreference_id(reference_id);
                             //5 dec 2018
                             preferenceManager.settriggerReferenceId(reference_id);
@@ -2228,7 +2228,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("receiptAmount", roundTwoDecimals(Double.parseDouble(amount.replace(",", ""))));
             callDP(reference_id);
         }
-
+        if(((DashboardActivity)getActivity()).getHashMapKeysUniversal()!=null)
+        ((DashboardActivity)getActivity()).getHashMapKeysUniversal().clear();
+        if(((DashboardActivity)getActivity()).getHashMapKeysUniversal()!=null)
+        ((DashboardActivity)getActivity()).setHashMapKeysUniversal(hashMapKeys);
     }
 
 
@@ -2464,6 +2467,15 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     public void callUnionPayStatus(String json_data, String status) {
         openProgressDialog();
+        if(((DashboardActivity)getActivity()).getHashMapKeysUniversal()!=null)
+        {
+            if(((DashboardActivity)getActivity()).getHashMapKeysUniversal().size()!=0)
+            {
+                hashMapKeys.putAll(((DashboardActivity)getActivity()).getHashMapKeysUniversal());
+            }
+        }
+
+
         try {
             String s = "{\n" +
                     "  \"head\": {\n" +
@@ -2503,7 +2515,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             jsonObject.put("status_id", status);
             json_data = jsonObject.toString();
             preferenceManager.setreference_id(jsonObject.optString("orderNumber"));
-            trade_no = jsonObject.optString("referenceNumber");
+
+            if (!preferenceManager.gettriggerReferenceId().equals(""))
+                trade_no = preferenceManager.gettriggerReferenceId();
+            else
+                trade_no = jsonObject.optString("referenceNumber");
+
+
+
             if (trade_no.equals("null")) {
                 trade_no = new Date().getTime() + "";
             }
@@ -3433,7 +3452,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         preferenceManager.setreference_id("");
         preferenceManager.settriggerReferenceId("");
         preferenceManager.setunion_pay_resp("");
-
+        AppConstants.xmppamountforscan="";
 
         if (jsonObject.optBoolean("status")) {
             Toast.makeText(getActivity(), jsonObject.optString("message") + ".", Toast.LENGTH_LONG).show();

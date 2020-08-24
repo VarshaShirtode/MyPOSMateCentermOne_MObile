@@ -92,7 +92,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:id="@+id/tv_ready_by"
-            android:text="Result"
             android:textColor="@color/colorWhite"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
