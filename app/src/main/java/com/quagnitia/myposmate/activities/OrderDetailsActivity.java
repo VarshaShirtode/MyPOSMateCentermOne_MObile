@@ -218,7 +218,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
         hashMapKeys.clear();
         hashMapKeys.put("branchID", preferencesManager.getMerchantId());
         hashMapKeys.put("configID", preferencesManager.getConfigId());
-        hashMapKeys.put("hubID", "946");
+        hashMapKeys.put("hubID", getIntent().getStringExtra("hub_id"));
         hashMapKeys.put("myPOSMateOrderID", getIntent().getStringExtra("myPOSMateOrderID"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(this, this, null, "OrderDetails")

@@ -319,7 +319,11 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                     intent.putExtra("data", message.getPayload());
                                     sendBroadcast(intent);
                                     break;
-
+                                case "NEW_ORDER":
+                                    intent.setAction("OrderDetails");
+                                    intent.putExtra("data", message.getPayload());
+                                    sendBroadcast(intent);
+                                    break;
 
 
                             }

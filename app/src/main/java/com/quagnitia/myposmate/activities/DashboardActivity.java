@@ -303,13 +303,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         initListener();
         img_menu.setEnabled(true);
 
-//        if(preferencesManager.isRegistered())
-//        {
-//            callSetupFragment(SCREENS.MANUALENTRY, null);
-//        }
-//        else {
-//            callSetupFragment(SCREENS.REGISTRATION, null);
-//        }
+
 if(mStompClient!=null)
 {
     if (mStompClient.isConnected()) {
@@ -321,9 +315,17 @@ if(mStompClient!=null)
 }
 else
 {
-    preferencesManager.setIsConnected(false);
-    preferencesManager.setIsAuthenticated(false);
-    callSetupFragment(SCREENS.POSMATECONNECTION, null);
+
+    if(preferencesManager.isRegistered())
+    {
+        preferencesManager.setIsConnected(false);
+        preferencesManager.setIsAuthenticated(false);
+        callSetupFragment(SCREENS.POSMATECONNECTION, null);
+    }
+    else {
+        callSetupFragment(SCREENS.REGISTRATION, null);
+    }
+
 }
 
         findViewById(R.id.activity_main).setOnTouchListener((View v, MotionEvent event) -> {
@@ -340,6 +342,7 @@ else
 
         intentFilter.addAction("ManualEntry");
         intentFilter.addAction("PrintTrigger");
+        intentFilter.addAction("OrderDetails");
         intentFilter.addAction("ThirdParty");
         intentFilter.addAction("PaymentProcessing");
         intentFilter.addAction("RECONNECT");
@@ -3395,6 +3398,21 @@ boolean isNetConnectionOn=false;
                         e.printStackTrace();
                     }
 
+
+                    break;
+
+                case "OrderDetails":
+                    try {
+                        JSONObject jsonObject = new JSONObject(intent.getStringExtra("data"));
+                        callAuthToken();
+                        Intent orderIntent=new Intent(DashboardActivity.this,OrderDetailsActivity.class);
+                        orderIntent.putExtra("hub_id",jsonObject.optString("hub_id"));
+                        orderIntent.putExtra("myPOSMateOrderID",jsonObject.optString("order_id"));
+                        startActivity(orderIntent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     break;
 
