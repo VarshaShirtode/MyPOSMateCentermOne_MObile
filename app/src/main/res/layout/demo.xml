@@ -702,7 +702,7 @@
                                 android:layout_height="wrap_content">
 
                                 <ImageView
-                                    android:visibility="invisible"
+                                    android:visibility="visible"
                                     android:id="@+id/img_unionpay_qr"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
@@ -812,7 +812,7 @@
                             android:weightSum="3">
                             <faranjit.currency.edittext.CurrencyEditText
                                 android:textSize="14sp"
-                                android:visibility="invisible"
+                                android:visibility="visible"
                                 android:layout_height="18dp"
                                 android:id="@+id/tv_unionpay_qr_cv"
                                 android:layout_width="match_parent"

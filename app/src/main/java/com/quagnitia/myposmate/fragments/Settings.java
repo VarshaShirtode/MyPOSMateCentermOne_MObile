@@ -719,8 +719,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             jsonObject.put("CnvUPIQrMPMCloudDAADD", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
             jsonObject.put("CnvUPIQrMPMCloudValue", preferencesManager.getcnv_up_upiqr_mpmcloud());
-
-
+            jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferencesManager.get_cnv_unimerchantqrdisplay());
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -813,7 +813,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
                     preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-
+                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                 }
 
 
@@ -951,6 +952,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
                     preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
                     if (jsonObject1.has("ConfigId")) {
                         preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
@@ -1244,7 +1247,9 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                                 !jsonObject1.optBoolean("ConvenienceFee") &&
                                 !jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD") &&
                                 !jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly") &&
+                                !jsonObject1.optBoolean("isMerchantDPARDisplay")&&
                                 jsonObject1.optString("CnvUPIQrMPMCloudValue").equals("") &&
+                                jsonObject1.optString("cnv_unimerchantqrdisplay").equals("")&&
                                 jsonObject1.optString("AlipayWechatvalue").equals("") &&
                                 jsonObject1.optString("UnionPayvalue").equals("") &&
                                 jsonObject1.optString("EnableBranchName").equals("") &&
@@ -1386,7 +1391,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                         preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                         preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
                         preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-
+                        preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                        preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
                     }
 
                     //  initChat(jsonObject.optString("terminal_xmpp_jid").toString(),jsonObject.optString("terminal_xmpp_password").toString());

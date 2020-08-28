@@ -336,7 +336,7 @@
         <CheckBox
             android:enabled="false"
             android:layout_marginTop="2dp"
-           android:id="@+id/chk_unionpay_qr_merchant_display"
+           android:id="@+id/chk_unionpay_qr_merchant_display1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/holo_red_light"
@@ -579,11 +579,12 @@
             android:layout_height="wrap_content">
 
 
-
+<!-- android:id="@+id/chk_upi_card"-->
             <CheckBox
-                android:enabled="false"
+                android:enabled="true"
                 android:layout_marginTop="2dp"
-                android:id="@+id/chk_upi_card"
+                android:id="@+id/chk_upi_qr_merchant_display"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"

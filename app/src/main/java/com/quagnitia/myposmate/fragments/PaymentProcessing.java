@@ -515,24 +515,27 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         }
 
 
-        if (jsonObject.has("original_amount") && !jsonObject.optString("original_amount").equals("0.0") &&
-                !jsonObject.optString("original_amount").equals("0.00")) {
-            list.add(new PrintDataObject("Original Amount: " + jsonObject.optString("currency") + " " + jsonObject.optString("original_amount"),
+
+
+        if (jsonObject.has("feeAmount") && !jsonObject.optString("feeAmount").equals("0.0") &&
+                !jsonObject.optString("feeAmount").equals("0.00")) {
+
+            Double originalAmount=Double.parseDouble(jsonObject.optString("receiptAmount"))-
+                    Double.parseDouble(jsonObject.optString("feeAmount"));
+            list.add(new PrintDataObject("Original Amount: "
+                    + jsonObject.optString("currency") + " " +
+                    originalAmount, fontSize, true,
+                    PrintDataObject.ALIGN.LEFT, false, true));
+
+
+            list.add(new PrintDataObject("Fee Amount: " + jsonObject.optString("currency") + " " + jsonObject.optString("feeAmount"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-
         }
 
-        if (jsonObject.has("fee_amount") && !jsonObject.optString("fee_amount").equals("0.0") &&
-                !jsonObject.optString("fee_amount").equals("0.00")) {
-            list.add(new PrintDataObject("Fee Amount: " + jsonObject.optString("currency") + " " + jsonObject.optString("fee_amount"),
-                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-                    true));
-        }
-
-        if (jsonObject.has("fee_percentage") && !jsonObject.optString("fee_percentage").equals("0.0") &&
-                !jsonObject.optString("fee_percentage").equals("0.00")) {
-            list.add(new PrintDataObject("Fee Percentage: " + jsonObject.optString("fee_percentage"),
+        if (jsonObject.has("feePercentage") && !jsonObject.optString("feePercentage").equals("0.0") &&
+                !jsonObject.optString("feePercentage").equals("0.00")) {
+            list.add(new PrintDataObject("Fee Percentage: " + jsonObject.optString("feePercentage"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
         }
@@ -657,20 +660,20 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 //added for external apps 12/5/2019
                 returnDataToExternalApp();
 
-                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
+//                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
                     if (preferencesManager.isManual()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     } else {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     }
-                } else {
-                    preferencesManager.setIsAuthenticated(false);
-                    preferencesManager.setIsConnected(false);
-                    isNetConnectionOn=true;
-                    callAuthToken();
-
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                }
+//                } else {
+//                    preferencesManager.setIsAuthenticated(false);
+//                    preferencesManager.setIsConnected(false);
+//                    isNetConnectionOn=true;
+//                    callAuthToken();
+//
+//                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+//                }
 
                 break;
 

@@ -343,6 +343,8 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
                     preferenceManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferenceManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                 }
 
                 break;

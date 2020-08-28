@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
-INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
-INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
-INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b1f254700f38d09357331c2d556466c6\AndroidManifest.xml:2:1-11:12
 MERGED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:17:1-55:12
 MERGED from [com.github.faranjit:currency-edittext:1.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\28bffd25d1a0b5305aef869b42d2a380\AndroidManifest.xml:2:1-17:12
@@ -14,8 +14,9 @@ MERGED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia-Ruhi\
 MERGED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\23542701f8783bc9385a111d6d7294ce\AndroidManifest.xml:2:1-5:12
 MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:16:1-23:12
 MERGED from [com.android.support:support-v4:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\079807cd409ff14c6a4b3430d80e281a\AndroidManifest.xml:17:1-22:12
+MERGED from [:lib] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-13:12
 MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.20] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a20c50c8572d95dd95cb7ed8ac565160\AndroidManifest.xml:2:1-9:12
-MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b091b6d68443853605b6b2416ec751e4\AndroidManifest.xml:15:1-21:12
+MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\99d6ba5ebffe299c79445a3b07ed9bf3\AndroidManifest.xml:15:1-20:12
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:2:1-10:12
 MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:17:1-28:12
 MERGED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:2:1-23:12
@@ -45,22 +46,22 @@ MERGED from [com.android.support:interpolator:28.0.0-alpha3] C:\Users\quagnitia-
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\3d2d9483d1474e467cd07fce2e875ce3\AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\7f93883cd6e5d6474ea5e859d8cc064e\AndroidManifest.xml:17:1-22:12
 MERGED from [pl.droidsonroids:relinker:1.3.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\6712795a5ee27e5df799da7fbf659d87\AndroidManifest.xml:2:1-7:12
-INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
-INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
-INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
+INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
 	package
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:4:5-38
 		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
 		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
 		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
 	xmlns:tools
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
 		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-89:12
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-100:12
 		INJECTED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:11-69
@@ -88,10 +89,12 @@ MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagn
 MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:17:5-42
 MERGED from [com.android.support:support-v4:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\079807cd409ff14c6a4b3430d80e281a\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-v4:28.0.0-alpha3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\079807cd409ff14c6a4b3430d80e281a\AndroidManifest.xml:20:5-44
+MERGED from [:lib] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:lib] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
 MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.20] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a20c50c8572d95dd95cb7ed8ac565160\AndroidManifest.xml:5:5-7:41
 MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.20] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\a20c50c8572d95dd95cb7ed8ac565160\AndroidManifest.xml:5:5-7:41
-MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b091b6d68443853605b6b2416ec751e4\AndroidManifest.xml:19:5-43
-MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b091b6d68443853605b6b2416ec751e4\AndroidManifest.xml:19:5-43
+MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\99d6ba5ebffe299c79445a3b07ed9bf3\AndroidManifest.xml:18:5-43
+MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\99d6ba5ebffe299c79445a3b07ed9bf3\AndroidManifest.xml:18:5-43
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:6:5-43
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:6:5-43
 MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:20:5-44
@@ -227,7 +230,7 @@ ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManif
 	android:name
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:23:22-74
 application
-ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:25:5-87:19
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:25:5-98:19
 REJECTED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\b1f254700f38d09357331c2d556466c6\AndroidManifest.xml:9:5-20
 REJECTED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:45:5-53:19
 REJECTED from [com.github.faranjit:currency-edittext:1.0.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\28bffd25d1a0b5305aef869b42d2a380\AndroidManifest.xml:11:5-15:19
@@ -236,6 +239,7 @@ REJECTED from [com.google.android.gms:play-services-base:9.8.0] C:\Users\quagnit
 REJECTED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\68d47c8d1240a278cc4bcc5443f5c485\AndroidManifest.xml:4:5-7:19
 REJECTED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\23542701f8783bc9385a111d6d7294ce\AndroidManifest.xml:4:5-19
 REJECTED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\5c2f40cd5ac94e415a0d290671f6352b\AndroidManifest.xml:19:5-21:19
+REJECTED from [:lib] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:5-20
 REJECTED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\c1513da2a55ebea045ad529de5cf7605\AndroidManifest.xml:8:5-20
 REJECTED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\4425991efc007e07b65e08dd98caf4f6\AndroidManifest.xml:22:5-26:19
 REJECTED from [:printer-utils] D:\MyPOSMate Final 2020\MyPOSMateCentermOne\printer-utils\build\.transforms\63d04967db531911d504fba14b06134f\AndroidManifest.xml:14:5-21:19
@@ -313,10 +317,6 @@ ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManif
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:67:13-46
 	android:name
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:65:13-74
-activity#com.quagnitia.myposmate.activities.PaymentExpressActivity
-ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:68:9-94
-	android:name
-		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:68:19-91
 activity#com.quagnitia.myposmate.activities.UnionPayActivity
 ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:69:9-88
 	android:name
@@ -359,6 +359,14 @@ action#android.net.wifi.STATE_CHANGED
 ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:84:17-73
 	android:name
 		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:84:25-70
+receiver#com.quagnitia.myposmate.utils.ConnectivityReceiver
+ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:88:9-97:20
+	android:enabled
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:90:13-35
+	android:exported
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:91:13-36
+	android:name
+		ADDED from D:\MyPOSMate Final 2020\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:89:13-78
 uses-permission#android.permission.CAMERA
 ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia-Ruhi\.gradle\caches\transforms-2\files-2.1\0c5827e82c90f135b68bcbcab8ab772a\AndroidManifest.xml:21:5-65
 	android:name

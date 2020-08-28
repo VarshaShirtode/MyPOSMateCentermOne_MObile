@@ -1,18 +1,24 @@
-#Sun Jun 21 20:32:18 IST 2020
+#Fri Aug 28 14:25:45 IST 2020
 path.1=classes.dex
 path.0=classes.dex
+renamed.7=classes8.dex
+renamed.6=classes7.dex
 renamed.5=classes6.dex
 renamed.4=classes5.dex
 renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.5=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-base.4=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
-base.3=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
-base.2=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
-base.1=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
-base.0=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
+base.7=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
+base.6=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+base.5=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
+base.4=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
+base.3=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
+base.2=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
+base.1=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\7
+base.0=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\6
+path.7=classes.dex
+path.6=classes.dex
 path.5=classes.dex
 path.4=classes.dex
 path.3=classes.dex

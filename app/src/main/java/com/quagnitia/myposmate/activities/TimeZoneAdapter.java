@@ -229,6 +229,8 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("CnvUPIQrMPMCloudDAADD",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
                             jsonObject.put("CnvUPIQrMPMCloudDOnly",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
                             jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud());
+                            jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
+                            jsonObject.put("cnv_unimerchantqrdisplay",preferencesManager.get_cnv_unimerchantqrdisplay());
 
                             isUpdateDetails=true;
                             ((TimeZoneActivity) mContext).callUpdateBranchDetails(jsonObject);

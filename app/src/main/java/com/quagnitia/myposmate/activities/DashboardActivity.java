@@ -145,6 +145,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private CheckBox chk_unionpay_qr_display_only;
     private CheckBox chk_uplan_display_and_add;
     private CheckBox chk_uplan_display_only;
+    private CheckBox chk_upi_qr_merchant_display;
     private EditText edt_ali_cv;
     private EditText edt_wechat_cv;
     private EditText edt_unionpay_card_cv;
@@ -1168,6 +1169,7 @@ else
         pcUPQRScanDPApp(dialogView);
         pcUPUplanScanDPApp(dialogView);
         pcUP_UPIQRScan_MPMCloud(dialogView);
+        pcUP_Merchant_QRDisplay(dialogView);
     }
 
     private void pcAlipay(View dialogView)
@@ -1224,6 +1226,12 @@ else
         chk_up_upi_qr_display_and_add= dialogView.findViewById(R.id.chk_up_upi_qr_display_and_add);
         chk_upi_qr_display_only= dialogView.findViewById(R.id.chk_upi_qr_display_only);
         edt_up_upi_qr_cv= dialogView.findViewById(R.id.edt_up_upi_qr_cv);
+    }
+
+
+    private void pcUP_Merchant_QRDisplay(View dialogView)
+    {
+        chk_upi_qr_merchant_display= dialogView.findViewById(R.id.chk_upi_qr_merchant_display);
     }
 
 
@@ -1643,6 +1651,7 @@ else
     //UnionPay QR Scan DP App PC Listeners
     private void _upQrScan_chkListener()
     {
+
         chk_unionpay_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_unionpay_qr.setChecked(true);
@@ -1670,6 +1679,15 @@ else
                 preferencesManager.setcnv_unionpayqr_display_and_add(false);
                 preferencesManager.setcnv_uniqr("0.00");
                 edt_unionpay_qr_cv.setText("0.00");
+
+//                if (!chk_upi_qr_merchant_display.isChecked()) {
+//                    chk_unionpay_qr_display_and_add.setChecked(false);
+//                    chk_unionpay_qr_display_only.setChecked(false);
+//                    preferencesManager.setcnv_unionpayqr_display_only(false);
+//                    preferencesManager.setcnv_unionpayqr_display_and_add(false);
+//                    preferencesManager.setcnv_uniqr("0.00");
+//                    edt_unionpay_qr_cv.setText("0.00");
+//                }
 
                 /*if (!chk_unionpay_qr_code.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
@@ -1730,7 +1748,7 @@ else
 
         chk_unionpay_qr_display_only.setOnClickListener((View v) -> {
 
-            if (chk_unionpay_qr.isChecked() || chk_unionpay_qr_code.isChecked()) {
+            if (chk_upi_qr_merchant_display.isChecked()||chk_unionpay_qr.isChecked() || chk_unionpay_qr_code.isChecked()) {
                 if (edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                         edt_unionpay_qr_cv.getText().toString().equals("0.00") ||
                         edt_unionpay_qr_cv.getText().toString().equals("")
@@ -1888,6 +1906,32 @@ else
     //UP UPI QR Scan using MPMCloud PC Listener
     private void _up_UPIQRScan_MPMCloud_chkListener()
     {
+
+        chk_upi_qr_merchant_display.setOnClickListener((View v)->{
+            if (((CheckBox) v).isChecked()) {
+                chk_upi_qr_merchant_display.setChecked(true);
+                preferencesManager.setisMerchantDPARDisplay(true);
+
+
+            } else {
+                //case 2
+                chk_upi_qr_merchant_display.setChecked(false);
+                preferencesManager.setisMerchantDPARDisplay(false);
+
+                if (!chk_unionpay_qr_code.isChecked()) {
+                    chk_up_upi_qr_display_and_add.setChecked(false);
+                    chk_upi_qr_display_only.setChecked(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    edt_up_upi_qr_cv.setText("0.00");
+                }
+            }
+        });
+
+
+
+
         chk_unionpay_qr_code.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_unionpay_qr_code.setChecked(true);
@@ -1914,6 +1958,17 @@ else
                 preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
                 edt_up_upi_qr_cv.setText("0.00");
 
+
+                if (!chk_upi_qr_merchant_display.isChecked()) {
+                    chk_up_upi_qr_display_and_add.setChecked(false);
+                    chk_upi_qr_display_only.setChecked(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    edt_up_upi_qr_cv.setText("0.00");
+                }
+
+
                /* if (!chk_unionpay_qr.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
                     chk_unionpay_qr_display_only.setChecked(false);
@@ -1933,7 +1988,7 @@ else
         chk_up_upi_qr_display_and_add.setOnClickListener((View v) -> {
 
 
-            if (chk_unionpay_qr_code.isChecked()) {
+            if (chk_unionpay_qr_code.isChecked()||chk_upi_qr_merchant_display.isChecked()) {
                 if (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
                         edt_up_upi_qr_cv.getText().toString().equals("0.00") ||
                         edt_up_upi_qr_cv.getText().toString().equals("")
@@ -1962,10 +2017,12 @@ else
                     }
                 }
                 preferenceManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString());
+                preferencesManager.set_cnv_unimerchantqrdisplay(edt_up_upi_qr_cv.getText().toString());
             } else {
                 chk_up_upi_qr_display_and_add.setChecked(false);
                 chk_up_upi_qr_display_and_add.setSelected(false);
                 preferenceManager.setcnv_up_upiqr_mpmcloud("0.00");
+                preferencesManager.set_cnv_unimerchantqrdisplay("0.00");
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -1975,7 +2032,7 @@ else
 
         chk_upi_qr_display_only.setOnClickListener((View v) -> {
 
-            if (chk_unionpay_qr_code.isChecked()) {
+            if (chk_unionpay_qr_code.isChecked()||chk_upi_qr_merchant_display.isChecked()) {
                 if (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
                         edt_up_upi_qr_cv.getText().toString().equals("0.00") ||
                         edt_up_upi_qr_cv.getText().toString().equals("")
@@ -2006,10 +2063,12 @@ else
 
                 }
                 preferenceManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString());
+                preferencesManager.set_cnv_unimerchantqrdisplay(edt_up_upi_qr_cv.getText().toString());
             } else {
                 chk_upi_qr_display_only.setChecked(false);
                 chk_upi_qr_display_only.setSelected(false);
                 preferenceManager.setcnv_up_upiqr_mpmcloud("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplay("0.00");
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -2194,6 +2253,11 @@ else
             chk_unionpay_qr.setChecked(true);
             chk_unionpay_qr.setSelected(true);
         }
+        if(preferencesManager.isMerchantDPARDisplay())
+        {
+            chk_upi_qr_merchant_display.setChecked(true);
+            chk_upi_qr_merchant_display.setSelected(true);
+        }
 
         if (preferenceManager.isUnionPayQrCodeDisplaySelected()) {
             chk_unionpay_qr_code.setChecked(true);
@@ -2340,7 +2404,7 @@ else
             }
 
 
-            if (chk_unionpay_qr_code.isChecked()) {
+            if (chk_unionpay_qr_code.isChecked()||chk_upi_qr_merchant_display.isChecked()) {
                 if (!edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
                         !edt_up_upi_qr_cv.getText().toString().equals("0.00")
                         || !edt_up_upi_qr_cv.getText().toString().equals("")) {
@@ -2815,6 +2879,7 @@ else
             jsonObject.put("UnionPayQR", preferenceManager.isUnionPayQrSelected());
             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferenceManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
+            jsonObject.put("cnv_unimerchantqrdisplay",preferenceManager.get_cnv_unimerchantqrdisplay());
             jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferenceManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferenceManager.is_cnv_uni_display_only());
@@ -2837,6 +2902,7 @@ else
             jsonObject.put("AlipayWechatvalue", preferenceManager.getcnv_alipay());
             jsonObject.put("UnionPayvalue", preferenceManager.getcnv_uni());
             jsonObject.put("UnionPayQRValue", preferenceManager.getcnv_uniqr());
+            jsonObject.put("cnv_unimerchantqrdisplay",preferenceManager.get_cnv_unimerchantqrdisplay());
             jsonObject.put("EnableBranchName", preferenceManager.getBranchName());
             jsonObject.put("EnableBranchAddress", preferenceManager.getBranchAddress());
             jsonObject.put("EnableBranchEmail", preferenceManager.getBranchEmail());
@@ -2856,6 +2922,7 @@ else
             jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
             jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
+            jsonObject.put("isMerchantDPARDisplay",preferenceManager.isMerchantDPARDisplay());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3130,6 +3197,7 @@ else
                     preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
                     preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
@@ -3151,6 +3219,7 @@ else
                     preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
                     preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQRValue"));
+                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
                     preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
@@ -3170,6 +3239,8 @@ else
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
                     preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+
 
                     if (preferencesManager.isManual()) {
                         callSetupFragment(SCREENS.MANUALENTRY, null);
@@ -3693,6 +3764,7 @@ boolean isNetConnectionOn=false;
             jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplay());
             jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
@@ -3714,6 +3786,7 @@ boolean isNetConnectionOn=false;
             jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
             jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
             jsonObject.put("UnionPayQRValue", preferenceManager.getcnv_uniqr());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplay());
             jsonObject.put("EnableBranchName", preferencesManager.getBranchName());
             jsonObject.put("EnableBranchAddress", preferencesManager.getBranchAddress());
             jsonObject.put("EnableBranchEmail", preferencesManager.getBranchEmail());
@@ -3732,6 +3805,7 @@ boolean isNetConnectionOn=false;
             jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
             jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
+            jsonObject.put("isMerchantDPARDisplay",preferenceManager.isMerchantDPARDisplay());
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -3865,6 +3939,7 @@ boolean isNetConnectionOn=false;
                     preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
                     preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
@@ -3884,6 +3959,7 @@ boolean isNetConnectionOn=false;
                     preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
                     preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
                     preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
@@ -3906,6 +3982,7 @@ boolean isNetConnectionOn=false;
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
                     preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
                 }
 

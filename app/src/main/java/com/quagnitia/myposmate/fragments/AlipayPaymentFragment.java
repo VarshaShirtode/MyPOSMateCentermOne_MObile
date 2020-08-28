@@ -863,11 +863,11 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                 if (getActivity() != null)
                     showDialog("QR code has expired");
                 tv_count_down.setVisibility(View.GONE);
-                if (getActivity() != null) {
-                    Intent i = new Intent();
-                    i.setAction("RECONNECT");
-                    getActivity().sendBroadcast(i);
-                }
+//                if (getActivity() != null) {
+//                    Intent i = new Intent();
+//                    i.setAction("RECONNECT");
+//                    getActivity().sendBroadcast(i);
+//                }
 
             }
 
@@ -888,15 +888,15 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             case R.id.btn_save:
                 //countDownTimerxmpp.cancel();
                 if (isTimeOut) {
-                    if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
-                        ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
-                    }
+//                    if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
+//                        ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
+//                    }
                     isTimeOut = false;
                     if (countDownTimerxmpp != null)
                         countDownTimerxmpp.cancel();
                     MyPOSMateApplication.isActiveQrcode = false;
-                    preferenceManager.setIsAuthenticated(false);
-                    preferenceManager.setIsConnected(false);
+//                    preferenceManager.setIsAuthenticated(false);
+//                    preferenceManager.setIsConnected(false);
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     return;
                 }

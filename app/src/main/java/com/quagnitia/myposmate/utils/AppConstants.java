@@ -63,7 +63,7 @@ public class AppConstants {
     public static boolean isRefundUnionpayDone = false;
     public static boolean isScannedCode1 = false;
     public static boolean showDialog = false;
-    public static boolean isUplanselected = false, isUnionpayselected = false, isUnionQrSelected = false;
+    public static boolean isUplanselected = false,isUnionPayMerchantQrDisplaySelected=false, isUnionpayselected = false, isUnionQrSelected = false;
     public static boolean isPostReceived = false;
     public static boolean isRegistered = false;
     public static boolean isNetOff = false;

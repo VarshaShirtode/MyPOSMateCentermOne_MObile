@@ -151,9 +151,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
     }
 
     public void connectStomp() {
-        List<StompHeader> headers = new ArrayList<>();
-        headers.add(new StompHeader(LOGIN, "guest"));
-        headers.add(new StompHeader(PASSCODE, "guest"));
+
+
         mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
         resetSubscriptions();
 
@@ -173,6 +172,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                             onSubscribe();
                             break;
                         case ERROR:
+                            if(mStompClient!=null)
+                            mStompClient.disconnect();
                             preferencesManager.setIsConnected(false);
                             preferencesManager.setIsAuthenticated(false);
                             Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
@@ -184,6 +185,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                             sendBroadcast(i2);
                             break;
                         case CLOSED:
+                            if(mStompClient!=null)
+                                mStompClient.disconnect();
                             preferencesManager.setIsConnected(false);
                             preferencesManager.setIsAuthenticated(false);
                             toast("Stomp connection closed");
@@ -203,7 +206,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 });
 
         compositeDisposable.add(dispLifecycle);
-        mStompClient.connect(headers);
+        mStompClient.connect();
     }
 
     private String generateTopic(String branch_id, String config_id, String terminal_id, String access_id) {
@@ -212,11 +215,15 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
 
     void onSubscribe() {
 
-        Disposable dispTopic = mStompClient.topic(
-                generateTopic(preferencesManager.getMerchantId(),
-                        preferencesManager.getConfigId(),
-                        preferencesManager.getterminalId(),
-                        preferencesManager.getuniqueId()))
+        List<StompHeader> headers = new ArrayList<>();
+        headers.add(new StompHeader("terminal_id", preferencesManager.getterminalId()));
+        headers.add(new StompHeader("access_id", preferencesManager.getuniqueId()));
+        headers.add(new StompHeader("config_id", preferencesManager.getConfigId()));
+        headers.add(new StompHeader("branch_id", preferencesManager.getMerchantId()));
+        Disposable dispTopic = mStompClient.topic(generateTopic(preferencesManager.getMerchantId(),
+                preferencesManager.getConfigId(),
+                preferencesManager.getterminalId(),
+                preferencesManager.getuniqueId()),headers)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {

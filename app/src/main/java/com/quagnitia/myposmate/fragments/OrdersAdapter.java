@@ -161,6 +161,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHold
             public void onClick(View v) {
 
                     Intent i = new Intent(mContext, OrderDetailsActivity.class);
+                i.putExtra("hub_id",jsonObject.optString("hubID"));
                     i.putExtra("myPOSMateOrderID",jsonObject.optString("myPOSMateOrderID"));
                     mContext.startActivity(i);
 

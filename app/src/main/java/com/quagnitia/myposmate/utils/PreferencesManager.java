@@ -38,6 +38,7 @@ public class PreferencesManager {
     private String isBack="isBack";
     private String isFront="isFront";
     private String isWechatSelected="isWechatSelected";
+    private String isMerchantDPARDisplay="isMerchantDPARDisplay";
     private String isUnipaySelected="isUnipaySelected";
     private String isUplanSelected="isUplanSelected";
     private String isAlipayWechatQrSelected="isAlipayWechatQrSelected";
@@ -74,6 +75,7 @@ public class PreferencesManager {
     private String cnv_alipay_display_only="cnv_alipay_display_only";
     private String cnv_uni="cnv_uni";
     private String cnv_uniqr="cnv_uniqr";
+    private String cnv_unimerchantqrdisplay="cnv_unimerchantqrdisplay";
     private String cnv_uplan="cnv_uplan";
     private String cnv_up_upiqr_mpmcloud="cnv_up_upiqr_mpmcloud";
     private String cnv_uni_display_and_add="cnv_uni_display_and_add";
@@ -738,6 +740,19 @@ public class PreferencesManager {
 
     }
 
+
+    public String get_cnv_unimerchantqrdisplay() {
+        return sharedPreferences.getString(cnv_unimerchantqrdisplay, "");
+    }
+
+    public void set_cnv_unimerchantqrdisplay(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_unimerchantqrdisplay, text);
+        editor.apply();
+
+    }
+
+
     //MPM CLOUD SCAN UPI QR PREF
     public String getcnv_up_upiqr_mpmcloud() {
         return sharedPreferences.getString(cnv_up_upiqr_mpmcloud, "");
@@ -1200,7 +1215,16 @@ public class PreferencesManager {
         editor.apply();
 
     }
+    public boolean isMerchantDPARDisplay() {
+        return sharedPreferences.getBoolean(isMerchantDPARDisplay, false);
+    }
 
+    public void setisMerchantDPARDisplay(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isMerchantDPARDisplay, text);
+        editor.apply();
+
+    }
 
     public boolean isUnionPayQrSelected() {
         return sharedPreferences.getBoolean(isUnionPayQrSelected, false);
