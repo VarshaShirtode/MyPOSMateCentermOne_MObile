@@ -573,7 +573,7 @@
 
 
         <Button
-            android:id="@+id/btn_close"
+            android:id="@+id/btn_merchant"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_marginRight="10dp"
@@ -586,7 +586,7 @@
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/btn_print"
+            android:id="@+id/btn_customer"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:textAllCaps="false"
@@ -601,7 +601,7 @@
 
         <Button
 
-            android:id="@+id/btn_refund"
+            android:id="@+id/btn_kitchen"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
