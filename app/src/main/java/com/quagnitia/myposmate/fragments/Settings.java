@@ -495,7 +495,27 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         }
         return toHex(normalTextEnc);
     }
+    public String encryption1(String strNormalText) throws Exception {
+        String seedValue = "YourSecKey";
+        String normalTextEnc = "";
+        try {
+            normalTextEnc = AESHelper.encrypt(seedValue, strNormalText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return normalTextEnc;
+    }
 
+    public String decryption1(String strEncryptedText) throws Exception {
+        String seedValue = "YourSecKey";
+        String strDecryptedText ="";
+        try {
+            strDecryptedText = AESHelper.decrypt(seedValue, strDecryptedText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strDecryptedText;
+    }
 
     public String encryption(String strNormalText) throws Exception {
         String seedValue = "YourSecKey";
@@ -1109,9 +1129,9 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
             case "DeleteTerminal":
                 callAuthToken();
-                if (jsonObject.optBoolean("status")) {
+                if (jsonObject.optBoolean("success")) {
                     preferencesManager.clearPreferences();
-                    Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Terminal Config Deleted Successfully."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
                     // ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
 
                     preferencesManager.setisResetTerminal(true);

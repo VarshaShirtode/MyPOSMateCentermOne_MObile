@@ -72,7 +72,7 @@
         <activity android:name="com.quagnitia.myposmate.activities.TimeZoneActivity" />
 
 
-        <activity android:name="com.printerutils.WebViewActivity"></activity>
+       <!-- <activity android:name="com.printerutils.WebViewActivity"></activity>-->
 
         <receiver
             android:name="com.quagnitia.myposmate.utils.NetworkChangeReceiver"

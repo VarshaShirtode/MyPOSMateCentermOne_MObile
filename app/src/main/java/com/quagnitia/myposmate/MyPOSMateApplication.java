@@ -79,8 +79,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
         handler = new Handler();
 //        if (!preferencesManager.getUsername().equals(""))
 //            checkAvaliability();
-        bindSdkDeviceService();
-        Printer.initWebView(context);
+//        bindSdkDeviceService();
+//        Printer.initWebView(context);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -455,7 +455,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
 //                manager.setEnabledPerDefault(true);
 
 
-                bindSdkDeviceService();
+              //  bindSdkDeviceService();
             }, 0);
         }
     };

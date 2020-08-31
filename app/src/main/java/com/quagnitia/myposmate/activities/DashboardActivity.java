@@ -365,6 +365,8 @@ else
     @Override
     protected void onDestroy() {
         try {
+
+
             if(mStompClient!=null)
             {
                 if(mStompClient.isConnected())
@@ -1705,6 +1707,11 @@ else
     {
         chk_unionpay_qr_display_and_add.setOnClickListener((View v) -> {
 
+            if(!chk_unionpay_qr.isChecked())
+            {
+                chk_unionpay_qr_display_and_add.setChecked(false);
+                return;
+            }
 
             if (chk_unionpay_qr.isChecked() || chk_unionpay_qr_code.isChecked()) {
                 if (edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
@@ -1743,12 +1750,16 @@ else
                 return;
             }
 
+
+
+
+
         });
 
 
         chk_unionpay_qr_display_only.setOnClickListener((View v) -> {
 
-            if (chk_upi_qr_merchant_display.isChecked()||chk_unionpay_qr.isChecked() || chk_unionpay_qr_code.isChecked()) {
+            if (chk_unionpay_qr.isChecked() || chk_unionpay_qr_code.isChecked()) {
                 if (edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                         edt_unionpay_qr_cv.getText().toString().equals("0.00") ||
                         edt_unionpay_qr_cv.getText().toString().equals("")
@@ -2419,6 +2430,29 @@ else
                     else
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
 
+                    if(chk_up_upi_qr_display_and_add.isChecked()||chk_upi_qr_display_only.isChecked())
+                    {
+                        if(chk_unionpay_qr_code.isChecked())
+                        {
+                            preferencesManager.setcnv_uniqr(edt_up_upi_qr_cv.getText().toString());
+                        }
+                        else if(!chk_unionpay_qr_code.isChecked())
+                        {
+                            preferencesManager.setcnv_uniqr("0.00");
+                        }
+
+                        if(chk_upi_qr_merchant_display.isChecked())
+                        {
+                            preferencesManager.set_cnv_unimerchantqrdisplay(edt_up_upi_qr_cv.getText().toString());
+                        }
+                        else if(!chk_upi_qr_merchant_display.isChecked())
+                        {
+                            preferencesManager.set_cnv_unimerchantqrdisplay("0.00");
+                        }
+                    }
+
+
+
                 }
             }
 
@@ -2800,7 +2834,6 @@ else
                         return;
                     } else {
 
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2817,7 +2850,6 @@ else
             @Override
             public void afterTextChanged(Editable s) {
                 Log.v("", "");
-
 
             }
         });

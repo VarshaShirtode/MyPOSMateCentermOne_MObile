@@ -16,9 +16,9 @@ public class WelcomeScreen extends AppCompatActivity {
         new CountDownTimer(2000, 1000) {
             public void onFinish() {
                 Intent intent = new Intent(WelcomeScreen.this, DashboardActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                finish();
+                finishAffinity();
             }
 
             public void onTick(long millisUntilFinished) {

@@ -365,10 +365,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only() ||
                 preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()
         ) {
-            if (preferenceManager.isUnionPayQrCodeDisplaySelected()) {
+            if ((preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only() ||
+                    preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() )&&preferenceManager.isUnionPayQrCodeDisplaySelected()) {
                 tv_uni_cv2_scan_qr.setVisibility(View.VISIBLE);
                 tv_uni_cv2_scan_qr.setText(preferenceManager.getcnv_uniqr());
-            } else if (preferenceManager.isUnionPayQrSelected()) {
+            } else if ((preferenceManager.cnv_unionpayqr_display_and_add() ||
+                    preferenceManager.cnv_unionpayqr_display_only() )&&preferenceManager.isUnionPayQrSelected()) {
                 tv_uni_cv2_scan_qr.setVisibility(View.VISIBLE);
                 tv_uni_cv2_scan_qr.setText(preferenceManager.getcnv_uniqr());
             }
@@ -378,10 +380,17 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 tv_uni_cv2_scan_qr.setText("0.00");
             }
 
-              if(preferenceManager.isMerchantDPARDisplay())
+              if((preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only() ||
+                      preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() )&&preferenceManager.isMerchantDPARDisplay())
             {
                 tv_unionpay_qr_cv.setVisibility(View.VISIBLE);
                 tv_unionpay_qr_cv.setText(preferenceManager.get_cnv_unimerchantqrdisplay());
+            }
+            else if((!preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only() ||
+                    !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() )&&preferenceManager.isMerchantDPARDisplay())
+            {
+                tv_unionpay_qr_cv.setVisibility(View.INVISIBLE);
+                tv_unionpay_qr_cv.setText("0.00");
             }
 
 

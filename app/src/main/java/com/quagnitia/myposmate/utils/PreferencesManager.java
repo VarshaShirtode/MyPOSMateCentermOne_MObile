@@ -115,29 +115,10 @@ public class PreferencesManager {
     private String isWeChat="isWeChat";
     private String isAlipayScan="isAlipayScan";
     private String isWeChatScan="isWeChatScan";
-    private String isUnionPayCard="isUnionPayCard";
-    private String isUnionPayQR="isUnionPayQR";
-    private String isUnionPayQRScan="isUnionPayQRScan";
-    private String isUplan="isUplan";
-    private String isStaticAlipay="isStaticAlipay";
-    private String isStaticWeChat="isStaticWeChat";
-    private String isStaticUnionPay="isStaticUnionPay";
-    private String isAlipayDisplayAndAdd="isAlipayDisplayAndAdd";
-    private String isAlipayDisplayOnly="isAlipayDisplayOnly";
-    private String isWeChatDisplayAndAdd="isWeChatDisplayAndAdd";
-    private String isWeChatDisplayOnly="isWeChatDisplayOnly";
-    private String isUnionPayCardDisplayAndAdd="isUnionPayCardDisplayAndAdd";
-    private String isUnionPayCardDisplayOnly="isUnionPayCardDisplayOnly";
     private String isUnionPayQRDisplayAndAdd="isUnionPayQRDisplayAndAdd";
     private String isUnionPayQRDisplayOnly="isUnionPayQRDisplayOnly";
     private String isUplanDisplayAndAdd="isUplanDisplayAndAdd";
     private String isUplanDisplayOnly="isUplanDisplayOnly";
-    private String isStaticAlipayDisplayAndAdd="isStaticAlipayDisplayAndAdd";
-    private String isStaticAlipayDisplayOnly="isStaticAlipayDisplayOnly";
-    private String isStaticWeChatDisplayAndAdd="isStaticWeChatDisplayAndAdd";
-    private String isStaticWeChatDisplayOnly="isStaticWeChatDisplayOnly";
-    private String isStaticUnionPayDisplayAndAdd="isStaticUnionPayDisplayAndAdd";
-    private String isStaticUnionPayDisplayOnly="isStaticUnionPayDisplayOnly";
 
     //convience fee for qr code
     private String cnv_unionpayqr_display_and_add="cnv_unionpayqr_display_and_add";
@@ -1126,8 +1107,9 @@ public class PreferencesManager {
     }
 
 
-
+Context mContext;
     private PreferencesManager(Context context) {
+        mContext=context;
         sharedPreferences = context.getSharedPreferences(
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
@@ -1399,8 +1381,9 @@ public class PreferencesManager {
 
     }
     public void clearPreferences() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("ACCESS_TOKEN", "");
+//        SharedPreferences.Editor editor =sharedPreferences.edit();
+        SharedPreferences editor= mContext.getSharedPreferences("MyPOasMatePref",Context.MODE_PRIVATE);
+       /* editor.putString("ACCESS_TOKEN", "");
         editor.putString("ACCESS_TOKEN_SECRET", "");
         editor.putString("terminalId", "");
         editor.putString("terminalIp", "");
@@ -1446,9 +1429,131 @@ public class PreferencesManager {
         editor.putString("timezone", "");
 
 
+        editor.putString("terminalId";
+        editor.putString("terminalIp";
+        editor.putString( "uniqueId";
+        editor.putString("username";
+        editor.putString("reference";
+        editor.putString("password";
+        editor.putString("isConnected";
+        editor.putString("isAuthenticated";
+        editor.putString("isAlipaySelected";
+        editor.putString("isManual";
+        editor.putString("isHome";
+        editor.putString("isBack";
+        editor.putString("isFront";
+        editor.putString("isWechatSelected";
+        editor.putString("isMerchantDPARDisplay";
+        editor.putString("isUnipaySelected";
+        editor.putString("isUplanSelected";
+        editor.putString("isAlipayWechatQrSelected";
+        editor.putString("isUnionPayQrSelected";
+        editor.putString("isUnionPayQrCodeDisplaySelected";
+        editor.putString("isUnionPaySelected";
+        editor.putString("isVisaSlelected";
+        editor.putString("isaggregated_singleqr";
+        editor.putString("reference_id";
+        editor.putString("terminal_refund_password";
+        editor.putString("isDisplayAds";
+        editor.putString("displayAdsTime";
+        editor.putString("increment_id";
+        editor.putString("merchant_name";
+        editor.putString("MerchantName";
+        editor.putString("contact_no";
+        editor.putString("contact_email";
+        editor.putString("address";
+        editor.putString("gstno";
+        editor.putString("merchant_info";
+        editor.putString("union_pay_resp";
+        editor.putString("isPrint";
+        editor.putString("BranchName";
+        editor.putString("BranchAddress";
+        editor.putString("BranchPhoneNo";
+        editor.putString("BranchEmail";
+        editor.putString("GSTNo";
+        editor.putString("showReference";
+        editor.putString("triggerReferenceId";
+        editor.putString("isConvenienceFeeSelected";
+        editor.putString("cnv_alipay";
+        editor.putString("cnv_wechat";
+        editor.putString("cnv_alipay_display_and_add";
+        editor.putString("cnv_alipay_display_only";
+        editor.putString("cnv_uni";
+        editor.putString("cnv_uniqr";
+        editor.putString("cnv_unimerchantqrdisplay";
+        editor.putString("cnv_uplan";
+        editor.putString("cnv_up_upiqr_mpmcloud";
+        editor.putString("cnv_uni_display_and_add";
+        editor.putString("cnv_uni_display_only";
+        editor.putString("timezone";
+        editor.putString("upay_reference_id";
+        editor.putString("upay_amount";
+        editor.putString("currency";
+        editor.putString("isTimeZoneChecked";
+        editor.putString("TimeZone";
+        editor.putString("TimeZoneId";
+        editor.putString("amountdata";
+        editor.putString("isLoyality";
+        editor.putString("isMembershipManual";
+        editor.putString("isMembershipHome";
+        editor.putString("isLaneIdentifier";
+        editor.putString("isPOSIdentifier";
+        editor.putString("isTerminalIdentifier";
 
-        editor.clear();
-        editor.apply();
+        editor.putString("LaneIdentifier";
+        editor.putString("POSIdentifier";
+        editor.putString("TerminalIdentifier";
+        editor.putString("isQR";
+        editor.putString("isStaticQR";
+
+        editor.putString("MerchantId";
+        editor.putString("ConfigId";
+        editor.putString("authToken";
+        editor.putString("authTokenCloseTrade";
+        editor.putString("isResetTerminal";
+        editor.putString("timezoneabrev";
+
+
+        //added preference fields on 3/3/2020
+
+        editor.putString("isAlipay";
+        editor.putString("isWeChat";
+        editor.putString("isAlipayScan";
+        editor.putString("isWeChatScan";
+        editor.putString("isUnionPayQRDisplayAndAdd";
+        editor.putString("isUnionPayQRDisplayOnly";
+        editor.putString("isUplanDisplayAndAdd";
+        editor.putString("isUplanDisplayOnly";
+
+        //convience fee for qr code
+        editor.putString("cnv_unionpayqr_display_and_add";
+        editor.putString("cnv_unionpayqr_display_only";
+
+        //convience fee for uplan
+        editor.putString("cnv_uplan_display_and_add";
+        editor.putString("cnv_uplan_display_only";
+
+        //convience fee for wechat
+        editor.putString("cnv_wechat_display_and_add";
+        editor.putString("cnv_wechat_display_only";
+
+
+
+        //convience fee for mpm upi qr code scan
+        editor.putString("cnv_up_upi_qrscan_mpmcloud_display_and_add";
+        editor.putString("cnv_up_upi_qrscan_mpmcloud_display_only";
+
+
+        //already registered flag
+        editor.putString("isRegistered";*/
+
+
+
+
+
+        editor.edit().clear().apply();
+
+//        editor.apply();
     }
 
 
