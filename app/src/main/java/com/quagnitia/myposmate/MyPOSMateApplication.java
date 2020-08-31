@@ -139,6 +139,14 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 sendBroadcast(i1);
                 preferencesManager.setIsAuthenticated(true);
             }
+            else if(!mStompClient.isConnected())
+            {
+                mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + AppConstants.serverIp
+                        + "/websocket?access_token=" + access_token);
+
+                resetSubscriptions();
+                connectStomp();
+            }
         }
 
     }
