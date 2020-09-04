@@ -43,6 +43,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import static com.quagnitia.myposmate.fragments.ManualEntry.isMerchantQrDisplaySelected;
+
 
 public class AlipayPaymentFragment extends Fragment implements View.OnClickListener, OnTaskCompleted {
     private static final String ARG_PARAM1 = "param1";
@@ -937,9 +939,26 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
                 preferenceManager.setreference_id("");
                 preferenceManager.settriggerReferenceId("");
-                callAuthTokenCloseTrade();
                 MyPOSMateApplication.isOpen = false;
                 MyPOSMateApplication.isActiveQrcode = false;
+
+                if(isMerchantQrDisplaySelected)
+                {
+                    isMerchantQrDisplaySelected=false;
+                    if(preferenceManager.isManual())
+                    {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                    }
+                    else
+                    {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                    }
+
+                }
+                else
+                {
+                    callAuthTokenCloseTrade();
+                }
                 break;
             default:
                 Toast.makeText(getActivity(), "Under Implementation", Toast.LENGTH_LONG).show();

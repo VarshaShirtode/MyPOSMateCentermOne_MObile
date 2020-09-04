@@ -20,7 +20,7 @@
         android:layout_margin="5dp"
         android:layout_centerInParent="true"
         android:textColor="@color/colorBtnBg"
-        android:text="Copywrite 2018    Version 1.0"
+        android:text="Copywrite 2020    Version 1.0"
         android:textSize="12sp" />
 
     <FrameLayout

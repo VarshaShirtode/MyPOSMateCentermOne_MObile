@@ -496,10 +496,10 @@ boolean isUpdateCancelStatus=false;
 //                    callTransactionDetails(triggerjsonObject);
 //                }
 
-                if(isCancel)
-                {
-                    callRequestTerminal("CANCEL");
-                }
+//                if(isCancel)
+//                {
+//                    callRequestTerminal("CANCEL");
+//                }
 
 
                 if (isEpaymentsRefund) {

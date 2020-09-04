@@ -3080,11 +3080,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.img_unionpay_qr:
+                isMerchantQrDisplaySelected=true;
                 _funcUnionPayQRMerchantDisplay();
                 break;
 
         }
     }
+
+    public static boolean isMerchantQrDisplaySelected=false;
 
 
 

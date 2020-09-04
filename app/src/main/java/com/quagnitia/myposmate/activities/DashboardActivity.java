@@ -310,7 +310,16 @@ if(mStompClient!=null)
     if (mStompClient.isConnected()) {
         callSetupFragment(SCREENS.POSMATECONNECTION, null);
     } else {
-        callSetupFragment(SCREENS.REGISTRATION, null);
+        if(preferencesManager.isRegistered())
+        {
+            preferencesManager.setIsConnected(false);
+            preferencesManager.setIsAuthenticated(false);
+            callSetupFragment(SCREENS.POSMATECONNECTION, null);
+        }
+        else {
+            callSetupFragment(SCREENS.REGISTRATION, null);
+        }
+
     }
 
 }
@@ -3462,6 +3471,11 @@ else
             e.printStackTrace();
         }
     }
+
+
+
+
+
 boolean isNetConnectionOn=false;
     JSONObject triggerjsonObject;
     public static boolean isTriggerReceived = false;
