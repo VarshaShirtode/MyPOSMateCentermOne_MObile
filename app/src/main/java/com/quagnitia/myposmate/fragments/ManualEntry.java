@@ -1551,7 +1551,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
                 convenience_amount_uplan = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
                         (1 - (Double.parseDouble(preferenceManager.getcnv_uplan()) / 100));
-
+                if (roundTwoDecimals(convenience_amount_uplan).length() > 12) {
+                    tv_uni_cv1_uplan.setTextSize(10);
+                }
                 tv_uni_cv1_uplan.setText("" + roundTwoDecimals(convenience_amount_uplan));
             }
         }
@@ -1568,7 +1570,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
                 convenience_amount_unionpayqrscan = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
                         (1 - (Double.parseDouble(preferenceManager.getcnv_uniqr()) / 100));
-
+                if (roundTwoDecimals(convenience_amount_unionpayqrscan).length() > 12) {
+                    tv_uni_cv2_scan_qr.setTextSize(10);
+                }
                 tv_uni_cv2_scan_qr.setText("" + roundTwoDecimals(convenience_amount_unionpayqrscan));
             }
         }
@@ -1587,7 +1591,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             } else {
                 convenience_amount_unionpayqr_merchant_display = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
                         (1 - (Double.parseDouble(preferenceManager.get_cnv_unimerchantqrdisplay()) / 100));
-
+                if (roundTwoDecimals(convenience_amount_unionpayqr_merchant_display).length() > 12) {
+                    tv_unionpay_qr_cv.setTextSize(10);
+                }
                 tv_unionpay_qr_cv.setText("" + roundTwoDecimals(convenience_amount_unionpayqr_merchant_display));
             }
         }
@@ -1604,7 +1610,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
                 convenience_amount_unionpayqrdisplay = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
                         (1 - (Double.parseDouble(preferenceManager.getcnv_up_upiqr_mpmcloud()) / 100));
-
+                if (roundTwoDecimals(convenience_amount_unionpayqrdisplay).length() > 12) {
+                    tv_uni_cv2_scan_qr.setTextSize(10);
+                }
                 tv_uni_cv2_scan_qr.setText("" + roundTwoDecimals(convenience_amount_unionpayqrdisplay));
             }
         }
@@ -3876,10 +3884,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (!payment_mode.equals("nochannel")) {
             if (MyPOSMateApplication.isOpen) {
 
-                if (preferenceManager.isMerchantDPARDisplay() &&
+                if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
                         preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                     jsonObject.put("amount", convenience_amount_unionpayqr_merchant_display + "");
-                } else if (preferenceManager.isMerchantDPARDisplay() &&
+                } else if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
                         !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                     jsonObject.put("amount", xmppAmount);
                 }
@@ -3934,10 +3942,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     jsonObject.put("amount", xmppAmount);
                 }
 
-            } else if (preferenceManager.isMerchantDPARDisplay() &&
+            } else if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
                     preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                 jsonObject.put("amount", convenience_amount_unionpayqr_merchant_display + "");
-            } else if (preferenceManager.isMerchantDPARDisplay() &&
+            } else if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
                     !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                 jsonObject.put("amount", edt_amount.getText().toString());
             } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
