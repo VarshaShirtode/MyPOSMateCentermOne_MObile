@@ -53,8 +53,9 @@
                     android:textStyle="bold" />
 
 
-                <faranjit.currency.edittext.CurrencyEditText
+                <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_amount"
+                    android:maxLength="16"
                     style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
@@ -416,21 +417,23 @@
                                 android:layout_below="@+id/img_unipay"
                                 android:weightSum="3">
 
-                                <faranjit.currency.edittext.CurrencyEditText
+                                <com.quagnitia.myposmate.utils.CurrencyEditText
                                     android:textSize="14sp"
                                     android:layout_height="18dp"
                                     android:id="@+id/tv_uni_cv"
                                     android:layout_width="match_parent"
                                     android:layout_marginRight="5dp"
                                     android:layout_weight="1"
+                                    android:enabled="false"
                                     android:background="@drawable/edt_conv"
                                     android:gravity="center"
                                     android:text="0.00"
                                     android:textColor="@color/colorBlue"
                                     android:textStyle="bold" />
 
-                                <faranjit.currency.edittext.CurrencyEditText
+                                <com.quagnitia.myposmate.utils.CurrencyEditText
                                     android:textSize="14sp"
+                                    android:enabled="false"
                                     android:layout_height="18dp"
                                     android:id="@+id/tv_uni_cv1_uplan"
                                     android:layout_width="match_parent"
@@ -443,9 +446,10 @@
                                     android:textColor="@color/colorBlue"
                                     android:textStyle="bold" />
 
-                                <faranjit.currency.edittext.CurrencyEditText
+                                <com.quagnitia.myposmate.utils.CurrencyEditText
                                     android:textSize="14sp"
                                     android:layout_height="18dp"
+                                    android:enabled="false"
                                     android:id="@+id/tv_uni_cv2_scan_qr"
                                     android:layout_width="match_parent"
                                     android:layout_marginLeft="5dp"
@@ -610,9 +614,10 @@
                             android:layout_marginTop="5dp"
                             android:weightSum="3">
 
-                            <faranjit.currency.edittext.CurrencyEditText
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:textSize="14sp"
                                 android:layout_height="18dp"
+                                android:enabled="false"
                                 android:id="@+id/tv_ali_cv"
                                 android:layout_width="match_parent"
                                 android:layout_marginRight="5dp"
@@ -651,7 +656,7 @@
 
 
 
-                         <!--  <faranjit.currency.edittext.CurrencyEditText
+                         <!--  <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:textSize="14sp"
                                 android:layout_height="18dp"
                                 android:id="@+id/tv_ali_cv2"
@@ -664,9 +669,10 @@
                                android:visibility="gone"
                                 android:textColor="@color/colorBlue"
                                 android:textStyle="bold" />-->
-                            <faranjit.currency.edittext.CurrencyEditText
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:textSize="14sp"
                                 android:layout_height="18dp"
+                                android:enabled="false"
                                 android:id="@+id/tv_ali_cv1"
                                 android:layout_width="match_parent"
                                 android:layout_marginLeft="5dp"
@@ -810,9 +816,10 @@
                             android:layout_marginTop="5dp"
                             android:layout_gravity="center"
                             android:weightSum="3">
-                            <faranjit.currency.edittext.CurrencyEditText
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:textSize="14sp"
                                 android:visibility="visible"
+                                android:enabled="false"
                                 android:layout_height="18dp"
                                 android:id="@+id/tv_unionpay_qr_cv"
                                 android:layout_width="match_parent"
@@ -903,7 +910,7 @@
                     android:text="@string/amount" />
 
 
-                <faranjit.currency.edittext.CurrencyEditText
+                <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_amount1"
                     style="@style/EditTextStyle"
                     android:layout_width="match_parent"

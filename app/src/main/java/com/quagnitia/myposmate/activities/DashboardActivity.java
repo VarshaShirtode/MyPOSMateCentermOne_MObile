@@ -1671,12 +1671,25 @@ else
                 //if unionpay qr is selected then disable the upi qr
                 chk_unionpay_qr_code.setChecked(false);
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
-                chk_upi_qr_display_only.setChecked(false);
-                chk_up_upi_qr_display_and_add.setChecked(false);
-                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
-                edt_up_upi_qr_cv.setText("0.00");
+
+                if(!chk_upi_qr_merchant_display.isChecked())
+                {
+                    chk_upi_qr_display_only.setChecked(false);
+                    chk_up_upi_qr_display_and_add.setChecked(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    edt_up_upi_qr_cv.setText("0.00");
+                }
+
+
+
+//                chk_upi_qr_display_only.setChecked(false);
+//                chk_up_upi_qr_display_and_add.setChecked(false);
+//                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+//                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+//                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+//                edt_up_upi_qr_cv.setText("0.00");
 
 
 
@@ -1971,12 +1984,17 @@ else
                 //case 2
                 chk_unionpay_qr_code.setChecked(false);
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
-                chk_upi_qr_display_only.setChecked(false);
-                chk_up_upi_qr_display_and_add.setChecked(false);
-                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
-                edt_up_upi_qr_cv.setText("0.00");
+
+                if(!chk_upi_qr_merchant_display.isChecked())
+                {
+                    chk_upi_qr_display_only.setChecked(false);
+                    chk_up_upi_qr_display_and_add.setChecked(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    edt_up_upi_qr_cv.setText("0.00");
+                }
+
 
 
                 if (!chk_upi_qr_merchant_display.isChecked()) {

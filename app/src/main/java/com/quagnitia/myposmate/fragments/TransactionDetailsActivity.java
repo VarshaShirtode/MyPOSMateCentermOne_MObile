@@ -951,13 +951,20 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             findViewById(R.id.ll1).setVisibility(View.GONE);
             findViewById(R.id.ll2).setVisibility(View.GONE);
             findViewById(R.id.ll3).setVisibility(View.GONE);
-        } else if (newjson.optString("Message Status").equals("CLOSED")
-        ) { //closed
+        } else if (newjson.optString("Message Status").equals("CLOSED")) { //closed
             btn_refund.setVisibility(View.GONE);
             findViewById(R.id.ll1).setVisibility(View.GONE);
             findViewById(R.id.ll2).setVisibility(View.GONE);
             findViewById(R.id.ll3).setVisibility(View.GONE);
-        } else {
+        }
+        else if (newjson.optString("Message Status").equals("FAILED")&&
+                json.optString("Payment By").equals("UNION_PAY")) { //closed
+            btn_refund.setVisibility(View.GONE);
+            findViewById(R.id.ll1).setVisibility(View.GONE);
+            findViewById(R.id.ll2).setVisibility(View.GONE);
+            findViewById(R.id.ll3).setVisibility(View.GONE);
+        }
+        else {
             btn_refund.setVisibility(View.VISIBLE);
             findViewById(R.id.ll1).setVisibility(View.VISIBLE);
             findViewById(R.id.ll2).setVisibility(View.VISIBLE);

@@ -370,8 +370,8 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
             hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
             hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("start_date", URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
-            hashMapKeys.put("end_date", URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("start_date", mainConv.format(df1.parse(startTime)) + preferencesManager.getTimezoneAbrev());//URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("end_date", mainConv.format(df1.parse(endTime)) + preferencesManager.getTimezoneAbrev());//URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "GetReports")
                     .execute(AppConstants.BASE_URL2 + AppConstants.GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());

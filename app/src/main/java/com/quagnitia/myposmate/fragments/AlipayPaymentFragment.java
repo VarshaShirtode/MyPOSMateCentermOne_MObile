@@ -320,7 +320,14 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                     countDownTimer11.cancel();
                     isCloseTradeFinished = true;
                     Toast.makeText(getActivity(), "Your transaction has been cancelled successfully", Toast.LENGTH_LONG).show();
-
+                    if(preferenceManager.isManual())
+                    {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                    }
+                    else
+                    {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                    }
 
                 } else {
                     Toast.makeText(getActivity(), "Error occurred during cancelling", Toast.LENGTH_LONG).show();
@@ -377,7 +384,14 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                 MyPOSMateApplication.isActiveQrcode = false;
 //                preferenceManager.setIsAuthenticated(false);
 //                preferenceManager.setIsConnected(false);
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                if(preferenceManager.isManual())
+                {
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                }
+                else
+                {
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                }
                 break;
 
         }

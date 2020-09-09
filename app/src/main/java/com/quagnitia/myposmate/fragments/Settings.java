@@ -388,6 +388,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                 break;
             case R.id.btn_cancel:
+                preferencesManager.setisRegistered(false);
                 if (preferencesManager.isHome()) {
                     if (!preferencesManager.getUsername().equals(""))
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);

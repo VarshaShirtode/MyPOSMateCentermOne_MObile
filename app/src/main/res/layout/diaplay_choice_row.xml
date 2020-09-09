@@ -284,7 +284,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp">
 
-                <faranjit.currency.edittext.CurrencyEditText
+                <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_ali_cv"
                     android:layout_width="40dp"
                     android:layout_height="30dp"
@@ -351,7 +351,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp">
 
-                <faranjit.currency.edittext.CurrencyEditText
+                <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_uni"
                     android:layout_width="40dp"
                     android:layout_height="30dp"

@@ -53,7 +53,7 @@
                     android:textStyle="bold" />
 
 
-                <faranjit.currency.edittext.CurrencyEditText
+                <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_amount"
                     style="@style/EditTextStyle"
                     android:layout_width="match_parent"
@@ -824,7 +824,7 @@
                     android:text="@string/amount" />
 
 
-                <faranjit.currency.edittext.CurrencyEditText
+                <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_amount1"
                     style="@style/EditTextStyle"
                     android:layout_width="match_parent"

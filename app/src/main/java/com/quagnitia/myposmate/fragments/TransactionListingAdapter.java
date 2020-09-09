@@ -26,7 +26,8 @@ import java.util.TimeZone;
  * Created by admin on 9/17/2018.
  */
 
-public class TransactionListingAdapter extends RecyclerView.Adapter<TransactionListingAdapter.MyViewHolder> {
+public class TransactionListingAdapter extends
+        RecyclerView.Adapter<TransactionListingAdapter.MyViewHolder> {
 
     private Context mContext;
     private JSONArray jsonArray;
