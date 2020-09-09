@@ -379,8 +379,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 } else if (edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
                 } else {
-                    preferencesManager.setterminalId(edt_terminal_id.getText().toString());
-                    preferencesManager.setuniqueId(edt_unique_id.getText().toString());
+//                    preferencesManager.setterminalId(edt_terminal_id.getText().toString());
+//                    preferencesManager.setuniqueId(edt_unique_id.getText().toString());
                     isSaveAndOK = true;
                     callAuthToken();
 
@@ -1182,7 +1182,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 DashboardActivity.isLaunch = true;
                 callAuthToken();
                 AppConstants.isRegistered = false;
-                preferencesManager.setuniqueId("");
+//                preferencesManager.setuniqueId("");
 
                 if (jsonObject.has("branchInfo")) {
                     if (jsonObject.optJSONObject("branchInfo").has("fullname")) {
