@@ -352,7 +352,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
         try {
 
             SimpleDateFormat mainConv = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS");
-            mainConv.setTimeZone(TimeZone.getTimeZone("UTC"));
+            mainConv.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

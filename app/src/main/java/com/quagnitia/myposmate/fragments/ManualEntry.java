@@ -1377,10 +1377,29 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 if (selected_screen != 0) {
                     selected_screen = 0;
                 }
+
+
                 // C/(1-r) where C is the total amount and r is
 //                            convinence fee in percent.
                 if (!edt_amount.getText().toString().equals("")) {
 //                    Toast.makeText(getActivity(), "Called"+edt_amount.getText().toString(), Toast.LENGTH_SHORT).show();
+                    if (edt_amount.getText().toString().length() < 12) {
+                        tv_uni_cv.setTextSize(14);
+                        tv_uni_cv1_uplan.setTextSize(14);
+                        tv_uni_cv2_scan_qr.setTextSize(14);
+                        tv_ali_cv.setTextSize(14);
+                        tv_ali_cv1.setTextSize(14);
+                        tv_unionpay_qr_cv.setTextSize(14);
+                    }
+                    else
+                    {
+                        tv_uni_cv.setTextSize(10);
+                        tv_uni_cv1_uplan.setTextSize(10);
+                        tv_uni_cv2_scan_qr.setTextSize(10);
+                        tv_ali_cv.setTextSize(10);
+                        tv_ali_cv1.setTextSize(10);
+                        tv_unionpay_qr_cv.setTextSize(10);
+                    }
                     callAllConvinenceFeeCalculations();
                 }
 
@@ -3884,10 +3903,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (!payment_mode.equals("nochannel")) {
             if (MyPOSMateApplication.isOpen) {
 
-                if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
+                if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                         preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                     jsonObject.put("amount", convenience_amount_unionpayqr_merchant_display + "");
-                } else if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
+                } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                         !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                     jsonObject.put("amount", xmppAmount);
                 }
@@ -3942,10 +3961,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     jsonObject.put("amount", xmppAmount);
                 }
 
-            } else if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
+            } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                     preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                 jsonObject.put("amount", convenience_amount_unionpayqr_merchant_display + "");
-            } else if (isMerchantQrDisplaySelected&&preferenceManager.isMerchantDPARDisplay() &&
+            } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                     !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                 jsonObject.put("amount", edt_amount.getText().toString());
             } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
