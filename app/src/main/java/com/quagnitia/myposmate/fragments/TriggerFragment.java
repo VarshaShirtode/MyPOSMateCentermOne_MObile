@@ -199,6 +199,30 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
         }
     }
 
+    public void callUpdateRequestAPI1(String request_id, boolean executed) {
+        openProgressDialog();
+        try {
+            //v2 signature implementation
+
+            hashMapKeys.clear();
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("request_id", request_id);
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("executed", executed + "");
+
+            new OkHttpHandler(getActivity(), this, null, "updateRequest")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                            MD5Class.generateSignatureString(hashMapKeys, getActivity())
+                            + "&access_token=" + preferenceManager.getauthToken());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void callRequestTerminal(String type) {
         openProgressDialog();
@@ -268,24 +292,9 @@ boolean isCancel=false;
 
             case R.id.btn_cancel1:
             case R.id.btn_cancel2:
-//                if (triggerjsonObject.optString("channel")
-//                        .equalsIgnoreCase("ALIPAY") ||
-//                        triggerjsonObject.optString("channel")
-//                                .equalsIgnoreCase("WECHAT")) {
-//                    cancelReferenceId=triggerjsonObject.optString("referenceId");
-//                }
-//                else if (triggerjsonObject.optString("channel")
-//                        .equalsIgnoreCase("UNION_PAY")) {
-//                    cancelReferenceId=jsonObjectGatewayResponse.optString("referenceNumber");
-//
-//                }
-//                isCancel=true;
-//                callAuthToken();
-                if (preferenceManager.isManual()) {
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                } else {
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                }
+                isCancel=true;
+                callAuthToken();
+
                 break;
         }
     }
@@ -491,15 +500,6 @@ boolean isUpdateCancelStatus=false;
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
-//                if (isStart) {
-//                    isStart = false;
-//                    callTransactionDetails(triggerjsonObject);
-//                }
-
-//                if(isCancel)
-//                {
-//                    callRequestTerminal("CANCEL");
-//                }
 
 
                 if (isEpaymentsRefund) {
@@ -513,7 +513,7 @@ boolean isUpdateCancelStatus=false;
                     callUpdateRequestAPI(request_id,false);
                 }
 
-                if(isEndOfProcedure)
+                if(isEndOfProcedure||isCancel)
                 {
                     callUpdateRequestAPI(request_id,true);
                 }

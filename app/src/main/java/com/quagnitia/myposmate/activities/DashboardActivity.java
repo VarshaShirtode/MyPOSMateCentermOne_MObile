@@ -3494,6 +3494,10 @@ else
 
 
 
+
+
+
+
 boolean isNetConnectionOn=false;
     JSONObject triggerjsonObject;
     public static boolean isTriggerReceived = false;

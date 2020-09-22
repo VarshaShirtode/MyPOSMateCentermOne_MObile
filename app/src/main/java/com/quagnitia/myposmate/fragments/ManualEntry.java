@@ -74,6 +74,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static com.quagnitia.myposmate.activities.DashboardActivity.isTriggerReceived;
 
 
 public class ManualEntry extends Fragment implements View.OnClickListener, OnTaskCompleted {
@@ -668,6 +669,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     String original_xmpp_trigger_amount = "";
     Context mmContext = null;
+    String requestId="";
+    boolean isTrigger=false;
 
     public class AmountReceiver extends BroadcastReceiver {
         @Override
@@ -679,6 +682,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
                 case "AmountTrigger":
                     try {
+                      isTrigger=true;
+                     //   callAuthToken();
+
                         MyPOSMateApplication.isOpen = true;
                         funcAfterUIRender();
                         edt_xmpp_amount.setVisibility(View.VISIBLE);
@@ -703,6 +709,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         edt_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("amount"))) + "");
                         edt_reference.setText(jsonObject.optString("reference"));
                         xmppAmount = jsonObject.optString("amount");
+                        requestId=jsonObject.optString("request_id");
 
                         preferenceManager.setupay_amount(xmppAmount);
                         original_xmpp_trigger_amount = jsonObject.optString("amount");
@@ -2826,8 +2833,33 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
+    public void callUpdateRequestAPI1(String request_id, boolean executed,boolean status) {
+        openProgressDialog();
+        try {
+            //v2 signature implementation
+
+            hashMapKeys.clear();
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("request_id", request_id);
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("executed", executed + "");
+
+            new OkHttpHandler(getActivity(), this, null, "updateRequest")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                            MD5Class.generateSignatureString(hashMapKeys, getActivity())
+                            + "&access_token=" + preferenceManager.getauthToken());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void callTransactionDetails() {
-        //v2 signature implementation
         hashMapKeys.clear();
         hashMapKeys.put("access_id", preferenceManager.getuniqueId());
         hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
@@ -3375,7 +3407,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
     }
 
-
+boolean isTriggerCancelled=false;
     private void _funcCancelButton() {
         if (DashboardActivity.isExternalApp) {
             TransactionDetailsActivity.isReturnFromTransactionDetails = false;
@@ -3411,10 +3443,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (MyPOSMateApplication.isOpen) {
             MyPOSMateApplication.isOpen = false;
             MyPOSMateApplication.isActiveQrcode = false;
-            if (preferenceManager.isManual()) {
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-            } else {
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+            isTriggerCancelled=true;
+            if(isTriggerCancelled)
+            {
+                isTrigger=false;
+                callAuthToken();
             }
 
         }
@@ -3679,6 +3712,22 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             case "paynow":
                 _parsePayNowResponse(jsonObject);
                 break;
+
+
+            case "updateRequest":
+                _parseUpdateRequest(jsonObject);
+                break;
+        }
+    }
+
+
+    private void _parseUpdateRequest(JSONObject jsonObject)
+    {
+        Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
+        if (preferenceManager.isManual()) {
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+        } else {
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
         }
     }
 
@@ -3697,6 +3746,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (isTransactionDetails) {
             isTransactionDetails = false;
             callTransactionDetails();
+        }
+
+        if(isTriggerCancelled)
+        {
+            isTriggerCancelled=false;
+            callUpdateRequestAPI1(requestId,true,false);
         }
     }
 

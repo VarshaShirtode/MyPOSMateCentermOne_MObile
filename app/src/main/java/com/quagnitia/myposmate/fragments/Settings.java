@@ -1190,6 +1190,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     }
                 }
                 if (jsonObject.optBoolean("status")) {
+                    preferencesManager.setcurrency(jsonObject.optString("currency"));
                     preferencesManager.setisRegistered(true);
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     username = jsonObject.optString("terminal_xmpp_jid").toString();
