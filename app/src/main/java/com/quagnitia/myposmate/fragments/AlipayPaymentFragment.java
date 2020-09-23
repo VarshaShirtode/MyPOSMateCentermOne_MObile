@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 import static com.quagnitia.myposmate.fragments.ManualEntry.isMerchantQrDisplaySelected;
+import static com.quagnitia.myposmate.fragments.ManualEntry.isTrigger;
+import static com.quagnitia.myposmate.fragments.ManualEntry.requestId;
 
 
 public class AlipayPaymentFragment extends Fragment implements View.OnClickListener, OnTaskCompleted {
@@ -100,7 +102,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         view = inflater.inflate(R.layout.fragment_alipay_payment, container, false);
         ((DashboardActivity) getActivity()).img_menu.setEnabled(false);
         preferenceManager = PreferencesManager.getInstance(getActivity());
-
+        isTrigger=false;
         hashMapKeys = new TreeMap<>();
         MyPOSMateApplication.isActiveQrcode = true;
         intentFilter = new IntentFilter();
@@ -283,6 +285,50 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
     }
 
+    public void callUpdateRequestAPI1(String request_id, boolean executed) {
+        openProgressDialog();
+        try {
+            //v2 signature implementation
+
+            hashMapKeys.clear();
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("request_id", request_id);
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("executed", executed + "");
+
+            new OkHttpHandler(getActivity(), this, null, "updateRequest")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                            MD5Class.generateSignatureString(hashMapKeys, getActivity())
+                            + "&access_token=" + preferenceManager.getauthToken());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void _parseUpdateRequest(JSONObject jsonObject)
+    {
+        if(jsonObject.optBoolean("status"))
+        {
+            Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
+            if (preferenceManager.isManual()) {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            } else {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+            }
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "Error cancelling request", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
     public static boolean isCloseTrade = false;
     boolean isCloseTradeFinished = false;
 
@@ -291,110 +337,128 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
-            case "AuthTokenCloseTrade":
-                if (progress.isShowing())
-                    progress.dismiss();
-                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    isCloseTrade = true;
-                    preferenceManager.setauthTokenCloseTrade(jsonObject.optString("access_token"));
-                    callCancelTransaction();
-                }
+            case "updateRequest":
+                _parseUpdateRequest(jsonObject);
                 break;
             case "AuthToken":
-
-                if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
-                }
-
-                if (isCloseTradeFinished) {
-                    isCloseTradeFinished = false;
-                    callTransactionDetails1();
-                }
-
+                _parseAuthTokenResponse(jsonObject);
                 break;
             case "CloseTrade":
-                callAuthToken();
-                if (progress != null)
-                    progress.dismiss();
-                if (jsonObject.optBoolean("status")) {
-                    countDownTimer11.cancel();
-                    isCloseTradeFinished = true;
-                    Toast.makeText(getActivity(), "Your transaction has been cancelled successfully", Toast.LENGTH_LONG).show();
-                    if(preferenceManager.isManual())
-                    {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                    }
-                    else
-                    {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                    }
-
-                } else {
-                    Toast.makeText(getActivity(), "Error occurred during cancelling", Toast.LENGTH_LONG).show();
-                }
-
-
-                if (DashboardActivity.isExternalApp) {
-                    TransactionDetailsActivity.isReturnFromTransactionDetails = false;
-                    try {
-
-                        //added for external apps 12/5/2019
-                        int REQ_PAY_SALE = 100;
-                        DashboardActivity.isExternalApp = false;
-                        ((DashboardActivity) getActivity()).getIntent().putExtra("result", new JSONObject().toString());
-                        ((DashboardActivity) getActivity()).setResult(REQ_PAY_SALE, ((DashboardActivity) getActivity()).getIntent());
-                        ((DashboardActivity) getActivity()).finishAndRemoveTask();
-                        return;
-                        //added for external apps
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-
+                _parseCloseTradeResponse(jsonObject);
                 break;
-
+            case "AuthTokenCloseTrade":
+                _parseCloseTradeAuthToken(jsonObject);
+                break;
             case "TransactionDetails":
-                callAuthToken();
-                if (jsonObject.optString("message").equals("Invalid Reference ID")) {
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    return;
-                }
-
-                maketransactionDetailsCalls(jsonObject.optJSONObject("payment").optString("paymentStatus"), jsonObject);
+                _parseTransactionDetailsResponse(jsonObject);
                 break;
-
             case "TransactionDetails1":
-
-                if (progress != null)
-                    if (progress.isShowing())
-                        progress.dismiss();
-//                 callAuthToken();
-                if (countDownTimerxmpp != null)
-                    countDownTimerxmpp.cancel();
-//                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
-//                    ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
-//                }
-
-                MyPOSMateApplication.isActiveQrcode = false;
-//                preferenceManager.setIsAuthenticated(false);
-//                preferenceManager.setIsConnected(false);
-                if(preferenceManager.isManual())
-                {
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                }
-                else
-                {
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                }
+                _parseTransactionDetailsResponse1(jsonObject);
                 break;
 
         }
+    }
+
+    private void _parseCloseTradeAuthToken(JSONObject jsonObject)
+    {
+        if (progress.isShowing())
+            progress.dismiss();
+        if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
+            isCloseTrade = true;
+            preferenceManager.setauthTokenCloseTrade(jsonObject.optString("access_token"));
+            callCancelTransaction();
+        }
+    }
+    private void _parseTransactionDetailsResponse1(JSONObject jsonObject)
+    {
+
+        if (progress != null)
+            if (progress.isShowing())
+                progress.dismiss();
+        if (countDownTimerxmpp != null)
+            countDownTimerxmpp.cancel();
+
+        MyPOSMateApplication.isActiveQrcode = false;
+        _callDefaultFragSwitch();
+    }
+
+    private void _callDefaultFragSwitch()
+    {
+        if(preferenceManager.isManual())
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+        else
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+    }
+    private void _parseTransactionDetailsResponse(JSONObject jsonObject)
+    {
+        callAuthToken();
+        if (jsonObject.optString("message").equals("Invalid Reference ID")) {
+            if (progress != null)
+                if (progress.isShowing())
+                    progress.dismiss();
+            return;
+        }
+
+        maketransactionDetailsCalls(jsonObject.optJSONObject("payment").optString("paymentStatus"), jsonObject);
+    }
+
+
+    private void _parseAuthTokenResponse(JSONObject jsonObject)
+    {
+
+        if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
+            preferenceManager.setauthToken(jsonObject.optString("access_token"));
+        }
+
+        if (isCloseTradeFinished) {
+            isCloseTradeFinished = false;
+            callTransactionDetails1();
+        }
+        if(isTrigger)
+        {
+            isTrigger=false;
+            callUpdateRequestAPI1(requestId,true);
+
+        }
+
+    }
+    private void _parseCloseTradeResponse(JSONObject jsonObject)
+    {
+        callAuthToken();
+        if (progress != null)
+            progress.dismiss();
+        if (jsonObject.optBoolean("status")) {
+            countDownTimer11.cancel();
+            isCloseTradeFinished = true;
+            Toast.makeText(getActivity(), "Your transaction has been cancelled successfully", Toast.LENGTH_LONG).show();
+            _callDefaultFragSwitch();
+
+        } else {
+            Toast.makeText(getActivity(), "Error occurred during cancelling", Toast.LENGTH_LONG).show();
+        }
+
+
+        if (DashboardActivity.isExternalApp) {
+            TransactionDetailsActivity.isReturnFromTransactionDetails = false;
+            try {
+
+                //added for external apps 12/5/2019
+                int REQ_PAY_SALE = 100;
+                DashboardActivity.isExternalApp = false;
+                ((DashboardActivity) getActivity()).getIntent().putExtra("result", new JSONObject().toString());
+                ((DashboardActivity) getActivity()).setResult(REQ_PAY_SALE, ((DashboardActivity) getActivity()).getIntent());
+                ((DashboardActivity) getActivity()).finishAndRemoveTask();
+                return;
+                //added for external apps
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
     }
 
 
@@ -474,194 +538,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     }
 
 
-    public void maketransactionDetailsCalls1(int status_id, JSONObject jsonObject) {
-        try {
 
-
-            switch (status_id) {
-
-                case 3://TRADE_HAS_SUCCESS
-                case 28://SUCCESS
-                case 20://TRADE_SUCCESS
-                    MyPOSMateApplication.isOpen = false;
-                    if (okHttpHandler != null) {
-                        okHttpHandler.cancel(true);
-                    }
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    if (MyPOSMateApplication.isOpen) {
-                        if (jsonObject.has("amount")) {
-                            jsonObject.put("grandtotal", jsonObject.optString("amount"));
-                        } else if (jsonObject.has("grandtotal")) {
-                            jsonObject.put("grandtotal", jsonObject.optString("grandtotal"));
-                        }
-
-                    } else {
-                        if (jsonObject.has("amount")) {
-                            jsonObject.put("grandtotal", jsonObject.optString("amount"));
-                        } else if (jsonObject.has("grandtotal")) {
-                            jsonObject.put("grandtotal", jsonObject.optString("grandtotal"));
-                        }
-                    }
-
-                    if (countDownTimerxmpp != null)
-                        countDownTimerxmpp.cancel();
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    if (countDownTimer != null)
-                        countDownTimer.cancel();
-
-                    if (countDownTimer1 != null)
-                        countDownTimer1.cancel();
-
-                    if (countDownTimer11 != null)
-                        countDownTimer11.cancel();
-
-                    break;
-                case 4://TRADE_HAS_CLOSE
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 7://BUYER_SELLER_EQUAL
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 8://TRADE_BUYER_NOT_MATCH
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 9://BUYER_ENABLE_STATUS_FORBID
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 10://BUYER_PAYMENT_AMOUNT_DAY_LIMIT_ERROR
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 11://BEYOND_PAY_RESTRICTION
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 12://BEYOND_PER_RECEIPT_RESTRICTION
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 13://SYSTEM_ERROR
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 14://INVALID_PARAMETER
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 15://ACCESS_FORBIDDEN
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 16://EXIST_FORBIDDEN_WORD
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 17://TOTAL_FEE_EXCEED
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 18://REQUEST_RECEIVED
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 19://TRADE_REFUND
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 21://WAIT_BUYER_PAY
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    if (okHttpHandler != null) {
-                        okHttpHandler.cancel(true);
-                    }
-                    if (countDownTimer != null)
-                        countDownTimer.cancel();
-                    if (countDownTimer1 != null)
-                        countDownTimer1.cancel();
-
-                    break;
-                case 22://TRADE_CLOSED
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    if (getActivity() != null)
-                        showDialog("Your transaction is closed");
-                    if (okHttpHandler != null) {
-                        okHttpHandler.cancel(true);
-                    }
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    if (countDownTimer != null)
-                        countDownTimer.cancel();
-                    if (countDownTimer1 != null)
-                        countDownTimer1.cancel();
-
-                    if (countDownTimer11 != null)
-                        countDownTimer11.cancel();
-                    break;
-                case 23://TRADE_ERROR
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 24://TRADE_REVOKED
-                    if (okHttpHandler != null) {
-                        okHttpHandler.cancel(true);
-                    }
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    if (getActivity() != null)
-                        showDialog("Transaction Revoked.Try again.");
-                    if (countDownTimer != null)
-                        countDownTimer.cancel();
-                    if (countDownTimer1 != null)
-                        countDownTimer1.cancel();
-
-                    if (countDownTimer11 != null)
-                        countDownTimer11.cancel();
-                    break;
-                case 25://TRADE_FINISHED
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 27://USERPAYING
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    if (okHttpHandler != null) {
-                        okHttpHandler.cancel(true);
-                    }
-                    if (countDownTimer != null)
-                        countDownTimer.cancel();
-                    if (countDownTimer1 != null)
-                        countDownTimer1.cancel();
-
-
-                    break;
-                case 30://FAIL
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 31://Request successful
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 32://MERCHANT_NOT_ISEXIST
-                    Toast.makeText(getActivity(), jsonObject.optString("status_description"), Toast.LENGTH_SHORT).show();
-                    break;
-                case 33://TRADE_NOT_PAY
-                    if (progress != null)
-                        if (progress.isShowing())
-                            progress.dismiss();
-                    if (okHttpHandler != null) {
-                        okHttpHandler.cancel(true);
-                    }
-                    if (countDownTimer != null)
-                        countDownTimer.cancel();
-                    if (countDownTimer1 != null)
-                        countDownTimer1.cancel();
-                    break;
-                case 34:
-                    break;
-                case 35://Waiting for payment confirmation
-                    break;
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
@@ -959,14 +836,8 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                 if(isMerchantQrDisplaySelected)
                 {
                     isMerchantQrDisplaySelected=false;
-                    if(preferenceManager.isManual())
-                    {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                    }
-                    else
-                    {
-                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                    }
+                    isTrigger=true;
+                   callAuthToken();
 
                 }
                 else

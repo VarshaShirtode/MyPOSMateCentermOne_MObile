@@ -1,282 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/colorBlue"
     android:layout_height="wrap_content"
+    android:background="@color/colorBlue"
     android:orientation="vertical">
 
     <TextView
-        android:layout_marginTop="10dp"
-        android:text="Payment Choices"
-        android:textStyle="bold"
-        android:textColor="@color/colorWhite"
-        android:textSize="22sp"
-        android:gravity="center"
-
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </TextView>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="Payment Choices"
+        android:textColor="@color/colorWhite"
+
+        android:textSize="22sp"
+        android:textStyle="bold"></TextView>
 
     <RelativeLayout
-        android:background="@color/colorWhite"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorWhite">
+
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textStyle="bold"
+            android:gravity="center"
             android:text="Display"
             android:textColor="@color/colorBlack"
             android:textSize="14sp"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </TextView>
+            android:textStyle="bold"></TextView>
 
 
         <TextView
             android:id="@+id/tv_fee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/tv_display_and_add"
-            android:textStyle="bold"
+            android:gravity="center"
             android:text="Fee"
             android:textColor="@color/colorBlack"
             android:textSize="18sp"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </TextView>
+            android:textStyle="bold"></TextView>
 
 
         <ImageView
+            android:id="@+id/img_scan"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="15dp"
-            android:id="@+id/img_scan"
             android:layout_toLeftOf="@+id/tv_fee"
-            android:src="@drawable/scanner"
-            android:layout_width="25dp"
-            android:layout_height="25dp">
-        </ImageView>
+            android:src="@drawable/scanner"></ImageView>
 
 
         <TextView
             android:id="@+id/tv_display_and_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/tv_display_only"
-            android:textStyle="bold"
+            android:gravity="center|left"
             android:text="Display&amp;\nAdd"
             android:textColor="@color/colorBlack"
             android:textSize="14sp"
-            android:gravity="center|left"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </TextView>
+            android:textStyle="bold"></TextView>
 
 
         <TextView
             android:id="@+id/tv_display_only"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:textStyle="bold"
-            android:text="Display\nOnly"
             android:layout_marginRight="10dp"
+            android:gravity="center|left"
+            android:text="Display\nOnly"
             android:textColor="@color/colorBlack"
             android:textSize="14sp"
-            android:gravity="center|left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </TextView>
+            android:textStyle="bold"></TextView>
     </RelativeLayout>
 
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/colorPopupBg"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <RelativeLayout
-        android:id="@+id/rel_alipay_pc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <CheckBox
-            android:layout_marginTop="2dp"
-            android:id="@+id/chk_alipay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="center|left"
-            android:text="Alipay"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
-            <CheckBox
-                android:id="@+id/chk_alipay_qr_scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                />
-
-            <com.quagnitia.myposmate.utils.CurrencyEditText
-                android:layout_toRightOf="@+id/chk_alipay_qr_scan"
-                android:id="@+id/edt_ali_cv"
-                android:layout_width="45dp"
-                android:layout_height="30dp"
-                android:background="@drawable/edt_border"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:text="0.0"
-                android:textColor="@color/colorBlack" />
-
-
-
-            <TextView
-                android:id="@+id/tv_per1"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_toRightOf="@+id/edt_ali_cv"
-                android:gravity="center"
-                android:text="%"
-                android:textColor="@color/colorBlack" />
-
-
-
+            android:id="@+id/rel_alipay_pc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <CheckBox
-                android:id="@+id/chk_ali_display_and_add"
+                android:id="@+id/chk_alipay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/tv_per1"
-                android:gravity="center"
-                android:textSize="16sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="Alipay"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <CheckBox
-                android:id="@+id/chk_ali_display_only"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_gravity="center|left"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@+id/chk_ali_display_and_add"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+
+                <CheckBox
+                    android:id="@+id/chk_alipay_qr_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+
+                <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_ali_cv"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_alipay_qr_scan"
+                    android:background="@drawable/edt_border"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:text="0.0"
+                    android:textColor="@color/colorBlack" />
+
+
+                <TextView
+                    android:id="@+id/tv_per1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/edt_ali_cv"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textColor="@color/colorBlack" />
+
+
+                <CheckBox
+                    android:id="@+id/chk_ali_display_and_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_per1"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/chk_ali_display_only"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/chk_ali_display_and_add"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rel_wechat_pc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <CheckBox
-            android:layout_marginTop="2dp"
-            android:id="@+id/chk_wechat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="center|left"
-            android:text="WeChat"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
         <RelativeLayout
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
-            <CheckBox
-                android:id="@+id/chk_wechat_qr_scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                />
-            <com.quagnitia.myposmate.utils.CurrencyEditText
-                android:layout_toRightOf="@+id/chk_wechat_qr_scan"
-                android:id="@+id/edt_wechat_cv"
-                android:layout_width="45dp"
-                android:layout_height="30dp"
-                android:background="@drawable/edt_border"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:text="0.0"
-                android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/tv_per2"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_toRightOf="@+id/edt_wechat_cv"
-                android:gravity="center"
-                android:text="%"
-                android:textColor="@color/colorBlack" />
-
-
-
+            android:id="@+id/rel_wechat_pc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <CheckBox
-                android:id="@+id/chk_wechat_display_and_add"
+                android:id="@+id/chk_wechat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/tv_per2"
-                android:gravity="center"
-                android:textSize="16sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="WeChat"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <CheckBox
-                android:id="@+id/chk_wechat_display_only"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_gravity="center|left"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@+id/chk_wechat_display_and_add"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+
+                <CheckBox
+                    android:id="@+id/chk_wechat_qr_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+
+                <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_wechat_cv"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_wechat_qr_scan"
+                    android:background="@drawable/edt_border"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:text="0.0"
+                    android:textColor="@color/colorBlack" />
+
+                <TextView
+                    android:id="@+id/tv_per2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/edt_wechat_cv"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textColor="@color/colorBlack" />
+
+
+                <CheckBox
+                    android:id="@+id/chk_wechat_display_and_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_per2"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/chk_wechat_display_only"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/chk_wechat_display_and_add"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rel_unionpay_pc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <CheckBox
-                android:layout_marginTop="2dp"
                 android:id="@+id/chk_unionpay_card"
-                android:textColor="@android:color/holo_red_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
                 android:gravity="center|left"
                 android:text="DP - Card"
+                android:textColor="@android:color/holo_red_light"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                >
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
 
                 <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_unionpay_card_cv"
@@ -298,8 +290,6 @@
                     android:textColor="@color/colorBlack" />
 
 
-
-
                 <CheckBox
                     android:id="@+id/chk_unionpay_card_display_and_add"
                     android:layout_width="wrap_content"
@@ -316,8 +306,8 @@
                     android:id="@+id/chk_unionpay_card_display_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
                     android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/chk_unionpay_card_display_and_add"
                     android:gravity="center"
@@ -328,121 +318,118 @@
 
         </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rel_unionpay_qr_pc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!-- android:id="@+id/chk_unionpay_qr_code"-->
-        <CheckBox
-            android:enabled="false"
-            android:layout_marginTop="2dp"
-           android:id="@+id/chk_unionpay_qr_merchant_display1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_light"
-            android:layout_alignParentLeft="true"
-            android:gravity="center|left"
-            android:text="DP - QR"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
         <RelativeLayout
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
-            <!--android:id="@+id/chk_unionpay_qr"-->
+            android:id="@+id/rel_unionpay_qr_pc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!-- android:id="@+id/chk_unionpay_qr_code"-->
             <CheckBox
-                android:id="@+id/chk_unionpay_qr"
+                android:id="@+id/chk_unionpay_qr_merchant_display1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                />
-            <com.quagnitia.myposmate.utils.CurrencyEditText
-                android:layout_toRightOf="@+id/chk_unionpay_qr"
-                android:id="@+id/edt_unionpay_qr_cv"
-                android:layout_width="45dp"
-                android:layout_height="30dp"
-                android:background="@drawable/edt_border"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:text="0.0"
-                android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/tv_per5"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_toRightOf="@+id/edt_unionpay_qr_cv"
-                android:gravity="center"
-                android:text="%"
-                android:textColor="@color/colorBlack" />
-
-
-
-
-            <CheckBox
-                android:id="@+id/chk_unionpay_qr_display_and_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/tv_per5"
-                android:gravity="center"
-                android:textSize="16sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:enabled="false"
+                android:gravity="center|left"
+                android:text="DP - QR"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <CheckBox
-                android:id="@+id/chk_unionpay_qr_display_only"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_gravity="center|left"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@+id/chk_unionpay_qr_display_and_add"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+                <!--android:id="@+id/chk_unionpay_qr"-->
+                <CheckBox
+                    android:id="@+id/chk_unionpay_qr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+
+                <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_unionpay_qr_cv"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_unionpay_qr"
+                    android:background="@drawable/edt_border"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:text="0.0"
+                    android:textColor="@color/colorBlack" />
+
+                <TextView
+                    android:id="@+id/tv_per5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/edt_unionpay_qr_cv"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textColor="@color/colorBlack" />
+
+
+                <CheckBox
+                    android:id="@+id/chk_unionpay_qr_display_and_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_per5"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/chk_unionpay_qr_display_only"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/chk_unionpay_qr_display_and_add"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
-
-    <RelativeLayout
+        <RelativeLayout
             android:id="@+id/rel_uplan_pc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="2dp"
-            android:gravity="center|left"
-            android:textColor="@android:color/holo_red_light"
-            android:text="DP - Uplan"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="DP - Uplan"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <RelativeLayout
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                >
-            <CheckBox
-                android:id="@+id/chk_uplan_qr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                />
+                android:layout_marginTop="5dp">
+
+                <CheckBox
+                    android:id="@+id/chk_uplan_qr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+
                 <com.quagnitia.myposmate.utils.CurrencyEditText
-                    android:layout_toRightOf="@+id/chk_uplan_qr"
                     android:id="@+id/edt_uplan_cv"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_uplan_qr"
                     android:background="@drawable/edt_border"
                     android:gravity="center"
                     android:inputType="numberDecimal"
@@ -457,8 +444,6 @@
                     android:gravity="center"
                     android:text="%"
                     android:textColor="@color/colorBlack" />
-
-
 
 
                 <CheckBox
@@ -477,8 +462,8 @@
                     android:id="@+id/chk_uplan_display_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
                     android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/chk_uplan_display_and_add"
                     android:gravity="center"
@@ -493,36 +478,37 @@
             android:id="@+id/rel_upi_uplan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
-                android:layout_marginTop="2dp"
                 android:id="@+id/chk_upi_uplan"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="32dp"
+                android:layout_marginTop="2dp"
                 android:gravity="center|left"
                 android:text="UPI Uplan"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                >
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+
                 <CheckBox
                     android:id="@+id/chk_upi_uplan_qr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:enabled="false"
-                    />
+                    android:enabled="false" />
+
                 <com.quagnitia.myposmate.utils.CurrencyEditText
-                    android:layout_toRightOf="@+id/chk_upi_uplan_qr"
                     android:id="@+id/edt_upi_uplan_cv"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_upi_uplan_qr"
                     android:background="@drawable/edt_border"
                     android:gravity="center"
                     android:inputType="numberDecimal"
@@ -539,10 +525,7 @@
                     android:textColor="@color/colorBlack" />
 
 
-
-
                 <CheckBox
-                    android:enabled="false"
                     android:id="@+id/chk_upi_uplan_display_and_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -550,25 +533,25 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_toRightOf="@+id/tv_perupi_uplan"
+                    android:enabled="false"
                     android:gravity="center"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <CheckBox
-                    android:enabled="false"
                     android:id="@+id/chk_upi_uplan_display_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
                     android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/chk_upi_uplan_display_and_add"
+                    android:enabled="false"
                     android:gravity="center"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
-
 
 
         </RelativeLayout>
@@ -579,55 +562,53 @@
             android:layout_height="wrap_content">
 
 
-<!-- android:id="@+id/chk_upi_card"-->
+            <!-- android:id="@+id/chk_upi_card"-->
             <CheckBox
-                android:enabled="true"
-                android:layout_marginTop="2dp"
                 android:id="@+id/chk_upi_qr_merchant_display"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+
                 android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:enabled="true"
                 android:gravity="center|left"
                 android:text="UPI QR"
+                android:textColor="@android:color/black"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                >
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
                 <!-- android:id="@+id/chk_upi_qr"-->
                 <CheckBox
-                   android:id="@+id/chk_unionpay_qr_code"
+                    android:id="@+id/chk_unionpay_qr_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    />
+                    android:layout_marginLeft="5dp" />
+
                 <com.quagnitia.myposmate.utils.CurrencyEditText
-                    android:layout_toRightOf="@+id/chk_unionpay_qr_code"
-                    android:id="@+id/edt_up_upi_qr_cv"
+                    android:id="@+id/edt_up_upi_qr_cv_"
+                    android:enabled="false"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_unionpay_qr_code"
                     android:background="@drawable/edt_border"
                     android:gravity="center"
                     android:inputType="numberDecimal"
-                    android:text="0.0"
+
                     android:textColor="@color/colorBlack" />
 
                 <TextView
                     android:id="@+id/tv_perupi_card"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_toRightOf="@+id/edt_up_upi_qr_cv"
+                    android:layout_toRightOf="@+id/edt_up_upi_qr_cv_"
                     android:gravity="center"
                     android:text="%"
                     android:textColor="@color/colorBlack" />
-
-
 
 
                 <CheckBox
@@ -646,8 +627,8 @@
                     android:id="@+id/chk_upi_qr_display_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
                     android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/chk_up_upi_qr_display_and_add"
                     android:gravity="center"
@@ -659,27 +640,150 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:visibility="gone"
+            android:id="@+id/rel_upi_card_sel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp">
+
+
+            <com.quagnitia.myposmate.utils.CurrencyEditText
+                android:id="@+id/edt_up_upi_qr_cv"
+             android:layout_alignParentLeft="true"
+                android:layout_width="45dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/edt_border"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:text="0.0"
+                android:textColor="@android:color/black"/>
+
+
+            <TextView
+                android:id="@+id/pp"
+                android:text="%"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_toLeftOf="@+id/lessthan"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp">
+
+            </TextView>
+
+
+            <TextView
+                android:id="@+id/lessthan"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/dollar"
+                android:gravity="center"
+                android:text="&lt;&lt;"
+                android:textColor="@android:color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+
+            <TextView
+                android:id="@+id/dollar"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/edt_up_upi_qr_amount"
+                android:gravity="center"
+                android:text="$"
+
+                android:textColor="@android:color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <com.quagnitia.myposmate.utils.CurrencyEditText
+                android:id="@+id/edt_up_upi_qr_amount"
+
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/edt_border"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:text="0.0"
+                android:textColor="@android:color/black" />
+
+
+            <TextView
+                android:id="@+id/greaterthan"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@+id/edt_up_upi_qr_amount"
+                android:gravity="center"
+                android:text="&gt;&gt;"
+                android:textColor="@android:color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <com.quagnitia.myposmate.utils.CurrencyEditText
+                android:id="@+id/edt_up_upi_qr_cv1"
+
+                android:layout_width="45dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@+id/greaterthan"
+                android:background="@drawable/edt_border"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:text="0.0"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@+id/edt_up_upi_qr_cv1"
+                android:gravity="center"
+                android:text="%"
+                android:textColor="@android:color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/upi_note"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></TextView>
+
+        <RelativeLayout
             android:id="@+id/rel_static_alipay_pc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
             <CheckBox
-                android:layout_marginTop="2dp"
                 android:id="@+id/chk_static_alipay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
                 android:gravity="center|left"
                 android:text="Static Alipay"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                >
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
 
                 <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_static_alipay_cv"
@@ -701,8 +805,6 @@
                     android:textColor="@color/colorBlack" />
 
 
-
-
                 <CheckBox
                     android:id="@+id/chk_static_alipay_display_and_add"
                     android:layout_width="wrap_content"
@@ -719,8 +821,8 @@
                     android:id="@+id/chk_static_alipay_display_only"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
                     android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/chk_static_alipay_display_and_add"
                     android:gravity="center"
@@ -731,190 +833,186 @@
 
         </RelativeLayout>
 
-    <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/rel_static_wechat_pc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <CheckBox
-            android:layout_marginTop="2dp"
-            android:id="@+id/chk_static_wechat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="center|left"
-            android:text="Static WeChat"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
         <RelativeLayout
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
+            android:id="@+id/rel_static_wechat_pc"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
-
-            <com.quagnitia.myposmate.utils.CurrencyEditText
-                android:id="@+id/edt_static_wechat_cv"
-                android:layout_width="45dp"
-                android:layout_height="30dp"
-                android:background="@drawable/edt_border"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:text="0.0"
-                android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/tv_per8"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_toRightOf="@+id/edt_static_wechat_cv"
-                android:gravity="center"
-                android:text="%"
-                android:textColor="@color/colorBlack" />
-
-
-
+            android:visibility="gone">
 
             <CheckBox
-                android:id="@+id/chk_static_wechat_display_and_add"
+                android:id="@+id/chk_static_wechat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/tv_per8"
-                android:gravity="center"
-                android:textSize="16sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="Static WeChat"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <CheckBox
-                android:id="@+id/chk_static_wechat_display_only"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_gravity="center|left"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@+id/chk_static_wechat_display_and_add"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+
+                <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_static_wechat_cv"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/edt_border"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:text="0.0"
+                    android:textColor="@color/colorBlack" />
+
+                <TextView
+                    android:id="@+id/tv_per8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/edt_static_wechat_cv"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textColor="@color/colorBlack" />
+
+
+                <CheckBox
+                    android:id="@+id/chk_static_wechat_display_and_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_per8"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/chk_static_wechat_display_only"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/chk_static_wechat_display_and_add"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/rel_static_unionpay_pc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <CheckBox
-            android:layout_marginTop="2dp"
-            android:id="@+id/chk_static_unionpay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="center|left"
-            android:text="Static UnionPay"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
         <RelativeLayout
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
+            android:id="@+id/rel_static_unionpay_pc"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
-
-            <com.quagnitia.myposmate.utils.CurrencyEditText
-                android:id="@+id/edt_static_unionpay_cv"
-                android:layout_width="45dp"
-                android:layout_height="30dp"
-                android:background="@drawable/edt_border"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:text="0.0"
-                android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/tv_per9"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_toRightOf="@+id/edt_static_unionpay_cv"
-                android:gravity="center"
-                android:text="%"
-                android:textColor="@color/colorBlack" />
-
-
-
+            android:visibility="gone">
 
             <CheckBox
-                android:id="@+id/chk_static_unionpay_display_and_add"
+                android:id="@+id/chk_static_unionpay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/tv_per9"
-                android:gravity="center"
-                android:textSize="16sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="Static UnionPay"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <CheckBox
-                android:id="@+id/chk_static_unionpay_display_only"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_gravity="center|left"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@+id/chk_static_unionpay_display_and_add"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+
+                <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_static_unionpay_cv"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/edt_border"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:text="0.0"
+                    android:textColor="@color/colorBlack" />
+
+                <TextView
+                    android:id="@+id/tv_per9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/edt_static_unionpay_cv"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textColor="@color/colorBlack" />
+
+
+                <CheckBox
+                    android:id="@+id/chk_static_unionpay_display_and_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_per9"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/chk_static_unionpay_display_only"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/chk_static_unionpay_display_and_add"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <Button
-            android:id="@+id/btn_save_and_ok"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/blue_border_btn"
-            android:gravity="center"
-            android:text="Save &amp; Ok"
-            android:textAllCaps="false"
-            android:textColor="@color/colorBlue"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/btn_save_and_ok"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/blue_border_btn"
+                android:gravity="center"
+                android:text="Save &amp; Ok"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlue"
+                android:textSize="16sp" />
 
 
-        <Button
-            android:id="@+id/btn_cancel_and_close"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@drawable/blue_border_btn"
-            android:gravity="center"
-            android:text="Cancel &amp; Close"
-            android:textAllCaps="false"
-            android:textColor="@color/colorBlue"
-            android:textSize="16sp" />
+            <Button
+                android:id="@+id/btn_cancel_and_close"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/blue_border_btn"
+                android:gravity="center"
+                android:text="Cancel &amp; Close"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlue"
+                android:textSize="16sp" />
 
-    </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

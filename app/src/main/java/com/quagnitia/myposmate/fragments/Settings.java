@@ -739,9 +739,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
             jsonObject.put("CnvUPIQrMPMCloudDAADD", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-            jsonObject.put("CnvUPIQrMPMCloudValue", preferencesManager.getcnv_up_upiqr_mpmcloud());
+            jsonObject.put("CnvUPIQrMPMCloudValue", preferencesManager.getcnv_up_upiqr_mpmcloud_lower());
+            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferencesManager.getCnv_up_upiqr_mpmcloud_higher());
+            jsonObject.put("CnvUPIQRMPMCloudAmount",preferencesManager.getCnv_up_upiqr_mpmcloud_amount());
             jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
-            jsonObject.put("cnv_unimerchantqrdisplay", preferencesManager.get_cnv_unimerchantqrdisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferencesManager.get_cnv_unimerchantqrdisplayLower());
+            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferencesManager.get_cnv_unimerchantqrdisplayHigher());
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -833,9 +836,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
                     preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                 }
 
 
@@ -972,8 +978,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
                     if (jsonObject1.has("ConfigId")) {
@@ -1324,7 +1333,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                             preferencesManager.setTimeZoneId("Pacific/Auckland");
                             preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
                             preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                            preferencesManager.setcnv_up_upiqr_mpmcloud("");
+                            preferencesManager.setcnv_up_upiqr_mpmcloud_lower("");
 
                             if (jsonObject1.has("MerchantId") && !jsonObject1.optString("MerchantId").equals(""))
                                 preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
@@ -1412,8 +1421,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                         preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                         preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                        preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                        preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                        preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                        preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                        preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                        preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                        preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                         preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
                     }
 

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.quagnitia.myposmate.activities.TimeZoneActivity;
-
 public class PreferencesManager {
 
     public static final String SHARED_PREFERENCES_NAME = "MyPOasMatePref";
@@ -75,9 +73,12 @@ public class PreferencesManager {
     private String cnv_alipay_display_only="cnv_alipay_display_only";
     private String cnv_uni="cnv_uni";
     private String cnv_uniqr="cnv_uniqr";
-    private String cnv_unimerchantqrdisplay="cnv_unimerchantqrdisplay";
+    private String cnv_unimerchantqrdisplay_lower ="cnv_unimerchantqrdisplay_lower";
+    private String cnv_unimerchantqrdisplay_higher ="cnv_unimerchantqrdisplay_higher";
     private String cnv_uplan="cnv_uplan";
-    private String cnv_up_upiqr_mpmcloud="cnv_up_upiqr_mpmcloud";
+    private String cnv_up_upiqr_mpmcloud_lower ="cnv_up_upiqr_mpmcloud_lower";
+    private String cnv_up_upiqr_mpmcloud_higher ="cnv_up_upiqr_mpmcloud_higher";
+    private String cnv_up_upiqr_mpmcloud_amount ="cnv_up_upiqr_mpmcloud_amount";
     private String cnv_uni_display_and_add="cnv_uni_display_and_add";
     private String cnv_uni_display_only="cnv_uni_display_only";
     private String timezone="timezone";
@@ -722,30 +723,60 @@ public class PreferencesManager {
     }
 
 
-    public String get_cnv_unimerchantqrdisplay() {
-        return sharedPreferences.getString(cnv_unimerchantqrdisplay, "");
+    public String get_cnv_unimerchantqrdisplayLower() {
+        return sharedPreferences.getString(cnv_unimerchantqrdisplay_lower, "");
     }
 
-    public void set_cnv_unimerchantqrdisplay(String text) {
+    public void set_cnv_unimerchantqrdisplayLower(String text) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(cnv_unimerchantqrdisplay, text);
+        editor.putString(cnv_unimerchantqrdisplay_lower, text);
         editor.apply();
 
     }
 
+    public String get_cnv_unimerchantqrdisplayHigher() {
+        return sharedPreferences.getString(cnv_unimerchantqrdisplay_higher, "");
+    }
+
+    public void set_cnv_unimerchantqrdisplayHigher(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_unimerchantqrdisplay_higher, text);
+        editor.apply();
+
+    }
 
     //MPM CLOUD SCAN UPI QR PREF
-    public String getcnv_up_upiqr_mpmcloud() {
-        return sharedPreferences.getString(cnv_up_upiqr_mpmcloud, "");
+    public String getcnv_up_upiqr_mpmcloud_lower() {
+        return sharedPreferences.getString(cnv_up_upiqr_mpmcloud_lower, "");
     }
 
-    public void setcnv_up_upiqr_mpmcloud(String text) {
+    public void setcnv_up_upiqr_mpmcloud_lower(String text) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(cnv_up_upiqr_mpmcloud, text);
+        editor.putString(cnv_up_upiqr_mpmcloud_lower, text);
         editor.apply();
 
     }
 
+    public String getCnv_up_upiqr_mpmcloud_higher() {
+        return sharedPreferences.getString(cnv_up_upiqr_mpmcloud_higher, "");
+    }
+
+    public void setCnv_up_upiqr_mpmcloud_higher(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_up_upiqr_mpmcloud_higher, text);
+        editor.apply();
+
+    }
+
+    public String getCnv_up_upiqr_mpmcloud_amount() {
+        return sharedPreferences.getString(cnv_up_upiqr_mpmcloud_amount, "");
+    }
+
+    public void setCnv_up_upiqr_mpmcloud_amount(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_up_upiqr_mpmcloud_amount, text);
+        editor.apply();
+    }
 
     public String getcnv_uni() {
         return sharedPreferences.getString(cnv_uni, "");
@@ -1480,9 +1511,9 @@ Context mContext;
         editor.putString("cnv_alipay_display_only";
         editor.putString("cnv_uni";
         editor.putString("cnv_uniqr";
-        editor.putString("cnv_unimerchantqrdisplay";
+        editor.putString("cnv_unimerchantqrdisplay_lower";
         editor.putString("cnv_uplan";
-        editor.putString("cnv_up_upiqr_mpmcloud";
+        editor.putString("cnv_up_upiqr_mpmcloud_lower";
         editor.putString("cnv_uni_display_and_add";
         editor.putString("cnv_uni_display_only";
         editor.putString("timezone";

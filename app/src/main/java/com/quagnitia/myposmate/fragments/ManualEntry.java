@@ -74,7 +74,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
-import static com.quagnitia.myposmate.activities.DashboardActivity.isTriggerReceived;
 
 
 public class ManualEntry extends Fragment implements View.OnClickListener, OnTaskCompleted {
@@ -376,7 +375,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             if ((preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only() ||
                     preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) && preferenceManager.isMerchantDPARDisplay()) {
                 tv_unionpay_qr_cv.setVisibility(View.VISIBLE);
-                tv_unionpay_qr_cv.setText(preferenceManager.get_cnv_unimerchantqrdisplay());
+                tv_unionpay_qr_cv.setText(preferenceManager.get_cnv_unimerchantqrdisplayLower());
             } else if ((!preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only() ||
                     !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) && preferenceManager.isMerchantDPARDisplay()) {
                 tv_unionpay_qr_cv.setVisibility(View.INVISIBLE);
@@ -645,21 +644,24 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         }
 
                     }
-
-
-                    MyPOSMateApplication.isOpen = false;
                     tv_start_countdown.setVisibility(View.GONE);
+                    MyPOSMateApplication.isOpen = false;
                     AppConstants.xmppamountforscan = "";
                     if (isUpayselected) {
                         isUpayselected = false;
                     } else {
-                        if (preferenceManager.isManual()) {
-                            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                        } else {
-                            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-                        }
+//                        if (preferenceManager.isManual()) {
+//                            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+//                        } else {
+//                            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+//                        }
                     }
-
+                    isTriggerCancelled=true;
+                    if(isTriggerCancelled)
+                    {
+                        isTrigger=false;
+                        callAuthToken();
+                    }
 
                 }
 
@@ -669,8 +671,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     String original_xmpp_trigger_amount = "";
     Context mmContext = null;
-    String requestId="";
-    boolean isTrigger=false;
+    public static String requestId="";
+    public static boolean isTrigger=false;
 
     public class AmountReceiver extends BroadcastReceiver {
         @Override
@@ -1145,11 +1147,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
 
 
-        if (!preferenceManager.get_cnv_unimerchantqrdisplay().equals("") &&
-                !preferenceManager.get_cnv_unimerchantqrdisplay().equals("0.0") &&
-                !preferenceManager.get_cnv_unimerchantqrdisplay().equals("0.00")) {
+        if (!preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("") &&
+                !preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("0.0") &&
+                !preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("0.00")) {
             double amount = Double.parseDouble(edt_amount.getText().toString())
-                    * Double.parseDouble(preferenceManager.get_cnv_unimerchantqrdisplay()) / 100;
+                    * Double.parseDouble(preferenceManager.get_cnv_unimerchantqrdisplayLower()) / 100;
             tv_unionpay_qr_cv.setText("" + roundTwoDecimals(amount));
             //  tv_unionpay_qr_cv.setText("" + roundTwoDecimals(amount));
         }
@@ -1609,14 +1611,30 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()
                 || preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only()) {
 
-            if (preferenceManager.get_cnv_unimerchantqrdisplay().equals("") ||
-                    preferenceManager.get_cnv_unimerchantqrdisplay().equals("0.0") ||
-                    preferenceManager.get_cnv_unimerchantqrdisplay().equals("0.00")) {
+            if ((preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("") ||
+                    preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("0.0") ||
+                    preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("0.00"))&&
+                    (preferenceManager.get_cnv_unimerchantqrdisplayHigher().equals("") ||
+                            preferenceManager.get_cnv_unimerchantqrdisplayHigher().equals("0.0") ||
+                            preferenceManager.get_cnv_unimerchantqrdisplayHigher().equals("0.00"))) {
 
 
             } else {
-                convenience_amount_unionpayqr_merchant_display = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
-                        (1 - (Double.parseDouble(preferenceManager.get_cnv_unimerchantqrdisplay()) / 100));
+
+                Double o_amt=edt_amount.getText().toString().isEmpty()?0:Double.parseDouble(edt_amount.getText().toString().replace(",", ""));
+                Double upi_amt=preferenceManager.getCnv_up_upiqr_mpmcloud_amount().isEmpty()?0:Double.parseDouble(preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+
+                if(o_amt<upi_amt)
+                {
+                    convenience_amount_unionpayqr_merchant_display = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
+                            (1 - (Double.parseDouble(preferenceManager.get_cnv_unimerchantqrdisplayLower()) / 100));
+                }
+                else
+                {
+                    convenience_amount_unionpayqr_merchant_display = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
+                            (1 - (Double.parseDouble(preferenceManager.get_cnv_unimerchantqrdisplayHigher()) / 100));
+                }
+
                 if (roundTwoDecimals(convenience_amount_unionpayqr_merchant_display).length() > 12) {
                     tv_unionpay_qr_cv.setTextSize(10);
                 }
@@ -1630,12 +1648,27 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()
                 || preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only()) {
 
-            if (!preferenceManager.getcnv_up_upiqr_mpmcloud().equals("") ||
-                    !preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.0") ||
-                    !preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.00")) {
+            if ((!preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("") ||
+                    !preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.0") ||
+                    !preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.00"))&&
+                    (!preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("") ||
+                            !preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("0.0") ||
+                            !preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("0.00"))) {
 
-                convenience_amount_unionpayqrdisplay = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
-                        (1 - (Double.parseDouble(preferenceManager.getcnv_up_upiqr_mpmcloud()) / 100));
+                Double o_amt=edt_amount.getText().toString().isEmpty()?0:Double.parseDouble(edt_amount.getText().toString().replace(",", ""));
+                Double upi_amt=preferenceManager.getCnv_up_upiqr_mpmcloud_amount().isEmpty()?0:Double.parseDouble(preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+                if(o_amt<upi_amt)
+                {
+                    convenience_amount_unionpayqrdisplay = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
+                            (1 - (Double.parseDouble(preferenceManager.getcnv_up_upiqr_mpmcloud_lower()) / 100));
+                }
+                else
+                {
+                    convenience_amount_unionpayqrdisplay = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
+                            (1 - (Double.parseDouble(preferenceManager.getCnv_up_upiqr_mpmcloud_higher()) / 100));
+                }
+
+
                 if (roundTwoDecimals(convenience_amount_unionpayqrdisplay).length() > 12) {
                     tv_uni_cv2_scan_qr.setTextSize(10);
                 }
@@ -2369,13 +2402,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
         if (preferenceManager.isConvenienceFeeSelected()
                 && preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
-            if (preferenceManager.getcnv_up_upiqr_mpmcloud().equals("") || preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.0") || preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.00")) {
+            if (preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("") || preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.0") || preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.00")) {
 
                 amount = convenience_amount_unionpayqrdisplay + "";
                 original_amount = edt_amount.getText().toString().replace(",", "");
                 fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
                 discount = "0";
-                fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud();
+                fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud_lower();
 
             } else {
                 if (MyPOSMateApplication.isOpen) {
@@ -2383,13 +2416,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     original_amount = original_xmpp_trigger_amount.replace(",", "");
                     fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(original_xmpp_trigger_amount.replace(",", "")) + "";
                     discount = "0";
-                    fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud();
+                    fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud_lower();
                 } else {
                     amount = convenience_amount_unionpayqrdisplay + "";
                     original_amount = edt_amount.getText().toString().replace(",", "");
                     fee_amount = convenience_amount_unionpayqrdisplay - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
                     discount = "0";
-                    fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud();
+                    fee_percentage = preferenceManager.getcnv_up_upiqr_mpmcloud_lower();
                 }
 
             }
@@ -2493,13 +2526,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
         if (preferenceManager.isConvenienceFeeSelected()
                 && preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
-            if (preferenceManager.get_cnv_unimerchantqrdisplay().equals("") || preferenceManager.getcnv_up_upiqr_mpmcloud().equals("0.0") || preferenceManager.get_cnv_unimerchantqrdisplay().equals("0.00")) {
+            if (preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("") || preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.0") || preferenceManager.get_cnv_unimerchantqrdisplayLower().equals("0.00")) {
 
                 amount = convenience_amount_unionpayqr_merchant_display + "";
                 original_amount = edt_amount.getText().toString().replace(",", "");
                 fee_amount = convenience_amount_unionpayqr_merchant_display - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
                 discount = "0";
-                fee_percentage = preferenceManager.get_cnv_unimerchantqrdisplay();
+                fee_percentage = preferenceManager.get_cnv_unimerchantqrdisplayLower();
 
             } else {
                 if (MyPOSMateApplication.isOpen) {
@@ -2507,13 +2540,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     original_amount = original_xmpp_trigger_amount.replace(",", "");
                     fee_amount = convenience_amount_unionpayqr_merchant_display - Double.parseDouble(original_xmpp_trigger_amount.replace(",", "")) + "";
                     discount = "0";
-                    fee_percentage = preferenceManager.get_cnv_unimerchantqrdisplay();
+                    fee_percentage = preferenceManager.get_cnv_unimerchantqrdisplayLower();
                 } else {
                     amount = convenience_amount_unionpayqr_merchant_display + "";
                     original_amount = edt_amount.getText().toString().replace(",", "");
                     fee_amount = convenience_amount_unionpayqr_merchant_display - Double.parseDouble(edt_amount.getText().toString().replace(",", "")) + "";
                     discount = "0";
-                    fee_percentage = preferenceManager.get_cnv_unimerchantqrdisplay();
+                    fee_percentage = preferenceManager.get_cnv_unimerchantqrdisplayLower();
                 }
 
             }
@@ -2833,7 +2866,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
-    public void callUpdateRequestAPI1(String request_id, boolean executed,boolean status) {
+    public void callUpdateRequestAPI1(String request_id, boolean executed) {
         openProgressDialog();
         try {
             //v2 signature implementation
@@ -3075,6 +3108,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     @Override
     public void onClick(View view) {
         mContext = getActivity();
+
         if (((DashboardActivity) mContext).mPopupWindow.isShowing())
             ((DashboardActivity) mContext).mPopupWindow.dismiss();
 
@@ -3723,11 +3757,18 @@ boolean isTriggerCancelled=false;
 
     private void _parseUpdateRequest(JSONObject jsonObject)
     {
-        Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
-        if (preferenceManager.isManual()) {
-            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-        } else {
-            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+        if(jsonObject.optBoolean("status"))
+        {
+            Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
+            if (preferenceManager.isManual()) {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            } else {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+            }
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "Error cancelling request", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -3751,7 +3792,7 @@ boolean isTriggerCancelled=false;
         if(isTriggerCancelled)
         {
             isTriggerCancelled=false;
-            callUpdateRequestAPI1(requestId,true,false);
+            callUpdateRequestAPI1(requestId,true);
         }
     }
 

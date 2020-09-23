@@ -85,7 +85,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.TreeMap;
 
 import static com.quagnitia.myposmate.MyPOSMateApplication.mStompClient;
@@ -152,6 +151,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private EditText edt_unionpay_qr_cv;
     private EditText edt_uplan_cv;
     private EditText edt_up_upi_qr_cv;
+    private EditText edt_up_upi_qr_cv1;
+    private EditText edt_up_upi_qr_amount;
+    private TextView upi_note;
 
 
     @Override
@@ -179,8 +181,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         //added for external apps 12/5/2019
         launchThroughExternalApps();
 
-        if(preferencesManager.getTimezoneAbrev().equals(""))
-        {
+        if (preferencesManager.getTimezoneAbrev().equals("")) {
 //           String s= TimeZone.getTimeZone("Pacific/Auckland")
 //                    .getDisplayName(false, TimeZone.SHORT);
             preferencesManager.setTimezoneAbrev("NZST");
@@ -260,6 +261,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         manager.addView(view, localLayoutParams);
     }
 
+
     public static class customViewGroup extends ViewGroup {
 
         public customViewGroup(Context context) {
@@ -282,61 +284,53 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void setHashMapKeysUniversal(TreeMap<String, String> hashMapKeysUniversal) {
-        this.hashMapKeysUniversal .putAll(hashMapKeysUniversal);
+        this.hashMapKeysUniversal.putAll(hashMapKeysUniversal);
     }
 
-    private TreeMap<String,String> hashMapKeysUniversal=null;
-
+    private TreeMap<String, String> hashMapKeysUniversal = null;
 
 
     public void funcInitialSetup() {
         mContext = DashboardActivity.this;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         preferenceManager = PreferencesManager.getInstance(this);
-        hashMapKeysUniversal=new TreeMap<>();
+        hashMapKeysUniversal = new TreeMap<>();
         applyIntentFilter();
         openFragmentsReceiver = new OpenFragmentsReceiver();
         registerReceiver(openFragmentsReceiver, intentFilter);
         preferencesManager = PreferencesManager.getInstance(DashboardActivity.this);
-       // isLaunch = true;
+        // isLaunch = true;
         callAuthToken();
         initUI();
         initListener();
         img_menu.setEnabled(true);
 
 
-if(mStompClient!=null)
-{
-    if (mStompClient.isConnected()) {
-        callSetupFragment(SCREENS.POSMATECONNECTION, null);
-    } else {
-        if(preferencesManager.isRegistered())
-        {
-            preferencesManager.setIsConnected(false);
-            preferencesManager.setIsAuthenticated(false);
-            callSetupFragment(SCREENS.POSMATECONNECTION, null);
+        if (mStompClient != null) {
+            if (mStompClient.isConnected()) {
+                callSetupFragment(SCREENS.POSMATECONNECTION, null);
+            } else {
+                if (preferencesManager.isRegistered()) {
+                    preferencesManager.setIsConnected(false);
+                    preferencesManager.setIsAuthenticated(false);
+                    callSetupFragment(SCREENS.POSMATECONNECTION, null);
+                } else {
+                    callSetupFragment(SCREENS.REGISTRATION, null);
+                }
+
+            }
+
+        } else {
+
+            if (preferencesManager.isRegistered()) {
+                preferencesManager.setIsConnected(false);
+                preferencesManager.setIsAuthenticated(false);
+                callSetupFragment(SCREENS.POSMATECONNECTION, null);
+            } else {
+                callSetupFragment(SCREENS.REGISTRATION, null);
+            }
+
         }
-        else {
-            callSetupFragment(SCREENS.REGISTRATION, null);
-        }
-
-    }
-
-}
-else
-{
-
-    if(preferencesManager.isRegistered())
-    {
-        preferencesManager.setIsConnected(false);
-        preferencesManager.setIsAuthenticated(false);
-        callSetupFragment(SCREENS.POSMATECONNECTION, null);
-    }
-    else {
-        callSetupFragment(SCREENS.REGISTRATION, null);
-    }
-
-}
 
         findViewById(R.id.activity_main).setOnTouchListener((View v, MotionEvent event) -> {
             if (mPopupWindow.isShowing()) {
@@ -364,9 +358,8 @@ else
     }
 
 
-    public void connectStomp()
-    {
-        isNetConnectionOn=true;
+    public void connectStomp() {
+        isNetConnectionOn = true;
         callAuthToken();
     }
 
@@ -376,21 +369,19 @@ else
         try {
 
 
-            if(mStompClient!=null)
-            {
-                if(mStompClient.isConnected())
-                {
+            if (mStompClient != null) {
+                if (mStompClient.isConnected()) {
                     mStompClient.disconnect();
                     preferencesManager.setIsAuthenticated(false);
                     preferencesManager.setIsConnected(false);
                 }
             }
-            if(openFragmentsReceiver!=null)
+            if (openFragmentsReceiver != null)
                 unregisterReceiver(openFragmentsReceiver);
-            if(intentService!=null)
+            if (intentService != null)
                 stopService(intentService);
-            if(printDev!=null)
-                printDev=null;
+            if (printDev != null)
+                printDev = null;
 
             finishAffinity();
         } catch (Exception e) {
@@ -461,9 +452,9 @@ else
 
     public void initUI() {
         img_menu = findViewById(R.id.img_menu);
-        rel_un =  findViewById(R.id.rel_un);
-        tv_close_ext =  findViewById(R.id.tv_close);
-        TextView version =  findViewById(R.id.version);
+        rel_un = findViewById(R.id.rel_un);
+        tv_close_ext = findViewById(R.id.tv_close);
+        TextView version = findViewById(R.id.version);
         try {
             version.setText(getResources().getString(R.string.MyPOSMate_Version) + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (Exception e) {
@@ -573,8 +564,8 @@ else
 
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-       // if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.REFUND_UNIONPAY, null);
+        // if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.REFUND_UNIONPAY, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -601,8 +592,8 @@ else
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-      //  if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.EOD, null);
+        //  if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.EOD, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -629,8 +620,8 @@ else
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-       // if (preferencesManager.isAuthenticated()) {
-            callSetupFragment(SCREENS.POSMATECONNECTION, null);
+        // if (preferencesManager.isAuthenticated()) {
+        callSetupFragment(SCREENS.POSMATECONNECTION, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
 //        }
@@ -725,12 +716,12 @@ else
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
 //        finish();
-        if(openFragmentsReceiver!=null)
-        unregisterReceiver(openFragmentsReceiver);
-        if(intentService!=null)
+        if (openFragmentsReceiver != null)
+            unregisterReceiver(openFragmentsReceiver);
+        if (intentService != null)
             stopService(intentService);
-        if(printDev!=null)
-            printDev=null;
+        if (printDev != null)
+            printDev = null;
 
         finishAffinity();
     }
@@ -1183,8 +1174,7 @@ else
         pcUP_Merchant_QRDisplay(dialogView);
     }
 
-    private void pcAlipay(View dialogView)
-    {
+    private void pcAlipay(View dialogView) {
         //ALIPAY
         chk_alipay = dialogView.findViewById(R.id.chk_alipay);
         chk_alipay_qr_scan = dialogView.findViewById(R.id.chk_alipay_qr_scan);
@@ -1193,8 +1183,7 @@ else
         edt_ali_cv = dialogView.findViewById(R.id.edt_ali_cv);
     }
 
-    private void pcWeChat(View dialogView)
-    {
+    private void pcWeChat(View dialogView) {
         //WECHAT
         chk_wechat = dialogView.findViewById(R.id.chk_wechat);
         chk_wechat_qr_scan = dialogView.findViewById(R.id.chk_wechat_qr_scan);
@@ -1203,8 +1192,7 @@ else
         edt_wechat_cv = dialogView.findViewById(R.id.edt_wechat_cv);
     }
 
-    private void pcUPCardDPApp(View dialogView)
-    {
+    private void pcUPCardDPApp(View dialogView) {
         //UNION_PAY CARD DP APP INVOKING PAYMENT CHOICES IDS
         chk_unionpay_card = dialogView.findViewById(R.id.chk_unionpay_card);
         chk_unionpay_card_display_and_add = dialogView.findViewById(R.id.chk_unionpay_card_display_and_add);
@@ -1212,8 +1200,7 @@ else
         edt_unionpay_card_cv = dialogView.findViewById(R.id.edt_unionpay_card_cv);
     }
 
-    private void pcUPQRScanDPApp(View dialogView)
-    {
+    private void pcUPQRScanDPApp(View dialogView) {
         //UNION_PAY CUSTOMER WALLET QR SCAN AND DP APP INVOKING FOR PAYMENT ITS PAYMENT CHOICES IDS
         chk_unionpay_qr_code = dialogView.findViewById(R.id.chk_unionpay_qr_code);
         chk_unionpay_qr_display_and_add = dialogView.findViewById(R.id.chk_unionpay_qr_display_and_add);
@@ -1221,8 +1208,7 @@ else
         edt_unionpay_qr_cv = dialogView.findViewById(R.id.edt_unionpay_qr_cv);
     }
 
-    private void pcUPUplanScanDPApp(View dialogView)
-    {
+    private void pcUPUplanScanDPApp(View dialogView) {
         //U-PLAN SCANNING COUPON OPTION AND PAYMENT THROUGH DP APP AND ITS PAYMENT CHOICES IDS
         chk_uplan_qr = dialogView.findViewById(R.id.chk_uplan_qr);
         chk_uplan_display_and_add = dialogView.findViewById(R.id.chk_uplan_display_and_add);
@@ -1230,19 +1216,20 @@ else
         edt_uplan_cv = dialogView.findViewById(R.id.edt_uplan_cv);
     }
 
-    private void pcUP_UPIQRScan_MPMCloud(View dialogView)
-    {
+    private void pcUP_UPIQRScan_MPMCloud(View dialogView) {
         //DP CUSTOMER WALLET QR SCAN AND PAYMENT THROUGH MPM CLOUD AND ITS PAYMENT CHOICES IDS
         chk_unionpay_qr = dialogView.findViewById(R.id.chk_unionpay_qr);
-        chk_up_upi_qr_display_and_add= dialogView.findViewById(R.id.chk_up_upi_qr_display_and_add);
-        chk_upi_qr_display_only= dialogView.findViewById(R.id.chk_upi_qr_display_only);
-        edt_up_upi_qr_cv= dialogView.findViewById(R.id.edt_up_upi_qr_cv);
+        chk_up_upi_qr_display_and_add = dialogView.findViewById(R.id.chk_up_upi_qr_display_and_add);
+        chk_upi_qr_display_only = dialogView.findViewById(R.id.chk_upi_qr_display_only);
+        edt_up_upi_qr_cv = dialogView.findViewById(R.id.edt_up_upi_qr_cv);
+        edt_up_upi_qr_cv1 = dialogView.findViewById(R.id.edt_up_upi_qr_cv1);
+        edt_up_upi_qr_amount = dialogView.findViewById(R.id.edt_up_upi_qr_amount);
+        upi_note=dialogView.findViewById(R.id.upi_note);
     }
 
 
-    private void pcUP_Merchant_QRDisplay(View dialogView)
-    {
-        chk_upi_qr_merchant_display= dialogView.findViewById(R.id.chk_upi_qr_merchant_display);
+    private void pcUP_Merchant_QRDisplay(View dialogView) {
+        chk_upi_qr_merchant_display = dialogView.findViewById(R.id.chk_upi_qr_merchant_display);
     }
 
 
@@ -1276,8 +1263,7 @@ else
     }
 
     //WeChat PC Listeners
-    private void _weChat_chkListener()
-    {
+    private void _weChat_chkListener() {
         chk_wechat.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_wechat.setChecked(true);
@@ -1300,8 +1286,8 @@ else
             }
         });
     }
-    private void _weChat_QRScan_chkListener()
-    {
+
+    private void _weChat_QRScan_chkListener() {
         chk_wechat_qr_scan.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_wechat_qr_scan.setChecked(true);
@@ -1328,8 +1314,8 @@ else
         });
 
     }
-    private void _weChat_DAADD_DONLY_chkListener()
-    {
+
+    private void _weChat_DAADD_DONLY_chkListener() {
         chk_wechat_display_and_add.setOnClickListener((View v) -> {
             if ((chk_wechat.isChecked() || chk_wechat_qr_scan.isChecked()) ||
                     (chk_wechat.isChecked() && chk_wechat_qr_scan.isChecked())) {
@@ -1417,8 +1403,7 @@ else
     }
 
     //Alipay PC Listeners
-    private void _alipay_chkListener()
-    {
+    private void _alipay_chkListener() {
         chk_alipay.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_alipay.setChecked(true);
@@ -1443,8 +1428,8 @@ else
             }
         });
     }
-    private void _alipay_QRScan_chkListener()
-    {
+
+    private void _alipay_QRScan_chkListener() {
         chk_alipay_qr_scan.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_alipay_qr_scan.setChecked(true);
@@ -1469,8 +1454,8 @@ else
         });
 
     }
-    private void _alipay_DAADD_DONLY_chkListener()
-    {
+
+    private void _alipay_DAADD_DONLY_chkListener() {
         chk_ali_display_and_add.setOnClickListener((View v) -> {
 
             if ((chk_alipay.isChecked() || chk_alipay_qr_scan.isChecked()) ||
@@ -1559,8 +1544,7 @@ else
     }
 
     //UnionPay Card DP App PC Listeners
-    private void _upCard_chkListener()
-    {
+    private void _upCard_chkListener() {
         chk_unionpay_card.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 preferencesManager.setisUnionPaySelected(true);
@@ -1576,8 +1560,8 @@ else
             }
         });
     }
-    private void _upCard_DPAPP_DAADD_DONLY_chkListener()
-    {
+
+    private void _upCard_DPAPP_DAADD_DONLY_chkListener() {
         chk_unionpay_card_display_and_add.setOnClickListener((View v) -> {
 
             if (chk_unionpay_card.isChecked()) {
@@ -1660,8 +1644,7 @@ else
     }
 
     //UnionPay QR Scan DP App PC Listeners
-    private void _upQrScan_chkListener()
-    {
+    private void _upQrScan_chkListener() {
 
         chk_unionpay_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
@@ -1672,25 +1655,24 @@ else
                 chk_unionpay_qr_code.setChecked(false);
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
 
-                if(!chk_upi_qr_merchant_display.isChecked())
-                {
+                if (!chk_upi_qr_merchant_display.isChecked()) {
                     chk_upi_qr_display_only.setChecked(false);
                     chk_up_upi_qr_display_and_add.setChecked(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
+                    edt_up_upi_qr_cv1.setText("0.00");
+                    edt_up_upi_qr_amount.setText("0.00");
                 }
-
 
 
 //                chk_upi_qr_display_only.setChecked(false);
 //                chk_up_upi_qr_display_and_add.setChecked(false);
 //                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
 //                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-//                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+//                preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
 //                edt_up_upi_qr_cv.setText("0.00");
-
 
 
             } else {
@@ -1725,12 +1707,11 @@ else
             }
         });
     }
-    private void _upQrScan_DPAPP_DAADD_DONLY_chkListener()
-    {
+
+    private void _upQrScan_DPAPP_DAADD_DONLY_chkListener() {
         chk_unionpay_qr_display_and_add.setOnClickListener((View v) -> {
 
-            if(!chk_unionpay_qr.isChecked())
-            {
+            if (!chk_unionpay_qr.isChecked()) {
                 chk_unionpay_qr_display_and_add.setChecked(false);
                 return;
             }
@@ -1771,9 +1752,6 @@ else
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-
-
 
 
         });
@@ -1824,8 +1802,7 @@ else
     }
 
     //Uplan Coupon SCan DP App PC Listeners
-    private void _uplan_chkListener()
-    {
+    private void _uplan_chkListener() {
         chk_uplan_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_uplan_qr.setChecked(true);
@@ -1847,8 +1824,8 @@ else
         });
 
     }
-    private void _uplan_DAADD_DONLY_chkListener()
-    {
+
+    private void _uplan_DAADD_DONLY_chkListener() {
         chk_uplan_display_and_add.setOnClickListener((View v) -> {
 
             if (chk_uplan_qr.isChecked()) {
@@ -1937,10 +1914,9 @@ else
     }
 
     //UP UPI QR Scan using MPMCloud PC Listener
-    private void _up_UPIQRScan_MPMCloud_chkListener()
-    {
+    private void _up_UPIQRScan_MPMCloud_chkListener() {
 
-        chk_upi_qr_merchant_display.setOnClickListener((View v)->{
+        chk_upi_qr_merchant_display.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_upi_qr_merchant_display.setChecked(true);
                 preferencesManager.setisMerchantDPARDisplay(true);
@@ -1956,13 +1932,13 @@ else
                     chk_upi_qr_display_only.setChecked(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
+                    edt_up_upi_qr_cv1.setText("0.00");
+                    edt_up_upi_qr_amount.setText("0.00");
                 }
             }
         });
-
-
 
 
         chk_unionpay_qr_code.setOnClickListener((View v) -> {
@@ -1985,16 +1961,16 @@ else
                 chk_unionpay_qr_code.setChecked(false);
                 preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
 
-                if(!chk_upi_qr_merchant_display.isChecked())
-                {
+                if (!chk_upi_qr_merchant_display.isChecked()) {
                     chk_upi_qr_display_only.setChecked(false);
                     chk_up_upi_qr_display_and_add.setChecked(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
+                    edt_up_upi_qr_cv1.setText("0.00");
+                    edt_up_upi_qr_amount.setText("0.00");
                 }
-
 
 
                 if (!chk_upi_qr_merchant_display.isChecked()) {
@@ -2002,8 +1978,10 @@ else
                     chk_upi_qr_display_only.setChecked(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
+                    edt_up_upi_qr_cv1.setText("0.00");
+                    edt_up_upi_qr_amount.setText("0.00");
                 }
 
 
@@ -2021,28 +1999,29 @@ else
         });
 
     }
-    private void _up_UPIQRScan_MPMCloud_DPAPP_DAADD_DONLY_chkListener()
-    {
+
+    private void _up_UPIQRScan_MPMCloud_DPAPP_DAADD_DONLY_chkListener() {
         chk_up_upi_qr_display_and_add.setOnClickListener((View v) -> {
 
 
-            if (chk_unionpay_qr_code.isChecked()||chk_upi_qr_merchant_display.isChecked()) {
-                if (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+            if (chk_unionpay_qr_code.isChecked() || chk_upi_qr_merchant_display.isChecked()) {
+                if ((edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
                         edt_up_upi_qr_cv.getText().toString().equals("0.00") ||
                         edt_up_upi_qr_cv.getText().toString().equals("")
-                        || edt_up_upi_qr_cv.getText().toString().equals(" ")) {
+                        || edt_up_upi_qr_cv.getText().toString().equals(" ")) &&
+                        (edt_up_upi_qr_cv1.getText().toString().equals("0.0") ||
+                                edt_up_upi_qr_cv1.getText().toString().equals("0.00") ||
+                                edt_up_upi_qr_cv1.getText().toString().equals("")
+                                || edt_up_upi_qr_cv1.getText().toString().equals(" ")) &&
+                        (edt_up_upi_qr_amount.getText().toString().equals("0.0") ||
+                                edt_up_upi_qr_amount.getText().toString().equals("0.00") ||
+                                edt_up_upi_qr_amount.getText().toString().equals("")
+                                || edt_up_upi_qr_amount.getText().toString().equals(" "))) {
                     chk_up_upi_qr_display_and_add.setChecked(false);
                     chk_up_upi_qr_display_and_add.setSelected(false);
                     Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-                    //is chkIos checked?
-                    String s = edt_up_upi_qr_cv.getText().toString();
-                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
-                        chk_up_upi_qr_display_and_add.setChecked(false);
-                        chk_up_upi_qr_display_and_add.setSelected(false);
-                        return;
-                    }
                     if (chk_upi_qr_display_only.isChecked()) {
                         chk_upi_qr_display_only.setChecked(false);
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
@@ -2053,14 +2032,26 @@ else
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(true);
                     }
+
                 }
-                preferenceManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString());
-                preferencesManager.set_cnv_unimerchantqrdisplay(edt_up_upi_qr_cv.getText().toString());
+                preferenceManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
+                preferenceManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
+
+                preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
+                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
+
+                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+
             } else {
                 chk_up_upi_qr_display_and_add.setChecked(false);
                 chk_up_upi_qr_display_and_add.setSelected(false);
-                preferenceManager.setcnv_up_upiqr_mpmcloud("0.00");
-                preferencesManager.set_cnv_unimerchantqrdisplay("0.00");
+                preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+
+                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+
+                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -2070,24 +2061,26 @@ else
 
         chk_upi_qr_display_only.setOnClickListener((View v) -> {
 
-            if (chk_unionpay_qr_code.isChecked()||chk_upi_qr_merchant_display.isChecked()) {
-                if (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+            if (chk_unionpay_qr_code.isChecked() || chk_upi_qr_merchant_display.isChecked()) {
+                if ((edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
                         edt_up_upi_qr_cv.getText().toString().equals("0.00") ||
                         edt_up_upi_qr_cv.getText().toString().equals("")
-                        || edt_up_upi_qr_cv.getText().toString().equals(" ")) {
+                        || edt_up_upi_qr_cv.getText().toString().equals(" ")) &&
+                        (edt_up_upi_qr_cv1.getText().toString().equals("0.0") ||
+                                edt_up_upi_qr_cv1.getText().toString().equals("0.00") ||
+                                edt_up_upi_qr_cv1.getText().toString().equals("")
+                                || edt_up_upi_qr_cv1.getText().toString().equals(" ")) &&
+                        (edt_up_upi_qr_amount.getText().toString().equals("0.0") ||
+                                edt_up_upi_qr_amount.getText().toString().equals("0.00") ||
+                                edt_up_upi_qr_amount.getText().toString().equals("")
+                                || edt_up_upi_qr_amount.getText().toString().equals(" "))) {
                     chk_upi_qr_display_only.setChecked(false);
                     chk_upi_qr_display_only.setSelected(false);
                     Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
 
-                    //is chkIos checked?
-                    String s = edt_up_upi_qr_cv.getText().toString();
-                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
-                        chk_upi_qr_display_only.setChecked(false);
-                        chk_upi_qr_display_only.setSelected(false);
-                        return;
-                    }
+
                     if (chk_up_upi_qr_display_and_add.isChecked()) {
                         chk_up_upi_qr_display_and_add.setChecked(false);
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(true);
@@ -2100,20 +2093,29 @@ else
                     }
 
                 }
-                preferenceManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString());
-                preferencesManager.set_cnv_unimerchantqrdisplay(edt_up_upi_qr_cv.getText().toString());
+                preferenceManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
+                preferenceManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
+
+                preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
+                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
+
+                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
             } else {
                 chk_upi_qr_display_only.setChecked(false);
                 chk_upi_qr_display_only.setSelected(false);
-                preferenceManager.setcnv_up_upiqr_mpmcloud("0.00");
-                preferenceManager.set_cnv_unimerchantqrdisplay("0.00");
+                preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+
+                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+
+                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
 
         });
     }
-
 
 
     public void funcPCPrefChecks() {
@@ -2126,8 +2128,8 @@ else
                 preferencesManager.is_cnv_wechat_display_and_add() ||
                 preferencesManager.is_cnv_wechat_display_only() ||
                 preferencesManager.is_cnv_alipay_display_only() ||
-                preferencesManager.is_cnv_alipay_display_and_add()||
-                preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()||
+                preferencesManager.is_cnv_alipay_display_and_add() ||
+                preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() ||
                 preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only()
         ) {
 
@@ -2162,7 +2164,6 @@ else
                 chk_upi_qr_display_only.setChecked(true);
                 chk_upi_qr_display_only.setSelected(true);
             }
-
 
 
             if (preferenceManager.is_cnv_alipay_display_and_add()) {
@@ -2215,7 +2216,9 @@ else
             edt_uplan_cv.setText(preferenceManager.getcnv_uplan());
             edt_ali_cv.setText(preferenceManager.getcnv_alipay());
             edt_wechat_cv.setText(preferenceManager.getcnv_wechat());
-            edt_up_upi_qr_cv.setText(preferenceManager.getcnv_up_upiqr_mpmcloud());
+            edt_up_upi_qr_cv.setText(preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
+            edt_up_upi_qr_cv1.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+            edt_up_upi_qr_amount.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
         }
 
 
@@ -2291,8 +2294,7 @@ else
             chk_unionpay_qr.setChecked(true);
             chk_unionpay_qr.setSelected(true);
         }
-        if(preferencesManager.isMerchantDPARDisplay())
-        {
+        if (preferencesManager.isMerchantDPARDisplay()) {
             chk_upi_qr_merchant_display.setChecked(true);
             chk_upi_qr_merchant_display.setSelected(true);
         }
@@ -2312,21 +2314,18 @@ else
             chk_wechat.setSelected(true);
         }
 
-        if(preferencesManager.isAlipayScan())
-        {
+        if (preferencesManager.isAlipayScan()) {
             chk_alipay_qr_scan.setSelected(true);
             chk_alipay_qr_scan.setChecked(true);
         }
 
 
-        if(preferencesManager.isWeChatScan())
-        {
+        if (preferencesManager.isWeChatScan()) {
             chk_wechat_qr_scan.setSelected(true);
             chk_wechat_qr_scan.setChecked(true);
         }
 
-        if(preferencesManager.isUplanSelected())
-        {
+        if (preferencesManager.isUplanSelected()) {
             chk_uplan_qr.setSelected(true);
             chk_uplan_qr.setChecked(true);
         }
@@ -2381,8 +2380,8 @@ else
                 chk_unionpay_qr_display_and_add.isChecked() ||
                 chk_unionpay_qr_display_only.isChecked() ||
                 chk_uplan_display_only.isChecked() ||
-                chk_uplan_display_and_add.isChecked()||
-                chk_up_upi_qr_display_and_add.isChecked()||
+                chk_uplan_display_and_add.isChecked() ||
+                chk_up_upi_qr_display_and_add.isChecked() ||
                 chk_upi_qr_display_only.isChecked()
         ) {
             preferencesManager.setisConvenienceFeeSelected(true);
@@ -2442,10 +2441,16 @@ else
             }
 
 
-            if (chk_unionpay_qr_code.isChecked()||chk_upi_qr_merchant_display.isChecked()) {
-                if (!edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
+            if (chk_unionpay_qr_code.isChecked() || chk_upi_qr_merchant_display.isChecked()) {
+                if ((!edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
                         !edt_up_upi_qr_cv.getText().toString().equals("0.00")
-                        || !edt_up_upi_qr_cv.getText().toString().equals("")) {
+                        || !edt_up_upi_qr_cv.getText().toString().equals("")) &&
+                        (!edt_up_upi_qr_cv1.getText().toString().equals("0.0") ||
+                                !edt_up_upi_qr_cv1.getText().toString().equals("0.00")
+                                || !edt_up_upi_qr_cv1.getText().toString().equals("")) &&
+                        (!edt_up_upi_qr_amount.getText().toString().equals("0.0") ||
+                                !edt_up_upi_qr_amount.getText().toString().equals("0.00")
+                                || !edt_up_upi_qr_amount.getText().toString().equals(""))) {
                     //display and add of union pay qr
                     if (chk_up_upi_qr_display_and_add.isChecked())
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(true);
@@ -2457,32 +2462,48 @@ else
                     else
                         preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
 
-                    if(chk_up_upi_qr_display_and_add.isChecked()||chk_upi_qr_display_only.isChecked())
-                    {
-                        if(chk_unionpay_qr_code.isChecked())
-                        {
-                            preferencesManager.setcnv_uniqr(edt_up_upi_qr_cv.getText().toString());
-                        }
-                        else if(!chk_unionpay_qr_code.isChecked())
-                        {
-                            preferencesManager.setcnv_uniqr("0.00");
+                    if (chk_up_upi_qr_display_and_add.isChecked() || chk_upi_qr_display_only.isChecked()) {
+                        if (chk_unionpay_qr_code.isChecked()) {
+                            Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : Double.parseDouble(edt_up_upi_qr_amount.getText().toString());
+                            if (a != 0.00) {
+                                preferencesManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+                            } else {
+                                preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                            }
+
+                        } else if (!chk_unionpay_qr_code.isChecked()) {
+                            preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                            preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+                            preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                         }
 
-                        if(chk_upi_qr_merchant_display.isChecked())
-                        {
-                            preferencesManager.set_cnv_unimerchantqrdisplay(edt_up_upi_qr_cv.getText().toString());
+                        if (chk_upi_qr_merchant_display.isChecked()) {
+                            Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : Double.parseDouble(edt_up_upi_qr_amount.getText().toString());
+                            if (a != 0.00) {
+                                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv.getText().toString());
+                                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+                            } else {
+                                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                            }
+
+                        } else if (!chk_upi_qr_merchant_display.isChecked()) {
+                            preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                            preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                            preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                         }
-                        else if(!chk_upi_qr_merchant_display.isChecked())
-                        {
-                            preferencesManager.set_cnv_unimerchantqrdisplay("0.00");
-                        }
+
                     }
-
 
 
                 }
             }
-
 
 
             if (chk_uplan_qr.isChecked()) {
@@ -2582,10 +2603,16 @@ else
                             edt_unionpay_card_cv.getText().toString().equals("")) &&
                     (edt_unionpay_qr_cv.getText().toString().equals("") &&
                             (edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
-                                    edt_unionpay_qr_cv.getText().toString().equals("0.00")))&&
+                                    edt_unionpay_qr_cv.getText().toString().equals("0.00"))) &&
                     (edt_up_upi_qr_cv.getText().toString().equals("") &&
                             (edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
-                                    edt_up_upi_qr_cv.getText().toString().equals("0.00")))&&
+                                    edt_up_upi_qr_cv.getText().toString().equals("0.00"))) &&
+                    (edt_up_upi_qr_cv1.getText().toString().equals("") &&
+                            (edt_up_upi_qr_cv1.getText().toString().equals("0.0") ||
+                                    edt_up_upi_qr_cv1.getText().toString().equals("0.00"))) &&
+                    (edt_up_upi_qr_amount.getText().toString().equals("") &&
+                            (edt_up_upi_qr_amount.getText().toString().equals("0.0") ||
+                                    edt_up_upi_qr_amount.getText().toString().equals("0.00"))) &&
                     (edt_uplan_cv.getText().toString().equals("0.00") ||
                             edt_uplan_cv.getText().toString().equals("0.0") ||
                             edt_uplan_cv.getText().toString().equals(""))
@@ -2596,7 +2623,11 @@ else
                 preferencesManager.setcnv_uplan("0.00");
                 preferencesManager.setcnv_uni("0.00");
                 preferencesManager.setcnv_uniqr("0.00");
-                preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
+                preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+                preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
             } else {
                 if (!edt_ali_cv.getText().toString().equals("") &&
                         (!edt_ali_cv.getText().toString().equals("0.0") ||
@@ -2629,15 +2660,6 @@ else
                 } else {
                     preferencesManager.setcnv_uniqr("0.00");
                 }
-
-                if (!edt_up_upi_qr_cv.getText().toString().equals("") &&
-                        (!edt_up_upi_qr_cv.getText().toString().equals("0.0") ||
-                                !edt_up_upi_qr_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(edt_up_upi_qr_cv.getText().toString().replace(",", ""));
-                } else {
-                    preferencesManager.setcnv_up_upiqr_mpmcloud("0.00");
-                }
-
 
                 if (!edt_uplan_cv.getText().toString().equals("") &&
                         (!edt_uplan_cv.getText().toString().equals("0.0")
@@ -2788,138 +2810,84 @@ else
     }
 
     public void funcCVTextChangeListener() {
-        edt_ali_cv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.v("", "");
-                try {
-                    if (s.equals("")) {
-                        return;
-                    } else {
 
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("", "");
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.v("", "");
-
-
-            }
-        });
-
-
-        edt_unionpay_card_cv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.v("", "");
-                try {
-                    if (s.equals("")) {
-                        return;
-                    } else {
-
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("", "");
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.v("", "");
-
-
-            }
-        });
-
-
-        edt_unionpay_qr_cv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.v("", "");
-                try {
-                    if (s.equals("")) {
-                        return;
-                    } else {
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("", "");
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.v("", "");
-
-            }
-        });
-
-
-        edt_uplan_cv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.v("", "");
-                try {
-                    if (s.equals("")) {
-                        return;
-                    } else {
-
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("", "");
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.v("", "");
-
-
-            }
-        });
+        edt_up_upi_qr_cv.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv));
+        edt_up_upi_qr_cv1.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv1));
+        edt_ali_cv.addTextChangedListener(new EditTextListenerClass(edt_ali_cv));
+        edt_unionpay_card_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_card_cv));
+        edt_unionpay_qr_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_qr_cv));
+        edt_uplan_cv.addTextChangedListener(new EditTextListenerClass(edt_uplan_cv));
 
 
     }
 
+
+    private class EditTextListenerClass implements TextWatcher {
+        private EditText editText;
+
+        private EditTextListenerClass(EditText editText) {
+            this.editText = editText;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            Double upilowerFee=edt_up_upi_qr_cv.getText().toString().isEmpty()?0.00:
+                    Double.parseDouble(edt_up_upi_qr_cv.getText().toString());
+            Double upihigherFee=edt_up_upi_qr_cv1.getText().toString().isEmpty()?0.00:
+                    Double.parseDouble(edt_up_upi_qr_cv1.getText().toString());
+            switch (editText.getId()) {
+                case R.id.edt_ali_cv:
+                case R.id.edt_unionpay_card_cv:
+                case R.id.edt_unionpay_qr_cv:
+                case R.id.edt_uplan_cv:
+                    if (s.equals("")) {
+                        return;
+                    } else {
+                    }
+
+                    break;
+
+                case R.id.edt_up_upi_qr_cv:
+//                    if(upilowerFee>=upihigherFee)
+//                    {
+//                        upi_note.setText("Entered fee percent should be less than the greater fee percent");
+//                    }
+//                    else
+//                    {
+//                        upi_note.setText("");
+//                    }
+                    break;
+
+                case R.id.edt_up_upi_qr_cv1:
+//                    if(upihigherFee<=upilowerFee)
+//                    {
+//                        upi_note.setText("Entered fee percent should be greater than the lesser fee percent");
+//                    }
+//                    else
+//                    {
+//                        upi_note.setText("");
+//                    }
+                    break;
+
+            }
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    }
+
+
     public JSONObject funcPrepareDisplayChoicesJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("accessId",preferenceManager.getuniqueId());
+            jsonObject.put("accessId", preferenceManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
@@ -2938,7 +2906,7 @@ else
             jsonObject.put("UnionPayQR", preferenceManager.isUnionPayQrSelected());
             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferenceManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
-            jsonObject.put("cnv_unimerchantqrdisplay",preferenceManager.get_cnv_unimerchantqrdisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplayLower());
             jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferenceManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferenceManager.is_cnv_uni_display_only());
@@ -2961,7 +2929,6 @@ else
             jsonObject.put("AlipayWechatvalue", preferenceManager.getcnv_alipay());
             jsonObject.put("UnionPayvalue", preferenceManager.getcnv_uni());
             jsonObject.put("UnionPayQRValue", preferenceManager.getcnv_uniqr());
-            jsonObject.put("cnv_unimerchantqrdisplay",preferenceManager.get_cnv_unimerchantqrdisplay());
             jsonObject.put("EnableBranchName", preferenceManager.getBranchName());
             jsonObject.put("EnableBranchAddress", preferenceManager.getBranchAddress());
             jsonObject.put("EnableBranchEmail", preferenceManager.getBranchEmail());
@@ -2978,10 +2945,13 @@ else
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
 
-            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
-            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-            jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
-            jsonObject.put("isMerchantDPARDisplay",preferenceManager.isMerchantDPARDisplay());
+            jsonObject.put("CnvUPIQrMPMCloudDAADD", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+            jsonObject.put("CnvUPIQrMPMCloudDOnly", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+            jsonObject.put("CnvUPIQrMPMCloudValue", preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
+            jsonObject.put("CnvUPIQrMPMCloudValueHigher", preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+            jsonObject.put("CnvUPIQRMPMCloudAmount", preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+            jsonObject.put("cnv_unimerchantqrdisplay_higher", preferenceManager.get_cnv_unimerchantqrdisplayHigher());
+            jsonObject.put("isMerchantDPARDisplay", preferenceManager.isMerchantDPARDisplay());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2990,7 +2960,7 @@ else
     }
 
 
-    public String encryption(String strNormalText) throws Exception{
+    public String encryption(String strNormalText) throws Exception {
         String seedValue = "YourSecKey";
         String normalTextEnc = "";
         try {
@@ -3143,13 +3113,12 @@ else
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
                 }
 
-                if(isNetConnectionOn)
-                {
-                    isNetConnectionOn=false;
-                    Log.v("Dashboard","Dashboard Called connection");
+                if (isNetConnectionOn) {
+                    isNetConnectionOn = false;
+                    Log.v("Dashboard", "Dashboard Called connection");
 //                    if(mStompClient==null)
 //                    {
-                            ((MyPOSMateApplication)this.getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+                    ((MyPOSMateApplication) this.getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
 //                    }
 
                 }
@@ -3171,8 +3140,7 @@ else
                             callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
                         } else
                             callUpdateBranchDetailsNew();
-                    } else
-                    {
+                    } else {
                         if (isDisplayChoicesDataSaved) {
                             isDisplayChoicesDataSaved = false;
                             callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
@@ -3187,10 +3155,10 @@ else
                 break;
 
             case "DeleteTerminal":
-            //    if (jsonObject.optBoolean("success")) {
-                    isTerminalInfoDeleted = true;
-                    callAuthToken();
-            //    }
+                //    if (jsonObject.optBoolean("success")) {
+                isTerminalInfoDeleted = true;
+                callAuthToken();
+                //    }
                 break;
 
             case "updateRequest":
@@ -3256,7 +3224,7 @@ else
                     preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
                     preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
@@ -3278,7 +3246,8 @@ else
                     preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
                     preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQRValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
                     preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
@@ -3297,7 +3266,10 @@ else
 
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
 
@@ -3491,14 +3463,7 @@ else
     }
 
 
-
-
-
-
-
-
-
-boolean isNetConnectionOn=false;
+    boolean isNetConnectionOn = false;
     JSONObject triggerjsonObject;
     public static boolean isTriggerReceived = false;
     public static String request_id = "";
@@ -3544,9 +3509,9 @@ boolean isNetConnectionOn=false;
                     try {
                         JSONObject jsonObject = new JSONObject(intent.getStringExtra("data"));
                         callAuthToken();
-                        Intent orderIntent=new Intent(DashboardActivity.this,OrderDetailsActivity.class);
-                        orderIntent.putExtra("hub_id",jsonObject.optString("hub_id"));
-                        orderIntent.putExtra("myPOSMateOrderID",jsonObject.optString("order_id"));
+                        Intent orderIntent = new Intent(DashboardActivity.this, OrderDetailsActivity.class);
+                        orderIntent.putExtra("hub_id", jsonObject.optString("hub_id"));
+                        orderIntent.putExtra("myPOSMateOrderID", jsonObject.optString("order_id"));
                         startActivity(orderIntent);
 
                     } catch (Exception e) {
@@ -3589,14 +3554,11 @@ boolean isNetConnectionOn=false;
 
 
                 case "RECONNECT":
-                    if(mStompClient==null)
-                    {
+                    if (mStompClient == null) {
                         preferencesManager.setIsAuthenticated(false);
                         preferencesManager.setIsConnected(false);
                         connectStomp();
-                    }
-                    else
-                    {
+                    } else {
                         if (((MyPOSMateApplication) getApplicationContext()).mStompClient.isConnected()) {
                             if (preferencesManager.isManual()) {
                                 callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
@@ -3646,7 +3608,7 @@ boolean isNetConnectionOn=false;
                 getIntent().putExtra("result", new JSONObject().toString());
                 setResult(REQ_PAY_SALE, getIntent());
                 finishAffinity();
-              //  finish();
+                //  finish();
                 break;
 
             default:
@@ -3815,7 +3777,7 @@ boolean isNetConnectionOn=false;
         openProgressDialog();
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("accessId",preferenceManager.getuniqueId());
+            jsonObject.put("accessId", preferenceManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
@@ -3832,7 +3794,8 @@ boolean isNetConnectionOn=false;
             jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
-            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplayLower());
+            jsonObject.put("cnv_unimerchantqrdisplay_higher", preferenceManager.get_cnv_unimerchantqrdisplayHigher());
             jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
@@ -3854,7 +3817,8 @@ boolean isNetConnectionOn=false;
             jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
             jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
             jsonObject.put("UnionPayQRValue", preferenceManager.getcnv_uniqr());
-            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplayLower());
+            jsonObject.put("cnv_unimerchantqrdisplay_higher", preferenceManager.get_cnv_unimerchantqrdisplayHigher());
             jsonObject.put("EnableBranchName", preferencesManager.getBranchName());
             jsonObject.put("EnableBranchAddress", preferencesManager.getBranchAddress());
             jsonObject.put("EnableBranchEmail", preferencesManager.getBranchEmail());
@@ -3870,10 +3834,12 @@ boolean isNetConnectionOn=false;
             jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
             jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
-            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
-            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-            jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud());
-            jsonObject.put("isMerchantDPARDisplay",preferenceManager.isMerchantDPARDisplay());
+            jsonObject.put("CnvUPIQrMPMCloudDAADD", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+            jsonObject.put("CnvUPIQrMPMCloudDOnly", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+            jsonObject.put("CnvUPIQrMPMCloudValue", preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
+            jsonObject.put("CnvUPIQrMPMCloudValueHigher", preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+            jsonObject.put("CnvUPIQRMPMCloudAmount", preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+            jsonObject.put("isMerchantDPARDisplay", preferenceManager.isMerchantDPARDisplay());
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -3942,20 +3908,17 @@ boolean isNetConnectionOn=false;
             e.printStackTrace();
         }
     }
+
     public String toHex(String arg) {
         return String.format("%040x", new BigInteger(1, arg.getBytes()));
     }
 
-    public String hextoString(String hexString) throws Exception
-    {
-        byte[] bytes=null;
-        try
-        {
+    public String hextoString(String hexString) throws Exception {
+        byte[] bytes = null;
+        try {
             bytes = Hex.decodeHex(hexString.toCharArray());
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new String(bytes, "UTF-8");
@@ -3977,14 +3940,12 @@ boolean isNetConnectionOn=false;
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
             new OkHttpHandler(DashboardActivity.this, this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void _NewUser(JSONObject jsonObject) throws Exception{
+    public void _NewUser(JSONObject jsonObject) throws Exception {
         try {
             if (jsonObject.optString("success").equals("true")) {
 
@@ -4007,7 +3968,8 @@ boolean isNetConnectionOn=false;
                     preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
                     preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
@@ -4027,7 +3989,8 @@ boolean isNetConnectionOn=false;
                     preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
                     preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
                     preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
@@ -4049,7 +4012,9 @@ boolean isNetConnectionOn=false;
 
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
                     preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
                 }

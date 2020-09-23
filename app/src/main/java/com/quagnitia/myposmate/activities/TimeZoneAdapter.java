@@ -9,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.quagnitia.myposmate.R;
-import com.quagnitia.myposmate.utils.AppConstants;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import org.json.JSONObject;
@@ -228,9 +227,12 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("isUpdated", true);
                             jsonObject.put("CnvUPIQrMPMCloudDAADD",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
                             jsonObject.put("CnvUPIQrMPMCloudDOnly",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-                            jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud());
+                            jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud_lower());
+                            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferencesManager.getCnv_up_upiqr_mpmcloud_higher());
+                            jsonObject.put("CnvUPIQRMPMCloudAmount",preferencesManager.getCnv_up_upiqr_mpmcloud_amount());
+                            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferencesManager.get_cnv_unimerchantqrdisplayHigher());
                             jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
-                            jsonObject.put("cnv_unimerchantqrdisplay",preferencesManager.get_cnv_unimerchantqrdisplay());
+                            jsonObject.put("cnv_unimerchantqrdisplay",preferencesManager.get_cnv_unimerchantqrdisplayLower());
 
                             isUpdateDetails=true;
                             ((TimeZoneActivity) mContext).callUpdateBranchDetails(jsonObject);

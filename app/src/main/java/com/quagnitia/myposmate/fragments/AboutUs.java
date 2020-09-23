@@ -744,7 +744,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             jsonObject.put("CnvAlipayDisplayOnly", preferencesManager.is_cnv_alipay_display_only());
             jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferencesManager.getcnv_uniqr());
-            jsonObject.put("cnv_unimerchantqrdisplay",preferencesManager.get_cnv_unimerchantqrdisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay",preferencesManager.get_cnv_unimerchantqrdisplayLower());
             jsonObject.put("UplanValue", preferencesManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
@@ -781,7 +781,10 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
             jsonObject.put("CnvUPIQrMPMCloudDAADD",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-            jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud());
+            jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud_lower());
+            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferencesManager.getCnv_up_upiqr_mpmcloud_higher());
+            jsonObject.put("CnvUPIQRMPMCloudAmount",preferencesManager.getCnv_up_upiqr_mpmcloud_amount());
+            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferencesManager.get_cnv_unimerchantqrdisplayHigher());
             jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
 
             hashMapKeys.clear();
@@ -944,7 +947,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
 
 
@@ -986,7 +989,10 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
 
@@ -1060,7 +1066,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
                     preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
                     preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplay(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
                     preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
                     preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
                     preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
@@ -1099,7 +1105,10 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
                     preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                     preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
                 }
 
