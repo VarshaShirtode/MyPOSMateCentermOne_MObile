@@ -3819,13 +3819,14 @@ boolean isTriggerCancelled=false;
         preferenceManager.settriggerReferenceId("");
         preferenceManager.setunion_pay_resp("");
         AppConstants.xmppamountforscan = "";
-
+        if(isTrigger)
+        {
+            isTrigger=false;
+            callUpdateRequestAPI1(requestId,true);
+        }
         if (jsonObject.optBoolean("status")) {
             Toast.makeText(getActivity(), jsonObject.optString("message") + ".", Toast.LENGTH_LONG).show();
-
-
             //added for external apps 12/5/2019
-
             if (DashboardActivity.isExternalApp) {
                 AppConstants.showDialog = true;
                 isTransactionDone = true;
@@ -3835,6 +3836,7 @@ boolean isTriggerCancelled=false;
             } else {
                 AppConstants.showDialog = true;
                 ((DashboardActivity) getActivity()).callProgressDialogForUnionPay();
+                if(!isTrigger)
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
             }
 

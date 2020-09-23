@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -266,6 +267,10 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
             list.add(new PrintDataObject("Order Number:"+jsonObject.optString("orderNumber"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
+            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            list.add(new PrintDataObject("Order Time:"+df1.format(df1.parse(jsonObject.optString("myPOSMateTime"))).replace("T"," "),
+                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                    true));
             list.add(new PrintDataObject("Name:"+jsonObject.optString("customerName"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
@@ -278,6 +283,25 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
             list.add(new PrintDataObject("Status:"+jsonObject.optString("status"),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
+
+            try
+            {
+                long timeinmillis=Integer.parseInt(jsonObject.optString("pickupTime"))*60*1000;
+                Date date=df1.parse(jsonObject.optString("myPOSMateTime"));
+                Calendar c=Calendar.getInstance();
+                c.setTime(date);
+
+                c.setTimeInMillis(c.getTimeInMillis()+timeinmillis);
+                date=c.getTime();
+//            df1.parse(jsonObjectData.optString("modifiedOn")
+                list.add(new PrintDataObject("Ready By:"+df1.format(date).replace("T"," "),
+                        fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+            }
+            catch (Exception e){}
+
+
+
             list.add(new PrintDataObject("_______________________________",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
@@ -375,6 +399,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
     int status=0;
     Button btn_complete,btn_rejected,btn_review,btn_accepted;
     TextView tv_time;
+    Spinner spinner;
+    String minutes="";
     public void showStatusDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setCancelable(false);
@@ -398,6 +424,18 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
                 R.array.min_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        minutes=getResources().getStringArray(R.array.min_array)[0];
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                minutes=getResources().getStringArray(R.array.min_array)[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         btn_complete.setOnClickListener((View v) -> {
             status=3;
@@ -514,6 +552,7 @@ boolean isUpdate=false;
         hashMapKeys.put("branchID", preferencesManager.getMerchantId());
         hashMapKeys.put("configID", preferencesManager.getConfigId());
         hashMapKeys.put("hubID", "946");
+        hashMapKeys.put("pickupTime",minutes);
         hashMapKeys.put("status",status+"");
         hashMapKeys.put("myPOSMateOrderID", getIntent().getStringExtra("myPOSMateOrderID"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
@@ -584,14 +623,32 @@ boolean isUpdate=false;
     private void _parseOrderDetailsResponse(JSONObject jsonObject) {
         JSONObject jsonObjectData=jsonObject.optJSONObject("data");
         edt_order_number.setText(jsonObjectData.optString("orderNumber"));
-        edt_order_time.setText(jsonObjectData.optString("myPOSMateTime"));
+
+
+        try
+        {
+            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            edt_order_time.setText(df1.format(df1.parse(jsonObjectData.optString("myPOSMateTime"))).replace("T"," "));
+            long timeinmillis=Integer.parseInt(jsonObjectData.optString("pickupTime"))*60*1000;
+            Date date=df1.parse(jsonObjectData.optString("myPOSMateTime"));
+            Calendar c=Calendar.getInstance();
+            c.setTime(date);
+
+            c.setTimeInMillis(c.getTimeInMillis()+timeinmillis);
+            date=c.getTime();
+//            df1.parse(jsonObjectData.optString("modifiedOn")
+            edt_ready_by.setText(df1.format(date).replace("T"," "));
+        }
+        catch (Exception e){}
+
+
         edt_name.setText(jsonObjectData.optString("customerName"));
         edt_phoneno.setText(jsonObjectData.optString("customerPhone"));
         edt_email.setText(jsonObjectData.optString("customerMail"));
         edt_pickup.setText(jsonObjectData.optString("pickupFrom"));
         edt_id.setText(jsonObjectData.optString("myPOSMateOrderID"));
         edt_status.setText(jsonObjectData.optString("status"));
-        edt_ready_by.setText(jsonObjectData.optString("modifiedOn"));
+
 
         tv_subtotal.setText(jsonObjectData.optString("subtotal").equals("null")?"0.0":
                 "$ "+jsonObjectData.optString("subtotal"));

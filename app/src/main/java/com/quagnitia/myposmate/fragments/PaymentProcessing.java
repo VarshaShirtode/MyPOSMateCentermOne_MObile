@@ -41,6 +41,7 @@ import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.utils.AESHelper;
 import com.quagnitia.myposmate.utils.AppConstants;
+import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -60,6 +61,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeMap;
+
+import static com.quagnitia.myposmate.fragments.ManualEntry.isTrigger;
+import static com.quagnitia.myposmate.fragments.ManualEntry.requestId;
 
 public class PaymentProcessing extends Fragment implements View.OnClickListener, OnTaskCompleted {
     private static final String ARG_PARAM1 = "param1";
@@ -122,6 +126,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 .setNegativeButton(getString(R.string.cancel), null)
                 .setCancelable(false)
                 .create();
+        hashMapKeys = new TreeMap<>();
         initUI(view);
         initListener();
         if (getArguments() != null) {
@@ -135,7 +140,11 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     } else if (jsonObject.optString("channel").equals("ALIPAY")) {
                         img_payment.setImageResource(R.drawable.ic_smallali);
                     }
-
+//                    if(isTrigger)
+//                    {
+//                        isTrigger=false;
+                        callUpdateRequestAPI1(requestId,true);
+//                    }
 
                     if (jsonObject.optString("status").equals("true")
                             || jsonObject.optString("responseCodeThirtyNine").equals("00")
@@ -201,7 +210,31 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         callAuthToken();
         return view;
     }
+    TreeMap<String, String> hashMapKeys;
+    public void callUpdateRequestAPI1(String request_id, boolean executed) {
+        openProgressDialog();
+        try {
+            //v2 signature implementation
 
+            hashMapKeys.clear();
+            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
+            hashMapKeys.put("config_id", preferencesManager.getConfigId());
+            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
+            hashMapKeys.put("request_id", request_id);
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("executed", executed + "");
+
+            new OkHttpHandler(getActivity(), this, null, "updateRequest")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                            MD5Class.generateSignatureString(hashMapKeys, getActivity())
+                            + "&access_token=" + preferencesManager.getauthToken());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private ProgressDialog progress;
 
     public void openProgressDialog() {
@@ -720,11 +753,33 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         }
     }
 
+    private void _parseUpdateRequest(JSONObject jsonObject)
+    {
+        if(jsonObject.optBoolean("status"))
+        {
+            Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
+            if (preferencesManager.isManual()) {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            } else {
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+            }
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "Error cancelling request", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
+            case "updateRequest":
+                if(progress.isShowing())
+                    progress.dismiss();
+                callAuthToken();
+             //   _parseUpdateRequest(jsonObject);
+                break;
             case "AuthToken":
 //                if(progress.isShowing())
 //                    progress.dismiss();
