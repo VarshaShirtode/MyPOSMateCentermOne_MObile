@@ -260,7 +260,11 @@ boolean isCancel=false;
                 if (triggerjsonObject.optString("channel")
                         .equalsIgnoreCase("ALIPAY") ||
                         triggerjsonObject.optString("channel")
-                                .equalsIgnoreCase("WECHAT")) {
+                                .equalsIgnoreCase("WECHAT")||
+                        triggerjsonObject.optString("channel")
+                                .equalsIgnoreCase("UNION_PAY")
+                ) {
+
                     if (triggerjsonObject.optString("request_type").equalsIgnoreCase("REFUND")) {
                         if (!edt_refund_password.getText().toString().equals(""))
                             callRefundApi(triggerjsonObject);
@@ -492,7 +496,7 @@ boolean isUpdateCancelStatus=false;
     public void onTaskCompleted(String result, String TAG) throws Exception {
         if (progress.isShowing())
             progress.dismiss();
-        jsonObjectResponse = new JSONObject(result);
+//        jsonObjectResponse = new JSONObject(result);
         JSONObject jsonObject = new JSONObject(result);
         switch (TAG) {
 
@@ -554,7 +558,7 @@ boolean isUpdateCancelStatus=false;
                     Toast.makeText(getActivity(), "Refund Request UnSuccessful." + jsonObject.optString("message"), Toast.LENGTH_LONG).show();
                 break;
 
-            case "unionpaystatus":
+            case "saveTransaction":
                 AppConstants.isRefundUnionpayDone = true;
                 if (progress != null && progress.isShowing())
                     progress.dismiss();
@@ -571,8 +575,8 @@ boolean isUpdateCancelStatus=false;
             case "TransactionDetails":
                 callAuthToken();
                 jsonObjectResponse = new JSONObject(result);
-                if (jsonObject.optJSONObject("payment").has("serverResponse") &&
-                        jsonObject.optJSONObject("payment").optJSONObject("serverResponse") != null) {
+                if (jsonObject.optJSONObject("payment").has("serverResponse")
+                        &&jsonObject.optJSONObject("payment").optBoolean("thirdParty")) {
                     byte data[] = android.util.Base64.decode(android.util.Base64.decode(jsonObject.optJSONObject("payment").optString("serverResponse"), Base64.NO_WRAP), Base64.NO_WRAP);
                     String serverResponse = new String(data, "UTF-8");
                     JSONObject jsonObjectServerResponse = new JSONObject(serverResponse);
@@ -582,8 +586,19 @@ boolean isUpdateCancelStatus=false;
                 edt_scheme.setText(triggerjsonObject.optString("channel"));
                 if(jsonObject.optJSONObject("payment").optString("channel").equals("UNION_PAY"))
                 {
-                    ll_refund_password.setVisibility(View.GONE);
-                    edt_cup_reference_id.setText(jsonObjectGatewayResponse.optString("referenceNumber"));
+                    if(jsonObject.optJSONObject("payment").optBoolean("thirdParty"))
+                    {
+                        ll_refund_password.setVisibility(View.GONE);
+                        ll_unionpay.setVisibility(View.VISIBLE);
+                        ll_epayments.setVisibility(View.GONE);
+                        edt_cup_reference_id.setText(jsonObjectGatewayResponse.optString("referenceNumber"));
+                    }
+                    else
+                    {
+                        ll_refund_password.setVisibility(View.VISIBLE);
+                        edt_transaction_reference.setText(jsonObject.optJSONObject("payment").optString("tradeNo"));
+                    }
+
                 }
                 else
                 {
