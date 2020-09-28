@@ -286,7 +286,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     }
 
     public void callUpdateRequestAPI1(String request_id, boolean executed) {
-        openProgressDialog();
+       // openProgressDialog();
         try {
             //v2 signature implementation
 
@@ -312,19 +312,41 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
     private void _parseUpdateRequest(JSONObject jsonObject)
     {
-        if(jsonObject.optBoolean("status"))
+        if(progress!=null)
+        if(progress.isShowing())
+            progress.dismiss();
+
+        if(isMerchantQrDisplaySelected==false && MyPOSMateApplication.isOpen)
         {
-            Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
-            if (preferenceManager.isManual()) {
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-            } else {
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+            if(jsonObject.optBoolean("status"))
+            {
+                Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
             }
+            else
+            {
+                Toast.makeText(getActivity(), "Error cancelling request", Toast.LENGTH_SHORT).show();
+            }
+            MyPOSMateApplication.isOpen = false;
+            MyPOSMateApplication.isActiveQrcode = false;
+            callAuthTokenCloseTrade();
         }
         else
         {
-            Toast.makeText(getActivity(), "Error cancelling request", Toast.LENGTH_SHORT).show();
+            if(jsonObject.optBoolean("status"))
+            {
+                Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
+                if (preferenceManager.isManual()) {
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                } else {
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                }
+            }
+            else
+            {
+                Toast.makeText(getActivity(), "Error cancelling request", Toast.LENGTH_SHORT).show();
+            }
         }
+
 
     }
 
@@ -779,17 +801,11 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:
-                //countDownTimerxmpp.cancel();
                 if (isTimeOut) {
-//                    if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
-//                        ((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.disconnect();
-//                    }
                     isTimeOut = false;
                     if (countDownTimerxmpp != null)
                         countDownTimerxmpp.cancel();
                     MyPOSMateApplication.isActiveQrcode = false;
-//                    preferenceManager.setIsAuthenticated(false);
-//                    preferenceManager.setIsConnected(false);
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     return;
                 }
@@ -807,7 +823,6 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                             dialog = new Dialog(getActivity());
                             if (getActivity() != null)
                                 showDialog("Try again");
-//                            Toast.makeText(getActivity(), "Try again", Toast.LENGTH_LONG).show();
                             if (progress != null)
                                 if (progress.isShowing())
                                     progress.dismiss();
@@ -830,19 +845,54 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
                 preferenceManager.setreference_id("");
                 preferenceManager.settriggerReferenceId("");
-                MyPOSMateApplication.isOpen = false;
-                MyPOSMateApplication.isActiveQrcode = false;
+
+                if (countDownTimer != null)
+                    countDownTimer.cancel();
+                if (countDownTimer1 != null)
+                    countDownTimer1.cancel();
+
+                if (countDownTimer11 != null)
+                    countDownTimer11.cancel();
 
                 if(isMerchantQrDisplaySelected)
                 {
                     isMerchantQrDisplaySelected=false;
-                    isTrigger=true;
-                   callAuthToken();
-
+                    if( MyPOSMateApplication.isOpen)
+                    {
+                        MyPOSMateApplication.isOpen = false;
+                        MyPOSMateApplication.isActiveQrcode = false;
+                        isTrigger=true;
+                        openProgressDialog();
+                        callAuthToken();
+                    }
+                    else
+                    {
+                        MyPOSMateApplication.isOpen = false;
+                        MyPOSMateApplication.isActiveQrcode = false;
+                        if(preferenceManager.isManual())
+                        {
+                            ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY,null);
+                        }
+                        else
+                        {
+                            ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION,null);
+                        }
+                    }
                 }
                 else
                 {
-                    callAuthTokenCloseTrade();
+                    if( MyPOSMateApplication.isOpen)
+                    {
+                        isTrigger=true;
+                        openProgressDialog();
+                        callAuthToken();
+                    }
+                    else
+                    {
+                        MyPOSMateApplication.isOpen = false;
+                        MyPOSMateApplication.isActiveQrcode = false;
+                        callAuthTokenCloseTrade();
+                    }
                 }
                 break;
             default:

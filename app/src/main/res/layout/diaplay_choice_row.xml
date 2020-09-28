@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="350dp"
+    android:background="@color/colorPopupBg"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
+        android:background="@color/colorBlue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_height="50dp"
         android:gravity="center"
         android:text="Display Choices"
-        android:textColor="@color/colorHeader"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -485,12 +486,12 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@color/colorHeader"
+                    android:background="@drawable/blue_border_btn"
                     android:gravity="center"
                     android:text="Save &amp; Ok"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp" />
+                    android:textColor="@color/colorBlue"
+                    android:textSize="16sp"/>
 
 
                 <Button
@@ -499,12 +500,12 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:background="@color/colorHeader"
+                    android:background="@drawable/blue_border_btn"
                     android:gravity="center"
                     android:text="Cancel &amp; Close"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp" />
+                    android:textColor="@color/colorBlue"
+                    android:textSize="16sp"  />
 
             </LinearLayout>
 
