@@ -595,7 +595,7 @@
                     android:layout_width="45dp"
                     android:layout_height="30dp"
                     android:layout_toRightOf="@+id/chk_unionpay_qr_code"
-                    android:background="@drawable/edt_border"
+                    android:background="@drawable/edt_border_gray_bg"
                     android:gravity="center"
                     android:inputType="numberDecimal"
 
@@ -680,7 +680,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/dollar"
                 android:gravity="center"
-                android:text="&lt;&lt;"
+                android:text="&lt;"
                 android:textColor="@android:color/black"
                 android:textSize="16sp">
 
@@ -722,7 +722,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toRightOf="@+id/edt_up_upi_qr_amount"
                 android:gravity="center"
-                android:text="&gt;&gt;"
+                android:text="=&gt;"
                 android:textColor="@android:color/black"
                 android:textSize="16sp">
 
