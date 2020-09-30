@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.centerm.smartpos.aidl.printer.AidlPrinter;
 import com.centerm.smartpos.aidl.printer.AidlPrinterStateChangeListener;
 import com.centerm.smartpos.aidl.printer.PrintDataObject;
@@ -38,31 +37,29 @@ import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
-/**
- * Created by admin on 9/18/2018.
- */
 
 public class Settlement extends Fragment implements OnTaskCompleted {
+
+    private AidlPrinterStateChangeListener callback = new PrinterCallback(); // 打印机回调
+    private EditText qrCode, barCode;
+    private String qrStr;
+    private String barStr;
+    private Spinner spinner;
+    private int typeIndex;
+    private String codeStr;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String TAG = "PrinterDemo";
-    private static final int FONT_SIZE_SMALL = 0;
-    private static final int FONT_SIZE_NORMAL = 1;
-    private static final int FONT_SIZE_LARGE = 2;
     private static final int REQ_PAY_SALE = 100;
     public AidlDeviceManager manager = null;
     ProgressDialog progress;
@@ -118,14 +115,8 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             }
         }
     };
-    // 打印机回调对象
-    private AidlPrinterStateChangeListener callback = new PrinterCallback(); // 打印机回调
-    private EditText qrCode, barCode;
-    private String qrStr;
-    private String barStr;
-    private Spinner spinner;
-    private int typeIndex;
-    private String codeStr;
+
+
 
     public Settlement() {
         // Required empty public constructor
@@ -181,8 +172,6 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     }
 
     public void initUI() {
-
-
         ll_we = view.findViewById(R.id.ll_we);
         ll_we.setVisibility(View.GONE);
         tv_settled_on = view.findViewById(R.id.tv_settled_on);
