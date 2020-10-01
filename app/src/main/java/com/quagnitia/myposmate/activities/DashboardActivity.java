@@ -155,7 +155,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private EditText edt_up_upi_qr_cv1;
     private EditText edt_up_upi_qr_amount;
     private TextView upi_note;
-
+    JSONObject jsonObjectLoyalty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,6 +300,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         openFragmentsReceiver = new OpenFragmentsReceiver();
         registerReceiver(openFragmentsReceiver, intentFilter);
         preferencesManager = PreferencesManager.getInstance(DashboardActivity.this);
+        jsonObjectLoyalty = new JSONObject();
         // isLaunch = true;
         callAuthToken();
         initUI();
@@ -569,6 +570,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         final ImageView img_mopanion = dialogview.findViewById(R.id.img_mopanion);
         final ImageView img_wine_club = dialogview.findViewById(R.id.img_wine_club);
 
+        try {
+            if (!preferencesManager.getLoyaltyData().equals("")) {
+                jsonObjectLoyalty = new JSONObject(preferencesManager.getLoyaltyData());
+                chk_best_deals.setChecked(jsonObjectLoyalty.optBoolean("best_deals"));
+                chk_entertainment_book.setChecked(jsonObjectLoyalty.optBoolean("entertainment_book"));
+                chk_mopanion.setChecked(jsonObjectLoyalty.optBoolean("mopanion"));
+                chk_wine_club.setChecked(jsonObjectLoyalty.optBoolean("wine_club"));
+            }
+        } catch (Exception e) {
+        }
+
         img_best_deals.setOnClickListener((View v) -> {
             funcBestDealsDialog();
         });
@@ -590,7 +602,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
         lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
-        JSONObject jsonObjectLoyalty = new JSONObject();
+
         btn_ok.setOnClickListener((View v) -> {
             try {
                 callAuthToken();
@@ -614,7 +626,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     jsonObjectLoyalty.put("wine_club", true);
                 else
                     jsonObjectLoyalty.put("wine_club", false);
-
+                preferencesManager.setLoyaltyData(jsonObjectLoyalty.toString());
                 dialog.dismiss();
             } catch (Exception e) {
             }
@@ -650,9 +662,28 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         View dialogview = lf.inflate(R.layout.best_deals_layout, null);
         final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
         final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
+        final CheckBox chk_amount = dialogview.findViewById(R.id.chk_amount);
+        final CheckBox chk_terminal_id = dialogview.findViewById(R.id.chk_terminal_id);
         final EditText edt_execute_url = dialogview.findViewById(R.id.edt_execute_url);
         final EditText edt_merchant_id = dialogview.findViewById(R.id.edt_merchant_id);
         final EditText edt_store_id = dialogview.findViewById(R.id.edt_store_id);
+
+        try {
+            if (!preferencesManager.getLoyaltyData().equals("")) {
+                jsonObjectLoyalty= new JSONObject(preferencesManager.getLoyaltyData());
+                JSONObject jsonObject=jsonObjectLoyalty.optJSONObject("best_deals_json");
+                chk_front.setChecked(jsonObject.optBoolean("front"));
+                chk_back.setChecked(jsonObject.optBoolean("back"));
+                chk_amount.setChecked(jsonObject.optBoolean("amount"));
+                chk_terminal_id.setChecked(jsonObject.optBoolean("terminal_id"));
+                edt_execute_url.setText(jsonObject.optString("execute_url"));
+                edt_merchant_id.setText(jsonObject.optString("merchant_id"));
+                edt_store_id.setText(jsonObject.optString("store_id"));
+            }
+        } catch (Exception e) {
+        }
+
+
 
 
         Button btn_ok = dialogview.findViewById(R.id.btn_ok);
@@ -667,8 +698,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         btn_ok.setOnClickListener((View v) -> {
             try {
                 callAuthToken();
-
-
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("execute_url", edt_execute_url.getText().toString());
+                jsonObject.put("merchant_id", edt_merchant_id.getText().toString());
+                jsonObject.put("store_id", edt_store_id.getText().toString());
+                jsonObject.put("front", chk_front.isChecked());
+                jsonObject.put("back", chk_back.isChecked());
+                jsonObject.put("amount", chk_amount.isChecked());
+                jsonObject.put("terminal_id", chk_terminal_id.isChecked());
+                jsonObjectLoyalty.put("best_deals_json", jsonObject);
+                preferencesManager.setLoyaltyData(jsonObjectLoyalty.toString());
                 dialog.dismiss();
             } catch (Exception e) {
             }
@@ -705,6 +744,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
         final EditText edt_execute_apps = dialogview.findViewById(R.id.edt_execute_apps);
         final EditText edt_key = dialogview.findViewById(R.id.edt_key);
+        try {
+            if (!preferencesManager.getLoyaltyData().equals("")) {
+                jsonObjectLoyalty = new JSONObject(preferencesManager.getLoyaltyData());
+                JSONObject jsonObject=jsonObjectLoyalty.optJSONObject("entertainment_book_json");
+                chk_front.setChecked(jsonObject.optBoolean("front"));
+                chk_back.setChecked(jsonObject.optBoolean("back"));
+                edt_key.setText(jsonObject.optString("key"));
+                edt_execute_apps.setText(jsonObject.optString("execute_app"));
+            }
+        } catch (Exception e) {
+        }
 
 
         Button btn_ok = dialogview.findViewById(R.id.btn_ok);
@@ -719,8 +769,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         btn_ok.setOnClickListener((View v) -> {
             try {
                 callAuthToken();
-
-
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("execute_app", edt_execute_apps.getText().toString());
+                jsonObject.put("key", edt_key.getText().toString());
+                jsonObject.put("front", chk_front.isChecked());
+                jsonObject.put("back", chk_back.isChecked());
+                jsonObjectLoyalty.put("entertainment_book_json", jsonObject);
+                preferencesManager.setLoyaltyData(jsonObjectLoyalty.toString());
                 dialog.dismiss();
             } catch (Exception e) {
             }

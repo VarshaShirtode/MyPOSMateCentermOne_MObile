@@ -103,6 +103,7 @@ public class PreferencesManager {
     private String isStaticQR="isStaticQR";
     private String isDisplayLoyaltyApps="isDisplayLoyaltyApps";
 
+    private String LoyaltyData="LoyaltyData";
     private String MerchantId="MerchantId";
     private String ConfigId="ConfigId";
     private String authToken="authToken";
@@ -375,6 +376,20 @@ public class PreferencesManager {
         editor.apply();
 
     }
+
+    public String  getLoyaltyData() {
+        return sharedPreferences.getString(LoyaltyData, "");
+    }
+
+    public void setLoyaltyData(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LoyaltyData, text);
+        editor.apply();
+
+    }
+
+
+
 
     public String  getauthTokenCloseTrade() {
         return sharedPreferences.getString(authTokenCloseTrade, "");
