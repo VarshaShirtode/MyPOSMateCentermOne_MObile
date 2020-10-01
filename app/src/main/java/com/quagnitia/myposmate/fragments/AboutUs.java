@@ -753,6 +753,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             jsonObject.put("ShowReference", preferencesManager.getshowReference());
             jsonObject.put("ShowPrintQR", preferencesManager.isQR());
             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
+            jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
             jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
             jsonObject.put("ManualEntry", preferencesManager.isManual());
@@ -961,6 +962,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
                     preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
                     preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
@@ -1077,6 +1079,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));

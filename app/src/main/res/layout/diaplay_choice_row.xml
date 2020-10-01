@@ -102,6 +102,19 @@
                 android:text="Display Static Coupon QR"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
+            <CheckBox
+                android:id="@+id/chk_display_loyalty_apps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Display Loyalty Apps"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <CheckBox
                 android:id="@+id/chk_loyality"
                 android:layout_width="wrap_content"

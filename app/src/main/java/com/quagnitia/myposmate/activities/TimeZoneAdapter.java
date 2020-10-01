@@ -198,6 +198,7 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("ShowReference", preferencesManager.getshowReference());
                             jsonObject.put("ShowPrintQR", preferencesManager.isQR());
                             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
+                            jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
                             jsonObject.put("Home", preferencesManager.isHome());
                             jsonObject.put("ManualEntry", preferencesManager.isManual());
                             jsonObject.put("Back", preferencesManager.isBack());

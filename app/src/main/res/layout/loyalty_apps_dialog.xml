@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:background="@color/colorPopupBg"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorBlue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="Membership / Loyalty Apps"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_below="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/chk_best_deals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Best Deals(Tuan Tuan)"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:src="@drawable/three_lines"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:id="@+id/img_best_deals"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="10dp"
+                 />
+
+
+
+
+            <CheckBox
+                android:layout_below="@+id/chk_best_deals"
+                android:layout_marginTop="5dp"
+                android:id="@+id/chk_entertainment_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Entertainment Book"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+            <ImageView
+                android:layout_below="@+id/chk_best_deals"
+                android:src="@drawable/three_lines"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:id="@+id/img_entertainment_book"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="10dp"
+                />
+
+
+
+
+            <CheckBox
+                android:layout_below="@+id/chk_entertainment_book"
+                android:layout_marginTop="5dp"
+                android:id="@+id/chk_mopanion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Mopanion"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+            <ImageView
+                android:layout_below="@+id/chk_entertainment_book"
+                android:src="@drawable/three_lines"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:id="@+id/img_mopanion"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="10dp"
+                />
+
+
+            <CheckBox
+                android:layout_below="@+id/chk_mopanion"
+                android:layout_marginTop="5dp"
+                android:id="@+id/chk_wine_club"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Wine Club"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <ImageView
+                android:layout_below="@+id/chk_mopanion"
+                android:src="@drawable/three_lines"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:id="@+id/img_wine_club"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="10dp"
+                />
+
+
+        </RelativeLayout>
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/bottom_lay"
+        android:layout_below="@id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/blue_border_btn"
+            android:gravity="center"
+            android:text="Save &amp; Ok"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlue"
+            android:textSize="16sp"/>
+
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/blue_border_btn"
+            android:gravity="center"
+            android:text="Cancel &amp; Close"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlue"
+            android:textSize="16sp"  />
+
+    </LinearLayout>
+
+</RelativeLayout>

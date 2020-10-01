@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:background="@color/colorPopupBg"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorBlue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="Bestdeals(Tuan Tuan)"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_below="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tv_eurl"
+                android:layout_marginTop="10dp"
+                style="@style/TextViewStyle"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="2"
+                android:text="Execute URL" />
+
+            <EditText
+                android:layout_below="@+id/tv_eurl"
+                android:id="@+id/edt_execute_url"
+                style="@style/EditTextStyle"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:inputType="text"
+                android:minLines="2"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_below="@+id/edt_execute_url"
+                android:id="@+id/tv_merchant_id"
+                android:layout_marginTop="5dp"
+                style="@style/TextViewStyle"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="2"
+                android:text="Merchant Id" />
+
+            <EditText
+                android:layout_below="@+id/tv_merchant_id"
+                android:id="@+id/edt_merchant_id"
+                style="@style/EditTextStyle"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:inputType="text"
+                android:minLines="2"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_below="@+id/edt_merchant_id"
+                android:id="@+id/tv_store_id"
+                android:layout_marginTop="5dp"
+                style="@style/TextViewStyle"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="2"
+                android:text="Store Id" />
+
+            <EditText
+                android:layout_below="@+id/tv_store_id"
+                android:id="@+id/edt_store_id"
+                style="@style/EditTextStyle"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:inputType="text"
+                android:minLines="2"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_below="@+id/edt_store_id"
+                android:id="@+id/tv_pass_parameter"
+                android:layout_marginTop="5dp"
+                style="@style/TextViewStyle"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:text="Pass Parameter" />
+
+            <CheckBox
+                android:layout_below="@+id/tv_pass_parameter"
+                android:layout_marginTop="5dp"
+                android:id="@+id/chk_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Amount"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <CheckBox
+                android:layout_below="@+id/chk_amount"
+                android:layout_marginTop="5dp"
+                android:id="@+id/chk_terminal_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Terminal Id"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <View
+                android:layout_below="@+id/chk_terminal_id"
+                android:id="@+id/vv"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorBlue"
+                android:text="Pass Parameter" />
+            <CheckBox
+                android:layout_below="@+id/vv"
+                android:id="@+id/chk_front"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Membership / Loyality (Front)"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <CheckBox
+                android:layout_below="@+id/chk_front"
+                android:id="@+id/chk_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Membership / Loyality (Back)"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_below="@+id/scroll"
+        android:id="@+id/bottom_lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/blue_border_btn"
+            android:gravity="center"
+            android:text="Save &amp; Ok"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlue"
+            android:textSize="16sp"/>
+
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/blue_border_btn"
+            android:gravity="center"
+            android:text="Cancel &amp; Close"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlue"
+            android:textSize="16sp"  />
+
+    </LinearLayout>
+
+</RelativeLayout>

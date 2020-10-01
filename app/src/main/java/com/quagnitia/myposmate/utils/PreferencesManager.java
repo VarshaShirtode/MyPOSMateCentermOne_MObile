@@ -101,6 +101,7 @@ public class PreferencesManager {
     private String TerminalIdentifier="TerminalIdentifier";
     private String isQR="isQR";
     private String isStaticQR="isStaticQR";
+    private String isDisplayLoyaltyApps="isDisplayLoyaltyApps";
 
     private String MerchantId="MerchantId";
     private String ConfigId="ConfigId";
@@ -364,6 +365,16 @@ public class PreferencesManager {
 
     }
 
+    public boolean isDisplayLoyaltyApps() {
+        return sharedPreferences.getBoolean(isDisplayLoyaltyApps, false);
+    }
+
+    public void setisDisplayLoyaltyApps(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isDisplayLoyaltyApps, text);
+        editor.apply();
+
+    }
 
     public String  getauthTokenCloseTrade() {
         return sharedPreferences.getString(authTokenCloseTrade, "");

@@ -96,6 +96,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public ImageView img_menu;
     private RelativeLayout rel_un;
     private TextView tv_settlement;
+    private TextView tv_loyalty_apps;
     private Context mContext;
     public PopupWindow mPopupWindow;
     private TextView tv_home;
@@ -489,6 +490,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             tv_refund_unipay.setVisibility(View.VISIBLE);
         });
         tv_settlement.setOnClickListener((View v) -> funcMenuSettlement());
+        tv_loyalty_apps.setOnClickListener((View v) -> funcLoyaltyApps());
         tv_refund_unipay.setOnClickListener((View v) -> funcMenuRefundUnionPay());
         tv_timezone.setOnClickListener((View v) -> funcMenuTimezone());
         tv_eod.setOnClickListener((View v) -> funcMenuEOD());
@@ -523,6 +525,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void funcInitiateDisplayMenuViews(View customView) {
         tv_manual_entry = customView.findViewById(R.id.tv_manual_entry);
         tv_settlement = customView.findViewById(R.id.tv_settlement);
+        tv_loyalty_apps = customView.findViewById(R.id.tv_loyalty_apps);
         tv_transaction_log = customView.findViewById(R.id.tv_transaction_log);
         tv_orders = customView.findViewById(R.id.tv_orders);
         tv_eod = customView.findViewById(R.id.tv_eod);
@@ -541,6 +544,204 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tv_refund_unipay.setVisibility(View.GONE);
         tv_refund.setVisibility(View.GONE);
     }
+
+    public void funcLoyaltyApps() {
+        callAuthToken();
+        if (mPopupWindow.isShowing())
+            mPopupWindow.dismiss();
+
+        //   if (preferencesManager.isAuthenticated()) {
+
+
+        final Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.loyalty_apps_dialog, null);
+        final CheckBox chk_best_deals = dialogview.findViewById(R.id.chk_best_deals);
+        final CheckBox chk_entertainment_book = dialogview.findViewById(R.id.chk_entertainment_book);
+        final CheckBox chk_mopanion = dialogview.findViewById(R.id.chk_mopanion);
+        final CheckBox chk_wine_club = dialogview.findViewById(R.id.chk_wine_club);
+        final ImageView img_best_deals = dialogview.findViewById(R.id.img_best_deals);
+        final ImageView img_entertainment_book = dialogview.findViewById(R.id.img_entertainment_book);
+        final ImageView img_mopanion = dialogview.findViewById(R.id.img_mopanion);
+        final ImageView img_wine_club = dialogview.findViewById(R.id.img_wine_club);
+
+        img_best_deals.setOnClickListener((View v) -> {
+            funcBestDealsDialog();
+        });
+        img_entertainment_book.setOnClickListener((View v) -> {
+            funcEntertainmentBook();
+        });
+        img_mopanion.setOnClickListener((View v) -> {
+        });
+        img_wine_club.setOnClickListener((View v) -> {
+        });
+
+
+        Button btn_ok = dialogview.findViewById(R.id.btn_ok);
+        Button btn_cancel = dialogview.findViewById(R.id.btn_cancel);
+        dialog.setContentView(dialogview);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        JSONObject jsonObjectLoyalty = new JSONObject();
+        btn_ok.setOnClickListener((View v) -> {
+            try {
+                callAuthToken();
+
+                if (chk_best_deals.isChecked())
+                    jsonObjectLoyalty.put("best_deals", true);
+                else
+                    jsonObjectLoyalty.put("best_deals", false);
+
+                if (chk_entertainment_book.isChecked())
+                    jsonObjectLoyalty.put("entertainment_book", true);
+                else
+                    jsonObjectLoyalty.put("entertainment_book", false);
+
+                if (chk_mopanion.isChecked())
+                    jsonObjectLoyalty.put("mopanion", true);
+                else
+                    jsonObjectLoyalty.put("mopanion", false);
+
+                if (chk_wine_club.isChecked())
+                    jsonObjectLoyalty.put("wine_club", true);
+                else
+                    jsonObjectLoyalty.put("wine_club", false);
+
+                dialog.dismiss();
+            } catch (Exception e) {
+            }
+
+        });
+        btn_cancel.setOnClickListener((View v) ->
+                {
+                    dialog.dismiss();
+
+                }
+        );
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+        if (mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+            return;
+        }
+    }
+
+
+    public void funcBestDealsDialog() {
+        callAuthToken();
+        if (mPopupWindow.isShowing())
+            mPopupWindow.dismiss();
+
+        final Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.best_deals_layout, null);
+        final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
+        final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
+        final EditText edt_execute_url = dialogview.findViewById(R.id.edt_execute_url);
+        final EditText edt_merchant_id = dialogview.findViewById(R.id.edt_merchant_id);
+        final EditText edt_store_id = dialogview.findViewById(R.id.edt_store_id);
+
+
+        Button btn_ok = dialogview.findViewById(R.id.btn_ok);
+        Button btn_cancel = dialogview.findViewById(R.id.btn_cancel);
+        dialog.setContentView(dialogview);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        btn_ok.setOnClickListener((View v) -> {
+            try {
+                callAuthToken();
+
+
+                dialog.dismiss();
+            } catch (Exception e) {
+            }
+
+        });
+        btn_cancel.setOnClickListener((View v) ->
+                {
+                    dialog.dismiss();
+
+                }
+        );
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+        if (mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+            return;
+        }
+    }
+
+    public void funcEntertainmentBook() {
+        callAuthToken();
+        if (mPopupWindow.isShowing())
+            mPopupWindow.dismiss();
+
+        final Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.entertainment_book, null);
+        final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
+        final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
+        final EditText edt_execute_apps = dialogview.findViewById(R.id.edt_execute_apps);
+        final EditText edt_key = dialogview.findViewById(R.id.edt_key);
+
+
+        Button btn_ok = dialogview.findViewById(R.id.btn_ok);
+        Button btn_cancel = dialogview.findViewById(R.id.btn_cancel);
+        dialog.setContentView(dialogview);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        btn_ok.setOnClickListener((View v) -> {
+            try {
+                callAuthToken();
+
+
+                dialog.dismiss();
+            } catch (Exception e) {
+            }
+
+        });
+        btn_cancel.setOnClickListener((View v) ->
+                {
+                    dialog.dismiss();
+
+                }
+        );
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+        if (mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+            return;
+        }
+    }
+
 
     public void funcMenuSettlement() {
         callAuthToken();
@@ -745,6 +946,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
         final CheckBox chk_print_qr = dialogview.findViewById(R.id.chk_print_qr);
         final CheckBox chk_display_static_qr = dialogview.findViewById(R.id.chk_display_static_qr);
+        final CheckBox chk_display_loyalty_apps = dialogview.findViewById(R.id.chk_display_loyalty_apps);
         final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
         final CheckBox chk_membership_manual = dialogview.findViewById(R.id.chk_membership_manual);
         final CheckBox chk_membership_home = dialogview.findViewById(R.id.chk_membership_home);
@@ -784,6 +986,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_display_static_qr.setSelected(false);
         }
 
+        if (preferencesManager.isDisplayLoyaltyApps()) {
+            chk_display_loyalty_apps.setChecked(true);
+            chk_display_loyalty_apps.setSelected(true);
+        } else {
+            chk_display_loyalty_apps.setChecked(false);
+            chk_display_loyalty_apps.setSelected(false);
+        }
 
         if (preferencesManager.isMembershipManual()) {
             chk_membership_manual.setChecked(true);
@@ -960,7 +1169,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setisStaticQR(false);
             }
         });
-
+        chk_display_loyalty_apps.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_display_loyalty_apps.setChecked(true);
+                preferencesManager.setisDisplayLoyaltyApps(true);
+            } else {
+                //case 2
+                chk_display_loyalty_apps.setChecked(false);
+                preferencesManager.setisDisplayLoyaltyApps(false);
+            }
+        });
 
         chk_print_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
@@ -1224,7 +1442,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         edt_up_upi_qr_cv = dialogView.findViewById(R.id.edt_up_upi_qr_cv);
         edt_up_upi_qr_cv1 = dialogView.findViewById(R.id.edt_up_upi_qr_cv1);
         edt_up_upi_qr_amount = dialogView.findViewById(R.id.edt_up_upi_qr_amount);
-        upi_note=dialogView.findViewById(R.id.upi_note);
+        upi_note = dialogView.findViewById(R.id.upi_note);
     }
 
 
@@ -2831,9 +3049,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            Double upilowerFee=edt_up_upi_qr_cv.getText().toString().isEmpty()?0.00:
+            Double upilowerFee = edt_up_upi_qr_cv.getText().toString().isEmpty() ? 0.00 :
                     Double.parseDouble(edt_up_upi_qr_cv.getText().toString());
-            Double upihigherFee=edt_up_upi_qr_cv1.getText().toString().isEmpty()?0.00:
+            Double upihigherFee = edt_up_upi_qr_cv1.getText().toString().isEmpty() ? 0.00 :
                     Double.parseDouble(edt_up_upi_qr_cv1.getText().toString());
             switch (editText.getId()) {
                 case R.id.edt_ali_cv:
@@ -2918,6 +3136,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("ShowReference", preferenceManager.getshowReference());
             jsonObject.put("ShowPrintQR", preferenceManager.isQR());
             jsonObject.put("DisplayStaticQR", preferenceManager.isStaticQR());
+            jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
             jsonObject.put("ShowMembershipManual", preferenceManager.isMembershipManual());
             jsonObject.put("ShowMembershipHome", preferenceManager.isMembershipHome());
             jsonObject.put("Membership/Loyality", preferenceManager.isLoyality());
@@ -3235,6 +3454,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
@@ -3806,6 +4026,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("ShowReference", preferencesManager.getshowReference());
             jsonObject.put("ShowPrintQR", preferencesManager.isQR());
             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
+            jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
             jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
             jsonObject.put("ManualEntry", preferencesManager.isManual());
@@ -3980,6 +4201,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));

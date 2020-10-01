@@ -77,43 +77,9 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
         context = getApplicationContext();
         preferencesManager = PreferencesManager.getInstance(getApplicationContext());
         handler = new Handler();
-//        if (!preferencesManager.getUsername().equals(""))
-//            checkAvaliability();
-//        bindSdkDeviceService();
-//        Printer.initWebView(context);
-
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-
-      /*  final Handler handler = new Handler();
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-//                if (!preferencesManager.getUsername().equals(""))
-//                {
-//                    preferencesManager.setIsConnected(false);
-//                    preferencesManager.setIsAuthenticated(false);
-//                }
-
-                if (isNetworkAvailable()) {
-                    Intent i = new Intent();
-                    i.setAction("NetConnectionOn");
-                    sendBroadcast(i);
-                    isNetConnectionOn = true;
-                    callAuthToken();
-//                    initiateStompConnection();
-
-                  //  initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
-                } else {
-                    Intent i = new Intent();
-                    i.setAction("NetConnectionOff");
-                    sendBroadcast(i);
-                }
-                handler.postDelayed(this, 60000);
-            }
-        };
-        handler.post(run);*/
 
     }
 
@@ -525,7 +491,6 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
     @Override
     public void onTaskCompleted(String result, String TAG) throws Exception {
         if (result.equals("")) {
-            // Toast.makeText(DashboardActivity.this, "No data from server.", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject jsonObject = new JSONObject(result);
