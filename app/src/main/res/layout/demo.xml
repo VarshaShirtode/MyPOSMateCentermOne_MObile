@@ -1072,14 +1072,15 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/rel_loyalty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="5dp"
         android:visibility="visible">
 
 
@@ -1140,6 +1141,10 @@
             </LinearLayout>
 
         </RelativeLayout>
+        <include
+           android:visibility="gone"
+            layout="@layout/loyalty_layout"
+            ></include>
 
         <TextView
             android:id="@+id/tv_status_scan"
@@ -1154,6 +1159,6 @@
             android:textStyle="bold"
             android:visibility="visible" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

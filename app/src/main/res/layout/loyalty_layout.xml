@@ -1,0 +1,88 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_membership_loyalty_app"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="3"
+    >
+<LinearLayout
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:background="@drawable/button_shadow"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <Button
+
+        android:id="@+id/tv_status_scan_button1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="Membership/Loyalty"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="10sp" />
+
+    <Button
+        android:id="@+id/btn_back1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:gravity="center"
+        android:text="Back Camera"
+        android:textAllCaps="false"
+        android:textColor="@color/colorBlue"
+        android:textSize="14sp" />
+</LinearLayout>
+
+        <Button
+            android:layout_margin="5dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_loyalty_apps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/edt_border"
+            android:gravity="center"
+            android:text="Membership\nLoyalty Apps"
+            android:textAllCaps="false"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="16sp" />
+    <LinearLayout
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/button_shadow"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+
+            android:id="@+id/tv_status_scan_button2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="Membership/Loyality"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/btn_front1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:text="Front Camera"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlue"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>
