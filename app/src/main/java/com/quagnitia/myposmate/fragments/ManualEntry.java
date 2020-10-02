@@ -3194,6 +3194,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.btn_loyalty_apps:
+                ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.LOYALTY_APPS,null);
                 break;
 
             case R.id.tv_status_scan_button:

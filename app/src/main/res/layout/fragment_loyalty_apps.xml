@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/colorHeader"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp" />
+    <LinearLayout
+        android:id="@+id/ll_amount"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|left"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            style="@style/TextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="2"
+            android:text="@string/amount"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+
+        <com.quagnitia.myposmate.utils.CurrencyEditText
+            android:id="@+id/edt_amount"
+            android:maxLength="16"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center|right"
+            android:inputType="numberDecimal"
+            android:text="0.00"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:locale="en_US" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/ll_amount"
+        android:background="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:weightSum="3"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:id="@+id/img_one"
+                android:background="@drawable/ii"
+                android:layout_width="150dp"
+                android:layout_height="150dp">
+
+            </ImageView>
+
+
+            <ImageView
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:id="@+id/img_two"
+                android:background="@drawable/iii"
+                android:layout_width="150dp"
+                android:layout_height="150dp">
+
+            </ImageView>
+            <ImageView
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:id="@+id/img_three"
+                android:src="@drawable/ic_mopanion"
+                android:padding="10dp"
+                android:background="@color/colorIndigo"
+                android:layout_width="150dp"
+                android:layout_height="150dp">
+
+            </ImageView>
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>

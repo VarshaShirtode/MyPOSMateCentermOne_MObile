@@ -58,6 +58,7 @@ import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.fragments.AboutUs;
 import com.quagnitia.myposmate.fragments.AlipayPaymentFragment;
 import com.quagnitia.myposmate.fragments.EODFragment;
+import com.quagnitia.myposmate.fragments.FragmentLoyaltyApps;
 import com.quagnitia.myposmate.fragments.ManualEntry;
 import com.quagnitia.myposmate.fragments.OrderFragment;
 import com.quagnitia.myposmate.fragments.PaymentProcessing;
@@ -88,6 +89,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import static com.quagnitia.myposmate.MyPOSMateApplication.mStompClient;
+import static com.quagnitia.myposmate.utils.AppConstants.SAVE_LOYALTY_INFO;
 import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
 
 //import com.quagnitia.myposmate.fragments.DemoFragment;
@@ -356,7 +358,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     public enum SCREENS {
-        POSMATECONNECTION, ORDERS, SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP
+        POSMATECONNECTION, ORDERS,LOYALTY_APPS, SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP
     }
 
 
@@ -4012,6 +4014,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case ORDERS:
                 fragment = OrderFragment.newInstance("", "");
                 CURRENTFRAGMENT = SCREENS.ORDERS.toString();
+                break;
+
+            case LOYALTY_APPS:
+                fragment= FragmentLoyaltyApps.newInstance("","");
+                CURRENTFRAGMENT=SCREENS.LOYALTY_APPS.toString();
                 break;
 
             case EOD:
