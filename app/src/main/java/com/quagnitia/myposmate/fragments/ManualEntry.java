@@ -1099,6 +1099,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                       preferenceManager.isBack()&&
                       preferenceManager.isDisplayLoyaltyApps())
               {
+                  view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+                  view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
                   ll_membership_loyalty_app.setWeightSum(3);
                   tv_status_scan_button1.setVisibility(View.VISIBLE);
                   tv_status_scan_button2.setVisibility(View.VISIBLE);
@@ -1110,6 +1112,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                       preferenceManager.isBack()&&
                       preferenceManager.isDisplayLoyaltyApps())
               {
+                  view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+                  view.findViewById(R.id.ll_front).setVisibility(View.GONE);
                   ll_membership_loyalty_app.setWeightSum(2);
                   tv_status_scan_button1.setVisibility(View.VISIBLE);
                   tv_status_scan_button2.setVisibility(View.GONE);
@@ -1121,6 +1125,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                       !preferenceManager.isBack()&&
                       preferenceManager.isDisplayLoyaltyApps())
               {
+                  view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                  view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
                   ll_membership_loyalty_app.setWeightSum(2);
                   tv_status_scan_button1.setVisibility(View.GONE);
                   tv_status_scan_button2.setVisibility(View.VISIBLE);
@@ -1132,6 +1138,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                       !preferenceManager.isBack()&&
                       preferenceManager.isDisplayLoyaltyApps())
               {
+                  view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                  view.findViewById(R.id.ll_front).setVisibility(View.GONE);
                   ll_membership_loyalty_app.setWeightSum(1);
                   tv_status_scan_button1.setVisibility(View.GONE);
                   tv_status_scan_button2.setVisibility(View.GONE);

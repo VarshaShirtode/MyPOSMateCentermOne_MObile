@@ -72,7 +72,7 @@
                 android:id="@+id/img_one"
                 android:background="@drawable/ii"
                 android:layout_width="150dp"
-                android:layout_height="150dp">
+                android:layout_height="130dp">
 
             </ImageView>
 
@@ -81,27 +81,114 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:id="@+id/img_two"
-                android:background="@drawable/iii"
+                android:background="@drawable/entertainment"
                 android:layout_width="150dp"
-                android:layout_height="150dp">
+                android:layout_height="130dp">
 
             </ImageView>
             <ImageView
+                android:background="@drawable/mopanion"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:id="@+id/img_three"
-                android:src="@drawable/ic_mopanion"
                 android:padding="10dp"
-                android:background="@color/colorIndigo"
                 android:layout_width="150dp"
-                android:layout_height="150dp">
+                android:layout_height="130dp">
 
             </ImageView>
 
 
         </LinearLayout>
 
+        <LinearLayout
+            android:weightSum="3"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:onClick="callCam"
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/goody"
+                android:layout_width="150dp"
+                android:layout_height="130dp">
+
+            </ImageView>
+
+
+            <ImageView
+                android:onClick="callCam"
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/smart_fuel"
+                android:layout_width="150dp"
+                android:layout_height="130dp">
+
+            </ImageView>
+            <ImageView
+                android:onClick="callCam"
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:src="@drawable/air_points"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:layout_width="150dp"
+                android:layout_height="130dp">
+
+            </ImageView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:weightSum="3"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:onClick="callCam"
+                android:background="@drawable/edt_border_black"
+                android:scaleType="fitXY"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/fly_buys"
+                android:layout_width="150dp"
+                android:layout_height="130dp">
+
+            </ImageView>
+
+
+            <ImageView
+                android:visibility="invisible"
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/smart_fuel"
+                android:layout_width="150dp"
+                android:layout_height="130dp">
+
+            </ImageView>
+            <ImageView
+                android:visibility="invisible"
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:src="@drawable/air_points"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:layout_width="150dp"
+                android:layout_height="130dp">
+
+            </ImageView>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

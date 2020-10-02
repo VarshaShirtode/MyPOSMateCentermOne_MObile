@@ -123,14 +123,14 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
 
     public void callCam()
     {
-        if(preferencesManager.isFront())
-        {
-            stsartFastScan(false);//front
-        }
-        else if(preferencesManager.isBack())
-        {
+//        if(preferencesManager.isFront())
+//        {
+//            stsartFastScan(false);//front
+//        }
+//        else if(preferencesManager.isBack())
+//        {
             stsartFastScan(true);//Back
-        }
+//        }
     }
     private AidlQuickScanZbar aidlQuickScanService = null;
     private int bestWidth = 640;
@@ -245,3 +245,4 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
 
 
 }
+
