@@ -83,6 +83,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     private ProgressDialog progress, progress1;
     private String mParam1;
     private String mParam2;
+    public static String pass_amount="";
     private Button btn_cancel, btn_save1, btn_cancel1;
     private View view;
     private TextView tv_alipay_disabled, tv_unionpay_qr_disabled, tv_wechat_scan_disabled, tv_wechat_disabled, tv_scanqr_disabled, tv_uplan_disabled, tv_unionpay_disabled, tv_scan_uni_disabled;
@@ -594,6 +595,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     @Override
     public void onDestroy() {
+        if(!edt_amount.getText().toString().equals(""))
+        pass_amount=edt_amount.getText().toString();
         super.onDestroy();
         if (countDownTimerxmpp != null)
             countDownTimerxmpp.cancel();

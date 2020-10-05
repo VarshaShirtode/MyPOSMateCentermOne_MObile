@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import java.util.HashMap;
 
+import static com.quagnitia.myposmate.fragments.ManualEntry.pass_amount;
+
 public class FragmentLoyaltyApps extends Fragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -35,7 +38,7 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
     private String mParam2;
     View view;
     Button btn_cancel;
-    ImageView img_one,img_two,img_three;
+    ImageView img_one,img_two,img_three,img_fly_buys,img_air_points,img_smart_fuel,img_goody;
     PreferencesManager preferencesManager;
 
 
@@ -67,6 +70,8 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view=inflater.inflate(R.layout.fragment_loyalty_apps, container, false);
+        EditText edt_amount=view.findViewById(R.id.edt_amount);
+        edt_amount.setText(pass_amount);
         initUI();
         initListener();
         bindService();
@@ -86,6 +91,10 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
         img_one=view.findViewById(R.id.img_one);
         img_two=view.findViewById(R.id.img_two);
         img_three=view.findViewById(R.id.img_three);
+        img_fly_buys=view.findViewById(R.id.img_fly_buys);
+        img_air_points=view.findViewById(R.id.img_air_points);
+        img_smart_fuel=view.findViewById(R.id.img_smart_fuel);
+        img_goody=view.findViewById(R.id.img_goody);
     }
 
     public void initListener()
@@ -94,6 +103,10 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
         img_one.setOnClickListener(this);
         img_two.setOnClickListener(this);
         img_three.setOnClickListener(this);
+        img_fly_buys.setOnClickListener(this);
+        img_air_points.setOnClickListener(this);
+        img_smart_fuel.setOnClickListener(this);
+        img_goody.setOnClickListener(this);
     }
 
     @Override
@@ -114,6 +127,10 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
             case R.id.img_one:
             case R.id.img_two:
             case R.id.img_three:
+            case R.id.img_fly_buys:
+            case R.id.img_goody:
+            case R.id.img_smart_fuel:
+            case R.id.img_air_points:
                 callCam();
                 break;
 
