@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -125,12 +126,21 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
                 break;
 
             case R.id.img_one:
-            case R.id.img_two:
+                Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.goodealnz.merchant");
+                if (intent == null) {
+                    // Bring user to the market or let them choose an app?
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("market://details?id=" + "com.goodealnz.merchant"));
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+                break;
+          //  case R.id.img_two:
             case R.id.img_three:
-            case R.id.img_fly_buys:
-            case R.id.img_goody:
-            case R.id.img_smart_fuel:
-            case R.id.img_air_points:
+//            case R.id.img_fly_buys:
+//            case R.id.img_goody:
+//            case R.id.img_smart_fuel:
+//            case R.id.img_air_points:
                 callCam();
                 break;
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="100dp"
@@ -15,6 +16,7 @@
         android:text="@string/cancel"
         android:textColor="@color/colorWhite"
         android:textSize="16sp" />
+
     <LinearLayout
         android:id="@+id/ll_amount"
         android:layout_width="230dp"
@@ -36,7 +38,6 @@
 
         <com.quagnitia.myposmate.utils.CurrencyEditText
             android:id="@+id/edt_amount"
-            android:maxLength="16"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -44,6 +45,7 @@
             android:layout_weight="1"
             android:gravity="center|right"
             android:inputType="numberDecimal"
+            android:maxLength="16"
             android:text="0.00"
             android:textColor="@android:color/black"
             android:textSize="16sp"
@@ -53,49 +55,50 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:layout_below="@+id/ll_amount"
-        android:background="@color/colorWhite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_amount"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:weightSum="3"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <ImageView
-                android:layout_margin="10dp"
-                android:layout_weight="1"
                 android:id="@+id/img_one"
-                android:background="@drawable/ii"
                 android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/ii">
 
             </ImageView>
 
 
             <ImageView
-              
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:id="@+id/img_two"
-                android:background="@drawable/entertainment"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
 
-            </ImageView>
-            <ImageView
-              
-                android:background="@drawable/mopanion"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
                 android:id="@+id/img_three"
-                android:padding="10dp"
                 android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/mopanion"
+                android:padding="10dp">
+
+            </ImageView>
+
+            <ImageView
+                android:id="@+id/img_two"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/entertainment"
+                android:visibility="invisible">
 
             </ImageView>
 
@@ -103,44 +106,46 @@
         </LinearLayout>
 
         <LinearLayout
-            android:weightSum="3"
-            android:orientation="horizontal"
+            android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <ImageView
                 android:id="@+id/img_goody"
-                android:background="@drawable/edt_border_black"
-                android:padding="10dp"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/goody"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:src="@drawable/goody">
 
             </ImageView>
 
 
             <ImageView
-              android:id="@+id/img_smart_fuel"
-                android:background="@drawable/edt_border_black"
-                android:padding="10dp"
+                android:id="@+id/img_smart_fuel"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/smart_fuel"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:src="@drawable/smart_fuel">
 
             </ImageView>
+
             <ImageView
-              android:id="@+id/img_air_points"
-                android:background="@drawable/edt_border_black"
-                android:padding="10dp"
-                android:src="@drawable/air_points"
+                android:id="@+id/img_air_points"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:background="@drawable/edt_border_black"
+                android:padding="10dp"
+                android:src="@drawable/air_points">
 
             </ImageView>
 
@@ -148,44 +153,46 @@
         </LinearLayout>
 
         <LinearLayout
-            android:weightSum="3"
-            android:orientation="horizontal"
+            android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <ImageView
-              android:id="@+id/img_fly_buys"
+                android:id="@+id/img_fly_buys"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/edt_border_black"
                 android:scaleType="fitXY"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:src="@drawable/fly_buys"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:src="@drawable/fly_buys">
 
             </ImageView>
 
 
             <ImageView
-                android:visibility="invisible"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/edt_border_black"
                 android:padding="10dp"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
                 android:src="@drawable/smart_fuel"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:visibility="invisible">
 
             </ImageView>
+
             <ImageView
-                android:visibility="invisible"
+                android:layout_width="150dp"
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/edt_border_black"
                 android:padding="10dp"
                 android:src="@drawable/air_points"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:layout_width="150dp"
-                android:layout_height="130dp">
+                android:visibility="invisible">
 
             </ImageView>
 
