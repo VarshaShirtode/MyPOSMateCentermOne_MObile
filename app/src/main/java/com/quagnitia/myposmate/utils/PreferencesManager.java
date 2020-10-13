@@ -95,6 +95,7 @@ public class PreferencesManager {
     private String isLaneIdentifier="isLaneIdentifier";
     private String isPOSIdentifier="isPOSIdentifier";
     private String isTerminalIdentifier="isTerminalIdentifier";
+    private String orderBadgeCount="orderBadgeCount";
 
     private String LaneIdentifier="LaneIdentifier";
     private String POSIdentifier="POSIdentifier";
@@ -184,6 +185,17 @@ public class PreferencesManager {
 
     }
 
+    public int getOrderBadgeCount()
+    {
+        return  sharedPreferences.getInt(orderBadgeCount,0);
+    }
+
+    public void setOrderBadgeCount(int text)
+    {
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putInt(orderBadgeCount,text);
+        editor.apply();
+    }
 
 
     public boolean isWeChatScan() {

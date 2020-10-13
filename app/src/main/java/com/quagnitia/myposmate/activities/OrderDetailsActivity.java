@@ -175,6 +175,9 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        int count=preferencesManager.getOrderBadgeCount();
+        count=count-1;
+        preferencesManager.setOrderBadgeCount(count);
         if (conn != null) {
             unbindService(conn);
         }
@@ -709,4 +712,6 @@ boolean isUpdate=false;
 
         }
     }
+
+
 }

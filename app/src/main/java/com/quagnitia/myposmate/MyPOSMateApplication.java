@@ -234,7 +234,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 try {
                     JSONObject jsonObject1 = new JSONObject(message.getPayload());
                     if (!jsonObject1.has("channel") || jsonObject1.optString("channel").equalsIgnoreCase("DPS") || jsonObject1.optString("channel").equalsIgnoreCase("null")) {
-                        isOpen = false;
+                      //  isOpen = false;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -242,6 +242,23 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
 
                 if (isOpen) {
                     //donot open the screen
+                    try
+                    {
+                        JSONObject jsonObject = new JSONObject(message.getPayload());
+                        if (jsonObject.has("request_type")) {
+
+                            switch (jsonObject.optString("request_type")) {
+                                case "NEW_ORDER":
+                                    int count=preferencesManager.getOrderBadgeCount();
+                                    preferencesManager.setOrderBadgeCount(count+1);
+                                    intent.setAction("OrderDetails");
+                                    intent.putExtra("data", message.getPayload());
+                                    sendBroadcast(intent);
+                                    break;
+                            }
+                        }
+                    }
+                    catch (Exception e){}
                 } else {
                     try {
                         AppConstants.xmppamountforscan = "";
@@ -301,6 +318,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                     sendBroadcast(intent);
                                     break;
                                 case "NEW_ORDER":
+                                    int count=preferencesManager.getOrderBadgeCount();
+                                    preferencesManager.setOrderBadgeCount(count+1);
                                     intent.setAction("OrderDetails");
                                     intent.putExtra("data", message.getPayload());
                                     sendBroadcast(intent);

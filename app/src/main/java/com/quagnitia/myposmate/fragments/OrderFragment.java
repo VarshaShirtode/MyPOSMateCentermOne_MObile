@@ -198,6 +198,7 @@ int cnt_completed=0,cnt_rejected=0,cnt_reviewed=0,cnt_accepted=0,total_orders=0;
                 break;
 
             case "OrderList":
+                preferencesManager.setOrderBadgeCount(0);
                 _parseOrderListResponse(jsonObject);
                 break;
 
