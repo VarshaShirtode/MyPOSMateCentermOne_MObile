@@ -2230,7 +2230,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 countDownTimerxmpp.cancel();
             if (countDownTimer != null)
                 countDownTimer.cancel();
-            qrScan.initiateScan();
+           // qrScan.initiateScan();
+            startQuickScan(true);
         } else
             beginBussiness(reference_id);
     }
@@ -3613,9 +3614,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
     public void open() {
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.setOrientationLocked(true);
-        integrator.initiateScan();
+//        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+//        integrator.setOrientationLocked(true);
+//        integrator.initiateScan();
+        startQuickScan(true);
     }
 
     private Dialog dialog, dialog1;
@@ -4903,6 +4905,156 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                                     callMembershipLoyality(arg0);
                                     Toast.makeText(getActivity(), arg0 + "", Toast.LENGTH_SHORT).show();
                                 }
+
+                            }
+                        });
+
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void startQuickScan(boolean cameraBack) {
+        final long startTime = System.currentTimeMillis();
+        try {
+            CameraBeanZbar cameraBean = new com.centerm.smartpos.aidl.qrscan.CameraBeanZbar(0, bestWidth, bestHeight, 4, Integer.MAX_VALUE, spinDegree, 1);
+            if (cameraBack) {
+                cameraBean.setCameraId(0);
+            } else {
+                cameraBean.setCameraId(1);
+            }
+            HashMap<String, Object> externalMap = new HashMap<String, Object>();
+            externalMap.put("ShowPreview", true);
+            cameraBean.setExternalMap(externalMap);
+            switchCameraDisplayEffect(cameraBack);//2018-03-06 增加切换摄像头显示效果 linpeita@centerm.com
+            aidlQuickScanService.scanQRCode(cameraBean, new AidlScanCallback.Stub() {
+                @Override
+                public void onFailed(int arg0) throws RemoteException {
+                    isBack=false;
+                    isFront=false;
+                    if (getActivity() != null)
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+
+                                if (MyPOSMateApplication.isOpen) {
+                                    MyPOSMateApplication.isOpen = false;
+                                    MyPOSMateApplication.isActiveQrcode = false;
+                                    preferenceManager.settriggerReferenceId("");
+                                    AppConstants.xmppamountforscan = "";
+                                    isTriggerCancelled = true;
+                                    ManualEntry.isUpayselected = false;
+                                    if (isTriggerCancelled) {
+                                        isTrigger = false;
+                                        callAuthToken();
+                                    }
+
+                                }
+                                else
+                                {
+                                    AppConstants.xmppamountforscan = "";
+                                    MyPOSMateApplication.isOpen = false;
+                                    preferenceManager.settriggerReferenceId("");
+                                    ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                                    ManualEntry.isUpayselected = false;
+                                }
+
+
+
+                                Toast.makeText(getActivity(), "Closed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                }
+
+                @Override
+                public void onCaptured(String arg0, int arg1) throws RemoteException {
+                    long SuccessEndTime = System.currentTimeMillis();
+                    long SuccessCostTime = SuccessEndTime - startTime;
+                    if (getActivity() != null)
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+
+
+
+                                    if (arg0.equals("")) {
+                                        AppConstants.xmppamountforscan = "";
+                                        MyPOSMateApplication.isOpen = false;
+                                        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                                        preferenceManager.settriggerReferenceId("");
+                                        ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                                        ManualEntry.isUpayselected = false;
+                                    } else {
+
+                                        if (!AppConstants.xmppamountforscan.equals("")) {
+
+                                            final Handler handler1 = new Handler();
+                                            handler1.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Intent ia = new Intent();
+                                                    ia.setAction("AmountTrigger");
+                                                    ia.putExtra("data", preferenceManager.getamountdata());
+                                                    getActivity().sendBroadcast(ia);
+
+                                                }
+                                            }, 400);
+
+                                            final Handler handler = new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
+                                                    String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
+                                                    Intent i = new Intent();
+                                                    if (ManualEntry.isUpayselected) {
+                                                        AppConstants.isScannedCode1 = false;
+                                                        i.setAction("ScannedCode");
+                                                    } else if (ManualEntry.isUnionPayQrSelected) {
+                                                        AppConstants.isScannedCode1 = false;
+                                                        i.setAction("ScannedCodeUnionPayQr");
+                                                    } else {
+                                                        i.setAction("ScannedCode1");
+                                                        AppConstants.isScannedCode1 = true;
+                                                    }
+
+                                                    i.putExtra("identityCode", identityCode);
+                                                    getActivity().sendBroadcast(i);
+                                                }
+                                            }, 800);
+
+                                        } else {
+                                            final Handler handler = new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
+                                                    String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
+                                                    Intent i = new Intent();
+                                                    if (ManualEntry.isUpayselected) {
+                                                        AppConstants.isScannedCode1 = false;
+                                                        i.setAction("ScannedCode");
+                                                    } else if (ManualEntry.isUnionPayQrSelected) {
+                                                        AppConstants.isScannedCode1 = false;
+                                                        i.setAction("ScannedCodeUnionPayQr");
+                                                    } else {
+                                                        i.setAction("ScannedCode1");
+                                                        AppConstants.isScannedCode1 = true;
+                                                    }
+
+                                                    i.putExtra("identityCode", identityCode);
+                                                    getActivity().sendBroadcast(i);
+                                                }
+                                            }, 500);
+
+                                        }
+
+
+                                    }
 
                             }
                         });

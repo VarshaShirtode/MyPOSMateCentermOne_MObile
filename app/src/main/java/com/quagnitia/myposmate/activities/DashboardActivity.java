@@ -89,6 +89,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 
 import static com.quagnitia.myposmate.MyPOSMateApplication.isOpen;
@@ -165,6 +167,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     JSONObject jsonObjectLoyalty;
     private RelativeLayout rel_orders;
     MySoundPlayer mySoundPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -198,20 +201,43 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    public void showOrderReceivedToast(String text)
-    {
+    public void showOrderReceivedToast(String text) {
         LayoutInflater li = getLayoutInflater();
-        View layout = li.inflate(R.layout.custome_toast_layout,findViewById(R.id.custom_toast_layout));
-        TextView tv_message=layout.findViewById(R.id.tv_message);
+        View layout = li.inflate(R.layout.custome_toast_layout, findViewById(R.id.custom_toast_layout));
+        TextView tv_message = layout.findViewById(R.id.tv_message);
         tv_message.setText(text);
         Animation animBlink = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.move);
         layout.startAnimation(animBlink);
         Toast toast = new Toast(getApplicationContext());
         toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+        toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
         toast.setView(layout);//setting the view of custom toast layout
         toast.show();
+    }
+
+
+    public void callTaskPlay() {
+
+
+            TimerTask uploadCheckerTimerTask = new TimerTask() {
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (preferencesManager.getOrderBadgeCount() != 0) {
+                                mySoundPlayer.playSound(1);
+                                showOrderReceivedToast(" Orders in Que");
+                                mySoundPlayer.stopCurrentSound(1);
+                            }
+
+                        }
+                    });
+
+                }
+            };
+            Timer uploadCheckerTimer = new Timer(true);
+            uploadCheckerTimer.scheduleAtFixedRate(uploadCheckerTimerTask, 0, 90 * 1000);
     }
 
 
@@ -327,9 +353,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         registerReceiver(openFragmentsReceiver, intentFilter);
         preferencesManager = PreferencesManager.getInstance(DashboardActivity.this);
         jsonObjectLoyalty = new JSONObject();
-         mySoundPlayer=new MySoundPlayer();
-         mySoundPlayer.initSounds(this);
-        mySoundPlayer.addSound(1,R.raw.audio_orders_up);
+        mySoundPlayer = new MySoundPlayer();
+        mySoundPlayer.initSounds(this);
+        mySoundPlayer.addSound(1, R.raw.audio_orders_up);
         // isLaunch = true;
         callAuthToken();
         initUI();
@@ -494,8 +520,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         } else {
             tv_order_badge.setVisibility(View.GONE);
         }
-
-        rel_orders=findViewById(R.id.rel_orders);
+        callTaskPlay();
+        rel_orders = findViewById(R.id.rel_orders);
         rel_un = findViewById(R.id.rel_un);
         tv_close_ext = findViewById(R.id.tv_close);
         TextView version = findViewById(R.id.version);
@@ -555,7 +581,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void funcOrders() {
         callAuthToken();
         preferencesManager.setOrderBadgeCount(0);
-        tv_order_badge=findViewById(R.id.tv_order_badge);
+        tv_order_badge = findViewById(R.id.tv_order_badge);
         tv_order_badge.setVisibility(View.GONE);
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
@@ -3781,11 +3807,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-   public void disableBadge()
-   {
-       preferencesManager.setOrderBadgeCount(0);
-       tv_order_badge.setVisibility(View.GONE);
-   }
+    public void disableBadge() {
+        preferencesManager.setOrderBadgeCount(0);
+        tv_order_badge.setVisibility(View.GONE);
+    }
+
     boolean isNetConnectionOn = false;
     JSONObject triggerjsonObject;
     public static boolean isTriggerReceived = false;
@@ -3831,17 +3857,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 case "OrderDetails":
                     try {
                         JSONObject jsonObject = new JSONObject(intent.getStringExtra("data"));
-                        if(isOpen)
-                        {
+                        if (isOpen) {
 
                             mySoundPlayer.playSound(1);
-                            showOrderReceivedToast("Order Arrived: "+jsonObject.optString("order_id"));
-                            tv_order_badge.setText(preferenceManager.getOrderBadgeCount()+"");
+                            showOrderReceivedToast("Order Arrived: " + jsonObject.optString("order_id"));
+                            tv_order_badge.setText(preferenceManager.getOrderBadgeCount() + "");
                             tv_order_badge.setVisibility(View.VISIBLE);
                             mySoundPlayer.stopCurrentSound(1);
-                        }
-                        else
-                        {
+                        } else {
 
 
                             callAuthToken();
@@ -3932,7 +3955,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 if (mPopupWindow.isShowing())
                     mPopupWindow.dismiss();
                 disableBadge();
-                   callSetupFragment(SCREENS.ORDERS,null);
+                callSetupFragment(SCREENS.ORDERS, null);
                 break;
             case R.id.img_menu:
                 if (mPopupWindow.isShowing())
