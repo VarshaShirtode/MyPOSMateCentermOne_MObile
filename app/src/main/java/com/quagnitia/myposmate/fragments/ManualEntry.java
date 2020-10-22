@@ -98,6 +98,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     double convenience_amount_alipay = 0.0, convenience_amount_wechat = 0.0,
             convenience_amount_alipay_scan = 0.0, convenience_amount_wechat_scan = 0.0,
             convenience_amount_unionpay = 0.0,
+            convenience_amount_poli = 0.0,
             convenience_amount_uplan = 0.0,
             convenience_amount_unionpayqrscan = 0.0,
             convenience_amount_unionpayqrdisplay = 0.0,
@@ -133,6 +134,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     Button btn_back1;
     Button btn_front1;
     Button btn_loyalty_apps;
+    ImageView img_poli;
+    EditText edt_poli_cnv;
+    TextView tv_poli_disabled;
 
     public static ManualEntry newInstance(String param1, String param2) {
         ManualEntry fragment = new ManualEntry();
@@ -216,6 +220,31 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         tv_wechat_disabled = view.findViewById(R.id.tv_wechat_disabled);
         tv_scanqr_disabled = view.findViewById(R.id.tv_scanqr_disabled);
         tv_unionpay_qr_disabled = view.findViewById(R.id.tv_unionpay_qr_disabled);
+        tv_poli_disabled=view.findViewById(R.id.tv_poli_disabled);
+
+
+        if(!preferenceManager.isPoliSelected())
+        {
+            //poli is deselected
+            tv_poli_disabled.setVisibility(View.VISIBLE);
+            img_poli.setVisibility(View.GONE);
+            edt_poli_cnv.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            //poli is selected
+            tv_poli_disabled.setVisibility(View.GONE);
+            img_poli.setVisibility(View.VISIBLE);
+            if(preferenceManager.is_cnv_poli_display_and_add()||
+            preferenceManager.is_cnv_poli_display_only())
+            {
+                edt_poli_cnv.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                edt_poli_cnv.setVisibility(View.INVISIBLE);
+            }
+        }
 
 
         if (!preferenceManager.isUnionPaySelected()) {
@@ -1016,7 +1045,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         qrScan = new IntentIntegrator(getActivity());
         vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
 
+        img_poli=view.findViewById(R.id.img_poli);
         btn_back = view.findViewById(R.id.btn_back);
+        edt_poli_cnv = view.findViewById(R.id.edt_poli_cnv);
         tv_status_scan = view.findViewById(R.id.tv_status_scan);
         tv_status_scan_button = view.findViewById(R.id.tv_status_scan_button);
         btn_front = view.findViewById(R.id.btn_front);
@@ -1190,6 +1221,16 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
     public void cnvdisplay() {
+
+        if (!preferenceManager.getcnv_poli().equals("") &&
+                !preferenceManager.getcnv_poli().equals("0.0") &&
+                !preferenceManager.getcnv_poli().equals("0.00")) {
+            double amount = Double.parseDouble(edt_amount.getText().toString()) * Double.parseDouble(preferenceManager.getcnv_poli()) / 100;
+            edt_poli_cnv.setText("" + roundTwoDecimals(amount));
+        }
+
+
+
         if (!preferenceManager.getcnv_alipay().equals("") &&
                 !preferenceManager.getcnv_alipay().equals("0.0") &&
                 !preferenceManager.getcnv_alipay().equals("0.00")) {
@@ -1406,7 +1447,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         rel_unionpay.setOnClickListener(this);
         img_unionpay_qr.setOnClickListener(this);
         rel_alipay_static_qr.setOnClickListener(this);
-
+        img_poli.setOnClickListener(this);
 
     }
 
@@ -1486,6 +1527,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         tv_ali_cv.setTextSize(14);
                         tv_ali_cv1.setTextSize(14);
                         tv_unionpay_qr_cv.setTextSize(14);
+                        edt_poli_cnv.setTextSize(14);
                     } else {
                         tv_uni_cv.setTextSize(10);
                         tv_uni_cv1_uplan.setTextSize(10);
@@ -1493,6 +1535,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         tv_ali_cv.setTextSize(10);
                         tv_ali_cv1.setTextSize(10);
                         tv_unionpay_qr_cv.setTextSize(10);
+                        edt_poli_cnv.setTextSize(10);
                     }
                     callAllConvinenceFeeCalculations();
                 }
@@ -1506,7 +1549,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (edt_amount.getText().toString().equals(""))
             return;
 
-
+        calculateConvFeePoli();
         calculateConvAlipay();
         calculateConvWeChat();
         calculateConvAlipayWeChatScan();
@@ -1652,6 +1695,25 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             }
         }
     }
+
+    public void calculateConvFeePoli() {
+        if (preferenceManager.is_cnv_poli_display_and_add()
+                || preferenceManager.is_cnv_poli_display_only()) {
+
+            if (!preferenceManager.getcnv_poli().equals("") ||
+                    !preferenceManager.getcnv_poli().equals("0.0") ||
+                    !preferenceManager.getcnv_poli().equals("0.00")) {
+                convenience_amount_poli = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
+                        (1 - (Double.parseDouble(preferenceManager.getcnv_poli()) / 100));
+                if (roundTwoDecimals(convenience_amount_poli).length() > 12) {
+                    edt_poli_cnv.setTextSize(10);
+                }
+                edt_poli_cnv.setText("" + roundTwoDecimals(convenience_amount_poli));
+            }
+        }
+    }
+
+
 
 
     public void calculateConvFeeUplan() {
@@ -3246,6 +3308,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 _funcAlipay();
                 break;
 
+            case R.id.img_poli:
+                _funcPoli();
+                break;
+
             case R.id.btn_cancel:
             case R.id.btn_cancel1:
                 _funcCancelButton();
@@ -3424,6 +3490,48 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
 
     }
+
+    private void _funcPoli() {
+        //Perform alipay transaction by generating QR code on terminal
+        channel = "POLI";
+        selected_screen = 2;
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        View view2 = getActivity().getCurrentFocus();
+
+        if (view2 != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
+        if (selected_screen == 0) {
+            Toast.makeText(getActivity(), "Please select the payment type", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (preferenceManager.is_cnv_poli_display_and_add())
+            xmppAmount = convenience_amount_poli + "";
+        else
+            xmppAmount = edt_amount.getText().toString();
+
+
+        payment_mode = "POLI";
+        qrMode = "True";
+        auth_code = "";
+        if (MyPOSMateApplication.isOpen) {
+            callTerminalPayPoli();
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                callTerminalPayPoli();
+            }
+        }
+
+    }
+
+
+
 
 
     private void _funcAlipay() {
@@ -4169,7 +4277,18 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         else
                             jsonObject.put("amount", xmppAmount);
                     }
-                } else {
+                }
+                else if(preferenceManager.is_cnv_poli_display_and_add()&&
+                preferenceManager.isPoliSelected())
+                {
+                    jsonObject.put("amount", convenience_amount_poli);
+                }
+                else if(!preferenceManager.is_cnv_poli_display_and_add()&&
+                        preferenceManager.isPoliSelected())
+                {
+                    jsonObject.put("amount", xmppAmount);
+                }
+                else {
                     jsonObject.put("amount", xmppAmount);
                 }
 
@@ -4228,7 +4347,18 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     else
                         jsonObject.put("amount", xmppAmount);
                 }
-            } else
+            }
+            else if(preferenceManager.is_cnv_poli_display_and_add()&&
+                    preferenceManager.isPoliSelected())
+            {
+                jsonObject.put("amount", convenience_amount_poli);
+            }
+            else if(!preferenceManager.is_cnv_poli_display_and_add()&&
+                    preferenceManager.isPoliSelected())
+            {
+                jsonObject.put("amount", edt_amount.getText().toString().trim());
+            }
+            else
                 jsonObject.put("amount", edt_amount.getText().toString().trim());
             String qrcode = jsonObject.optString("codeUrl");
             HashMap hashmap = new HashMap();
@@ -4476,7 +4606,185 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
     }
 
+    public void callTerminalPayPoli() {
+        String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
+        if (countDownTimerxmpp != null) {
+            countDownTimerxmpp.cancel();
+            tv_start_countdown.setVisibility(View.GONE);
+        }
+        openProgressDialog();
+        try {
 
+            DecimalFormat df = new DecimalFormat("#0.00");
+            if (MyPOSMateApplication.isOpen) {
+                char[] ch = xmppAmount.toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                xmppAmount = sb.toString().replace(",", "");
+
+
+                if (preferenceManager.is_cnv_poli_display_and_add()) {
+                    original_amount = original_xmpp_trigger_amount;
+                    xmppAmount = convenience_amount_poli + "";
+                    fee_amount = convenience_amount_poli -
+                            Double.parseDouble(original_xmpp_trigger_amount.replace(",", ""))
+                            + "";
+                    fee_percentage = preferenceManager.getcnv_poli();
+                    preferenceManager.setReference(edt_reference.getText().toString());
+
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
+                    hashMapKeys.put("original_amount", original_amount);
+                    hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
+                    hashMapKeys.put("fee_percentage", fee_percentage);
+                    hashMapKeys.put("discount", "0");
+                    hashMapKeys.put("qr_mode", true + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+
+
+                } else {
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                }
+
+
+            } else {
+                String amount = "";
+                char[] ch = edt_amount.getText().toString().toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                amount = sb.toString().replace(",", "");
+                if (preferenceManager.is_cnv_poli_display_and_add()) {
+                    original_amount = amount;
+                    amount = convenience_amount_poli + "";
+                    fee_amount = convenience_amount_poli -
+                            Double.parseDouble(edt_amount.getText().toString().replace(",", ""))
+                            + "";
+                    fee_percentage = preferenceManager.getcnv_poli();
+
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(amount)) + "");
+                    hashMapKeys.put("original_amount", original_amount);
+                    hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
+                    hashMapKeys.put("fee_percentage", fee_percentage);
+                    hashMapKeys.put("discount", "0");
+                    hashMapKeys.put("qr_mode", true + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("channel", channel);
+
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                } else {
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(amount)) + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void callTerminalPayAlipay() {
         String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
         if (countDownTimerxmpp != null) {

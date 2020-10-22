@@ -725,6 +725,11 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         try {
 
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("PoliSelected", preferencesManager.isPoliSelected());
+            jsonObject.put("PoliFeeValue", preferencesManager.getcnv_poli());
+            jsonObject.put("CnvPoliDisplayAndAdd", preferencesManager.is_cnv_poli_display_and_add());
+            jsonObject.put("CnvPoliDisplayOnly", preferencesManager.is_cnv_poli_display_only());
+
             jsonObject.put("accessId",preferencesManager.getuniqueId());
             jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
             jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
@@ -936,6 +941,12 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                         preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
                     if (jsonObject1.has("MerchantId"))
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+
+
+                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
                     preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
@@ -1053,6 +1064,10 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
+                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
                     preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));

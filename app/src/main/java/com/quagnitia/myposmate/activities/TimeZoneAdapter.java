@@ -168,6 +168,11 @@ public static boolean isUpdateDetails=false;
 
                         try {
                             JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("PoliSelected", preferencesManager.isPoliSelected());
+                            jsonObject.put("PoliFeeValue", preferencesManager.getcnv_poli());
+                            jsonObject.put("CnvPoliDisplayAndAdd", preferencesManager.is_cnv_poli_display_and_add());
+                            jsonObject.put("CnvPoliDisplayOnly", preferencesManager.is_cnv_poli_display_only());
+
                             jsonObject.put("accessId",preferencesManager.getuniqueId());
                             jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
                             jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());

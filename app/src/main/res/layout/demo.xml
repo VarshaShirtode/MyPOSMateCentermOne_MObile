@@ -743,38 +743,37 @@
 
 
                             <RelativeLayout
-                                android:visibility="invisible"
                                 android:layout_width="103dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
-                                <TextView
+                                <ImageView
+                                    android:id="@+id/img_poli"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
                                     android:layout_marginRight="5dp"
+                                    android:src="@drawable/poli"
+                                    android:padding="15dp"
+                                    android:layout_marginLeft="5dp"
                                     android:background="@drawable/rec_bg"
-                                    android:drawableTop="@drawable/scanner"
-                                    android:gravity="center"
                                     android:paddingTop="5dp"
-                                    android:text="Click To Scan\nAlipay"
-                                    android:textColor="@color/colorBlack"
-                                    android:textSize="11sp"
-                                    android:textStyle="bold"
                                     android:visibility="visible" />
 
+
                                 <TextView
+                                    android:layout_alignParentTop="true"
+                                    android:id="@+id/tv_poli_disabled"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
-                                    android:paddingTop="5dp"
+                                    android:text="Poli disabled"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="12sp"
-                                    android:text="WeChat QR scan disabled"
+                                    android:textSize="12dp"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
-
 
                             </RelativeLayout>
                             <RelativeLayout
@@ -840,17 +839,21 @@
                                 android:textStyle="bold" />
 
 
-                            <TextView
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
+                                android:textSize="14sp"
+                                android:enabled="false"
+                                app:showSymbol="true"
+                                android:layout_height="18dp"
+                                android:id="@+id/edt_poli_cnv"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
                                 android:gravity="center"
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold"
-                                android:visibility="invisible" />
+                                android:textStyle="bold" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

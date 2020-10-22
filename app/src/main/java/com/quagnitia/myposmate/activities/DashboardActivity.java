@@ -134,6 +134,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public static boolean isExternalApp = false;
 
     //payment choices variables
+    private CheckBox chk_poli;
+    private CheckBox chk_poli_display_and_add;
+    private CheckBox chk_poli_display_only;
+    private EditText edt_poli_cv;
     private CheckBox chk_unionpay_card;
     private CheckBox chk_alipay;
     private CheckBox chk_wechat;
@@ -220,24 +224,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void callTaskPlay() {
 
 
-            TimerTask uploadCheckerTimerTask = new TimerTask() {
-                public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (preferencesManager.getOrderBadgeCount() != 0) {
-                                mySoundPlayer.playSound(1);
-                                showOrderReceivedToast(" Orders in Que");
-                                mySoundPlayer.stopCurrentSound(1);
-                            }
-
+        TimerTask uploadCheckerTimerTask = new TimerTask() {
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (preferencesManager.getOrderBadgeCount() != 0) {
+                            mySoundPlayer.playSound(1);
+                            showOrderReceivedToast(" Orders in Que");
+                            mySoundPlayer.stopCurrentSound(1);
                         }
-                    });
 
-                }
-            };
-            Timer uploadCheckerTimer = new Timer(true);
-            uploadCheckerTimer.scheduleAtFixedRate(uploadCheckerTimerTask, 0, 90 * 1000);
+                    }
+                });
+
+            }
+        };
+        Timer uploadCheckerTimer = new Timer(true);
+        uploadCheckerTimer.scheduleAtFixedRate(uploadCheckerTimerTask, 0, 90 * 1000);
     }
 
 
@@ -1515,6 +1519,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         pcUPUplanScanDPApp(dialogView);
         pcUP_UPIQRScan_MPMCloud(dialogView);
         pcUP_Merchant_QRDisplay(dialogView);
+        pcPoli(dialogView);
+    }
+
+    private void pcPoli(View dialogView) {
+        //POLI
+        chk_poli = dialogView.findViewById(R.id.chk_poli);
+        chk_poli_display_and_add = dialogView.findViewById(R.id.chk_poli_display_and_add);
+        chk_poli_display_only = dialogView.findViewById(R.id.chk_poli_display_only);
+        edt_poli_cv = dialogView.findViewById(R.id.edt_poli_cv);
     }
 
     private void pcAlipay(View dialogView) {
@@ -1567,7 +1580,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         edt_up_upi_qr_cv = dialogView.findViewById(R.id.edt_up_upi_qr_cv);
         edt_up_upi_qr_cv1 = dialogView.findViewById(R.id.edt_up_upi_qr_cv1);
         edt_up_upi_qr_amount = dialogView.findViewById(R.id.edt_up_upi_qr_amount);
-        upi_note = dialogView.findViewById(R.id.upi_note);
+        // upi_note = dialogView.findViewById(R.id.upi_note);
     }
 
 
@@ -1603,7 +1616,113 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         _up_UPIQRScan_MPMCloud_chkListener();
         _up_UPIQRScan_MPMCloud_DPAPP_DAADD_DONLY_chkListener();
 
+
+        //POLI PC Listeners
+        _poli_chkListener();
+        _poli_DAADD_DONLY_chkListener();
+
     }
+
+
+    private void _poli_chkListener() {
+        chk_poli.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                preferencesManager.setisPoliSelected(true);
+            } else {
+                preferencesManager.setisPoliSelected(false);
+                chk_poli.setChecked(false);
+                chk_poli_display_and_add.setChecked(false);
+                chk_poli_display_only.setChecked(false);
+                preferencesManager.setcnv_poli_display_and_add(false);
+                preferencesManager.setcnv_poli_display_only(false);
+                preferencesManager.setcnv_poli("0.00");
+                edt_poli_cv.setText("0.00");
+            }
+        });
+    }
+
+    private void _poli_DAADD_DONLY_chkListener() {
+        chk_poli_display_and_add.setOnClickListener((View v) -> {
+
+            if (chk_poli.isChecked()) {
+                if (edt_poli_cv.getText().toString().equals("0.0") ||
+                        edt_poli_cv.getText().toString().equals("0.00") ||
+                        edt_poli_cv.getText().toString().equals("")
+                        || edt_poli_cv.getText().toString().equals(" ")) {
+                    chk_poli_display_and_add.setChecked(false);
+                    chk_poli_display_and_add.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    String s = edt_poli_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_poli_display_and_add.setChecked(false);
+                        chk_poli_display_and_add.setSelected(false);
+                        return;
+                    }
+                    if (chk_poli_display_only.isChecked()) {
+                        chk_poli_display_only.setChecked(false);
+                        preferenceManager.setcnv_poli_display_only(false);
+                        preferenceManager.setcnv_poli_display_and_add(true);
+                    } else {
+                        //case 2
+                        chk_poli_display_only.setChecked(false);
+                        preferenceManager.setcnv_poli_display_only(false);
+                        preferenceManager.setcnv_poli_display_and_add(true);
+                    }
+                }
+                preferenceManager.setcnv_poli(edt_poli_cv.getText().toString());
+            } else {
+                chk_poli_display_and_add.setChecked(false);
+                chk_poli_display_and_add.setSelected(false);
+                preferenceManager.setcnv_poli("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+
+
+        chk_poli_display_only.setOnClickListener((View v) -> {
+
+            if (chk_poli.isChecked()) {
+                if (edt_poli_cv.getText().toString().equals("0.0") ||
+                        edt_poli_cv.getText().toString().equals("0.00") ||
+                        edt_poli_cv.getText().toString().equals("")
+                        || edt_poli_cv.getText().toString().equals(" ")) {
+                    chk_poli_display_only.setChecked(false);
+                    chk_poli_display_only.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    String s = edt_poli_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_poli_display_only.setChecked(false);
+                        chk_poli_display_only.setSelected(false);
+                        return;
+                    }
+                    if (chk_poli_display_and_add.isChecked()) {
+                        chk_poli_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_poli_display_only(true);
+                        preferenceManager.setcnv_poli_display_and_add(false);
+                    } else {
+                        //case 2
+                        chk_poli_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_poli_display_only(true);
+                        preferenceManager.setcnv_poli_display_and_add(false);
+                    }
+                }
+                preferenceManager.setcnv_poli(edt_poli_cv.getText().toString());
+            } else {
+                chk_poli_display_only.setChecked(false);
+                chk_poli_display_only.setSelected(false);
+                preferenceManager.setcnv_poli("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
+    }
+
 
     //WeChat PC Listeners
     private void _weChat_chkListener() {
@@ -2462,7 +2581,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
 
     public void funcPCPrefChecks() {
-        if (preferencesManager.is_cnv_uni_display_only() ||
+        if (preferencesManager.is_cnv_poli_display_and_add() ||
+                preferencesManager.is_cnv_poli_display_only() ||
+                preferencesManager.is_cnv_uni_display_only() ||
                 preferencesManager.is_cnv_uni_display_and_add() ||
                 preferenceManager.cnv_unionpayqr_display_and_add() ||
                 preferenceManager.cnv_unionpayqr_display_only() ||
@@ -2475,7 +2596,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() ||
                 preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only()
         ) {
-
+            if (preferencesManager.is_cnv_poli_display_and_add()) {
+                chk_poli_display_and_add.setChecked(true);
+                chk_poli_display_and_add.setSelected(true);
+            }
+            if (preferencesManager.is_cnv_poli_display_only()) {
+                chk_poli_display_only.setChecked(true);
+                chk_poli_display_only.setSelected(true);
+            }
 
             if (preferencesManager.cnv_uplan_display_and_add()) {
                 chk_uplan_display_and_add.setChecked(true);
@@ -2554,6 +2682,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
 
 
+            edt_poli_cv.setText(preferenceManager.getcnv_poli());
             edt_unionpay_card_cv.setText(preferenceManager.getcnv_uni());
             edt_unionpay_qr_cv.setText(preferenceManager.getcnv_uniqr());
             edt_uplan_cv.setText(preferenceManager.getcnv_uplan());
@@ -2657,6 +2786,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_wechat.setSelected(true);
         }
 
+        if (preferencesManager.isPoliSelected()) {
+            chk_poli.setChecked(true);
+            chk_poli.setSelected(true);
+        }
+
         if (preferencesManager.isAlipayScan()) {
             chk_alipay_qr_scan.setSelected(true);
             chk_alipay_qr_scan.setChecked(true);
@@ -2710,6 +2844,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_unionpay_card_display_only.setChecked(false);
         }
 
+        if (edt_poli_cv.getText().toString().equals("") ||
+                edt_poli_cv.getText().toString().equals("0.00") ||
+                edt_poli_cv.getText().toString().equals("0.0")) {
+            preferencesManager.setcnv_poli("0.00");
+            preferenceManager.setcnv_poli_display_and_add(false);
+            preferenceManager.setcnv_poli_display_only(false);
+            chk_poli_display_and_add.setSelected(false);
+            chk_poli_display_only.setSelected(false);
+            chk_poli_display_and_add.setChecked(false);
+            chk_poli_display_only.setChecked(false);
+        }
+
+
         //end added on 11/14/2019
     }
 
@@ -2725,7 +2872,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 chk_uplan_display_only.isChecked() ||
                 chk_uplan_display_and_add.isChecked() ||
                 chk_up_upi_qr_display_and_add.isChecked() ||
-                chk_upi_qr_display_only.isChecked()
+                chk_upi_qr_display_only.isChecked() ||
+                chk_poli_display_and_add.isChecked() ||
+                chk_poli_display_only.isChecked()
         ) {
             preferencesManager.setisConvenienceFeeSelected(true);
 
@@ -2760,6 +2909,37 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setcnv_uni_display_only(true);
             else
                 preferencesManager.setcnv_uni_display_only(false);
+
+
+            if (chk_poli_display_and_add.isChecked()) {
+                preferencesManager.setcnv_poli_display_and_add(true);
+            } else {
+                preferencesManager.setcnv_poli_display_and_add(false);
+            }
+
+            if (chk_poli_display_only.isChecked()) {
+                preferencesManager.setcnv_poli_display_only(true);
+            } else {
+                preferencesManager.setcnv_poli_display_only(false);
+            }
+
+
+
+            if (chk_poli.isChecked()) {
+                if (!edt_poli_cv.getText().toString().equals("0.0") ||
+                        !edt_poli_cv.getText().toString().equals("0.00")
+                        || !edt_poli_cv.getText().toString().equals("")) {
+                    if (chk_poli_display_and_add.isChecked())
+                        preferenceManager.setcnv_poli_display_and_add(true);
+                    else
+                        preferenceManager.setcnv_poli_display_and_add(false);
+                    if (chk_poli_display_only.isChecked())
+                        preferenceManager.setcnv_poli_display_only(true);
+                    else
+                        preferenceManager.setcnv_poli_display_only(false);
+
+                }
+            }
 
 
             //if unionpayqr or unionpay qr scan is selected then only
@@ -2933,7 +3113,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setcnv_uni_display_and_add(false);
 
             }
+            s = edt_poli_cv.getText().toString();
+            if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                chk_poli_display_only.setChecked(false);
+                chk_poli_display_only.setSelected(false);
+                chk_poli_display_and_add.setChecked(false);
+                chk_poli_display_and_add.setSelected(false);
+                preferencesManager.setcnv_poli_display_only(false);
+                preferencesManager.setcnv_poli_display_and_add(false);
 
+            }
 
             if ((edt_ali_cv.getText().toString().equals("0.00") ||
                     edt_ali_cv.getText().toString().equals("0.0") ||
@@ -2958,7 +3147,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                                     edt_up_upi_qr_amount.getText().toString().equals("0.00"))) &&
                     (edt_uplan_cv.getText().toString().equals("0.00") ||
                             edt_uplan_cv.getText().toString().equals("0.0") ||
-                            edt_uplan_cv.getText().toString().equals(""))
+                            edt_uplan_cv.getText().toString().equals(""))||
+                    (edt_poli_cv.getText().toString().equals("0.00") ||
+                            edt_poli_cv.getText().toString().equals("0.0") ||
+                            edt_poli_cv.getText().toString().equals(""))
+
+
             ) {
                 preferencesManager.setisConvenienceFeeSelected(false);
                 preferencesManager.setcnv_alipay("0.00");
@@ -2966,6 +3160,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 preferencesManager.setcnv_uplan("0.00");
                 preferencesManager.setcnv_uni("0.00");
                 preferencesManager.setcnv_uniqr("0.00");
+                preferencesManager.setcnv_poli("0.00");
                 preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
                 preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                 preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
@@ -2994,6 +3189,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setcnv_uni(edt_unionpay_card_cv.getText().toString().replace(",", ""));
                 } else {
                     preferencesManager.setcnv_uni("0.00");
+                }
+
+                if (!edt_poli_cv.getText().toString().equals("") &&
+                        (!edt_poli_cv.getText().toString().equals("0.0") || !edt_poli_cv.getText().toString().equals("0.00"))) {
+                    preferencesManager.setcnv_poli(edt_poli_cv.getText().toString().replace(",", ""));
+                } else {
+                    preferencesManager.setcnv_poli("0.00");
                 }
 
                 if (!edt_unionpay_qr_cv.getText().toString().equals("") &&
@@ -3029,10 +3231,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             if (!chk_wechat_display_only.isChecked())
                 preferencesManager.setcnv_wechat_display_only(false);
 
-            if (!chk_unionpay_card_display_only.isChecked())
+            if (!chk_unionpay_card_display_and_add.isChecked())
                 preferencesManager.setcnv_uni_display_and_add(false);
             if (!chk_unionpay_card_display_only.isChecked())
                 preferencesManager.setcnv_uni_display_only(false);
+
+            if (!chk_poli_display_and_add.isChecked())
+                preferencesManager.setcnv_poli_display_and_add(false);
+            if (!chk_poli_display_only.isChecked())
+                preferencesManager.setcnv_poli_display_only(false);
 
             if (!chk_unionpay_qr_display_and_add.isChecked())
                 preferencesManager.setcnv_unionpayqr_display_and_add(false);
@@ -3096,7 +3303,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             edt_unionpay_card_cv.setText("0.00");
             preferenceManager.setcnv_uni("0.00");
         }
-
+        if (!preferencesManager.is_cnv_poli_display_and_add() && !preferencesManager.is_cnv_poli_display_only()) {
+            edt_poli_cv.setText("0.00");
+            preferenceManager.setcnv_poli("0.00");
+        }
         if ((!edt_unionpay_qr_cv.getText().toString().equals("") &&
                 (!edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                         !edt_unionpay_qr_cv.getText().toString().equals("0.00"))) &&
@@ -3109,18 +3319,27 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void funcEdtLengthCalPC() {
+        edt_poli_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_ali_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_wechat_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_unionpay_card_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_unionpay_qr_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_uplan_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+        edt_poli_cv.setSelection(edt_poli_cv.getText().length());
         edt_ali_cv.setSelection(edt_ali_cv.getText().length());
         edt_unionpay_card_cv.setSelection(edt_unionpay_card_cv.getText().length());
         edt_wechat_cv.setSelection(edt_wechat_cv.getText().length());
         edt_unionpay_qr_cv.setSelection(edt_unionpay_qr_cv.getText().length());
         edt_uplan_cv.setSelection(edt_uplan_cv.getText().length());
 
+
+        edt_poli_cv.setOnTouchListener((View v, MotionEvent event) -> {
+            if (edt_poli_cv.getText().toString().equals("0.0")) {
+                edt_poli_cv.setText("");
+            }
+            return false;
+        });
 
         edt_ali_cv.setOnTouchListener((View v, MotionEvent event) -> {
             if (edt_ali_cv.getText().toString().equals("0.0")) {
@@ -3157,6 +3376,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         edt_up_upi_qr_cv.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv));
         edt_up_upi_qr_cv1.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv1));
         edt_ali_cv.addTextChangedListener(new EditTextListenerClass(edt_ali_cv));
+        edt_poli_cv.addTextChangedListener(new EditTextListenerClass(edt_poli_cv));
         edt_unionpay_card_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_card_cv));
         edt_unionpay_qr_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_qr_cv));
         edt_uplan_cv.addTextChangedListener(new EditTextListenerClass(edt_uplan_cv));
@@ -3179,6 +3399,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             Double upihigherFee = edt_up_upi_qr_cv1.getText().toString().isEmpty() ? 0.00 :
                     Double.parseDouble(edt_up_upi_qr_cv1.getText().toString());
             switch (editText.getId()) {
+                case R.id.edt_poli_cv:
                 case R.id.edt_ali_cv:
                 case R.id.edt_unionpay_card_cv:
                 case R.id.edt_unionpay_qr_cv:
@@ -3296,6 +3517,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("CnvUPIQRMPMCloudAmount", preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
             jsonObject.put("cnv_unimerchantqrdisplay_higher", preferenceManager.get_cnv_unimerchantqrdisplayHigher());
             jsonObject.put("isMerchantDPARDisplay", preferenceManager.isMerchantDPARDisplay());
+
+            jsonObject.put("PoliSelected", preferenceManager.isPoliSelected());
+            jsonObject.put("PoliFeeValue", preferenceManager.getcnv_poli());
+            jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
+            jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3552,6 +3780,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     if (jsonObject1.has("MerchantId"))
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
 
+
+                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
 
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
@@ -4214,6 +4447,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("CnvUPIQrMPMCloudValueHigher", preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
             jsonObject.put("CnvUPIQRMPMCloudAmount", preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
             jsonObject.put("isMerchantDPARDisplay", preferenceManager.isMerchantDPARDisplay());
+            jsonObject.put("PoliSelected", preferenceManager.isPoliSelected());
+            jsonObject.put("PoliFeeValue", preferenceManager.getcnv_poli());
+            jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
+            jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
+
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -4327,6 +4565,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 //                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
+
+                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
                     preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
                     preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));

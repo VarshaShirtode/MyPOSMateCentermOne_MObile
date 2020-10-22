@@ -290,6 +290,10 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     if (jsonObject1.has("MerchantId"))
                         preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
 
+                    preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferenceManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferenceManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
                     preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
                     preferenceManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
                     preferenceManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
