@@ -19,6 +19,7 @@ import com.quagnitia.myposmate.printer.DeviceService;
 import com.quagnitia.myposmate.printer.Printer;
 import com.quagnitia.myposmate.utils.AppConstants;
 import com.quagnitia.myposmate.utils.ConnectivityReceiver;
+import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -28,9 +29,11 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import io.reactivex.CompletableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -213,6 +216,33 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
         compositeDisposable.add(dispTopic);
 
     }
+    TreeMap<String, String> hashMapKeys;
+    public void callUpdateRequestAPI(String request_id, boolean executed) {
+
+        try {
+            //v2 signature implementation
+            hashMapKeys = new TreeMap<>();
+            hashMapKeys.clear();
+            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
+            hashMapKeys.put("config_id", preferencesManager.getConfigId());
+            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
+            hashMapKeys.put("request_id", request_id);
+            hashMapKeys.put("random_str", new Date().getTime() + "");
+            hashMapKeys.put("executed", executed + "");
+            hashMapKeys.put("request_info","DEVICE_BUSY");
+
+            new OkHttpHandler(this, this, null, "updateRequest")
+                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                            MD5Class.generateSignatureString(hashMapKeys, this)
+                            + "&access_token=" + preferencesManager.getauthToken());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void toast(String text) {
         Log.i(TAG, text);
@@ -233,7 +263,9 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
             if (!isActiveQrcode) {
                 try {
                     JSONObject jsonObject1 = new JSONObject(message.getPayload());
-                    if (!jsonObject1.has("channel") || jsonObject1.optString("channel").equalsIgnoreCase("DPS") || jsonObject1.optString("channel").equalsIgnoreCase("null")) {
+                    if (!jsonObject1.has("channel") ||
+                            jsonObject1.optString("channel").equalsIgnoreCase("DPS") ||
+                            jsonObject1.optString("channel").equalsIgnoreCase("null")) {
                       //  isOpen = false;
                     }
                 } catch (Exception e) {
@@ -254,6 +286,12 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                     intent.setAction("OrderDetails");
                                     intent.putExtra("data", message.getPayload());
                                     sendBroadcast(intent);
+                                    break;
+
+
+                                case "PAY":
+                                    JSONObject jsonObject1=new JSONObject( message.getPayload());
+                                    callUpdateRequestAPI(jsonObject1.optString("request_id"),false);
                                     break;
                             }
                         }
@@ -346,8 +384,19 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                             intent.putExtra("data", message.getPayload());
                             sendBroadcast(intent);
                             break;
+
+                        case "PAY":
+                            JSONObject jsonObject1=new JSONObject( message.getPayload());
+                            callUpdateRequestAPI(jsonObject1.optString("request_id"),false);
+                            break;
+
                     }
                 } catch (Exception e) {
+
+
+
+
+
                     e.printStackTrace();
                 }
 

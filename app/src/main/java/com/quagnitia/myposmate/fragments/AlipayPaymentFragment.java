@@ -391,6 +391,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             callCancelTransaction();
         }
     }
+    
     private void _parseTransactionDetailsResponse1(JSONObject jsonObject)
     {
 
@@ -411,6 +412,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         else
             ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
     }
+
     private void _parseTransactionDetailsResponse(JSONObject jsonObject)
     {
         callAuthToken();
@@ -423,7 +425,6 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
         maketransactionDetailsCalls(jsonObject.optJSONObject("payment").optString("paymentStatus"), jsonObject);
     }
-
 
     private void _parseAuthTokenResponse(JSONObject jsonObject)
     {
@@ -444,6 +445,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         }
 
     }
+
     private void _parseCloseTradeResponse(JSONObject jsonObject)
     {
         callAuthToken();
@@ -482,7 +484,6 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
 
     }
-
 
     public void maketransactionDetailsCalls(String status_id, JSONObject jsonObject) {
         try {
@@ -558,12 +559,6 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
 
     boolean isTimeOut = false;
 
