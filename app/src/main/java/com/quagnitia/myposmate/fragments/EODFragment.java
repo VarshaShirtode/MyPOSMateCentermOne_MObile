@@ -547,11 +547,17 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
             final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
 
             int fontSize = 24;
-//            list.add(new PrintDataObject("Merchant Name: " + jsonObject.optString("company"),
-//                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
-//                    true));
+            list.add(new PrintDataObject("Merchant Name: " + preferencesManager.getMerchantName(),
+                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                    true));
+            list.add(new PrintDataObject("Branch Name:",
+                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                    true));
+            list.add(new PrintDataObject(preferencesManager.getbranchName(),
+                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                    true));
             if (!preferencesManager.getmerchant_name().equals("")) {
-                list.add(new PrintDataObject("Branch Name: " + preferencesManager.getmerchant_name(),
+                list.add(new PrintDataObject("Branch Info: " + preferencesManager.getmerchant_name(),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }

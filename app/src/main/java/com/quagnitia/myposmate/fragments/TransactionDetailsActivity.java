@@ -1296,9 +1296,16 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
+            list.add(new PrintDataObject("Branch Name:",
+                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                    true));
+            list.add(new PrintDataObject(preferenceManager.getbranchName(),
+                    fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                    true));
+
             if (preferenceManager.getBranchName().equals("true")) {
 
-                list.add(new PrintDataObject("Branch Name:",
+                list.add(new PrintDataObject("Branch Info:",
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
 

@@ -1210,9 +1210,14 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 //                preferencesManager.setuniqueId("");
 
                 if (jsonObject.has("branchInfo")) {
-                    if (jsonObject.optJSONObject("branchInfo").has("fullname")) {
-                        preferencesManager.setMerchantName(jsonObject.optJSONObject("branchInfo").optString("fullname"));
+                    if (jsonObject.optJSONObject("branchInfo").has("company")) {
+                        preferencesManager.setMerchantName(jsonObject.optJSONObject("branchInfo").optString("company"));
+                        preferencesManager.setbranchName(jsonObject.optJSONObject("branchInfo").optString("branchName"));
+//                        preferencesManager.setTerminalIdentifier(jsonObject.optJSONObject("terminal").optString("terminalTag"));
+//                        preferencesManager.setPOSIdentifier(jsonObject.optJSONObject("terminal").optString("posTag"));
+//                        preferencesManager.setLaneIdentifier(jsonObject.optJSONObject("terminal").optString("laneTag"));
                     }
+
                 }
                 if (jsonObject.optBoolean("status")) {
                     preferencesManager.setcurrency(jsonObject.optString("currency"));

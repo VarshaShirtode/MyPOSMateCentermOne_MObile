@@ -2688,9 +2688,25 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             edt_uplan_cv.setText(preferenceManager.getcnv_uplan());
             edt_ali_cv.setText(preferenceManager.getcnv_alipay());
             edt_wechat_cv.setText(preferenceManager.getcnv_wechat());
-            edt_up_upi_qr_cv.setText(preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
-            edt_up_upi_qr_cv1.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+            if (!preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.00") &&
+                    !preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("")
+            )
+                edt_up_upi_qr_cv.setText(preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
+            else
+                edt_up_upi_qr_cv.setText(preferenceManager.get_cnv_unimerchantqrdisplayLower());
+
+            if (!preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("0.00") &&
+                    !preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("")
+
+            )
+                edt_up_upi_qr_cv1.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+            else
+                edt_up_upi_qr_cv1.setText(preferenceManager.get_cnv_unimerchantqrdisplayHigher());
+
             edt_up_upi_qr_amount.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+
+
+
         }
 
 
@@ -2855,7 +2871,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             chk_poli_display_and_add.setChecked(false);
             chk_poli_display_only.setChecked(false);
         }
-
+        if(!chk_upi_qr_merchant_display.isChecked() && !chk_unionpay_qr_code.isChecked() )
+        {
+            preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+            preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+            preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
+            preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+            preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+            edt_up_upi_qr_cv1.setText("0.00");
+            edt_up_upi_qr_cv.setText("0.00");
+            edt_up_upi_qr_amount.setText("0.00");
+        }
 
         //end added on 11/14/2019
     }
@@ -2922,7 +2948,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             } else {
                 preferencesManager.setcnv_poli_display_only(false);
             }
-
 
 
             if (chk_poli.isChecked()) {
@@ -3001,13 +3026,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         } else if (!chk_unionpay_qr_code.isChecked()) {
                             preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                             preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
-                            preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                            if (!chk_upi_qr_merchant_display.isChecked())
+                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                         }
 
                         if (chk_upi_qr_merchant_display.isChecked()) {
                             Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : Double.parseDouble(edt_up_upi_qr_amount.getText().toString());
                             if (a != 0.00) {
-                                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv.getText().toString());
+                                preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
                                 preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
                                 preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
                             } else {
@@ -3019,6 +3045,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         } else if (!chk_upi_qr_merchant_display.isChecked()) {
                             preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
                             preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                            if (!chk_unionpay_qr_code.isChecked())
                             preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                         }
 
@@ -3147,7 +3174,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                                     edt_up_upi_qr_amount.getText().toString().equals("0.00"))) &&
                     (edt_uplan_cv.getText().toString().equals("0.00") ||
                             edt_uplan_cv.getText().toString().equals("0.0") ||
-                            edt_uplan_cv.getText().toString().equals(""))||
+                            edt_uplan_cv.getText().toString().equals("")) &&
                     (edt_poli_cv.getText().toString().equals("0.00") ||
                             edt_poli_cv.getText().toString().equals("0.0") ||
                             edt_poli_cv.getText().toString().equals(""))
@@ -3522,7 +3549,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("PoliFeeValue", preferenceManager.getcnv_poli());
             jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
             jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
-
 
 
         } catch (Exception e) {

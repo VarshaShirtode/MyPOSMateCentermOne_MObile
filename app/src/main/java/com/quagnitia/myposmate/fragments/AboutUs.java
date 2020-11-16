@@ -658,7 +658,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 //                        flag = false;
 //                        Toast.makeText(getActivity(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
 //                    }
-                    if (!edt_gst_number.getText().toString().equals("") && (edt_gst_number.getText().toString().length() < 8 || edt_gst_number.getText().toString().length() > 9)) {
+                    if (!edt_gst_number.getText().toString().equals("") && (edt_gst_number.getText().toString().trim().length() < 8 || edt_gst_number.getText().toString().trim().length() > 9)) {
                         flag = false;
                         Toast.makeText(getActivity(), "GST number should be 8 or 9 digits", Toast.LENGTH_SHORT).show();
                     }

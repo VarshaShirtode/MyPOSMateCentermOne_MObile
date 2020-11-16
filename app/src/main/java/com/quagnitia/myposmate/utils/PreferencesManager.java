@@ -151,6 +151,23 @@ public class PreferencesManager {
     private String isRegistered="isRegistered";
 
 
+    private String branchName="branchName";
+
+
+    public String getbranchName() {
+        return sharedPreferences.getString(branchName, "");
+    }
+
+    public void setbranchName(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(branchName, text);
+        editor.apply();
+    }
+
+
+
+
+
 
     public boolean isRegistered() {
         return sharedPreferences.getBoolean(isRegistered, false);

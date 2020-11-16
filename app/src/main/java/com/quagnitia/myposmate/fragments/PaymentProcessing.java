@@ -322,8 +322,16 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
+        list.add(new PrintDataObject("Branch Name:",
+                fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                true));
+        list.add(new PrintDataObject(preferencesManager.getbranchName(),
+                fontSize, true, PrintDataObject.ALIGN.LEFT, false,
+                true));
+
+
         if (preferencesManager.getBranchName().equals("true")) {
-            list.add(new PrintDataObject("Branch Name:",
+            list.add(new PrintDataObject("Branch Info:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
             list.add(new PrintDataObject(preferencesManager.getmerchant_name(),

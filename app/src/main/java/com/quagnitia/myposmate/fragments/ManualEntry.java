@@ -702,6 +702,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 }
 
             }.start();
+
         }
     }
 
@@ -3246,7 +3247,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public static String unionpay_payment_option = "";
     private Context mContext;
     String channel = "";
-
+    boolean isPoliSelected=false;
     @Override
     public void onClick(View view) {
         mContext = getActivity();
@@ -3493,6 +3494,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     private void _funcPoli() {
         //Perform alipay transaction by generating QR code on terminal
+        isPoliSelected=true;
         channel = "POLI";
         selected_screen = 2;
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -4292,7 +4294,20 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     jsonObject.put("amount", xmppAmount);
                 }
 
-            } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
+            }
+            else if(isPoliSelected&&preferenceManager.is_cnv_poli_display_and_add()&&
+                    preferenceManager.isPoliSelected())
+            {
+                isPoliSelected=false;
+                jsonObject.put("amount", convenience_amount_poli);
+            }
+            else if(isPoliSelected&&!preferenceManager.is_cnv_poli_display_and_add()&&
+                    preferenceManager.isPoliSelected())
+            {
+                isPoliSelected=false;
+                jsonObject.put("amount", edt_amount.getText().toString().trim());
+            }
+            else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                     preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                 jsonObject.put("amount", convenience_amount_unionpayqr_merchant_display + "");
             } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
@@ -4348,19 +4363,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         jsonObject.put("amount", xmppAmount);
                 }
             }
-            else if(preferenceManager.is_cnv_poli_display_and_add()&&
-                    preferenceManager.isPoliSelected())
-            {
-                jsonObject.put("amount", convenience_amount_poli);
-            }
-            else if(!preferenceManager.is_cnv_poli_display_and_add()&&
-                    preferenceManager.isPoliSelected())
-            {
-                jsonObject.put("amount", edt_amount.getText().toString().trim());
-            }
+
             else
                 jsonObject.put("amount", edt_amount.getText().toString().trim());
             String qrcode = jsonObject.optString("codeUrl");
+
             HashMap hashmap = new HashMap();
             hashmap.put("result", jsonObject.toString());
             hashmap.put("payment_mode", payment_mode);
