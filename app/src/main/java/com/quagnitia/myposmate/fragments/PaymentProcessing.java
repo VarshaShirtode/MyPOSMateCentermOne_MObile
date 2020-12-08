@@ -46,6 +46,7 @@ import com.quagnitia.myposmate.utils.OkHttpHandler;
 import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -501,6 +502,46 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                         true));
             }
 
+        }
+
+        try
+        {
+            if (jsonObject.has("discountDetails")) {
+                list.add(new PrintDataObject("Amount:",
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Double.valueOf(jsonObject.optString("grandTotal"))),
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                JSONArray jsonArray=new JSONArray(jsonObject.optString("discountDetails"));
+                if(jsonArray.length()==1)
+                {
+                    list.add(new PrintDataObject("Discount:",
+                            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                            true));
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
+                            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                            true));
+                    return;
+                }
+                list.add(new PrintDataObject("Uplan Discount:",
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                list.add(new PrintDataObject("Discount:",
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"),
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
 
         list.add(new PrintDataObject("Paid Amount:",

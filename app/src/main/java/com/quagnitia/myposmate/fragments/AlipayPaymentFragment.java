@@ -126,9 +126,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         initLoader();
         initUI(view);
         initListener();
-
-
-        countDownTimer11 = new CountDownTimer(90000, 10000) {
+        countDownTimer11 = new CountDownTimer(150000, 10000) {
 
             public void onTick(long millisUntilFinished) {
                 callTransactionDetails();
@@ -753,7 +751,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         }
 
 
-        countDownTimerxmpp = new CountDownTimer(90000, 1000) {
+        countDownTimerxmpp = new CountDownTimer(150000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 long time = millisUntilFinished / 1000;

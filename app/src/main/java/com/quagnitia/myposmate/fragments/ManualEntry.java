@@ -5431,4 +5431,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
     }
 
+
+
+
+
 }

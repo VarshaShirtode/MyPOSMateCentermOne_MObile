@@ -138,7 +138,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-
+                    android:id="@+id/ll_upi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|bottom"
@@ -153,7 +153,7 @@
                         android:id="@+id/btn_close"
                         android:layout_width="150dp"
                         android:layout_height="40dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
                         android:background="@color/colorBtnBg"
                         android:gravity="center"
@@ -165,12 +165,24 @@
                         android:id="@+id/btn_print"
                         android:layout_width="150dp"
                         android:layout_height="40dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
                         android:background="@color/colorBtnBg"
                         android:gravity="center"
                         android:text="Print"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="16sp" />
+                    <Button
+android:visibility="gone"
+                        android:id="@+id/btn_void_upi_qr"
+                        android:layout_width="150dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorBtnBg"
+                        android:gravity="center"
+                        android:text="Void"
                         android:textColor="@color/colorWhite"
                         android:textSize="16sp" />
 

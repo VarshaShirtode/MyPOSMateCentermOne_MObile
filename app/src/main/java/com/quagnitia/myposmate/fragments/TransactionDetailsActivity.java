@@ -29,6 +29,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.centerm.smartpos.aidl.printer.AidlPrinter;
@@ -599,9 +600,20 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         switch (TAG) {
 
 
+            case "CloseTrade":
+                if (progress != null && progress.isShowing())
+                    progress.dismiss();
+
+                Intent ii = getIntent();
+                ii.putExtra("reference_id", getIntent().getStringExtra("reference_id"));
+                startActivity(ii);
+                finish();
+                break;
+
             case "AuthToken":
                 if (jsonO.has("access_token") && !jsonO.optString("access_token").equals("")) {
                     preferenceManager.setauthToken(jsonO.optString("access_token"));
+                    preferenceManager.setauthTokenCloseTrade(jsonO.optString("access_token"));
                 }
 
                 if (isStart) {
@@ -737,6 +749,61 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         }
     }
 
+
+    public void _showDialog(JSONObject jsonObjectPayment)
+    {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater lf = (LayoutInflater) (this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.lay_void_dialog, null);
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        TextView cancel = (TextView) dialogview
+                .findViewById(R.id.dialogCancel);
+        TextView retry = (TextView) dialogview
+                .findViewById(R.id.dialogRetry);
+
+        cancel.setOnClickListener(View->{
+                dialog.dismiss();
+        });
+        retry.setOnClickListener(View->{
+                callCancelTransaction(jsonObjectPayment);
+                dialog.dismiss();
+        });
+    }
+
+    public void callCancelTransaction(JSONObject jsonObject) {
+        openProgressDialog();
+
+
+
+        //v2 signature implementation
+        hashMapKeys.clear();
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
+        hashMapKeys.put("random_str", new Date().getTime() + "");
+
+        new OkHttpHandler(TransactionDetailsActivity.this, this, null, "CloseTrade")
+                .execute(AppConstants.BASE_URL2 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, TransactionDetailsActivity.this) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
+
+
+    }
+
+
+
+
+
+
     double remaining_amount = 0.00;
     double refunded_amount = 0.00;
 
@@ -770,6 +837,19 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         for (int i = 0; i < jsonObjectPayment.length(); i++) {
             for (int j = 0; j < jsonObjectPayment.length(); j++) {
                 String value = jsonObjectPayment.optString(jsonObjectPayment.names().optString(j));
+
+                if (jsonObjectPayment.has("discountDetails")) {
+                    JSONArray jsonArray=new JSONArray(jsonObjectPayment.optString("discountDetails"));
+                    if(jsonArray.length()==1)
+                        json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
+                    else
+                    {
+                        json.put("Uplan Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
+                        json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"));
+                    }
+                }
+
+
                 switch (jsonObjectPayment.names().optString(j)) {
                     case "id":
                         json.put("Transaction Number", value);
@@ -1001,12 +1081,47 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             } else {
                 if (!jsonObjectPayment.optBoolean("thirdParty") &&
                         jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")) {
-                    btn_refund.setVisibility(View.VISIBLE);
-                    findViewById(R.id.ll1).setVisibility(View.VISIBLE);
-                    findViewById(R.id.ll2).setVisibility(View.VISIBLE);
-                    findViewById(R.id.ll3).setVisibility(View.VISIBLE);
-                    btn_void.setVisibility(View.GONE);
-                    btn_refund_uni.setVisibility(View.GONE);
+
+                    if(jsonObjectPayment.optString("channel").equals("UNION_PAY"))
+                    {
+                        callAuthToken();
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_upi);
+                        linearLayout.setWeightSum(4);
+                        Button btn_void_upi_qr=(Button)findViewById(R.id.btn_void_upi_qr);
+                        btn_print.setVisibility(View.VISIBLE);
+                        btn_refund.setVisibility(View.VISIBLE);
+                        btn_close.setVisibility(View.VISIBLE);
+                        btn_void_upi_qr.setVisibility(View.VISIBLE);
+                        btn_void_upi_qr.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                _showDialog(jsonObjectPayment);
+
+                            }
+                        });
+                      //  btn_refund.setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll1).setVisibility(View.VISIBLE);//888888888
+                        findViewById(R.id.ll2).setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+                        btn_void.setVisibility(View.GONE);
+                        btn_refund_uni.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_upi);
+                        linearLayout.setWeightSum(3);
+                        Button btn_void_upi_qr=(Button)findViewById(R.id.btn_void_upi_qr);
+                        btn_print.setVisibility(View.VISIBLE);
+                        btn_refund.setVisibility(View.VISIBLE);
+                        btn_close.setVisibility(View.VISIBLE);
+                        btn_void_upi_qr.setVisibility(View.GONE);
+                        findViewById(R.id.ll1).setVisibility(View.VISIBLE);//888888888
+                        findViewById(R.id.ll2).setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+                        btn_void.setVisibility(View.GONE);
+                        btn_refund_uni.setVisibility(View.GONE);
+                    }
+
                 } else {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_void);
                     findViewById(R.id.ll1).setVisibility(View.GONE);
@@ -1530,7 +1645,38 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }
+            if (jsonObject.has("discountDetails")) {
+                list.add(new PrintDataObject("Amount:",
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))),
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
+JSONArray jsonArray=new JSONArray(jsonObject.optString("discountDetails"));
+if(jsonArray.length()==1)
+{
+    list.add(new PrintDataObject("Discount:",
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
+    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
+    return;
+}
+    list.add(new PrintDataObject("Uplan Discount:",
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
+    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
+    list.add(new PrintDataObject("Discount:",
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
+    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"),
+            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+            true));
 
+}
             list.add(new PrintDataObject("Paid Amount:",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));

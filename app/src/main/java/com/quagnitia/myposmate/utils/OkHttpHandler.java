@@ -2,8 +2,11 @@ package com.quagnitia.myposmate.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,8 +16,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quagnitia.myposmate.R;
+import com.quagnitia.myposmate.activities.DashboardActivity;
+import com.quagnitia.myposmate.fragments.TransactionDetailsActivity;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -77,8 +85,8 @@ public class OkHttpHandler extends AsyncTask {
         String response = "";
 
         try {
-
-
+if(!isTimerCalled)
+            startCountdownTimer();
             if (TAG.equals("unionpaystatus") || TAG.equals("UpdateBranchDetails")) {
                 url = new URL(requestURL);
             } else {
@@ -96,7 +104,6 @@ public class OkHttpHandler extends AsyncTask {
 //                    String auth =new String(Base64.encode(( preferencesManager.getMerchantId() + ":" + preferencesManager.getConfigId()).getBytes(),Base64.URL_SAFE| Base64.NO_WRAP));
 
 
-
                     conn.setRequestMethod("POST");
                     conn.addRequestProperty("Authorization", "Basic " + auth);
                     conn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -107,6 +114,7 @@ public class OkHttpHandler extends AsyncTask {
                     OutputStream os = conn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(
                             new OutputStreamWriter(os, "UTF-8"));
+                    Log.v(TAG + " Request", postDataParams.toString());
                     writer.write(getPostDataString(postDataParams));
                     writer.flush();
                     writer.close();
@@ -118,6 +126,7 @@ public class OkHttpHandler extends AsyncTask {
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
                     OutputStream os = conn.getOutputStream();
+                    Log.v(TAG + " Request", postDataParams.toString());
                     BufferedWriter writer = new BufferedWriter(
                             new OutputStreamWriter(os, "UTF-8"));
                     writer.write(getPostDataString(postDataParams));
@@ -144,15 +153,22 @@ public class OkHttpHandler extends AsyncTask {
                 }
 
             }
+
+
             Log.v("Response:" + TAG, response);
         } catch (SocketTimeoutException s) {
 
-            if (TAG.equals("unionpaystatus")) {
-                showAlert2();
-            } else {
-                showAlert();
-            }
-
+//            if (TAG.equals("unionpaystatus")) {
+//                showAlert2();
+//            } else {
+//                showAlert();
+//            }
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showAlert3();
+                }
+            });
 
             isWebserviceRunning = false;
             s.printStackTrace();
@@ -160,11 +176,18 @@ public class OkHttpHandler extends AsyncTask {
 
 
         } catch (Exception e) {
-            if (TAG.equals("unionpaystatus")) {
-                showAlert2();
-            } else {
-                showAlert();
-            }
+//            if (TAG.equals("unionpaystatus")) {
+//                showAlert2();
+//            } else {
+//                showAlert();
+//            }
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        showAlert3();
+                                                    }
+                                                });
+
             isWebserviceRunning = false;
             e.printStackTrace();
             return response;
@@ -186,6 +209,7 @@ public class OkHttpHandler extends AsyncTask {
         super.onPostExecute(o);
         try {
             isWebserviceRunning = false;
+            countDownTimer11.cancel();
             listener.onTaskCompleted(o.toString(), TAG);
             AppConstants.isPostReceived = true;
             cancel(true);
@@ -200,6 +224,139 @@ public class OkHttpHandler extends AsyncTask {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        if(isTimerCalled)
+        {
+            isTimerCalled=false;
+            openProgressDialog();
+        }
+
+
+    }
+    public void openProgressDialog() {
+        progress = new ProgressDialog(mContext );
+        progress.setMessage("Loading.......");
+        progress.setCancelable(false);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.show();
+    }
+    CountDownTimer countDownTimer11;
+    ProgressDialog progress;
+    public static boolean isTimerCalled=false;
+
+    public void startCountdownTimer() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                countDownTimer11 = new CountDownTimer(60000, 60000) {
+
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    public void onFinish() {
+                        try {
+                            listener.onTaskCompleted("{}", TAG);
+
+                            showAlert3();
+
+                            if (countDownTimer11 != null)
+                                countDownTimer11.cancel();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                };
+                countDownTimer11.start();
+            }
+
+        });
+
+    }
+
+    private void showAlert3() {
+
+
+        try {
+            if (AppConstants.isPostReceived) {
+                AppConstants.isPostReceived = false;
+                return;
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+                final Dialog dialog = new Dialog(mContext);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                LayoutInflater lf = (LayoutInflater) (mContext)
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View dialogview = lf.inflate(R.layout.retry_dialog, null);
+                TextView title = (TextView) dialogview.findViewById(R.id.title);
+                title.setText("Note");
+                TextView body = (TextView) dialogview
+                        .findViewById(R.id.dialogBody);
+                body.setText("No response received from server.\nPlease check your network connection\n.Do you want to retry?");
+                dialog.setContentView(dialogview);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.CENTER;
+
+                dialog.getWindow().setAttributes(lp);
+                dialog.show();
+                TextView cancel = (TextView) dialogview
+                        .findViewById(R.id.dialogCancel);
+                cancel.setText("CANCEL");
+                cancel.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            if(progress!=null)
+                            {
+                                if(progress.isShowing())
+                                    progress.dismiss();
+                            }
+                            countDownTimer11.cancel();
+                            listener.onTaskCompleted("", TAG);
+                            isWebserviceRunning = false;
+                            cancel(true);
+                            dialog.dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        dialog.dismiss();
+
+                    }
+                });
+
+                TextView retry = (TextView) dialogview
+                        .findViewById(R.id.dialogRetry);
+                retry.setVisibility(View.VISIBLE);
+                retry.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        isTimerCalled=true;
+                        if(progress!=null)
+                        {
+                            if(progress.isShowing())
+                                progress.dismiss();
+                        }
+                        new OkHttpHandler(mContext, listener, postDataParams, TAG).execute(dup_url);
+                        dialog.dismiss();
+                        countDownTimer11.cancel();
+                    }
+                });
 
 
     }
