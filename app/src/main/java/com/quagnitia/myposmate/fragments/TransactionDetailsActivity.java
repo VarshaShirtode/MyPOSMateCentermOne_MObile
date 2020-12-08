@@ -838,16 +838,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             for (int j = 0; j < jsonObjectPayment.length(); j++) {
                 String value = jsonObjectPayment.optString(jsonObjectPayment.names().optString(j));
 
-                if (jsonObjectPayment.has("discountDetails")) {
-                    JSONArray jsonArray=new JSONArray(jsonObjectPayment.optString("discountDetails"));
-                    if(jsonArray.length()==1)
-                        json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
-                    else
-                    {
-                        json.put("Uplan Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
-                        json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"));
-                    }
-                }
 
 
                 switch (jsonObjectPayment.names().optString(j)) {
@@ -905,8 +895,30 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         Double rate = Double.parseDouble(jsonObjectPayment.optString("rate"));
                         Double rmb_amount = receipt_amount * rate;
                         json.put("Amount RMB", roundTwoDecimals(Float.valueOf(rmb_amount + "")));
+
+
+
                         break;
                     case "receiptAmount":
+
+
+                        if (jsonObjectPayment.has("discountDetails")) {
+                            JSONArray jsonArray=new JSONArray(jsonObjectPayment.optString("discountDetails"));
+                            if(jsonArray.length()==1)
+                            {
+                                json.put("Amount", jsonObjectPayment.optString("currency") + " "+jsonObjectPayment.optString("grandTotal"));
+                                json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
+                            }
+
+                            else
+                            {
+                                json.put("Amount", jsonObjectPayment.optString("currency") + " "+jsonObjectPayment.optString("grandTotal"));
+                                json.put("Uplan Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
+                                json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"));
+                            }
+                        }
+
+
                         json.put("Receipt Amount", value);
                         break;
                     case "referenceId":
