@@ -1075,8 +1075,71 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     btn_refund_uni.setVisibility(View.GONE);
                     btn_void.setVisibility(View.GONE);
                 } else {
-                    btn_void.setVisibility(View.GONE);
-                    btn_refund_uni.setVisibility(View.GONE);
+                    //commented on 12/10/2020
+//                    btn_void.setVisibility(View.GONE);
+//                    btn_refund_uni.setVisibility(View.GONE);
+                    //added on 12/10/2020
+                    if (jsonObjectPayment.optString("channel").equals("UNION_PAY")) {
+                        callAuthToken();
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_upi);
+                        linearLayout.setWeightSum(4);
+                        Button btn_void_upi_qr = (Button) findViewById(R.id.btn_void_upi_qr);
+                        btn_print.setVisibility(View.VISIBLE);
+                        btn_refund.setVisibility(View.VISIBLE);
+                        btn_close.setVisibility(View.VISIBLE);
+                        btn_void_upi_qr.setVisibility(View.VISIBLE);
+                        btn_void_upi_qr.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                _showDialog(jsonObjectPayment);
+
+                            }
+                        });
+                        //  btn_refund.setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll1).setVisibility(View.VISIBLE);//888888888
+                        findViewById(R.id.ll2).setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+                        btn_void.setVisibility(View.GONE);
+                        btn_refund_uni.setVisibility(View.GONE);
+
+                        if (!jsonObjectPayment.optBoolean("thirdParty") &&
+                                jsonObject.optJSONArray("refunds").optJSONObject(0).optString("refundStatus").equals("SUCCESS") &&
+                                (Double.parseDouble(newjson.optString("Receipt Amount"))
+                                        == Double.parseDouble(newjson.optString("Amount Refunded")))) {
+                            LinearLayout ll = (LinearLayout) findViewById(R.id.ll_upi);
+                            linearLayout.setWeightSum(4);
+                            btn_print.setVisibility(View.VISIBLE);
+                            btn_refund.setVisibility(View.GONE);
+                            btn_close.setVisibility(View.VISIBLE);
+                            btn_void_upi_qr.setVisibility(View.GONE);
+
+                            findViewById(R.id.ll1).setVisibility(View.GONE);
+                            findViewById(R.id.ll2).setVisibility(View.GONE);
+                            findViewById(R.id.ll3).setVisibility(View.GONE);
+                            ll.setWeightSum(2);
+                            btn_refund_uni.setVisibility(View.GONE);
+                            btn_void.setVisibility(View.GONE);
+                        }
+
+
+
+
+                    }
+                    else {
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_upi);
+                        linearLayout.setWeightSum(3);
+                        Button btn_void_upi_qr = (Button) findViewById(R.id.btn_void_upi_qr);
+                        btn_print.setVisibility(View.VISIBLE);
+                        btn_refund.setVisibility(View.VISIBLE);
+                        btn_close.setVisibility(View.VISIBLE);
+                        btn_void_upi_qr.setVisibility(View.GONE);
+                        findViewById(R.id.ll1).setVisibility(View.VISIBLE);//888888888
+                        findViewById(R.id.ll2).setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll3).setVisibility(View.VISIBLE);
+                        btn_void.setVisibility(View.GONE);
+                        btn_refund_uni.setVisibility(View.GONE);
+                    }
+
                 }
             } else {
                 if (!jsonObjectPayment.optBoolean("thirdParty") &&
