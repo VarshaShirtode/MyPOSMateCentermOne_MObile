@@ -200,7 +200,8 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
                 }
                 if (preferencesManager.getisPrint().equals("true")) {
-                    print();
+//                    bindService();
+//                    print();
                 }
 
             } catch (Exception e) {
@@ -514,28 +515,15 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
                 JSONArray jsonArray=new JSONArray(jsonObject.optString("discountDetails"));
-                if(jsonArray.length()==1)
-                {
-                    list.add(new PrintDataObject("Discount:",
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    list.add(new PrintDataObject(jsonArray.optJSONObject(i).optString("discountNote"),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
-                    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " " + jsonArray.optJSONObject(i).optString("discountAmt"),
                             fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                             true));
-                    return;
+
                 }
-                list.add(new PrintDataObject("Uplan Discount:",
-                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-                        true));
-                list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
-                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-                        true));
-                list.add(new PrintDataObject("Discount:",
-                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-                        true));
-                list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"),
-                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-                        true));
 
             }
         }

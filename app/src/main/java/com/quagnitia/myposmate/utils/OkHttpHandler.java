@@ -163,6 +163,7 @@ if(!isTimerCalled)
 //            } else {
 //                showAlert();
 //            }
+            if(mContext!=null)
             ((Activity) mContext).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -181,6 +182,7 @@ if(!isTimerCalled)
 //            } else {
 //                showAlert();
 //            }
+            if(mContext!=null)
             ((Activity) mContext).runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {

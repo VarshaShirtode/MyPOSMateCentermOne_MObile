@@ -750,8 +750,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     }
 
 
-    public void _showDialog(JSONObject jsonObjectPayment)
-    {
+    public void _showDialog(JSONObject jsonObjectPayment) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater lf = (LayoutInflater) (this)
@@ -770,18 +769,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         TextView retry = (TextView) dialogview
                 .findViewById(R.id.dialogRetry);
 
-        cancel.setOnClickListener(View->{
-                dialog.dismiss();
+        cancel.setOnClickListener(View -> {
+            dialog.dismiss();
         });
-        retry.setOnClickListener(View->{
-                callCancelTransaction(jsonObjectPayment);
-                dialog.dismiss();
+        retry.setOnClickListener(View -> {
+            callCancelTransaction(jsonObjectPayment);
+            dialog.dismiss();
         });
     }
 
     public void callCancelTransaction(JSONObject jsonObject) {
         openProgressDialog();
-
 
 
         //v2 signature implementation
@@ -798,10 +796,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
 
     }
-
-
-
-
 
 
     double remaining_amount = 0.00;
@@ -837,7 +831,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         for (int i = 0; i < jsonObjectPayment.length(); i++) {
             for (int j = 0; j < jsonObjectPayment.length(); j++) {
                 String value = jsonObjectPayment.optString(jsonObjectPayment.names().optString(j));
-
 
 
                 switch (jsonObjectPayment.names().optString(j)) {
@@ -897,25 +890,26 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         json.put("Amount RMB", roundTwoDecimals(Float.valueOf(rmb_amount + "")));
 
 
-
                         break;
                     case "receiptAmount":
 
 
                         if (jsonObjectPayment.has("discountDetails")) {
-                            JSONArray jsonArray=new JSONArray(jsonObjectPayment.optString("discountDetails"));
-                            if(jsonArray.length()==1)
-                            {
-                                json.put("Amount", jsonObjectPayment.optString("currency") + " "+jsonObjectPayment.optString("grandTotal"));
-                                json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
+                            JSONArray jsonArray = new JSONArray(jsonObjectPayment.optString("discountDetails"));
+                            json.put("Amount", jsonObjectPayment.optString("currency") + " " + jsonObjectPayment.optString("grandTotal"));
+                            for (int i1 = 0; i1 < jsonArray.length(); i1++) {
+                                json.put(jsonArray.optJSONObject(i1).optString("discountNote"), jsonObjectPayment.optString("currency") + " " + jsonArray.optJSONObject(i1).optString("discountAmt"));
                             }
 
-                            else
-                            {
-                                json.put("Amount", jsonObjectPayment.optString("currency") + " "+jsonObjectPayment.optString("grandTotal"));
-                                json.put("Uplan Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"));
-                                json.put("Discount", jsonObjectPayment.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"));
-                            }
+
+//                            if (jsonArray.length() == 1) {
+//                                json.put("Amount", jsonObjectPayment.optString("currency") + " " + jsonObjectPayment.optString("grandTotal"));
+//                                json.put("Discount", jsonObjectPayment.optString("currency") + " " + jsonArray.optJSONObject(0).optString("discountAmt"));
+//                            } else {
+//                                json.put("Amount", jsonObjectPayment.optString("currency") + " " + jsonObjectPayment.optString("grandTotal"));
+//                                json.put("Uplan Discount", jsonObjectPayment.optString("currency") + " " + jsonArray.optJSONObject(0).optString("discountAmt"));
+//                                json.put("Discount", jsonObjectPayment.optString("currency") + " " + jsonArray.optJSONObject(1).optString("discountAmt"));
+//                            }
                         }
 
 
@@ -952,15 +946,11 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             }
         }
 
-        if(jsonObjectPayment.has("thirdParty"))
-        {
-            if(jsonObjectPayment.optBoolean("thirdParty") && jsonObjectPayment.optString("channel").equals("UNION_PAY"))
-            {
-                json.put("PC Used","DP - QR (Using DP App)");
-            }
-            else if(!jsonObjectPayment.optBoolean("thirdParty") && jsonObjectPayment.optString("channel").equals("UNION_PAY"))
-            {
-                json.put("PC Used","UPI - QR (Using MPM cloud)");
+        if (jsonObjectPayment.has("thirdParty")) {
+            if (jsonObjectPayment.optBoolean("thirdParty") && jsonObjectPayment.optString("channel").equals("UNION_PAY")) {
+                json.put("PC Used", "DP - QR (Using DP App)");
+            } else if (!jsonObjectPayment.optBoolean("thirdParty") && jsonObjectPayment.optString("channel").equals("UNION_PAY")) {
+                json.put("PC Used", "UPI - QR (Using MPM cloud)");
             }
 
         }
@@ -1048,15 +1038,13 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             findViewById(R.id.ll1).setVisibility(View.GONE);
             findViewById(R.id.ll2).setVisibility(View.GONE);
             findViewById(R.id.ll3).setVisibility(View.GONE);
-        }
-        else if (newjson.optString("Message Status").equals("FAILED")&&
+        } else if (newjson.optString("Message Status").equals("FAILED") &&
                 json.optString("Payment By").equals("UNION_PAY")) { //closed
             btn_refund.setVisibility(View.GONE);
             findViewById(R.id.ll1).setVisibility(View.GONE);
             findViewById(R.id.ll2).setVisibility(View.GONE);
             findViewById(R.id.ll3).setVisibility(View.GONE);
-        }
-        else {
+        } else {
             btn_refund.setVisibility(View.VISIBLE);
             findViewById(R.id.ll1).setVisibility(View.VISIBLE);
             findViewById(R.id.ll2).setVisibility(View.VISIBLE);
@@ -1094,12 +1082,11 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                 if (!jsonObjectPayment.optBoolean("thirdParty") &&
                         jsonObjectPayment.optString("paymentStatus").equals("SUCCESS")) {
 
-                    if(jsonObjectPayment.optString("channel").equals("UNION_PAY"))
-                    {
+                    if (jsonObjectPayment.optString("channel").equals("UNION_PAY")) {
                         callAuthToken();
                         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_upi);
                         linearLayout.setWeightSum(4);
-                        Button btn_void_upi_qr=(Button)findViewById(R.id.btn_void_upi_qr);
+                        Button btn_void_upi_qr = (Button) findViewById(R.id.btn_void_upi_qr);
                         btn_print.setVisibility(View.VISIBLE);
                         btn_refund.setVisibility(View.VISIBLE);
                         btn_close.setVisibility(View.VISIBLE);
@@ -1111,18 +1098,16 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                             }
                         });
-                      //  btn_refund.setVisibility(View.VISIBLE);
+                        //  btn_refund.setVisibility(View.VISIBLE);
                         findViewById(R.id.ll1).setVisibility(View.VISIBLE);//888888888
                         findViewById(R.id.ll2).setVisibility(View.VISIBLE);
                         findViewById(R.id.ll3).setVisibility(View.VISIBLE);
                         btn_void.setVisibility(View.GONE);
                         btn_refund_uni.setVisibility(View.GONE);
-                    }
-                    else
-                    {
+                    } else {
                         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_upi);
                         linearLayout.setWeightSum(3);
-                        Button btn_void_upi_qr=(Button)findViewById(R.id.btn_void_upi_qr);
+                        Button btn_void_upi_qr = (Button) findViewById(R.id.btn_void_upi_qr);
                         btn_print.setVisibility(View.VISIBLE);
                         btn_refund.setVisibility(View.VISIBLE);
                         btn_close.setVisibility(View.VISIBLE);
@@ -1662,33 +1647,21 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
                 list.add(new PrintDataObject(jsonObject.optString("currency") + " " + roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))),
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
-JSONArray jsonArray=new JSONArray(jsonObject.optString("discountDetails"));
-if(jsonArray.length()==1)
-{
-    list.add(new PrintDataObject("Discount:",
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
-    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
-    return;
-}
-    list.add(new PrintDataObject("Uplan Discount:",
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
-    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(0).optString("discountAmt"),
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
-    list.add(new PrintDataObject("Discount:",
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
-    list.add(new PrintDataObject(jsonObject.optString("currency") + " "+jsonArray.optJSONObject(1).optString("discountAmt"),
-            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
-            true));
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                JSONArray jsonArray = new JSONArray(jsonObject.optString("discountDetails"));
 
-}
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    list.add(new PrintDataObject(jsonArray.optJSONObject(i).optString("discountNote"),
+                            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                            true));
+                    list.add(new PrintDataObject(jsonObject.optString("currency") + " " + jsonArray.optJSONObject(i).optString("discountAmt"),
+                            fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                            true));
+
+                }
+
+            }
             list.add(new PrintDataObject("Paid Amount:",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
@@ -1976,7 +1949,6 @@ if(jsonArray.length()==1)
                 if (preferenceManager.isQR()) {
 
 
-
                     if (!text.equals("")) {
                         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                         try {
@@ -1998,7 +1970,7 @@ if(jsonArray.length()==1)
                 if (preferenceManager.isQR()) {
                     if (jsonObjectTransactionDetails.optJSONObject("payment").optString("channel").equals("UNION_PAY")) {
                         final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
-                        list.add(new PrintDataObject("Reference Number:"+newjson.optString("Reference Number"),
+                        list.add(new PrintDataObject("Reference Number:" + newjson.optString("Reference Number"),
                                 24, true, PrintDataObject.ALIGN.LEFT, false,
                                 true));
                         int ret = printDev.printTextEffect(list);

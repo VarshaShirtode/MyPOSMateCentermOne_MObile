@@ -560,8 +560,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         tv_refund1.setOnClickListener((View v) -> {
             callAuthToken();
-            tv_refund.setVisibility(View.VISIBLE);
-            tv_refund_unipay.setVisibility(View.VISIBLE);
+            if(!isRefundOptionOpen)
+            {
+                isRefundOptionOpen=true;
+                tv_refund.setVisibility(View.VISIBLE);
+                tv_refund_unipay.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                isRefundOptionOpen=false;
+                tv_refund.setVisibility(View.GONE);
+                tv_refund_unipay.setVisibility(View.GONE);
+            }
+
         });
         tv_settlement.setOnClickListener((View v) -> funcMenuSettlement());
         tv_loyalty_apps.setOnClickListener((View v) -> funcLoyaltyApps());
@@ -959,7 +970,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             mPopupWindow.dismiss();
         }
     }
-
+public static boolean isRefundOptionOpen=false;
     public void funcRefundAlipayWeChat() {
         callAuthToken();
         if (mPopupWindow.isShowing())

@@ -3757,6 +3757,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
             @Override
             public void onClick(View v) {
+
+                if(progress1!=null)
+                {
+                    if(progress1.isShowing())
+                        progress1.dismiss();
+                }
+
                 dialog.dismiss();
             }
         });
@@ -4452,9 +4459,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
                     public void onFinish() {
                         try {
-                            showDialog("Try again");
-                            if (progress.isShowing())
-                                progress.dismiss();
+                            showRetryDialog();
+                           // showDialog("Try again");
+                            if(progress!=null)
+                            {
+                                if (progress.isShowing())
+                                    progress.dismiss();
+                            }
                             countDownTimer.cancel();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -4467,6 +4478,68 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             }
         }
     }
+
+
+    public void showRetryDialog()
+    {
+        final Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        LayoutInflater lf = (LayoutInflater) (mContext)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.retry_dialog, null);
+        TextView title = (TextView) dialogview.findViewById(R.id.title);
+        title.setText("Note");
+        TextView body = (TextView) dialogview
+                .findViewById(R.id.dialogBody);
+        body.setText("No response received from server.\nPlease check your network connection\n.Do you want to retry?");
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        TextView cancel = (TextView) dialogview
+                .findViewById(R.id.dialogCancel);
+        cancel.setText("CANCEL");
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                try {
+                    if(progress1!=null)
+                    {
+                        if(progress1.isShowing())
+                            progress1.dismiss();
+                    }
+                    ((DashboardActivity)mContext).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY,null);
+                    dialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.dismiss();
+
+            }
+        });
+
+        TextView retry = (TextView) dialogview
+                .findViewById(R.id.dialogRetry);
+        retry.setVisibility(View.VISIBLE);
+        retry.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                callTransactionDetails();
+                dialog.dismiss();
+            }
+        });
+    }
+
+
+
 
 
     JSONObject jsonObjectSale, jsonObjectCouponSale;
