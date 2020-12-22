@@ -1,31 +1,36 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="20dp"
+    android:layout_height="wrap_content">
 
-    >
 
-    <TextView
-        android:elevation="2dp"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#90A4AE"
-        android:text="Info"
-        android:textColor="@color/colorAccent"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:id="@+id/textView" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
 
-    <ScrollView
-        android:id="@+id/activity_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:background="#90A4AE"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:text="Info"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
 
         <LinearLayout
+            android:id="@+id/activity_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/textView"
             android:orientation="vertical">
 
             <LinearLayout
@@ -37,16 +42,16 @@
 
                 <TextView
                     style="@style/TextViewStyle"
-                    android:textSize="14sp"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="2"
-                    android:text="Branch Info" />
+                    android:text="Branch Info"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_branch_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                     />
+                    android:layout_gravity="center|left" />
 
                 <EditText
                     android:id="@+id/edt_merchant_name"
@@ -72,17 +77,17 @@
                 <TextView
 
                     style="@style/TextViewStyle"
-                    android:textSize="14sp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_weight="2"
-                    android:text="Branch Address" />
+                    android:text="Branch Address"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_branch_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
 
                 <EditText
                     android:id="@+id/edt_address"
@@ -109,22 +114,22 @@
                     style="@style/TextViewStyle"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
-                    android:textSize="14sp"
                     android:layout_weight="2"
-                    android:text="Branch phone no" />
+                    android:text="Branch phone no"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_branch_contact_no"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
 
                 <EditText
                     android:id="@+id/edt_contact_no"
                     style="@style/EditTextStyle"
                     android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:inputType="number"
                     android:textSize="14sp" />
@@ -139,23 +144,24 @@
 
                 <TextView
                     style="@style/TextViewStyle"
-                    android:textSize="14sp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_weight="2"
-                    android:text="Branch Email" />
+                    android:text="Branch Email"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_branch_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
+
                 <EditText
                     android:id="@+id/edt_contact_email"
                     style="@style/EditTextStyle"
                     android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:inputType="textEmailAddress"
                     android:textSize="14sp" />
@@ -172,15 +178,16 @@
                 <TextView
                     style="@style/TextViewStyle"
                     android:layout_marginLeft="10dp"
-                    android:textSize="14sp"
                     android:layout_weight="2"
-                    android:text="GST No" />
+                    android:text="GST No"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_gst_no"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
+
                 <EditText
                     android:id="@+id/edt_gst_number"
                     style="@style/EditTextStyle"
@@ -204,15 +211,16 @@
                     style="@style/TextViewStyle"
                     android:layout_height="45dp"
                     android:layout_marginLeft="10dp"
-                    android:textSize="14sp"
                     android:layout_weight="2"
-                    android:text="Terminal Identifier" />
+                    android:text="Terminal Identifier"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_terminal_identifier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
+
                 <EditText
                     android:id="@+id/edt_terminal_identifier"
                     style="@style/EditTextStyle"
@@ -234,15 +242,16 @@
                 <TextView
                     style="@style/TextViewStyle"
                     android:layout_marginLeft="10dp"
-                    android:textSize="14sp"
                     android:layout_weight="2"
-                    android:text="Lane Identifier" />
+                    android:text="Lane Identifier"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_lane_identifier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
+
                 <EditText
                     android:id="@+id/edt_lane_identifier"
                     style="@style/EditTextStyle"
@@ -265,15 +274,16 @@
                 <TextView
                     style="@style/TextViewStyle"
                     android:layout_marginLeft="10dp"
-                    android:textSize="14sp"
                     android:layout_weight="2"
-                    android:text="POS Identifier" />
+                    android:text="POS Identifier"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_pos_identifier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
+
                 <EditText
                     android:id="@+id/edt_pos_identifier"
                     style="@style/EditTextStyle"
@@ -287,26 +297,27 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="3">
 
                 <TextView
                     style="@style/TextViewStyle"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="14sp"
                     android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="2"
-                    android:text="TimeZone" />
+                    android:text="TimeZone"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/chk_timezone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    />
+                    android:layout_gravity="center|left" />
+
                 <Spinner
                     android:id="@+id/sp_timezone"
                     style="@style/EditTextStyle"
@@ -319,24 +330,23 @@
             </LinearLayout>
 
 
-
             <LinearLayout
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|bottom"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <Button
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
                     android:id="@+id/btn_save"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
                     android:background="@color/colorBtnBg"
                     android:gravity="center"
                     android:text="@string/save_and_ok"
@@ -345,21 +355,26 @@
                     android:textSize="16sp" />
 
                 <Button
-                    android:textAllCaps="false"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
                     android:id="@+id/btn_cancel"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
                     android:background="@color/colorBtnBg"
                     android:gravity="center"
                     android:text="Cancel &amp; Close"
+                    android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp" />
 
 
-
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/activity_main"></TextView>
+    </RelativeLayout>
+</ScrollView>

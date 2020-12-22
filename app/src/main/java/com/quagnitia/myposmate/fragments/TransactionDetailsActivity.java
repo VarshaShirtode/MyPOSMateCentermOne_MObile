@@ -1594,6 +1594,17 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             list.add(new PrintDataObject(jsonObject.optString("id"),
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
+
+            if(jsonObject.optString("referenceId").equals(newjson.optString("CUP Reference No")))
+            {
+                list.add(new PrintDataObject("Reference Number:",
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+                list.add(new PrintDataObject(jsonObject.optString("referenceId"),
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+            }
+
             list.add(new PrintDataObject("Reference Number:",
                     fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                     true));
@@ -1610,7 +1621,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         true));
             }
 
-            if (jsonObject.has("trade_no")) {
+            if (jsonObject.has("trade_no")||jsonObject.has("tradeNo")) {
                 list.add(new PrintDataObject("Trade Number:",
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
@@ -1631,8 +1642,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
                 Date d = null;
                 if (newjson.has("Transaction Type") && (newjson.optString("Transaction Type").equals("VOIDED") ||
-
-
                         newjson.optString("Transaction Type").equals("UPI_SCAN_CODE_VOID") ||
                         newjson.optString("Transaction Type").equals("COUPON_VOID"))) {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
