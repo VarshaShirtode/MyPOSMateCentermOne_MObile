@@ -134,6 +134,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public static boolean isExternalApp = false;
 
     //payment choices variables
+    private CheckBox chk_centrapay_merchant_qr;
+    private CheckBox chk_centrapay_qr_scan;
+    private CheckBox chk_centrapay_display_and_add;
+    private CheckBox chk_centrapay_display_only;
+    private EditText edt_centrapay_cv;
     private CheckBox chk_poli;
     private CheckBox chk_poli_display_and_add;
     private CheckBox chk_poli_display_only;
@@ -560,15 +565,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         tv_refund1.setOnClickListener((View v) -> {
             callAuthToken();
-            if(!isRefundOptionOpen)
-            {
-                isRefundOptionOpen=true;
+            if (!isRefundOptionOpen) {
+                isRefundOptionOpen = true;
                 tv_refund.setVisibility(View.VISIBLE);
                 tv_refund_unipay.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                isRefundOptionOpen=false;
+            } else {
+                isRefundOptionOpen = false;
                 tv_refund.setVisibility(View.GONE);
                 tv_refund_unipay.setVisibility(View.GONE);
             }
@@ -970,7 +972,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             mPopupWindow.dismiss();
         }
     }
-public static boolean isRefundOptionOpen=false;
+
+    public static boolean isRefundOptionOpen = false;
+
     public void funcRefundAlipayWeChat() {
         callAuthToken();
         if (mPopupWindow.isShowing())
@@ -1531,6 +1535,7 @@ public static boolean isRefundOptionOpen=false;
         pcUP_UPIQRScan_MPMCloud(dialogView);
         pcUP_Merchant_QRDisplay(dialogView);
         pcPoli(dialogView);
+        pcCentrapay(dialogView);
     }
 
     private void pcPoli(View dialogView) {
@@ -1539,6 +1544,15 @@ public static boolean isRefundOptionOpen=false;
         chk_poli_display_and_add = dialogView.findViewById(R.id.chk_poli_display_and_add);
         chk_poli_display_only = dialogView.findViewById(R.id.chk_poli_display_only);
         edt_poli_cv = dialogView.findViewById(R.id.edt_poli_cv);
+    }
+
+    private void pcCentrapay(View dialogView) {
+        //CENTRAPAY
+        chk_centrapay_merchant_qr = dialogView.findViewById(R.id.chk_centrapay_merchant_qr);
+        chk_centrapay_qr_scan = dialogView.findViewById(R.id.chk_centrapay_qr_scan);
+        chk_centrapay_display_and_add = dialogView.findViewById(R.id.chk_centrapay_display_and_add);
+        chk_centrapay_display_only = dialogView.findViewById(R.id.chk_centrapay_display_only);
+        edt_centrapay_cv = dialogView.findViewById(R.id.edt_centrapay_cv);
     }
 
     private void pcAlipay(View dialogView) {
@@ -1632,7 +1646,119 @@ public static boolean isRefundOptionOpen=false;
         _poli_chkListener();
         _poli_DAADD_DONLY_chkListener();
 
+
+        //CENTRAPAY PC Listeners
+        _centrapay_chkListener();
+        _centrapay_DAADD_DONLY_chkListener();
+
+
     }
+
+
+    private void _centrapay_chkListener()
+    {
+        chk_centrapay_merchant_qr.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                preferencesManager.setisCentrapayMerchantQRDisplaySelected(true);
+            } else {
+                preferencesManager.setisCentrapayMerchantQRDisplaySelected(false);
+                chk_centrapay_merchant_qr.setChecked(false);
+                chk_centrapay_display_and_add.setChecked(false);
+                chk_centrapay_display_only.setChecked(false);
+                preferencesManager.setcnv_centrapay_display_and_add(false);
+                preferencesManager.setcnv_centrapay_display_only(false);
+                preferencesManager.setcnv_centrapay("0.00");
+                edt_centrapay_cv.setText("0.00");
+            }
+        });
+    }
+    //    chk_centrapay_merchant_qr,chk_centrapay_qr_scan,
+//    chk_centrapay_display_and_add,,chk_centrapay_display_only
+//            edt_centrapay_cv
+    private void _centrapay_DAADD_DONLY_chkListener() {
+        chk_centrapay_display_and_add.setOnClickListener((View v) -> {
+
+            if (chk_centrapay_merchant_qr.isChecked()) {
+                if (edt_centrapay_cv.getText().toString().equals("0.0") ||
+                        edt_centrapay_cv.getText().toString().equals("0.00") ||
+                        edt_centrapay_cv.getText().toString().equals("")
+                        || edt_centrapay_cv.getText().toString().equals(" ")) {
+                    chk_centrapay_display_and_add.setChecked(false);
+                    chk_centrapay_display_and_add.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    String s = edt_centrapay_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_centrapay_display_and_add.setChecked(false);
+                        chk_centrapay_display_and_add.setSelected(false);
+                        return;
+                    }
+                    if (chk_centrapay_display_only.isChecked()) {
+                        chk_centrapay_display_only.setChecked(false);
+                        preferenceManager.setcnv_centrapay_display_only(false);
+                        preferenceManager.setcnv_centrapay_display_and_add(true);
+                    } else {
+                        //case 2
+                        chk_centrapay_display_only.setChecked(false);
+                        preferenceManager.setcnv_centrapay_display_only(false);
+                        preferenceManager.setcnv_centrapay_display_and_add(true);
+                    }
+                }
+                preferenceManager.setcnv_centrapay(edt_centrapay_cv.getText().toString());
+            } else {
+                chk_centrapay_display_and_add.setChecked(false);
+                chk_centrapay_display_and_add.setSelected(false);
+                preferenceManager.setcnv_centrapay("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+
+
+        chk_centrapay_display_only.setOnClickListener((View v) -> {
+
+            if (chk_centrapay_merchant_qr.isChecked()) {
+                if (edt_centrapay_cv.getText().toString().equals("0.0") ||
+                        edt_centrapay_cv.getText().toString().equals("0.00") ||
+                        edt_centrapay_cv.getText().toString().equals("")
+                        || edt_centrapay_cv.getText().toString().equals(" ")) {
+                    chk_centrapay_display_only.setChecked(false);
+                    chk_centrapay_display_only.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    String s = edt_centrapay_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_centrapay_display_only.setChecked(false);
+                        chk_centrapay_display_only.setSelected(false);
+                        return;
+                    }
+                    if (chk_centrapay_display_and_add.isChecked()) {
+                        chk_centrapay_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_centrapay_display_only(true);
+                        preferenceManager.setcnv_centrapay_display_and_add(false);
+                    } else {
+                        //case 2
+                        chk_centrapay_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_centrapay_display_only(true);
+                        preferenceManager.setcnv_centrapay_display_and_add(false);
+                    }
+                }
+                preferenceManager.setcnv_centrapay(edt_centrapay_cv.getText().toString());
+            } else {
+                chk_centrapay_display_only.setChecked(false);
+                chk_centrapay_display_only.setSelected(false);
+                preferenceManager.setcnv_centrapay("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select unionpay card", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
+    }
+
+
+
 
 
     private void _poli_chkListener() {
@@ -2592,7 +2718,9 @@ public static boolean isRefundOptionOpen=false;
 
 
     public void funcPCPrefChecks() {
-        if (preferencesManager.is_cnv_poli_display_and_add() ||
+        if (preferencesManager.is_cnv_centrapay_display_and_add() ||
+                preferencesManager.is_cnv_centrapay_display_only() ||
+                preferencesManager.is_cnv_poli_display_and_add() ||
                 preferencesManager.is_cnv_poli_display_only() ||
                 preferencesManager.is_cnv_uni_display_only() ||
                 preferencesManager.is_cnv_uni_display_and_add() ||
@@ -2607,6 +2735,17 @@ public static boolean isRefundOptionOpen=false;
                 preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() ||
                 preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only()
         ) {
+
+            if (preferencesManager.is_cnv_centrapay_display_and_add()) {
+                chk_centrapay_display_and_add.setChecked(true);
+                chk_centrapay_display_and_add.setSelected(true);
+            }
+            if (preferencesManager.is_cnv_centrapay_display_only()) {
+                chk_centrapay_display_only.setChecked(true);
+                chk_centrapay_display_only.setSelected(true);
+            }
+
+
             if (preferencesManager.is_cnv_poli_display_and_add()) {
                 chk_poli_display_and_add.setChecked(true);
                 chk_poli_display_and_add.setSelected(true);
@@ -2693,6 +2832,7 @@ public static boolean isRefundOptionOpen=false;
             }
 
 
+            edt_centrapay_cv.setText(preferenceManager.getcnv_centrapay());
             edt_poli_cv.setText(preferenceManager.getcnv_poli());
             edt_unionpay_card_cv.setText(preferenceManager.getcnv_uni());
             edt_unionpay_qr_cv.setText(preferenceManager.getcnv_uniqr());
@@ -2812,7 +2952,10 @@ public static boolean isRefundOptionOpen=false;
             chk_wechat.setChecked(true);
             chk_wechat.setSelected(true);
         }
-
+        if (preferencesManager.isCentrapayMerchantQRDisplaySelected()) {
+            chk_centrapay_merchant_qr.setChecked(true);
+            chk_centrapay_merchant_qr.setSelected(true);
+        }
         if (preferencesManager.isPoliSelected()) {
             chk_poli.setChecked(true);
             chk_poli.setSelected(true);
@@ -2870,7 +3013,17 @@ public static boolean isRefundOptionOpen=false;
             chk_unionpay_card_display_and_add.setChecked(false);
             chk_unionpay_card_display_only.setChecked(false);
         }
-
+        if (edt_centrapay_cv.getText().toString().equals("") ||
+                edt_centrapay_cv.getText().toString().equals("0.00") ||
+                edt_centrapay_cv.getText().toString().equals("0.0")) {
+            preferencesManager.setcnv_centrapay("0.00");
+            preferenceManager.setcnv_centrapay_display_and_add(false);
+            preferenceManager.setcnv_centrapay_display_only(false);
+            chk_centrapay_display_and_add.setSelected(false);
+            chk_centrapay_display_only.setSelected(false);
+            chk_centrapay_display_and_add.setChecked(false);
+            chk_centrapay_display_only.setChecked(false);
+        }
         if (edt_poli_cv.getText().toString().equals("") ||
                 edt_poli_cv.getText().toString().equals("0.00") ||
                 edt_poli_cv.getText().toString().equals("0.0")) {
@@ -2911,7 +3064,9 @@ public static boolean isRefundOptionOpen=false;
                 chk_up_upi_qr_display_and_add.isChecked() ||
                 chk_upi_qr_display_only.isChecked() ||
                 chk_poli_display_and_add.isChecked() ||
-                chk_poli_display_only.isChecked()
+                chk_poli_display_only.isChecked()||
+                chk_centrapay_display_and_add.isChecked() ||
+                chk_centrapay_display_only.isChecked()
         ) {
             preferencesManager.setisConvenienceFeeSelected(true);
 
@@ -2958,6 +3113,34 @@ public static boolean isRefundOptionOpen=false;
                 preferencesManager.setcnv_poli_display_only(true);
             } else {
                 preferencesManager.setcnv_poli_display_only(false);
+            }
+
+            if (chk_centrapay_display_and_add.isChecked()) {
+                preferencesManager.setcnv_centrapay_display_and_add(true);
+            } else {
+                preferencesManager.setcnv_centrapay_display_and_add(false);
+            }
+
+            if (chk_centrapay_display_only.isChecked()) {
+                preferencesManager.setcnv_centrapay_display_only(true);
+            } else {
+                preferencesManager.setcnv_centrapay_display_only(false);
+            }
+
+            if (chk_centrapay_merchant_qr.isChecked()) {
+                if (!edt_centrapay_cv.getText().toString().equals("0.0") ||
+                        !edt_centrapay_cv.getText().toString().equals("0.00")
+                        || !edt_centrapay_cv.getText().toString().equals("")) {
+                    if (chk_centrapay_display_and_add.isChecked())
+                        preferenceManager.setcnv_centrapay_display_and_add(true);
+                    else
+                        preferenceManager.setcnv_centrapay_display_and_add(false);
+                    if (chk_centrapay_display_only.isChecked())
+                        preferenceManager.setcnv_centrapay_display_only(true);
+                    else
+                        preferenceManager.setcnv_centrapay_display_only(false);
+
+                }
             }
 
 
@@ -3162,6 +3345,16 @@ public static boolean isRefundOptionOpen=false;
 
             }
 
+            s = edt_centrapay_cv.getText().toString();
+            if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                chk_centrapay_display_only.setChecked(false);
+                chk_centrapay_display_only.setSelected(false);
+                chk_centrapay_display_and_add.setChecked(false);
+                chk_centrapay_display_and_add.setSelected(false);
+                preferencesManager.setcnv_centrapay_display_only(false);
+                preferencesManager.setcnv_centrapay_display_and_add(false);
+            }
+
             if ((edt_ali_cv.getText().toString().equals("0.00") ||
                     edt_ali_cv.getText().toString().equals("0.0") ||
                     edt_ali_cv.getText().toString().equals("")) &&
@@ -3188,9 +3381,10 @@ public static boolean isRefundOptionOpen=false;
                             edt_uplan_cv.getText().toString().equals("")) &&
                     (edt_poli_cv.getText().toString().equals("0.00") ||
                             edt_poli_cv.getText().toString().equals("0.0") ||
-                            edt_poli_cv.getText().toString().equals(""))
-
-
+                            edt_poli_cv.getText().toString().equals(""))&&
+                    (edt_centrapay_cv.getText().toString().equals("0.00") ||
+                            edt_centrapay_cv.getText().toString().equals("0.0") ||
+                            edt_centrapay_cv.getText().toString().equals(""))
             ) {
                 preferencesManager.setisConvenienceFeeSelected(false);
                 preferencesManager.setcnv_alipay("0.00");
@@ -3199,6 +3393,7 @@ public static boolean isRefundOptionOpen=false;
                 preferencesManager.setcnv_uni("0.00");
                 preferencesManager.setcnv_uniqr("0.00");
                 preferencesManager.setcnv_poli("0.00");
+                preferencesManager.setcnv_centrapay("0.00");
                 preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
                 preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                 preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
@@ -3234,6 +3429,13 @@ public static boolean isRefundOptionOpen=false;
                     preferencesManager.setcnv_poli(edt_poli_cv.getText().toString().replace(",", ""));
                 } else {
                     preferencesManager.setcnv_poli("0.00");
+                }
+
+                if (!edt_centrapay_cv.getText().toString().equals("") &&
+                        (!edt_centrapay_cv.getText().toString().equals("0.0") || !edt_centrapay_cv.getText().toString().equals("0.00"))) {
+                    preferencesManager.setcnv_centrapay(edt_centrapay_cv.getText().toString().replace(",", ""));
+                } else {
+                    preferencesManager.setcnv_centrapay("0.00");
                 }
 
                 if (!edt_unionpay_qr_cv.getText().toString().equals("") &&
@@ -3273,6 +3475,12 @@ public static boolean isRefundOptionOpen=false;
                 preferencesManager.setcnv_uni_display_and_add(false);
             if (!chk_unionpay_card_display_only.isChecked())
                 preferencesManager.setcnv_uni_display_only(false);
+
+            if (!chk_centrapay_display_and_add.isChecked())
+                preferencesManager.setcnv_centrapay_display_and_add(false);
+            if (!chk_centrapay_display_only.isChecked())
+                preferencesManager.setcnv_centrapay_display_only(false);
+
 
             if (!chk_poli_display_and_add.isChecked())
                 preferencesManager.setcnv_poli_display_and_add(false);
@@ -3345,6 +3553,12 @@ public static boolean isRefundOptionOpen=false;
             edt_poli_cv.setText("0.00");
             preferenceManager.setcnv_poli("0.00");
         }
+
+        if (!preferencesManager.is_cnv_centrapay_display_and_add() && !preferencesManager.is_cnv_centrapay_display_only()) {
+            edt_centrapay_cv.setText("0.00");
+            preferenceManager.setcnv_centrapay("0.00");
+        }
+
         if ((!edt_unionpay_qr_cv.getText().toString().equals("") &&
                 (!edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                         !edt_unionpay_qr_cv.getText().toString().equals("0.00"))) &&
@@ -3357,6 +3571,7 @@ public static boolean isRefundOptionOpen=false;
     }
 
     public void funcEdtLengthCalPC() {
+        edt_centrapay_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_poli_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_ali_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_wechat_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -3364,12 +3579,21 @@ public static boolean isRefundOptionOpen=false;
         edt_unionpay_qr_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_uplan_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+        edt_centrapay_cv.setSelection(edt_centrapay_cv.getText().length());
         edt_poli_cv.setSelection(edt_poli_cv.getText().length());
         edt_ali_cv.setSelection(edt_ali_cv.getText().length());
         edt_unionpay_card_cv.setSelection(edt_unionpay_card_cv.getText().length());
         edt_wechat_cv.setSelection(edt_wechat_cv.getText().length());
         edt_unionpay_qr_cv.setSelection(edt_unionpay_qr_cv.getText().length());
         edt_uplan_cv.setSelection(edt_uplan_cv.getText().length());
+
+
+        edt_centrapay_cv.setOnTouchListener((View v, MotionEvent event) -> {
+            if (edt_centrapay_cv.getText().toString().equals("0.0")) {
+                edt_centrapay_cv.setText("");
+            }
+            return false;
+        });
 
 
         edt_poli_cv.setOnTouchListener((View v, MotionEvent event) -> {
@@ -3415,6 +3639,7 @@ public static boolean isRefundOptionOpen=false;
         edt_up_upi_qr_cv1.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv1));
         edt_ali_cv.addTextChangedListener(new EditTextListenerClass(edt_ali_cv));
         edt_poli_cv.addTextChangedListener(new EditTextListenerClass(edt_poli_cv));
+        edt_centrapay_cv.addTextChangedListener(new EditTextListenerClass(edt_centrapay_cv));
         edt_unionpay_card_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_card_cv));
         edt_unionpay_qr_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_qr_cv));
         edt_uplan_cv.addTextChangedListener(new EditTextListenerClass(edt_uplan_cv));
@@ -3437,6 +3662,7 @@ public static boolean isRefundOptionOpen=false;
             Double upihigherFee = edt_up_upi_qr_cv1.getText().toString().isEmpty() ? 0.00 :
                     Double.parseDouble(edt_up_upi_qr_cv1.getText().toString());
             switch (editText.getId()) {
+                case R.id.edt_centrapay_cv:
                 case R.id.edt_poli_cv:
                 case R.id.edt_ali_cv:
                 case R.id.edt_unionpay_card_cv:
@@ -3561,6 +3787,10 @@ public static boolean isRefundOptionOpen=false;
             jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
             jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
 
+            jsonObject.put("CentrapaySelected", preferenceManager.isCentrapayMerchantQRDisplaySelected());
+            jsonObject.put("CentrapayFeeValue", preferenceManager.getcnv_centrapay());
+            jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
+            jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3816,6 +4046,13 @@ public static boolean isRefundOptionOpen=false;
                         preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
                     if (jsonObject1.has("MerchantId"))
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+
+
+                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
+
 
 
                     preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
@@ -4489,6 +4726,13 @@ public static boolean isRefundOptionOpen=false;
             jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
             jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
 
+
+            jsonObject.put("CentrapaySelected", preferenceManager.isCentrapayMerchantQRDisplaySelected());
+            jsonObject.put("CentrapayFeeValue", preferenceManager.getcnv_centrapay());
+            jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
+            jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
+
+
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
             hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
@@ -4603,6 +4847,10 @@ public static boolean isRefundOptionOpen=false;
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
 
+                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
                     preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                     preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
                     preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));

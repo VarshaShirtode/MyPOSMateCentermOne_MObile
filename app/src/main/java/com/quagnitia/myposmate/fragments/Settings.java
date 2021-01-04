@@ -128,7 +128,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         edt_terminal_id = view.findViewById(R.id.edt_terminal_id);
         edt_terminal_ip = view.findViewById(R.id.edt_terminal_ip);
         edt_unique_id = view.findViewById(R.id.edt_unique_id);
-        edt_terminal_id.setText("71283458bfce2b86");//android_id);//"169684c985ebb3a1");
+        edt_terminal_id.setText(android_id);//"169684c985ebb3a1");
         edt_terminal_ip.setText(getLocalIpAddress());
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
 //        preferencesManager.setMerchantId("29");
@@ -684,6 +684,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         try {
 
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
+            jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
+            jsonObject.put("CnvCentrapayDisplayAndAdd", preferencesManager.is_cnv_centrapay_display_and_add());
+            jsonObject.put("CnvCentrapayDisplayOnly", preferencesManager.is_cnv_centrapay_display_only());
+
             jsonObject.put("PoliSelected", preferencesManager.isPoliSelected());
             jsonObject.put("PoliFeeValue", preferencesManager.getcnv_poli());
             jsonObject.put("CnvPoliDisplayAndAdd", preferencesManager.is_cnv_poli_display_and_add());
@@ -789,6 +794,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 jsonObject1 = new JSONObject(decryption_old(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
 
+
+                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
                     preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                     preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
                     preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
@@ -935,6 +945,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     }
 
 
+                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
                     preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                     preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
                     preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
@@ -1376,6 +1390,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                             preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
 
 
+                        preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                        preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                        preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                        preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
                         preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                         preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
                         preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));

@@ -245,7 +245,6 @@
                     android:padding="2dp">
 
                     <LinearLayout
-                        android:scrollbars="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
@@ -467,7 +466,6 @@
                             </LinearLayout>
 
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:id="@+id/ag_v2"
@@ -692,7 +690,6 @@
 
                         </LinearLayout>
 
-
                         <LinearLayout
                             android:id="@+id/ll_row3"
                             android:layout_width="330dp"
@@ -705,9 +702,6 @@
                             android:orientation="horizontal"
                             android:visibility="visible"
                             android:weightSum="3">
-
-
-
                             <RelativeLayout
                                 android:layout_weight="1"
                                 android:layout_width="103dp"
@@ -740,8 +734,6 @@
                                     />
 
                             </RelativeLayout>
-
-
                             <RelativeLayout
                                 android:layout_width="103dp"
                                 android:layout_height="wrap_content"
@@ -777,39 +769,48 @@
 
                             </RelativeLayout>
                             <RelativeLayout
-                                android:visibility="visible"
+                            android:visibility="visible"
+                            android:layout_width="103dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+
+                            <ImageView
+                                android:src="@drawable/centerpay"
                                 android:layout_width="103dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_height="70dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_alignParentTop="true"
+                                android:background="@drawable/rec_bg"
+                                android:padding="10dp"
+                                android:visibility="visible" />
 
 
-                                <ImageView
-                                    android:src="@drawable/centerpay"
-                                    android:layout_width="103dp"
-                                    android:layout_height="70dp"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_alignParentTop="true"
-                                    android:background="@drawable/rec_bg"
-                                    android:padding="10dp"
-                                    android:visibility="visible" />
+                            <ImageView
+                                android:src="@drawable/qr_image"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentTop="true"
+                                android:visibility="visible" />
 
-                                <TextView
-                                    android:layout_width="103dp"
-                                    android:layout_height="70dp"
-                                    android:layout_marginRight="5dp"
-                                    android:background="@drawable/rec_gray_bg"
-                                    android:gravity="center"
-                                    android:paddingTop="5dp"
-                                    android:textColor="@color/colorBlack"
-                                    android:textSize="12sp"
-                                    android:text="WeChat QR scan disabled"
-                                    android:textStyle="bold"
-                                    android:visibility="gone" />
-
-
-                            </RelativeLayout>
+                            <TextView
+                                android:layout_width="103dp"
+                                android:layout_height="70dp"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/rec_gray_bg"
+                                android:gravity="center"
+                                android:paddingTop="5dp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="12sp"
+                                android:text="WeChat QR scan disabled"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
 
 
+                        </RelativeLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -852,7 +853,7 @@
                                 android:textColor="@color/colorBlue"
                                 android:textStyle="bold" />
                             <TextView
-                                android:id="@+id/tv_centerpay_mr_qr_cnv"
+                                android:id="@+id/edt_centerpay_mr_qr_cnv"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -865,7 +866,192 @@
                                 android:visibility="visible" />
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:id="@+id/ll_row4"
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@color/colorWhite"
+                            android:orientation="horizontal"
+                            android:visibility="visible"
+                            android:weightSum="3">
+                            <RelativeLayout
+                                android:layout_weight="1"
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content">
 
+                                <ImageView
+                                    android:visibility="visible"
+                                    android:id="@+id/img_centerpay_scanqr"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:padding="10dp"
+                                    android:src="@drawable/centerpay" />
+
+                                <ImageView
+                                    android:src="@drawable/barcode_scanner"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_alignParentTop="true"
+                                    android:visibility="visible" />
+
+
+
+                                <TextView
+                                    android:visibility="gone"
+                                    android:id="@+id/tv_centrapay_barcode_scanner_qr_disabled"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:textStyle="bold"
+                                    android:textSize="12sp"
+                                    android:gravity="center"
+                                    android:textColor="@color/colorBlack"
+                                    android:text="UnionPay QR disabled"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:padding="10dp"
+                                    />
+
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:visibility="invisible"
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:src="@drawable/poli"
+                                    android:padding="15dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:paddingTop="5dp"
+                                    android:visibility="visible" />
+
+
+                                <TextView
+                                    android:layout_alignParentTop="true"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:text="Poli disabled"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:visibility="invisible"
+                                android:layout_width="103dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+
+                                <ImageView
+                                    android:src="@drawable/centerpay"
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_alignParentTop="true"
+                                    android:background="@drawable/rec_bg"
+                                    android:padding="10dp"
+                                    android:visibility="visible" />
+
+
+                                <ImageView
+                                    android:src="@drawable/qr_image"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_alignParentTop="true"
+                                    android:visibility="visible" />
+
+                                <TextView
+                                    android:layout_width="103dp"
+                                    android:layout_height="70dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
+                                    android:paddingTop="5dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:text="WeChat QR scan disabled"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:baselineAligned="false"
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_gravity="center"
+                            android:weightSum="3">
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
+                                android:textSize="14sp"
+                                android:visibility="visible"
+                                android:enabled="false"
+                                android:layout_height="18dp"
+                                app:showSymbol="true"
+                                android:id="@+id/edt_centrapay_barcode_scanner_cv"
+                                android:layout_width="match_parent"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="$0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold" />
+
+
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
+                                android:textSize="14sp"
+                                android:enabled="false"
+                                app:showSymbol="true"
+                                android:layout_height="18dp"
+                                android:visibility="invisible"
+                                android:layout_width="match_parent"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:visibility="invisible"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textStyle="bold"
+                                 />
+                        </LinearLayout>
 
                     </LinearLayout>
                 </ScrollView>

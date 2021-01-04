@@ -168,6 +168,11 @@ public static boolean isUpdateDetails=false;
 
                         try {
                             JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
+                            jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
+                            jsonObject.put("CnvCentrapayDisplayAndAdd", preferencesManager.is_cnv_centrapay_display_and_add());
+                            jsonObject.put("CnvCentrapayDisplayOnly", preferencesManager.is_cnv_centrapay_display_only());
+
                             jsonObject.put("PoliSelected", preferencesManager.isPoliSelected());
                             jsonObject.put("PoliFeeValue", preferencesManager.getcnv_poli());
                             jsonObject.put("CnvPoliDisplayAndAdd", preferencesManager.is_cnv_poli_display_and_add());

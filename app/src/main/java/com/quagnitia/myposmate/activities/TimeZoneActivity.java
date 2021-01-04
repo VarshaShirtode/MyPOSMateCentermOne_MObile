@@ -200,7 +200,6 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         }
 
 
-
         openProgressDialog();
         try {
             hashMapKeys.clear();
@@ -289,6 +288,13 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                         preferenceManager.setConfigId(jsonObject1.optString("ConfigId"));
                     if (jsonObject1.has("MerchantId"))
                         preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
+
+
+
+                    preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferenceManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferenceManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
 
                     preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                     preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));

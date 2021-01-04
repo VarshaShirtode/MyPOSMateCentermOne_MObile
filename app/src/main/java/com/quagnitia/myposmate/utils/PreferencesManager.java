@@ -32,6 +32,8 @@ public class PreferencesManager {
     private String isAuthenticated="isAuthenticated";
     private String isAlipaySelected="isAlipaySelected";
     private String isPoliSelected="isPoliSelected";
+    private String isCentrapayMerchantQRDisplaySelected="isCentrapayMerchantQRDisplaySelected";
+
     private String isManual="isManual";
     private String isHome="isHome";
     private String isBack="isBack";
@@ -68,6 +70,7 @@ public class PreferencesManager {
     private String showReference="showReference";
     private String triggerReferenceId="triggerReferenceId";
     private String isConvenienceFeeSelected="isConvenienceFeeSelected";
+    private String cnv_centrapay="cnv_centrapay";
     private String cnv_poli="cnv_poli";
     private String cnv_alipay="cnv_alipay";
     private String cnv_wechat="cnv_wechat";
@@ -75,6 +78,8 @@ public class PreferencesManager {
     private String cnv_alipay_display_only="cnv_alipay_display_only";
     private String cnv_poli_display_and_add="cnv_poli_display_and_add";
     private String cnv_poli_display_only="cnv_poli_display_only";
+    private String cnv_centrapay_display_and_add="cnv_centrapay_display_and_add";
+    private String cnv_centrapay_display_only="cnv_centrapay_display_only";
     private String cnv_uni="cnv_uni";
     private String cnv_uniqr="cnv_uniqr";
     private String cnv_unimerchantqrdisplay_lower ="cnv_unimerchantqrdisplay_lower";
@@ -631,27 +636,7 @@ public class PreferencesManager {
         editor.apply();
     }
 
-    public boolean is_cnv_poli_display_and_add() {
-        return sharedPreferences.getBoolean(cnv_poli_display_and_add, false);
-    }
 
-    public void setcnv_poli_display_and_add(boolean text) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(cnv_poli_display_and_add, text);
-        editor.apply();
-
-    }
-
-    public boolean is_cnv_poli_display_only() {
-        return sharedPreferences.getBoolean(cnv_poli_display_only, false);
-    }
-
-    public void setcnv_poli_display_only(boolean text) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(cnv_poli_display_only, text);
-        editor.apply();
-
-    }
 
 
 
@@ -756,15 +741,7 @@ public class PreferencesManager {
     }
 
 
-    public String getcnv_poli() {
-        return sharedPreferences.getString(cnv_poli, "");
-    }
 
-    public void setcnv_poli(String text) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(cnv_poli, text);
-        editor.apply();
-    }
 
     public String getcnv_alipay() {
         return sharedPreferences.getString(cnv_alipay, "");
@@ -1297,6 +1274,53 @@ Context mContext;
 
     }
 
+
+
+    public boolean isCentrapayMerchantQRDisplaySelected() {
+        return sharedPreferences.getBoolean(isCentrapayMerchantQRDisplaySelected, false);
+    }
+
+    public void setisCentrapayMerchantQRDisplaySelected(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isCentrapayMerchantQRDisplaySelected, text);
+        editor.apply();
+
+    }
+
+
+    public boolean is_cnv_centrapay_display_and_add() {
+        return sharedPreferences.getBoolean(cnv_centrapay_display_and_add, false);
+    }
+
+    public void setcnv_centrapay_display_and_add(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_centrapay_display_and_add, text);
+        editor.apply();
+
+    }
+
+    public boolean is_cnv_centrapay_display_only() {
+        return sharedPreferences.getBoolean(cnv_centrapay_display_only, false);
+    }
+
+    public void setcnv_centrapay_display_only(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_centrapay_display_only, text);
+        editor.apply();
+
+    }
+
+    public String getcnv_centrapay() {
+        return sharedPreferences.getString(cnv_centrapay, "");
+    }
+
+    public void setcnv_centrapay(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_centrapay, text);
+        editor.apply();
+    }
+
+
     public boolean isPoliSelected() {
         return sharedPreferences.getBoolean(isPoliSelected, false);
     }
@@ -1308,6 +1332,36 @@ Context mContext;
 
     }
 
+    public boolean is_cnv_poli_display_and_add() {
+        return sharedPreferences.getBoolean(cnv_poli_display_and_add, false);
+    }
+
+    public void setcnv_poli_display_and_add(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_poli_display_and_add, text);
+        editor.apply();
+
+    }
+
+    public boolean is_cnv_poli_display_only() {
+        return sharedPreferences.getBoolean(cnv_poli_display_only, false);
+    }
+
+    public void setcnv_poli_display_only(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_poli_display_only, text);
+        editor.apply();
+
+    }
+    public String getcnv_poli() {
+        return sharedPreferences.getString(cnv_poli, "");
+    }
+
+    public void setcnv_poli(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_poli, text);
+        editor.apply();
+    }
 
     public boolean isAlipaySelected() {
         return sharedPreferences.getBoolean(isAlipaySelected, false);

@@ -83,7 +83,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     private ProgressDialog progress, progress1;
     private String mParam1;
     private String mParam2;
-    public static String pass_amount="";
+    public static String pass_amount = "";
     private Button btn_cancel, btn_save1, btn_cancel1;
     private View view;
     private TextView tv_alipay_disabled, tv_unionpay_qr_disabled, tv_wechat_scan_disabled, tv_wechat_disabled, tv_scanqr_disabled, tv_uplan_disabled, tv_unionpay_disabled, tv_scan_uni_disabled;
@@ -99,6 +99,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             convenience_amount_alipay_scan = 0.0, convenience_amount_wechat_scan = 0.0,
             convenience_amount_unionpay = 0.0,
             convenience_amount_poli = 0.0,
+            convenience_amount_centrapay_merchant_qr_display = 0.0,
             convenience_amount_uplan = 0.0,
             convenience_amount_unionpayqrscan = 0.0,
             convenience_amount_unionpayqrdisplay = 0.0,
@@ -134,9 +135,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     Button btn_back1;
     Button btn_front1;
     Button btn_loyalty_apps;
-    ImageView img_poli;
+    ImageView img_poli, img_centrapay_merchant_qr_display, img_centerpay_scanqr;
     EditText edt_poli_cnv;
     TextView tv_poli_disabled;
+    TextView tv_centrapay_merchant_qr_disabled;
+    EditText edt_centerpay_mr_qr_cnv;
 
     public static ManualEntry newInstance(String param1, String param2) {
         ManualEntry fragment = new ManualEntry();
@@ -212,7 +215,28 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     }
 
+    public void centrapay() {
+        if (!preferenceManager.isCentrapayMerchantQRDisplaySelected()) {
+            //centrapay is deselected
+            tv_centrapay_merchant_qr_disabled.setVisibility(View.VISIBLE);
+            img_centrapay_merchant_qr_display.setVisibility(View.GONE);
+            edt_centerpay_mr_qr_cnv.setVisibility(View.INVISIBLE);
+        } else {
+            //poli is selected
+            tv_centrapay_merchant_qr_disabled.setVisibility(View.GONE);
+            img_centrapay_merchant_qr_display.setVisibility(View.VISIBLE);
+            if (preferenceManager.is_cnv_centrapay_display_and_add() ||
+                    preferenceManager.is_cnv_centrapay_display_only()) {
+                edt_centerpay_mr_qr_cnv.setVisibility(View.VISIBLE);
+            } else {
+                edt_centerpay_mr_qr_cnv.setVisibility(View.INVISIBLE);
+            }
+        }
+
+    }
+
     public void funcDisabledUISwitch() {
+        tv_centrapay_merchant_qr_disabled = view.findViewById(R.id.tv_centrapay_merchant_qr_disabled);
         tv_uplan_disabled = view.findViewById(R.id.tv_uplan_disabled);
         tv_unionpay_disabled = view.findViewById(R.id.tv_unionpay_disabled);
         tv_scan_uni_disabled = view.findViewById(R.id.tv_scan_uni_disabled);
@@ -220,28 +244,22 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         tv_wechat_disabled = view.findViewById(R.id.tv_wechat_disabled);
         tv_scanqr_disabled = view.findViewById(R.id.tv_scanqr_disabled);
         tv_unionpay_qr_disabled = view.findViewById(R.id.tv_unionpay_qr_disabled);
-        tv_poli_disabled=view.findViewById(R.id.tv_poli_disabled);
+        tv_poli_disabled = view.findViewById(R.id.tv_poli_disabled);
 
-
-        if(!preferenceManager.isPoliSelected())
-        {
+        centrapay();
+        if (!preferenceManager.isPoliSelected()) {
             //poli is deselected
             tv_poli_disabled.setVisibility(View.VISIBLE);
             img_poli.setVisibility(View.GONE);
             edt_poli_cnv.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
+        } else {
             //poli is selected
             tv_poli_disabled.setVisibility(View.GONE);
             img_poli.setVisibility(View.VISIBLE);
-            if(preferenceManager.is_cnv_poli_display_and_add()||
-            preferenceManager.is_cnv_poli_display_only())
-            {
+            if (preferenceManager.is_cnv_poli_display_and_add() ||
+                    preferenceManager.is_cnv_poli_display_only()) {
                 edt_poli_cnv.setVisibility(View.VISIBLE);
-            }
-            else
-            {
+            } else {
                 edt_poli_cnv.setVisibility(View.INVISIBLE);
             }
         }
@@ -624,8 +642,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     @Override
     public void onDestroy() {
-        if(!edt_amount.getText().toString().equals(""))
-        pass_amount=edt_amount.getText().toString();
+        if (!edt_amount.getText().toString().equals(""))
+            pass_amount = edt_amount.getText().toString();
         super.onDestroy();
         if (countDownTimerxmpp != null)
             countDownTimerxmpp.cancel();
@@ -1046,9 +1064,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         qrScan = new IntentIntegrator(getActivity());
         vasCallsArkeBusiness = new VASCallsArkeBusiness(getActivity());
 
-        img_poli=view.findViewById(R.id.img_poli);
+        img_poli = view.findViewById(R.id.img_poli);
+        img_centrapay_merchant_qr_display = view.findViewById(R.id.img_centrapay_merchant_qr_display);
+        img_centerpay_scanqr = view.findViewById(R.id.img_centerpay_scanqr);
         btn_back = view.findViewById(R.id.btn_back);
         edt_poli_cnv = view.findViewById(R.id.edt_poli_cnv);
+        edt_centerpay_mr_qr_cnv = view.findViewById(R.id.edt_centerpay_mr_qr_cnv);
         tv_status_scan = view.findViewById(R.id.tv_status_scan);
         tv_status_scan_button = view.findViewById(R.id.tv_status_scan_button);
         btn_front = view.findViewById(R.id.btn_front);
@@ -1114,7 +1135,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         tv_status_scan_button2 = view.findViewById(R.id.tv_status_scan_button2);
         btn_back1 = view.findViewById(R.id.btn_back1);
         btn_front1 = view.findViewById(R.id.btn_front1);
-        btn_loyalty_apps=view.findViewById(R.id.btn_loyalty_apps);
+        btn_loyalty_apps = view.findViewById(R.id.btn_loyalty_apps);
 
         funcLoyaltyAppSwitches();
         funcNewUISwitchBasedOnPref();
@@ -1122,68 +1143,59 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
-
     public void funcLoyaltyAppSwitches() {
         if (preferenceManager.isDisplayLoyaltyApps()) {
             rel_membership.setVisibility(View.GONE);
             ll_membership_loyalty_app.setVisibility(View.VISIBLE);
             tv_status_scan.setVisibility(View.GONE);
-          if(preferenceManager.isMembershipManual())
-          {
-              if(preferenceManager.isFront()&&
-                      preferenceManager.isBack()&&
-                      preferenceManager.isDisplayLoyaltyApps())
-              {
-                  view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
-                  view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
-                  ll_membership_loyalty_app.setWeightSum(3);
-                  tv_status_scan_button1.setVisibility(View.VISIBLE);
-                  tv_status_scan_button2.setVisibility(View.VISIBLE);
-                  btn_loyalty_apps.setVisibility(View.VISIBLE);
-                  btn_back1.setVisibility(View.VISIBLE);
-                  btn_front1.setVisibility(View.VISIBLE);
-              }
-              else if(!preferenceManager.isFront()&&
-                      preferenceManager.isBack()&&
-                      preferenceManager.isDisplayLoyaltyApps())
-              {
-                  view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
-                  view.findViewById(R.id.ll_front).setVisibility(View.GONE);
-                  ll_membership_loyalty_app.setWeightSum(2);
-                  tv_status_scan_button1.setVisibility(View.VISIBLE);
-                  tv_status_scan_button2.setVisibility(View.GONE);
-                  btn_loyalty_apps.setVisibility(View.VISIBLE);
-                  btn_back1.setVisibility(View.VISIBLE);
-                  btn_front1.setVisibility(View.GONE);
-              }
-              else if(preferenceManager.isFront()&&
-                      !preferenceManager.isBack()&&
-                      preferenceManager.isDisplayLoyaltyApps())
-              {
-                  view.findViewById(R.id.ll_back).setVisibility(View.GONE);
-                  view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
-                  ll_membership_loyalty_app.setWeightSum(2);
-                  tv_status_scan_button1.setVisibility(View.GONE);
-                  tv_status_scan_button2.setVisibility(View.VISIBLE);
-                  btn_loyalty_apps.setVisibility(View.VISIBLE);
-                  btn_back1.setVisibility(View.GONE);
-                  btn_front1.setVisibility(View.VISIBLE);
-              }
-              else if(!preferenceManager.isFront()&&
-                      !preferenceManager.isBack()&&
-                      preferenceManager.isDisplayLoyaltyApps())
-              {
-                  view.findViewById(R.id.ll_back).setVisibility(View.GONE);
-                  view.findViewById(R.id.ll_front).setVisibility(View.GONE);
-                  ll_membership_loyalty_app.setWeightSum(1);
-                  tv_status_scan_button1.setVisibility(View.GONE);
-                  tv_status_scan_button2.setVisibility(View.GONE);
-                  btn_loyalty_apps.setVisibility(View.VISIBLE);
-                  btn_back1.setVisibility(View.GONE);
-                  btn_front1.setVisibility(View.GONE);
-              }
+            if (preferenceManager.isMembershipManual()) {
+                if (preferenceManager.isFront() &&
+                        preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+                    ll_membership_loyalty_app.setWeightSum(3);
+                    tv_status_scan_button1.setVisibility(View.VISIBLE);
+                    tv_status_scan_button2.setVisibility(View.VISIBLE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.VISIBLE);
+                    btn_front1.setVisibility(View.VISIBLE);
+                } else if (!preferenceManager.isFront() &&
+                        preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+                    ll_membership_loyalty_app.setWeightSum(2);
+                    tv_status_scan_button1.setVisibility(View.VISIBLE);
+                    tv_status_scan_button2.setVisibility(View.GONE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.VISIBLE);
+                    btn_front1.setVisibility(View.GONE);
+                } else if (preferenceManager.isFront() &&
+                        !preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+                    ll_membership_loyalty_app.setWeightSum(2);
+                    tv_status_scan_button1.setVisibility(View.GONE);
+                    tv_status_scan_button2.setVisibility(View.VISIBLE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.GONE);
+                    btn_front1.setVisibility(View.VISIBLE);
+                } else if (!preferenceManager.isFront() &&
+                        !preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+                    ll_membership_loyalty_app.setWeightSum(1);
+                    tv_status_scan_button1.setVisibility(View.GONE);
+                    tv_status_scan_button2.setVisibility(View.GONE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.GONE);
+                    btn_front1.setVisibility(View.GONE);
+                }
 
-          }
+            }
 
         } else {
             funcMembershipLoyalityUISwitch();
@@ -1223,13 +1235,19 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     public void cnvdisplay() {
 
+        if (!preferenceManager.getcnv_centrapay().equals("") &&
+                !preferenceManager.getcnv_centrapay().equals("0.0") &&
+                !preferenceManager.getcnv_centrapay().equals("0.00")) {
+            double amount = Double.parseDouble(edt_amount.getText().toString()) * Double.parseDouble(preferenceManager.getcnv_centrapay()) / 100;
+            edt_centerpay_mr_qr_cnv.setText("" + roundTwoDecimals(amount));
+        }
+
         if (!preferenceManager.getcnv_poli().equals("") &&
                 !preferenceManager.getcnv_poli().equals("0.0") &&
                 !preferenceManager.getcnv_poli().equals("0.00")) {
             double amount = Double.parseDouble(edt_amount.getText().toString()) * Double.parseDouble(preferenceManager.getcnv_poli()) / 100;
             edt_poli_cnv.setText("" + roundTwoDecimals(amount));
         }
-
 
 
         if (!preferenceManager.getcnv_alipay().equals("") &&
@@ -1431,6 +1449,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
     public void initListener() {
+        img_centrapay_merchant_qr_display.setOnClickListener(this);
+        img_centerpay_scanqr.setOnClickListener(this);
         btn_back.setOnClickListener(this);
         btn_front.setOnClickListener(this);
         btn_back1.setOnClickListener(this);
@@ -1449,6 +1469,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         img_unionpay_qr.setOnClickListener(this);
         rel_alipay_static_qr.setOnClickListener(this);
         img_poli.setOnClickListener(this);
+        img_centerpay_scanqr.setOnClickListener(this);
+        img_centrapay_merchant_qr_display.setOnClickListener(this);
 
     }
 
@@ -1529,6 +1551,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         tv_ali_cv1.setTextSize(14);
                         tv_unionpay_qr_cv.setTextSize(14);
                         edt_poli_cnv.setTextSize(14);
+                        edt_centerpay_mr_qr_cnv.setTextSize(14);
                     } else {
                         tv_uni_cv.setTextSize(10);
                         tv_uni_cv1_uplan.setTextSize(10);
@@ -1537,6 +1560,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         tv_ali_cv1.setTextSize(10);
                         tv_unionpay_qr_cv.setTextSize(10);
                         edt_poli_cnv.setTextSize(10);
+                        edt_centerpay_mr_qr_cnv.setTextSize(10);
                     }
                     callAllConvinenceFeeCalculations();
                 }
@@ -1549,7 +1573,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public void callAllConvinenceFeeCalculations() {
         if (edt_amount.getText().toString().equals(""))
             return;
-
+        calculateConvFeeCentrapay();
         calculateConvFeePoli();
         calculateConvAlipay();
         calculateConvWeChat();
@@ -1697,6 +1721,25 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
     }
 
+
+    public void calculateConvFeeCentrapay() {
+        if (preferenceManager.is_cnv_centrapay_display_and_add()
+                || preferenceManager.is_cnv_centrapay_display_only()) {
+
+            if (!preferenceManager.getcnv_centrapay().equals("") ||
+                    !preferenceManager.getcnv_centrapay().equals("0.0") ||
+                    !preferenceManager.getcnv_centrapay().equals("0.00")) {
+                convenience_amount_centrapay_merchant_qr_display = Double.parseDouble(edt_amount.getText().toString().replace(",", "")) /
+                        (1 - (Double.parseDouble(preferenceManager.getcnv_centrapay()) / 100));
+                if (roundTwoDecimals(convenience_amount_centrapay_merchant_qr_display).length() > 12) {
+                    edt_centerpay_mr_qr_cnv.setTextSize(10);
+                }
+                edt_centerpay_mr_qr_cnv.setText("" + roundTwoDecimals(convenience_amount_centrapay_merchant_qr_display));
+            }
+        }
+    }
+
+
     public void calculateConvFeePoli() {
         if (preferenceManager.is_cnv_poli_display_and_add()
                 || preferenceManager.is_cnv_poli_display_only()) {
@@ -1713,8 +1756,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             }
         }
     }
-
-
 
 
     public void calculateConvFeeUplan() {
@@ -2293,7 +2334,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 countDownTimerxmpp.cancel();
             if (countDownTimer != null)
                 countDownTimer.cancel();
-           // qrScan.initiateScan();
+            // qrScan.initiateScan();
             startQuickScan(true);
         } else
             beginBussiness(reference_id);
@@ -3247,7 +3288,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     public static String unionpay_payment_option = "";
     private Context mContext;
     String channel = "";
-    boolean isPoliSelected=false;
+    boolean isPoliSelected = false;
+    boolean isCentrapayMerchantQRDisplaySelected = false;
+
     @Override
     public void onClick(View view) {
         mContext = getActivity();
@@ -3259,6 +3302,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         switch (view.getId()) {
 
 
+            case R.id.img_centrapay_merchant_qr_display:
+                _funcCentrapayMerchantQrDisplay();
+                break;
+
+            case R.id.img_centerpay_scanqr:
+                _funcCentraPayScanQR();
+                break;
+
             case R.id.rel_alipay_static_qr:
                 callDisplayStaticQRDialog();
                 break;
@@ -3269,7 +3320,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.btn_loyalty_apps:
-                ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.LOYALTY_APPS,null);
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.LOYALTY_APPS, null);
                 break;
 
             case R.id.tv_status_scan_button:
@@ -3312,6 +3363,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             case R.id.img_poli:
                 _funcPoli();
                 break;
+
 
             case R.id.btn_cancel:
             case R.id.btn_cancel1:
@@ -3492,9 +3544,55 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     }
 
+    public void _funcCentraPayScanQR() {
+
+    }
+
+
+    private void _funcCentrapayMerchantQrDisplay() {
+        //Perform alipay transaction by generating QR code on terminal
+        isCentrapayMerchantQRDisplaySelected = true;
+        channel = "CENTRA_PAY";
+        selected_screen = 2;
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        View view2 = getActivity().getCurrentFocus();
+
+        if (view2 != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+            assert imm != null;
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
+        if (selected_screen == 0) {
+            Toast.makeText(getActivity(), "Please select the payment type", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (preferenceManager.is_cnv_centrapay_display_and_add())
+            xmppAmount = convenience_amount_centrapay_merchant_qr_display + "";
+        else
+            xmppAmount = edt_amount.getText().toString();
+
+
+        payment_mode = "CENTRA_PAY";
+        qrMode = "True";
+        auth_code = "";
+        if (MyPOSMateApplication.isOpen) {
+            callTerminalPayCentrapayMerchantQrDisplay();
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                callTerminalPayCentrapayMerchantQrDisplay();
+            }
+        }
+
+    }
+
+
     private void _funcPoli() {
         //Perform alipay transaction by generating QR code on terminal
-        isPoliSelected=true;
+        isPoliSelected = true;
         channel = "POLI";
         selected_screen = 2;
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -3531,9 +3629,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
 
     }
-
-
-
 
 
     private void _funcAlipay() {
@@ -3758,9 +3853,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             @Override
             public void onClick(View v) {
 
-                if(progress1!=null)
-                {
-                    if(progress1.isShowing())
+                if (progress1 != null) {
+                    if (progress1.isShowing())
                         progress1.dismiss();
                 }
 
@@ -4002,42 +4096,36 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             tv_status_scan.setVisibility(View.VISIBLE);
             tv_status_scan.setText("Thank you for using Membership/Loyality");
             tv_status_scan_button.setText("Rescan Membership/Loyality");
-            if(isFront)
-            {
-                isFront=false;
+            if (isFront) {
+                isFront = false;
                 tv_status_scan.setVisibility(View.VISIBLE);
                 tv_status_scan_button2.setText("Rescan Membership/Loyality");
-                tv_status_scan_button2.setGravity(Gravity.CENTER| Gravity.TOP);
-            }
-            else
-            {
+                tv_status_scan_button2.setGravity(Gravity.CENTER | Gravity.TOP);
+            } else {
                 tv_status_scan.setVisibility(View.GONE);
                 tv_status_scan_button2.setGravity(Gravity.CENTER);
             }
-            if(isBack)
-            {
-                isBack=false;
+            if (isBack) {
+                isBack = false;
                 tv_status_scan.setVisibility(View.VISIBLE);
                 tv_status_scan_button1.setText("Rescan Membership/Loyality");
-                tv_status_scan_button1.setGravity(Gravity.CENTER| Gravity.TOP);
-            }
-            else {
+                tv_status_scan_button1.setGravity(Gravity.CENTER | Gravity.TOP);
+            } else {
                 tv_status_scan.setVisibility(View.GONE);
-                tv_status_scan_button2.setGravity(Gravity.CENTER);}
+                tv_status_scan_button2.setGravity(Gravity.CENTER);
+            }
 
             Toast.makeText(getActivity(), "Loyality data uploaded successfully ", Toast.LENGTH_SHORT).show();
         } else {
             tv_status_scan.setVisibility(View.VISIBLE);
             tv_status_scan.setText("Membership/Loyality could not be scanned");
             tv_status_scan_button.setText("Rescan Membership/Loyality");
-            if(isFront)
-            {
-                isFront=false;
+            if (isFront) {
+                isFront = false;
                 tv_status_scan_button2.setText("Rescan Membership/Loyality");
             }
-            if(isBack)
-            {
-                isBack=false;
+            if (isBack) {
+                isBack = false;
                 tv_status_scan_button1.setText("Rescan Membership/Loyality");
             }
             Toast.makeText(getActivity(), "Loyality data upload failed ", Toast.LENGTH_SHORT).show();
@@ -4286,35 +4374,40 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         else
                             jsonObject.put("amount", xmppAmount);
                     }
-                }
-                else if(preferenceManager.is_cnv_poli_display_and_add()&&
-                preferenceManager.isPoliSelected())
-                {
+                } else if (preferenceManager.is_cnv_poli_display_and_add() &&
+                        preferenceManager.isPoliSelected()) {
                     jsonObject.put("amount", convenience_amount_poli);
-                }
-                else if(!preferenceManager.is_cnv_poli_display_and_add()&&
-                        preferenceManager.isPoliSelected())
-                {
+                } else if (!preferenceManager.is_cnv_poli_display_and_add() &&
+                        preferenceManager.isPoliSelected()) {
                     jsonObject.put("amount", xmppAmount);
-                }
-                else {
+                } else if (preferenceManager.is_cnv_centrapay_display_and_add() &&
+                        preferenceManager.isCentrapayMerchantQRDisplaySelected()) {
+                    jsonObject.put("amount", convenience_amount_centrapay_merchant_qr_display);
+                } else if (!preferenceManager.is_cnv_centrapay_display_and_add() &&
+                        preferenceManager.isCentrapayMerchantQRDisplaySelected()) {
+                    jsonObject.put("amount", xmppAmount);
+                } else {
                     jsonObject.put("amount", xmppAmount);
                 }
 
-            }
-            else if(isPoliSelected&&preferenceManager.is_cnv_poli_display_and_add()&&
-                    preferenceManager.isPoliSelected())
-            {
-                isPoliSelected=false;
-                jsonObject.put("amount", convenience_amount_poli);
-            }
-            else if(isPoliSelected&&!preferenceManager.is_cnv_poli_display_and_add()&&
-                    preferenceManager.isPoliSelected())
-            {
-                isPoliSelected=false;
+            } else if (isCentrapayMerchantQRDisplaySelected &&
+                    preferenceManager.is_cnv_centrapay_display_and_add() &&
+                    preferenceManager.isCentrapayMerchantQRDisplaySelected()) {
+                isCentrapayMerchantQRDisplaySelected = false;
+                jsonObject.put("amount", convenience_amount_centrapay_merchant_qr_display);
+            } else if (isCentrapayMerchantQRDisplaySelected && !preferenceManager.is_cnv_centrapay_display_and_add() &&
+                    preferenceManager.isCentrapayMerchantQRDisplaySelected()) {
+                isCentrapayMerchantQRDisplaySelected = false;
                 jsonObject.put("amount", edt_amount.getText().toString().trim());
-            }
-            else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
+            } else if (isPoliSelected && preferenceManager.is_cnv_poli_display_and_add() &&
+                    preferenceManager.isPoliSelected()) {
+                isPoliSelected = false;
+                jsonObject.put("amount", convenience_amount_poli);
+            } else if (isPoliSelected && !preferenceManager.is_cnv_poli_display_and_add() &&
+                    preferenceManager.isPoliSelected()) {
+                isPoliSelected = false;
+                jsonObject.put("amount", edt_amount.getText().toString().trim());
+            } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                     preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
                 jsonObject.put("amount", convenience_amount_unionpayqr_merchant_display + "");
             } else if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
@@ -4369,9 +4462,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     else
                         jsonObject.put("amount", xmppAmount);
                 }
-            }
-
-            else
+            } else
                 jsonObject.put("amount", edt_amount.getText().toString().trim());
             String qrcode = jsonObject.optString("codeUrl");
 
@@ -4460,9 +4551,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     public void onFinish() {
                         try {
                             showRetryDialog();
-                           // showDialog("Try again");
-                            if(progress!=null)
-                            {
+                            // showDialog("Try again");
+                            if (progress != null) {
                                 if (progress.isShowing())
                                     progress.dismiss();
                             }
@@ -4480,8 +4570,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
-    public void showRetryDialog()
-    {
+    public void showRetryDialog() {
         final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -4510,12 +4599,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             @Override
             public void onClick(View v) {
                 try {
-                    if(progress1!=null)
-                    {
-                        if(progress1.isShowing())
+                    if (progress1 != null) {
+                        if (progress1.isShowing())
                             progress1.dismiss();
                     }
-                    ((DashboardActivity)mContext).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY,null);
+                    ((DashboardActivity) mContext).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     dialog.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -4537,9 +4625,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             }
         });
     }
-
-
-
 
 
     JSONObject jsonObjectSale, jsonObjectCouponSale;
@@ -4683,6 +4768,187 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (getActivity().getCurrentFocus() != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+
+    public void callTerminalPayCentrapayMerchantQrDisplay() {
+        String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
+        if (countDownTimerxmpp != null) {
+            countDownTimerxmpp.cancel();
+            tv_start_countdown.setVisibility(View.GONE);
+        }
+        openProgressDialog();
+        try {
+
+            DecimalFormat df = new DecimalFormat("#0.00");
+            if (MyPOSMateApplication.isOpen) {
+                char[] ch = xmppAmount.toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                xmppAmount = sb.toString().replace(",", "");
+
+
+                if (preferenceManager.is_cnv_centrapay_display_and_add()) {
+                    original_amount = original_xmpp_trigger_amount;
+                    xmppAmount = convenience_amount_centrapay_merchant_qr_display + "";
+                    fee_amount = convenience_amount_centrapay_merchant_qr_display -
+                            Double.parseDouble(original_xmpp_trigger_amount.replace(",", ""))
+                            + "";
+                    fee_percentage = preferenceManager.getcnv_centrapay();
+                    preferenceManager.setReference(edt_reference.getText().toString());
+
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
+                    hashMapKeys.put("original_amount", original_amount);
+                    hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
+                    hashMapKeys.put("fee_percentage", fee_percentage);
+                    hashMapKeys.put("discount", "0");
+                    hashMapKeys.put("qr_mode", true + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+
+
+                } else {
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                }
+
+
+            } else {
+                String amount = "";
+                char[] ch = edt_amount.getText().toString().toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                amount = sb.toString().replace(",", "");
+                if (preferenceManager.is_cnv_centrapay_display_and_add()) {
+                    original_amount = amount;
+                    amount = convenience_amount_centrapay_merchant_qr_display + "";
+                    fee_amount = convenience_amount_centrapay_merchant_qr_display -
+                            Double.parseDouble(edt_amount.getText().toString().replace(",", ""))
+                            + "";
+                    fee_percentage = preferenceManager.getcnv_centrapay();
+
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(amount)) + "");
+                    hashMapKeys.put("original_amount", original_amount);
+                    hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
+                    hashMapKeys.put("fee_percentage", fee_percentage);
+                    hashMapKeys.put("discount", "0");
+                    hashMapKeys.put("qr_mode", true + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("channel", channel);
+
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                } else {
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", edt_reference.getText().toString());
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(amount)) + "");
+//                    hashMapKeys.put("auth_code", auth_code);
+                    hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("channel", channel);
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -4865,6 +5131,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             e.printStackTrace();
         }
     }
+
     public void callTerminalPayAlipay() {
         String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
         if (countDownTimerxmpp != null) {
@@ -5262,8 +5529,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             aidlQuickScanService.scanQRCode(cameraBean, new AidlScanCallback.Stub() {
                 @Override
                 public void onFailed(int arg0) throws RemoteException {
-                    isBack=false;
-                    isFront=false;
+                    isBack = false;
+                    isFront = false;
                     if (getActivity() != null)
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
@@ -5322,8 +5589,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             aidlQuickScanService.scanQRCode(cameraBean, new AidlScanCallback.Stub() {
                 @Override
                 public void onFailed(int arg0) throws RemoteException {
-                    isBack=false;
-                    isFront=false;
+                    isBack = false;
+                    isFront = false;
                     if (getActivity() != null)
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
@@ -5340,16 +5607,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                                         callAuthToken();
                                     }
 
-                                }
-                                else
-                                {
+                                } else {
                                     AppConstants.xmppamountforscan = "";
                                     MyPOSMateApplication.isOpen = false;
                                     preferenceManager.settriggerReferenceId("");
-                                    ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                                     ManualEntry.isUpayselected = false;
                                 }
-
 
 
                                 Toast.makeText(getActivity(), "Closed", Toast.LENGTH_SHORT).show();
@@ -5368,81 +5632,80 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             public void run() {
 
 
+                                if (arg0.equals("")) {
+                                    AppConstants.xmppamountforscan = "";
+                                    MyPOSMateApplication.isOpen = false;
+                                    Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                                    preferenceManager.settriggerReferenceId("");
+                                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                                    ManualEntry.isUpayselected = false;
+                                } else {
 
-                                    if (arg0.equals("")) {
-                                        AppConstants.xmppamountforscan = "";
-                                        MyPOSMateApplication.isOpen = false;
-                                        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
-                                        preferenceManager.settriggerReferenceId("");
-                                        ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
-                                        ManualEntry.isUpayselected = false;
+                                    if (!AppConstants.xmppamountforscan.equals("")) {
+
+                                        final Handler handler1 = new Handler();
+                                        handler1.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Intent ia = new Intent();
+                                                ia.setAction("AmountTrigger");
+                                                ia.putExtra("data", preferenceManager.getamountdata());
+                                                getActivity().sendBroadcast(ia);
+
+                                            }
+                                        }, 400);
+
+                                        final Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
+                                                String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
+                                                Intent i = new Intent();
+                                                if (ManualEntry.isUpayselected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCode");
+                                                } else if (ManualEntry.isUnionPayQrSelected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCodeUnionPayQr");
+                                                } else {
+                                                    i.setAction("ScannedCode1");
+                                                    AppConstants.isScannedCode1 = true;
+                                                }
+
+                                                i.putExtra("identityCode", identityCode);
+                                                getActivity().sendBroadcast(i);
+                                            }
+                                        }, 800);
+
                                     } else {
-
-                                        if (!AppConstants.xmppamountforscan.equals("")) {
-
-                                            final Handler handler1 = new Handler();
-                                            handler1.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Intent ia = new Intent();
-                                                    ia.setAction("AmountTrigger");
-                                                    ia.putExtra("data", preferenceManager.getamountdata());
-                                                    getActivity().sendBroadcast(ia);
-
+                                        final Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
+                                                String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
+                                                Intent i = new Intent();
+                                                if (ManualEntry.isUpayselected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCode");
+                                                } else if (ManualEntry.isUnionPayQrSelected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCodeUnionPayQr");
+                                                } else {
+                                                    i.setAction("ScannedCode1");
+                                                    AppConstants.isScannedCode1 = true;
                                                 }
-                                            }, 400);
 
-                                            final Handler handler = new Handler();
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
-                                                    String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
-                                                    Intent i = new Intent();
-                                                    if (ManualEntry.isUpayselected) {
-                                                        AppConstants.isScannedCode1 = false;
-                                                        i.setAction("ScannedCode");
-                                                    } else if (ManualEntry.isUnionPayQrSelected) {
-                                                        AppConstants.isScannedCode1 = false;
-                                                        i.setAction("ScannedCodeUnionPayQr");
-                                                    } else {
-                                                        i.setAction("ScannedCode1");
-                                                        AppConstants.isScannedCode1 = true;
-                                                    }
-
-                                                    i.putExtra("identityCode", identityCode);
-                                                    getActivity().sendBroadcast(i);
-                                                }
-                                            }, 800);
-
-                                        } else {
-                                            final Handler handler = new Handler();
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
-                                                    String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
-                                                    Intent i = new Intent();
-                                                    if (ManualEntry.isUpayselected) {
-                                                        AppConstants.isScannedCode1 = false;
-                                                        i.setAction("ScannedCode");
-                                                    } else if (ManualEntry.isUnionPayQrSelected) {
-                                                        AppConstants.isScannedCode1 = false;
-                                                        i.setAction("ScannedCodeUnionPayQr");
-                                                    } else {
-                                                        i.setAction("ScannedCode1");
-                                                        AppConstants.isScannedCode1 = true;
-                                                    }
-
-                                                    i.putExtra("identityCode", identityCode);
-                                                    getActivity().sendBroadcast(i);
-                                                }
-                                            }, 500);
-
-                                        }
-
+                                                i.putExtra("identityCode", identityCode);
+                                                getActivity().sendBroadcast(i);
+                                            }
+                                        }, 500);
 
                                     }
+
+
+                                }
 
                             }
                         });
@@ -5503,9 +5766,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             e.printStackTrace();
         }
     }
-
-
-
 
 
 }
