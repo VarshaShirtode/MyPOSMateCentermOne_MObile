@@ -62,6 +62,7 @@ import com.quagnitia.myposmate.fragments.AlipayPaymentFragment;
 import com.quagnitia.myposmate.fragments.EODFragment;
 import com.quagnitia.myposmate.fragments.FragmentLoyaltyApps;
 import com.quagnitia.myposmate.fragments.ManualEntry;
+import com.quagnitia.myposmate.fragments.ManualEntry1;
 import com.quagnitia.myposmate.fragments.OrderFragment;
 import com.quagnitia.myposmate.fragments.PaymentProcessing;
 import com.quagnitia.myposmate.fragments.PosMateConnectioFrag;

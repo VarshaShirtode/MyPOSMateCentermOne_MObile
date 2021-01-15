@@ -369,7 +369,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             case R.id.btn_void:
                 if (newjson.has("Remaining Amount")) {
                     Double voidAmount = Double.parseDouble(newjson.optString("Remaining Amount"));
-                    Double originalAmount = Double.parseDouble(newjson.optString("Original Amount"));
+                    Double originalAmount = Double.parseDouble(newjson.optString("Actual Paid Amount"));
                     if (voidAmount != 0.00 && voidAmount < originalAmount) {
                         refund_amount = voidAmount + "";
                         Toast.makeText(TransactionDetailsActivity.this, "Void cannot be performed on partial amount", Toast.LENGTH_SHORT).show();
@@ -996,7 +996,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
         if (!jsonObjectPayment.optString("receiptAmount").equals("0.0") &&
                 !jsonObjectPayment.optString("receiptAmount").equals("0.00")) {
-            json.put("Original Amount", jsonObjectPayment.optString("receiptAmount"));
+            json.put("Actual Paid Amount", jsonObjectPayment.optString("receiptAmount"));
         }
         if (jsonObjectPayment.has("feeAmount") && !jsonObjectPayment.optString("feeAmount").
                 equals("0.0") && !jsonObjectPayment.optString("feeAmount").equals("0.00")) {
@@ -1762,7 +1762,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
             if (jsonObject.has("receiptAmount") && !jsonObject.optString("receiptAmount").equals("0.0") &&
                     !jsonObject.optString("receiptAmount").equals("0.00")) {
-                list.add(new PrintDataObject("Original Amount:" + jsonObject.optString("currency") + " " + jsonObject.optString("receiptAmount"),
+                list.add(new PrintDataObject("Actual Paid Amount:" + jsonObject.optString("currency") + " " + jsonObject.optString("receiptAmount"),
                         fontSize, false, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }

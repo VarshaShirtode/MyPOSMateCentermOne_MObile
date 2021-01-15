@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/img_poli"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:src="@drawable/poli"
+            android:padding="15dp"
+            android:background="@drawable/rec_bg"
+            android:paddingTop="5dp"
+            android:visibility="visible" />
+
+
+        <TextView
+            android:layout_alignParentTop="true"
+            android:id="@+id/tv_poli_disabled"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:background="@drawable/rec_gray_bg"
+            android:gravity="center"
+            android:text="Poli disabled"
+            android:textColor="@color/colorBlack"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <com.quagnitia.myposmate.utils.CurrencyEditText
+        android:textSize="14sp"
+        android:enabled="false"
+        app:showSymbol="true"
+        android:layout_marginTop="5dp"
+        android:layout_height="18dp"
+        android:id="@+id/edt_poli_cnv"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/edt_conv"
+        android:gravity="center"
+        android:text="0.00"
+        android:textColor="@color/colorBlue"
+        android:textStyle="bold" />
+
+
+</LinearLayout>

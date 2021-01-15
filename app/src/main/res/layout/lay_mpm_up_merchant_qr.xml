@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_weight="1"
+        android:layout_width="103dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/img_unionpay_qr"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/rec_bg"
+            android:padding="10dp"
+            android:src="@drawable/unionpay_qr" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_unionpay_qr_disabled"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:textColor="@color/colorBlack"
+            android:text="UnionPay QR disabled"
+            android:background="@drawable/rec_gray_bg"
+            android:padding="10dp"
+            />
+
+    </RelativeLayout>
+
+    <com.quagnitia.myposmate.utils.CurrencyEditText
+        android:textSize="14sp"
+        android:visibility="visible"
+        android:enabled="false"
+        android:layout_height="18dp"
+        android:layout_marginTop="5dp"
+        app:showSymbol="true"
+        android:id="@+id/tv_unionpay_qr_cv"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/edt_conv"
+        android:gravity="center"
+        android:text="0.00"
+        android:textColor="@color/colorBlue"
+        android:textStyle="bold" />
+
+
+</LinearLayout>

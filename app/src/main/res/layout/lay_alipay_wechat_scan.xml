@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:id="@+id/scanqr"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:background="@drawable/rec_bg"
+            android:visibility="visible" >
+
+            <ImageView
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="5dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/scanner" />
+            <ImageView
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:layout_width="30dp"
+                android:layout_marginBottom="5dp"
+                android:layout_height="30dp"
+                android:src="@drawable/alipay_logo" />
+
+            <ImageView
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="10dp"
+                android:layout_width="30dp"
+                android:layout_marginBottom="5dp"
+                android:layout_height="30dp"
+                android:src="@drawable/wechat_logo" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_scanqr_disabled"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:background="@drawable/rec_gray_bg"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
+            android:text="Alipay QR scan disabled"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/tv_ali_cv2"
+        android:gravity="center"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_weight="1"
+            android:src="@drawable/arrow_alipay"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="2dp"
+            android:layout_width="60dp"
+            android:layout_height="20dp"></ImageView>
+        <ImageView
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:src="@drawable/arrow_wechat"
+            android:layout_alignParentRight="true"
+            android:layout_width="60dp"
+            android:layout_height="20dp"></ImageView>
+    </LinearLayout>
+
+</LinearLayout>

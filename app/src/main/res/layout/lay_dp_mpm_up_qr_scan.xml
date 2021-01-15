@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+
+
+        <RelativeLayout
+            android:id="@+id/scanqr_unionpay"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/rec_bg"
+            android:gravity="center"
+            android:visibility="visible" >
+            <ImageView
+                android:src="@drawable/scanner"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="40dp"
+                android:layout_height="30dp">
+
+            </ImageView>
+
+            <ImageView
+                android:src="@drawable/ic_unipay"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="2dp"
+                android:layout_width="45dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="40dp">
+
+            </ImageView>
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_scan_uni_disabled"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/rec_gray_bg"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="UnionPay scan disabled"
+            android:textColor="@color/colorBlack"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+    <com.quagnitia.myposmate.utils.CurrencyEditText
+        android:textSize="14sp"
+        android:layout_height="18dp"
+        android:enabled="false"
+        app:showSymbol="true"
+        android:layout_marginTop="5dp"
+        android:id="@+id/tv_uni_cv2_scan_qr"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/edt_conv"
+        android:gravity="center"
+        android:text="0.00"
+        android:textColor="@color/colorBlue"
+        android:textStyle="bold" />
+
+</LinearLayout>

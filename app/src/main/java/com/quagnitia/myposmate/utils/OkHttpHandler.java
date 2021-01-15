@@ -182,13 +182,22 @@ if(!isTimerCalled)
 //            } else {
 //                showAlert();
 //            }
-            if(mContext!=null)
-            ((Activity) mContext).runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        showAlert3();
-                                                    }
-                                                });
+            try
+            {
+                if(mContext!=null)
+                    ((Activity) mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            showAlert3();
+                        }
+                    });
+            }
+            catch (Exception e1)
+            {
+                e1.printStackTrace();
+            }
+
 
             isWebserviceRunning = false;
             e.printStackTrace();

@@ -592,7 +592,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
             Double originalAmount=Double.parseDouble(jsonObject.optString("receiptAmount"))-
                     Double.parseDouble(jsonObject.optString("feeAmount"));
-            list.add(new PrintDataObject("Original Amount: "
+            list.add(new PrintDataObject("Actual Paid Amount: "
                     + jsonObject.optString("currency") + " " +
                     originalAmount, fontSize, true,
                     PrintDataObject.ALIGN.LEFT, false, true));

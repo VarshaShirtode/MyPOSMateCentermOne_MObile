@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+
+        <ImageView
+            android:id="@+id/img_wechat"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:background="@drawable/rec_bg"
+            android:padding="12dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_wechat" />
+
+        <TextView
+            android:id="@+id/tv_wechat_disabled"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:background="@drawable/rec_gray_bg"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="WeChat disabled"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <com.quagnitia.myposmate.utils.CurrencyEditText
+        android:textSize="14sp"
+        android:layout_height="18dp"
+        android:enabled="false"
+        app:showSymbol="true"
+        android:layout_marginTop="5dp"
+        android:id="@+id/tv_ali_cv1"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/edt_conv"
+        android:gravity="center"
+        android:text="0.00"
+        android:textColor="@color/colorBlue"
+        android:textStyle="bold" />
+</LinearLayout>

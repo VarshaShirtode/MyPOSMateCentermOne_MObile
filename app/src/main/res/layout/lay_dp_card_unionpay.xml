@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/img_unipay"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+
+
+            android:background="@drawable/rec_bg"
+            android:padding="10dp"
+            android:src="@drawable/ic_unipay" />
+
+        <TextView
+            android:id="@+id/tv_unionpay_disabled"
+            android:layout_width="103dp"
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+
+            android:background="@drawable/rec_gray_bg"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="UnionPay Disabled"
+            android:textColor="@color/colorBlack"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <com.quagnitia.myposmate.utils.CurrencyEditText
+        android:id="@+id/tv_uni_cv"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/edt_conv"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="0.00"
+        android:textColor="@color/colorBlue"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:showSymbol="true" />
+</LinearLayout>
