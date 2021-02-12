@@ -741,8 +741,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 //                i.putExtra("increment_id", getIntent().getStringExtra("increment_id"));
                 startActivity(i);
                 finish();
-
-
                 break;
 
 
@@ -750,7 +748,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     }
 
 
-    public void _showDialog(JSONObject jsonObjectPayment) {
+    public void _showDialog(JSONObject jsonObjectPayment,String pass) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater lf = (LayoutInflater) (this)
@@ -773,12 +771,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             dialog.dismiss();
         });
         retry.setOnClickListener(View -> {
-            callCancelTransaction(jsonObjectPayment);
+            callCancelTransaction(jsonObjectPayment,pass);
             dialog.dismiss();
         });
     }
 
-    public void callCancelTransaction(JSONObject jsonObject) {
+    public void callCancelTransaction(JSONObject jsonObject,String pass) {
         openProgressDialog();
 
 
@@ -790,6 +788,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
+        hashMapKeys.put("refund_password",pass);
 
         new OkHttpHandler(TransactionDetailsActivity.this, this, null, "CloseTrade")
                 .execute(AppConstants.BASE_URL2 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, TransactionDetailsActivity.this) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
@@ -1091,7 +1090,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         btn_void_upi_qr.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                _showDialog(jsonObjectPayment);
+                                if(edt_password.getText().toString().trim().equals(""))
+                                {
+                                    Toast.makeText(TransactionDetailsActivity.this, "Please enter refund password.", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                _showDialog(jsonObjectPayment,edt_password.getText().toString());
 
                             }
                         });
@@ -1157,7 +1161,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         btn_void_upi_qr.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                _showDialog(jsonObjectPayment);
+                                if(edt_password.getText().toString().trim().equals(""))
+                                {
+                                    Toast.makeText(TransactionDetailsActivity.this, "Please enter refund password.", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                    _showDialog(jsonObjectPayment,edt_password.getText().toString());
 
                             }
                         });

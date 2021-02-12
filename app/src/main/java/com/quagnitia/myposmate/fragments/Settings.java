@@ -128,12 +128,13 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         edt_terminal_id = view.findViewById(R.id.edt_terminal_id);
         edt_terminal_ip = view.findViewById(R.id.edt_terminal_ip);
         edt_unique_id = view.findViewById(R.id.edt_unique_id);
-        edt_terminal_id.setText(android_id);//"169684c985ebb3a1");
+        edt_terminal_id.setText(android_id);//"71283458bfce2b86");
         edt_terminal_ip.setText(getLocalIpAddress());
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
 //        preferencesManager.setMerchantId("29");
 //        preferencesManager.setConfigId("60");
-        edt_unique_id.setText(preferencesManager.getuniqueId());
+        edt_unique_id.setText(preferencesManager.getuniqueId
+                ());
 
         if (preferencesManager.getuniqueId().equals("")) {
             ((DashboardActivity) getActivity()).img_menu.setEnabled(false);
@@ -227,15 +228,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
         new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
-
     }
 
 
     public void callDeleteTerminal() {
         openProgressDialog();
         try {
-
-
             hashMapKeys.clear();
             hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
@@ -243,7 +241,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("access_token", preferencesManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-
             new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
 
         } catch (Exception e) {

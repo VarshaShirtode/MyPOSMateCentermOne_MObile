@@ -121,7 +121,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1.9"
-                        android:text="*Refund Password"
+                        android:text="*Password"
                         android:textSize="12sp" />
 
                     <EditText

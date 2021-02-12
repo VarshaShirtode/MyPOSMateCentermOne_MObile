@@ -17,16 +17,22 @@ public class AppConstants {
 //    public static String serverIp = "myposmate.com";
 
 
+    //Live Server
+    public static String BASE_URL3 = "https://liveone.myposmate.com/api/v1/";
+    public static String BASE_URL2 = "https://liveone.myposmate.com/api/v1/terminal/";
+    public static String AUTH = "https://liveone.myposmate.com/oauth/token";
+    public static String serverIp = "liveone.myposmate.com";
 
-    //Live
-    public static String BASE_URL3 = "https://one.myposmate.com/api/v1/";
-    public static String BASE_URL2 = "https://one.myposmate.com/api/v1/terminal/";
-    public static String AUTH = "https://one.myposmate.com/oauth/token";
-    public static String serverIp = "one.myposmate.com";
+    //Test Server
+//    public static String BASE_URL3 = "https://one.myposmate.com/api/v1/";
+//    public static String BASE_URL2 = "https://one.myposmate.com/api/v1/terminal/";
+//    public static String AUTH = "https://one.myposmate.com/oauth/token";
+//    public static String serverIp = "one.myposmate.com";
 //one.myposmate.com commit
 
 
-    public static String CLIENT_ID="b7ae46e37ba373dce7bd";
+    public static String CLIENT_ID=
+    "b7ae46e37ba373dce7bd";
     public static String CLIENT_SECRET="5ed7ed3cc894247a60d7ff75382c9";
 
     public static String GET_TRANSACTION_DETAILS = "getTransactionDetails";

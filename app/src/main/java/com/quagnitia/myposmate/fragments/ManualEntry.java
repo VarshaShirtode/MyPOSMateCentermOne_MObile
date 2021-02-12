@@ -508,21 +508,61 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         bindService();
     }
 
-    public void funcConditionalSwitches(View view) {
+    public void showMainUIOnTrigger() {
         if (getArguments() != null) {
             if (getArguments().getString(ARG_PARAM1).equals("xmpp")) {
                 if (preferenceManager.isaggregated_singleqr() && !preferenceManager.isUnipaySelected()) {
-                    view.findViewById(R.id.mainui).setVisibility(View.GONE);
+                    view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
 
                 } else if (preferenceManager.isaggregated_singleqr() && preferenceManager.isUnipaySelected()) {
                     view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
 
                 } else if (preferenceManager.isUnipaySelected() && !preferenceManager.isaggregated_singleqr()) {
+//                    view.findViewById(R.id.mainui).setVisibility(View.GONE);
+                    view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
+                }
+
+                if (preferenceManager.isAlipaySelected() ||
+                        preferenceManager.isAlipayScan() ||
+                        preferenceManager.isWechatSelected() ||
+                        preferenceManager.isWeChatScan() ||
+                        preferenceManager.isUnionPaySelected() ||
+                        preferenceManager.isUplanSelected() ||
+                        preferenceManager.isUnionPayQrSelected() ||
+                        preferenceManager.isUnionPayQrCodeDisplaySelected() ||
+                        preferenceManager.isCentrapayMerchantQRDisplaySelected() ||
+                        preferenceManager.isPoliSelected()
+                ) {
+                    view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
+                }
+                else
+                {
                     view.findViewById(R.id.mainui).setVisibility(View.GONE);
                 }
+
+
             }
         }
 
+    }
+
+
+    public void funcConditionalSwitches(View view) {
+        if (getArguments() != null) {
+            if (getArguments().getString(ARG_PARAM1).equals("xmpp")) {
+                if (preferenceManager.isaggregated_singleqr() && !preferenceManager.isUnipaySelected()) {
+                    view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
+
+                } else if (preferenceManager.isaggregated_singleqr() && preferenceManager.isUnipaySelected()) {
+                    view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
+
+                } else if (preferenceManager.isUnipaySelected() && !preferenceManager.isaggregated_singleqr()) {
+//                    view.findViewById(R.id.mainui).setVisibility(View.GONE);
+                    view.findViewById(R.id.mainui).setVisibility(View.VISIBLE);
+                }
+            }
+        }
+        showMainUIOnTrigger();
 
         if (preferenceManager.getshowReference().equals("true")) {
             view.findViewById(R.id.tv_reference).setVisibility(View.VISIBLE);
@@ -1420,7 +1460,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 !preferenceManager.isUnionPaySelected() &&
                 !preferenceManager.isUnionPayQrCodeDisplaySelected() &&
                 !preferenceManager.isUnionPayQrSelected() &&
-                !preferenceManager.isUplanSelected()
+                !preferenceManager.isUplanSelected()&&
+                !preferenceManager.isPoliSelected()&&
+                !preferenceManager.isCentrapayMerchantQRDisplaySelected()
         ) {
             tv_noitem.setVisibility(View.VISIBLE);
             btn_cancel.setOnClickListener(null);
