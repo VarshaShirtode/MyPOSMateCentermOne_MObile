@@ -11,6 +11,8 @@ anim abc_slide_out_bottom
 anim abc_slide_out_top
 anim abc_tooltip_enter
 anim abc_tooltip_exit
+anim blink
+anim move
 array min_array
 attr actionBarDivider
 attr actionBarItemBackground
@@ -121,6 +123,7 @@ attr coordinatorLayoutStyle
 attr corpusId
 attr corpusVersion
 attr customNavigationLayout
+attr decimalPoints
 attr defaultIntentAction
 attr defaultIntentActivity
 attr defaultIntentData
@@ -143,6 +146,7 @@ attr editTextColor
 attr editTextStyle
 attr elevation
 attr emptyVisibility
+attr eraseWhenZero
 attr expandActivityOverflowButtonDrawable
 attr fastScrollEnabled
 attr fastScrollHorizontalThumbDrawable
@@ -453,6 +457,7 @@ color colorBlue
 color colorBtnBg
 color colorGreen
 color colorHeader
+color colorIndigo
 color colorLine
 color colorOrange
 color colorPopupBg
@@ -736,17 +741,22 @@ drawable abc_textfield_search_activated_mtrl_alpha
 drawable abc_textfield_search_default_mtrl_alpha
 drawable abc_textfield_search_material
 drawable abc_vector_test
+drawable air_points
 drawable alipay_logo
 drawable alipay_qr
 drawable alipaybutton
 drawable alipaytransparent_new
 drawable arrow_alipay
 drawable arrow_wechat
+drawable badge_bg
 drawable barcode
+drawable barcode_scanner
+drawable bg_black
 drawable blue_border
 drawable blue_border_btn
 drawable blue_border_solid
 drawable button_shadow
+drawable centerpay
 drawable chinese_text
 drawable chk_mark
 drawable close_btn
@@ -771,15 +781,24 @@ drawable common_google_signin_btn_text_light_disabled
 drawable common_google_signin_btn_text_light_focused
 drawable common_google_signin_btn_text_light_normal
 drawable common_google_signin_btn_text_light_pressed
+drawable dollar
+drawable easi
 drawable edt_border
 drawable edt_border_black
 drawable edt_border_black_gray
+drawable edt_border_gray_bg
 drawable edt_border_green
 drawable edt_border_orange
 drawable edt_border_two
 drawable edt_conv
+drawable entertainment
+drawable fly_buys
+drawable goody
+drawable gradient_drawable
 drawable ic_alipay
+drawable ic_close
 drawable ic_launcher_background
+drawable ic_mopanion
 drawable ic_paymentexp
 drawable ic_scan
 drawable ic_smallali
@@ -790,12 +809,15 @@ drawable ic_unipay
 drawable ic_visa
 drawable ic_wechat
 drawable icon_alipay
+drawable ii
+drawable iii
 drawable img_five
 drawable img_four
 drawable img_one
 drawable img_three
 drawable img_two
 drawable loader_img
+drawable mopanion
 drawable new__button
 drawable notification_action_background
 drawable notification_bg
@@ -809,13 +831,19 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable order
 drawable payment_scroll_border
+drawable poli
 drawable qr_code_border
+drawable qr_image
 drawable rec_bg
 drawable rec_gray_bg
+drawable rounded_corners
 drawable scanner
+drawable smart_fuel
 drawable spinner_bg
 drawable successful_icon
+drawable three_lines
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
 drawable union_pay_screen
@@ -874,11 +902,13 @@ id beginning
 id bind
 id blocking
 id bottom
+id bottom_lay
 id btn_accept
 id btn_alipay
 id btn_already_registered
 id btn_apply_filter
 id btn_back
+id btn_back1
 id btn_cancel
 id btn_cancel1
 id btn_cancel2
@@ -886,9 +916,14 @@ id btn_cancel_and_close
 id btn_close
 id btn_close1
 id btn_complete
+id btn_customer
 id btn_email
 id btn_exit
 id btn_front
+id btn_front1
+id btn_kitchen
+id btn_loyalty_apps
+id btn_merchant
 id btn_ok
 id btn_print
 id btn_print1
@@ -909,8 +944,10 @@ id btn_save_and_ok
 id btn_scan_reference
 id btn_settlement
 id btn_settlement_unionpay
+id btn_settlementold
 id btn_status
 id btn_void
+id btn_void_upi_qr
 id btn_wechat
 id buttonPanel
 id cancel_action
@@ -920,19 +957,28 @@ id center_horizontal
 id center_vertical
 id chains
 id checkbox
+id chk_ExternalScan
 id chk_aggregated_singleqr
 id chk_ali_display_and_add
 id chk_ali_display_only
 id chk_alipay
 id chk_alipay_qr_scan
+id chk_amount
 id chk_back
+id chk_best_deals
 id chk_branch_address
 id chk_branch_contact_no
 id chk_branch_email
 id chk_branch_name
+id chk_centrapay_display_and_add
+id chk_centrapay_display_only
+id chk_centrapay_merchant_qr
+id chk_centrapay_qr_scan
 id chk_convenience_fee
 id chk_display_ads
+id chk_display_loyalty_apps
 id chk_display_static_qr
+id chk_entertainment_book
 id chk_front
 id chk_gst_no
 id chk_home
@@ -941,6 +987,11 @@ id chk_loyality
 id chk_manual
 id chk_membership_home
 id chk_membership_manual
+id chk_mopanion
+id chk_poli
+id chk_poli_display_and_add
+id chk_poli_display_only
+id chk_poli_qr_scan
 id chk_pos_identifier
 id chk_print_qr
 id chk_print_receipt
@@ -955,6 +1006,7 @@ id chk_static_unionpay_display_only
 id chk_static_wechat
 id chk_static_wechat_display_and_add
 id chk_static_wechat_display_only
+id chk_terminal_id
 id chk_terminal_identifier
 id chk_timezone
 id chk_uni_display_and_add
@@ -982,6 +1034,7 @@ id chk_wechat
 id chk_wechat_display_and_add
 id chk_wechat_display_only
 id chk_wechat_qr_scan
+id chk_wine_club
 id chronometer
 id clip_horizontal
 id clip_vertical
@@ -993,6 +1046,7 @@ id content
 id contentPanel
 id custom
 id customPanel
+id custom_toast_layout
 id dark
 id decor_content_parent
 id default_activity_button
@@ -1005,6 +1059,7 @@ id dimensions
 id direct
 id disableHome
 id doReverse
+id dollar
 id editTextSearch
 id edit_query
 id edt_accepted
@@ -1015,6 +1070,9 @@ id edt_ali_cv
 id edt_amount
 id edt_amount1
 id edt_amount_unionpay
+id edt_centerpay_mr_qr_cnv
+id edt_centrapay_barcode_scanner_cv
+id edt_centrapay_cv
 id edt_completed
 id edt_config_id
 id edt_contact_email
@@ -1024,8 +1082,11 @@ id edt_description
 id edt_email
 id edt_end_datetime
 id edt_end_time
+id edt_execute_apps
+id edt_execute_url
 id edt_gst_number
 id edt_id
+id edt_key
 id edt_lane_identifier
 id edt_last_settlement_date
 id edt_merchant_id
@@ -1038,6 +1099,8 @@ id edt_order_time
 id edt_password
 id edt_phoneno
 id edt_pickup
+id edt_poli_cnv
+id edt_poli_cv
 id edt_pos_identifier
 id edt_ready_by
 id edt_reason
@@ -1054,6 +1117,7 @@ id edt_static_alipay_cv
 id edt_static_unionpay_cv
 id edt_static_wechat_cv
 id edt_status
+id edt_store_id
 id edt_terminal_id
 id edt_terminal_identifier
 id edt_terminal_ip
@@ -1066,7 +1130,10 @@ id edt_uni
 id edt_unionpay_card_cv
 id edt_unionpay_qr_cv
 id edt_unique_id
+id edt_up_upi_qr_amount
 id edt_up_upi_qr_cv
+id edt_up_upi_qr_cv1
+id edt_up_upi_qr_cv_
 id edt_upi_uplan_cv
 id edt_uplan_cv
 id edt_wait_time
@@ -1084,10 +1151,12 @@ id fill_vertical
 id fitCenter
 id fitXY
 id forever
+id frameSurfaceView
 id getPOSInfo
 id getPayInfo
 id gif_frame
 id gone
+id greaterthan
 id groupButton
 id group_divider
 id groups
@@ -1101,21 +1170,39 @@ id icon_only
 id icon_uri
 id ifRoom
 id image
+id img
+id imgCloseCamera
+id img_air_points
 id img_alipay
 id img_alipay_static_qr
+id img_best_deals
+id img_centerpay_scanqr
+id img_centrapay_merchant_qr_display
+id img_entertainment_book
 id img_failure
+id img_fly_buys
 id img_gif
+id img_goody
 id img_menu
+id img_mopanion
+id img_one
 id img_payment
 id img_paymentexpress
 id img_paymentmode
+id img_poli
 id img_qrcode
 id img_scan
+id img_smart_fuel
 id img_success
+id img_three
+id img_two
 id img_unionpay_qr
 id img_unipay
+id img_unipayv
 id img_upay
+id img_upayv
 id img_wechat
+id img_wine_club
 id index_entity_types
 id info
 id inner_frame
@@ -1130,6 +1217,7 @@ id italic
 id item_touch_helper_previous_elevation
 id large_icon_uri
 id left
+id lessthan
 id light
 id lin_pay
 id line1
@@ -1150,13 +1238,16 @@ id ll3
 id ll_account_id
 id ll_amount
 id ll_amount1
+id ll_back
 id ll_bottom
 id ll_cup_reference_id
 id ll_epayments
 id ll_epayments_trade_no
 id ll_first
 id ll_first1
+id ll_front
 id ll_header
+id ll_membership_loyalty_app
 id ll_merchat_id
 id ll_one
 id ll_order_no
@@ -1167,12 +1258,14 @@ id ll_reference_id
 id ll_refund_desc
 id ll_refund_password
 id ll_row3
+id ll_row4
 id ll_se
 id ll_second
 id ll_second1
 id ll_transaction_no
 id ll_two
 id ll_unionpay
+id ll_upi
 id ll_void
 id ll_we
 id login
@@ -1201,6 +1294,7 @@ id payment_tag
 id percent
 id plain
 id pos_mate_connectio_frag
+id pp
 id progress_circular
 id progress_horizontal
 id progressbar
@@ -1210,9 +1304,13 @@ id recycler_view
 id rel_alipay
 id rel_alipay_pc
 id rel_alipay_static_qr
+id rel_centrapay_merchant_qr_display
+id rel_centrapay_pc
 id rel_loyalty
 id rel_membership
+id rel_orders
 id rel_paymentexpress
+id rel_poli_pc
 id rel_refund
 id rel_scan
 id rel_static_alipay_pc
@@ -1222,7 +1320,9 @@ id rel_un
 id rel_unionpay
 id rel_unionpay_pc
 id rel_unionpay_qr_pc
+id rel_unionpayv
 id rel_upi_card
+id rel_upi_card_sel
 id rel_upi_uplan
 id rel_uplan_pc
 id rel_wechat
@@ -1235,8 +1335,9 @@ id right_side
 id sc_payment_mode
 id scanqr
 id scanqr_unionpay
-id scanqr_wechat
+id scanqr_unionpayv
 id screen
+id scroll
 id scrollIndicatorDown
 id scrollIndicatorUp
 id scrollView
@@ -1272,6 +1373,7 @@ id status_bar_latest_event_content
 id submenuarrow
 id submit_area
 id success_lay
+id surfaceView
 id tabMode
 id tag_transition_group
 id tag_unhandled_key_event_manager
@@ -1306,6 +1408,8 @@ id tv_alipay
 id tv_alipay_disabled
 id tv_amount
 id tv_cancel
+id tv_centrapay_barcode_scanner_qr_disabled
+id tv_centrapay_merchant_qr_disabled
 id tv_close
 id tv_count_down
 id tv_date_time
@@ -1320,18 +1424,24 @@ id tv_display_only
 id tv_en
 id tv_enable_payment
 id tv_eod
+id tv_eurl
 id tv_fee
 id tv_from
 id tv_home
 id tv_id
 id tv_item
+id tv_loyalty_apps
 id tv_loyalty_discount
 id tv_manual_entry
+id tv_merchant_id
+id tv_message
 id tv_noitem
 id tv_ok
+id tv_order_badge
 id tv_order_number
 id tv_orders
 id tv_other
+id tv_pass_parameter
 id tv_pass_text
 id tv_payment_amount
 id tv_payment_choices
@@ -1344,8 +1454,11 @@ id tv_per6
 id tv_per7
 id tv_per8
 id tv_per9
+id tv_percentrapay
+id tv_perpoli
 id tv_perupi_card
 id tv_perupi_uplan
+id tv_poli_disabled
 id tv_price
 id tv_qrcode
 id tv_qty
@@ -1364,8 +1477,8 @@ id tv_sale_amount
 id tv_scan
 id tv_scan_code
 id tv_scan_uni_disabled
+id tv_scan_uni_disabledv
 id tv_scanqr_disabled
-id tv_scanqr_wechat_disabled
 id tv_scheme
 id tv_selection_type
 id tv_settings
@@ -1375,6 +1488,9 @@ id tv_start_countdown
 id tv_status
 id tv_status_scan
 id tv_status_scan_button
+id tv_status_scan_button1
+id tv_status_scan_button2
+id tv_store_id
 id tv_subtotal
 id tv_surcharge
 id tv_time
@@ -1388,16 +1504,21 @@ id tv_type
 id tv_uni
 id tv_uni_cv
 id tv_uni_cv1_uplan
+id tv_uni_cv1_uplanv
 id tv_uni_cv2_scan_qr
+id tv_uni_cv2_scan_qrv
+id tv_uni_cvv
 id tv_union_payment_amount
 id tv_union_payment_count
 id tv_union_refund_amount
 id tv_union_refund_count
 id tv_unionpay_disabled
+id tv_unionpay_disabledv
 id tv_unionpay_qr_cv
 id tv_unionpay_qr_disabled
 id tv_unipay
 id tv_uplan_disabled
+id tv_uplan_disabledv
 id tv_vice
 id tv_we_payment_amount
 id tv_we_payment_count
@@ -1405,7 +1526,6 @@ id tv_we_refund_amount
 id tv_we_refund_count
 id tv_wechat
 id tv_wechat_disabled
-id tv_wechat_qr_scan_cv
 id txt1
 id txt2
 id unbind
@@ -1421,6 +1541,7 @@ id useLogo
 id version
 id view_mid1
 id view_mid2
+id vv
 id vvvv
 id webview
 id wide
@@ -1484,23 +1605,40 @@ layout activity_transaction_listing
 layout activity_union_pay
 layout activity_union_pay_screen
 layout activity_welcome_screen
+layout best_deals_layout
 layout config_dialog
+layout custome_toast_layout
 layout demo
 layout demo1
 layout diaplay_choice_row
 layout display_ads_dialog
+layout entertainment_book
 layout fragment_about_us
 layout fragment_alipay_payment
 layout fragment_eod
 layout fragment_help
+layout fragment_loyalty_apps
 layout fragment_manual_entry
+layout fragment_new_manual_entry
 layout fragment_orders
 layout fragment_payment_processing
 layout fragment_settings
 layout fragment_settlement
 layout fragment_trigger
 layout header
+layout lay_alipay_qr
+layout lay_alipay_wechat_scan
+layout lay_dp_card_unionpay
+layout lay_dp_mpm_up_qr_scan
+layout lay_dp_uplan
+layout lay_mpm_centrapay
+layout lay_mpm_poli
+layout lay_mpm_up_merchant_qr
+layout lay_void_dialog
+layout lay_wechat_qr
 layout layout_alipay_static_qr
+layout loyalty_apps_dialog
+layout loyalty_layout
 layout notification_action
 layout notification_action_tombstone
 layout notification_media_action
@@ -1519,6 +1657,7 @@ layout notification_template_part_time
 layout order_details_row
 layout orders_layout
 layout payment_choices
+layout pc_layout
 layout pop_window_layout
 layout pos_mate_connectio_frag
 layout qr_not_recognized_dialog
@@ -1528,6 +1667,7 @@ layout refund_fragment_unionpay
 layout refund_layout_unionpay
 layout reset_terminal_dialog
 layout retry_dialog
+layout scanner_dialog
 layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
@@ -1542,6 +1682,7 @@ layout zxing_capture
 mipmap ic_launcher
 mipmap ic_launcher_round
 mipmap ic_menu
+raw audio_orders_up
 raw zxing_beep
 string Front
 string MyPOSMate_Version
@@ -2450,6 +2591,9 @@ styleable ActionMenuView
 styleable ActionMode background backgroundSplit closeItemLayout height subtitleTextStyle titleTextStyle
 styleable ActivityChooserView expandActivityOverflowButtonDrawable initialActivityCount
 styleable AlertDialog android_layout buttonIconDimen buttonPanelSideLayout listItemLayout listLayout multiChoiceItemLayout showTitle singleChoiceItemLayout
+styleable AnimatedStateListDrawableCompat android_dither android_visible android_variablePadding android_constantSize android_enterFadeDuration android_exitFadeDuration
+styleable AnimatedStateListDrawableItem android_id android_drawable
+styleable AnimatedStateListDrawableTransition android_drawable android_toId android_fromId android_reversible
 styleable AppCompatImageView android_src srcCompat tint tintMode
 styleable AppCompatSeekBar android_thumb tickMark tickMarkTint tickMarkTintMode
 styleable AppCompatTextHelper android_textAppearance android_drawableTop android_drawableBottom android_drawableLeft android_drawableRight android_drawableStart android_drawableEnd
@@ -2474,6 +2618,8 @@ styleable GifView freezesAnimation loopCount
 styleable GlobalSearch defaultIntentAction defaultIntentActivity defaultIntentData searchEnabled searchLabel settingsDescription
 styleable GlobalSearchCorpus allowShortcuts
 styleable GlobalSearchSection sectionContent sectionType
+styleable GradientColor android_startColor android_endColor android_type android_centerX android_centerY android_gradientRadius android_tileMode android_centerColor android_startX android_startY android_endX android_endY
+styleable GradientColorItem android_color android_offset
 styleable IMECorpus inputEnabled sourceClass toAddressesSection userInputSection userInputTag userInputValue
 styleable LinearConstraintLayout android_orientation
 styleable LinearLayoutCompat android_gravity android_orientation android_baselineAligned android_baselineAlignedChildIndex android_weightSum divider dividerPadding measureWithLargestChild showDividers
@@ -2492,13 +2638,15 @@ styleable Section indexPrefixes noIndex schemaOrgProperty sectionFormat sectionI
 styleable SectionFeature featureType
 styleable SignInButton buttonSize colorScheme scopeUris
 styleable Spinner android_entries android_popupBackground android_prompt android_dropDownWidth popupTheme
+styleable StateListDrawable android_dither android_visible android_variablePadding android_constantSize android_enterFadeDuration android_exitFadeDuration
+styleable StateListDrawableItem android_drawable
 styleable SwitchCompat android_textOn android_textOff android_thumb showText splitTrack switchMinWidth switchPadding switchTextAppearance thumbTextPadding thumbTint thumbTintMode track trackTint trackTintMode
 styleable TextAppearance android_textSize android_typeface android_textStyle android_textColor android_textColorHint android_textColorLink android_shadowColor android_shadowDx android_shadowDy android_shadowRadius android_fontFamily fontFamily textAllCaps
 styleable Toolbar android_gravity android_minHeight buttonGravity collapseContentDescription collapseIcon contentInsetEnd contentInsetEndWithActions contentInsetLeft contentInsetRight contentInsetStart contentInsetStartWithNavigation logo logoDescription maxButtonHeight navigationContentDescription navigationIcon popupTheme subtitle subtitleTextAppearance subtitleTextColor title titleMargin titleMarginBottom titleMarginEnd titleMarginStart titleMarginTop titleMargins titleTextAppearance titleTextColor
 styleable View android_theme android_focusable paddingEnd paddingStart theme
 styleable ViewBackgroundHelper android_background backgroundTint backgroundTintMode
 styleable ViewStubCompat android_id android_layout android_inflatedId
-styleable currencyEditText groupDivider locale monetaryDivider showSymbol
+styleable currencyEditText decimalPoints eraseWhenZero groupDivider locale monetaryDivider showSymbol
 styleable zxing_camera_preview zxing_framing_rect_height zxing_framing_rect_width zxing_preview_scaling_strategy zxing_use_texture_view
 styleable zxing_finder zxing_possible_result_points zxing_result_view zxing_viewfinder_laser zxing_viewfinder_mask
 styleable zxing_view zxing_scanner_layout

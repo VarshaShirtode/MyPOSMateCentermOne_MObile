@@ -127,6 +127,7 @@ if(!isTimerCalled)
                     conn.setDoOutput(true);
                     OutputStream os = conn.getOutputStream();
                     Log.v(TAG + " Request", postDataParams.toString());
+                    Log.v("TOKENResponse",TAG + " Request "+ postDataParams.toString());
                     BufferedWriter writer = new BufferedWriter(
                             new OutputStreamWriter(os, "UTF-8"));
                     writer.write(getPostDataString(postDataParams));
@@ -156,6 +157,8 @@ if(!isTimerCalled)
 
 
             Log.v("Response:" + TAG, response);
+            Log.v("TOKENREQUEST",TAG + " Request "+ postDataParams.toString());
+
         } catch (SocketTimeoutException s) {
 
 //            if (TAG.equals("unionpaystatus")) {
@@ -221,6 +224,7 @@ if(!isTimerCalled)
         try {
             isWebserviceRunning = false;
             countDownTimer11.cancel();
+            Log.v("TOKENRESPONSE",TAG + " response = "+o.toString());
             listener.onTaskCompleted(o.toString(), TAG);
             AppConstants.isPostReceived = true;
             cancel(true);

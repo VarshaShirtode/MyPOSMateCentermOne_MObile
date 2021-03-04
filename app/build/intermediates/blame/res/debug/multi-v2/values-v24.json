@@ -1,10 +1,20 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v24\\values-v24.xml",
+            "outputFile": "E:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v24\\values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\quagnitia-Ruhi\\.gradle\\caches\\transforms-2\\files-2.1\\663d5b5b5ad909456d0cc9d548888f52\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\values-v24\\values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\ab1d6976e9751189199dd2d91078a590\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
@@ -18,16 +28,6 @@
                         "startOffsets": "347,413,474,540",
                         "endColumns": "65,60,65,66",
                         "endOffsets": "408,469,535,602"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\quagnitia-Ruhi\\.gradle\\caches\\transforms-2\\files-2.1\\8389f2509c934a56ed36a8f0cd6b2157\\res\\values-v24\\values-v24.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,212",
-                        "endColumns": "156,134",
-                        "endOffsets": "207,342"
                     }
                 }
             ]

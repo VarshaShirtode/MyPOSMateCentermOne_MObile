@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +70,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     private Handler handler;
     TreeMap<String, String> hashMapKeys;
     public boolean isRegisteredStart = false;
-
+    RelativeLayout rel_orders;
     public Settings() {
         // Required empty public constructor
     }
@@ -130,6 +131,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         edt_unique_id = view.findViewById(R.id.edt_unique_id);
         edt_terminal_id.setText(android_id);//"71283458bfce2b86");
         edt_terminal_ip.setText(getLocalIpAddress());
+        rel_orders=  getActivity().findViewById(R.id.rel_orders);
+        rel_orders.setVisibility(View.GONE);
 //        preferencesManager.setuniqueId("eeac599d06a42e9b");
 //        preferencesManager.setMerchantId("29");
 //        preferencesManager.setConfigId("60");
@@ -719,6 +722,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             jsonObject.put("ShowPrintQR", preferencesManager.isQR());
             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
+            jsonObject.put("isExternalInputDevice",preferencesManager.isExternalScan());
             jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
             jsonObject.put("ManualEntry", preferencesManager.isManual());
@@ -790,8 +794,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 edt_unique_id.setText(decryption_old(jsonObject.optString("accessId")));
                 jsonObject1 = new JSONObject(decryption_old(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
-
-
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
                     preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
@@ -826,6 +828,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
@@ -976,6 +979,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
@@ -1420,6 +1424,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                         preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                         preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                         preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                        preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                         preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                         preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                         preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));

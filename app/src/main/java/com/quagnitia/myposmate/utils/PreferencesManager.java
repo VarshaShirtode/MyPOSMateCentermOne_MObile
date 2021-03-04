@@ -111,6 +111,7 @@ public class PreferencesManager {
     private String TerminalIdentifier="TerminalIdentifier";
     private String isQR="isQR";
     private String isStaticQR="isStaticQR";
+    private String isExternalscanner="isExternalscanner";
     private String isDisplayLoyaltyApps="isDisplayLoyaltyApps";
 
     private String LoyaltyData="LoyaltyData";
@@ -400,6 +401,17 @@ public class PreferencesManager {
     public void setisStaticQR(boolean text) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(isStaticQR, text);
+        editor.apply();
+
+    }
+
+    public boolean isExternalScan() {
+        return sharedPreferences.getBoolean(isExternalscanner, false);
+    }
+
+    public void setisExternalScan(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isExternalscanner, text);
         editor.apply();
 
     }

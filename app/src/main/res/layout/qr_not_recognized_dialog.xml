@@ -38,12 +38,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:text="Cancel/Retry"
+            android:text="Cancel"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:layout_marginLeft="20dp"
             android:textColor="@color/colorBtnBg"
-            android:textSize="14sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/dialogRetry"
@@ -53,9 +53,10 @@
             android:textStyle="bold"
             android:gravity="center"
             android:text="Proceed"
+            android:visibility="gone"
             android:textAllCaps="false"
             android:textColor="@color/colorBtnBg"
-            android:textSize="14sp" />
+            android:textSize="16dp" />
     </RelativeLayout>
 
 </LinearLayout>

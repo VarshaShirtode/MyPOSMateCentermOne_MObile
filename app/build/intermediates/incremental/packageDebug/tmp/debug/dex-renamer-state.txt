@@ -1,4 +1,4 @@
-#Fri Aug 28 14:25:45 IST 2020
+#Thu Mar 04 13:27:13 IST 2021
 path.1=classes.dex
 path.0=classes.dex
 renamed.7=classes8.dex
@@ -9,14 +9,14 @@ renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.7=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
-base.6=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-base.5=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
-base.4=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
-base.3=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
-base.2=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
-base.1=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\7
-base.0=D\:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\6
+base.7=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\7
+base.6=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
+base.5=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\6
+base.4=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
+base.3=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+base.2=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\5
+base.1=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
+base.0=E\:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
 path.7=classes.dex
 path.6=classes.dex
 path.5=classes.dex

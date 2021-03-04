@@ -1,21 +1,28 @@
 package com.quagnitia.myposmate.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -55,6 +62,7 @@ import com.centerm.smartpos.constant.DeviceErrorCode;
 import com.centerm.smartpos.util.LogUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.quagnitia.myposmate.BuildConfig;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.fragments.AboutUs;
@@ -68,6 +76,7 @@ import com.quagnitia.myposmate.fragments.PaymentProcessing;
 import com.quagnitia.myposmate.fragments.PosMateConnectioFrag;
 import com.quagnitia.myposmate.fragments.RefundFragment;
 import com.quagnitia.myposmate.fragments.RefundFragmentUnionPay;
+
 import com.quagnitia.myposmate.fragments.Settings;
 import com.quagnitia.myposmate.fragments.Settlement;
 import com.quagnitia.myposmate.fragments.TransactionDetailsActivity;
@@ -94,6 +103,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAMERA;
 import static com.quagnitia.myposmate.MyPOSMateApplication.isOpen;
 import static com.quagnitia.myposmate.MyPOSMateApplication.mStompClient;
 import static com.quagnitia.myposmate.utils.AppConstants.SAVE_LOYALTY_INFO;
@@ -102,12 +114,14 @@ import static com.quagnitia.myposmate.utils.AppConstants.isTerminalInfoDeleted;
 //import com.quagnitia.myposmate.fragments.DemoFragment;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener, OnTaskCompleted {
+    private static final int PERMISSION_REQUEST_CODE =100 ;
     public ImageView img_menu;
-    private TextView tv_order_badge;
+    public TextView tv_order_badge;
     private RelativeLayout rel_un;
     private TextView tv_settlement;
     private TextView tv_loyalty_apps;
     private Context mContext;
+    public ImageView img;
     public PopupWindow mPopupWindow;
     private TextView tv_home;
     private TextView tv_timezone;
@@ -190,8 +204,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 View decorView = getWindow().getDecorView();
                 int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
                 decorView.setSystemUiVisibility(uiOptions);
-                preventStatusBarExpansion(DashboardActivity.this);
+                /*if (!android.provider.Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                    startActivityForResult(intent, 0);
+                }*/
+           //   preventStatusBarExpansion(DashboardActivity.this);
             }
+
         }
 
 
@@ -208,8 +227,91 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 //                    .getDisplayName(false, TimeZone.SHORT);
             preferencesManager.setTimezoneAbrev("NZST");
         }
+        requestCameraPermission();
+
+    }
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{CAMERA}, PERMISSION_REQUEST_CODE);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    // boolean cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraAccepted) {
+
+                    }
+                    // Snackbar.make(LanguageSelectionActivity.this, "Permission Granted, Now you can access location data and camera.", Snackbar.LENGTH_LONG).show();
+                    //  Toast.makeText(context,"Permission Granted, Now you can access location data and call.",Toast.LENGTH_SHORT).show();
+                    else {
+                       // requestCameraPermission();
+                      //  Toast.makeText(DashboardActivity.this, "Permission Denied, You cannot access Camera.", Toast.LENGTH_SHORT).show();
+
+                        //   Snackbar.make(view, "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
+
+                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(CAMERA)) {
+                                showMessageOKCancel("You need to allow Permission access to Camera");
+                                return;
+                            }else{
+                                showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
+                                return;
+
+                            }
+                        }
+
+                    }
+                }
+
+
+                break;
+        }
+
+    }
+
+    private void showMessageOKCancel(String message) {
+    /*new AlertDialog.Builder(DashboardActivity.this)
+                    .setMessage(message)
+                    .setPositiveButton("OK", okListener)
+                  //  .setNegativeButton("Cancel", null)
+                    .create()
+                    .show();*/
+
+        AlertDialog.Builder alert=new AlertDialog.Builder(DashboardActivity.this);
+        alert.setMessage(message);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{CAMERA},
+                            PERMISSION_REQUEST_CODE);
+                }
+            }
+        });
+        alert.setCancelable(false);
+        alert.show();
+    }
+
+    private void showMessageOK(String message) {
+          AlertDialog.Builder alert=new AlertDialog.Builder(DashboardActivity.this);
+          alert.setMessage(message);
+          alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                      startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                  }
+              }
+          });
+          alert.setCancelable(false);
+          alert.show();
+
+        }
 
     public void showOrderReceivedToast(String text) {
         LayoutInflater li = getLayoutInflater();
@@ -228,8 +330,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
 
     public void callTaskPlay() {
-
-
         TimerTask uploadCheckerTimerTask = new TimerTask() {
             public void run() {
                 runOnUiThread(new Runnable() {
@@ -295,10 +395,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public static void preventStatusBarExpansion(Context context) {
         WindowManager manager = ((WindowManager) context.getApplicationContext()
                 .getSystemService(Context.WINDOW_SERVICE));
-
+        int LAYOUT_FLAG;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            LAYOUT_FLAG=WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        else
+            LAYOUT_FLAG=WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         Activity activity = (Activity) context;
         WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
-        localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        localLayoutParams.type = LAYOUT_FLAG;
         localLayoutParams.gravity = Gravity.TOP;
         localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
 
@@ -321,7 +425,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         customViewGroup view = new customViewGroup(context);
 
-        manager.addView(view, localLayoutParams);
+        if (manager != null) {
+            manager.addView(view, localLayoutParams);
+        }
     }
 
 
@@ -521,6 +627,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void initUI() {
         img_menu = findViewById(R.id.img_menu);
         tv_order_badge = findViewById(R.id.tv_order_badge);
+        img=findViewById(R.id.img);
         if (preferencesManager.getOrderBadgeCount() != 0) {
             Animation animBlink = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.blink);
@@ -1091,6 +1198,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         final CheckBox chk_back = dialogview.findViewById(R.id.chk_back);
         final CheckBox chk_print_qr = dialogview.findViewById(R.id.chk_print_qr);
         final CheckBox chk_display_static_qr = dialogview.findViewById(R.id.chk_display_static_qr);
+        final CheckBox chk_ExternalScan = dialogview.findViewById(R.id.chk_ExternalScan);
+
+
         final CheckBox chk_display_loyalty_apps = dialogview.findViewById(R.id.chk_display_loyalty_apps);
         final CheckBox chk_front = dialogview.findViewById(R.id.chk_front);
         final CheckBox chk_membership_manual = dialogview.findViewById(R.id.chk_membership_manual);
@@ -1129,6 +1239,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         } else {
             chk_display_static_qr.setChecked(false);
             chk_display_static_qr.setSelected(false);
+        }
+
+        if (preferencesManager.isExternalScan()) {
+            chk_ExternalScan.setChecked(true);
+            chk_ExternalScan.setSelected(true);
+        } else {
+            chk_ExternalScan.setChecked(false);
+            chk_ExternalScan.setSelected(false);
         }
 
         if (preferencesManager.isDisplayLoyaltyApps()) {
@@ -1312,6 +1430,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 //case 2
                 chk_display_static_qr.setChecked(false);
                 preferencesManager.setisStaticQR(false);
+            }
+        });
+
+        chk_ExternalScan.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_ExternalScan.setChecked(true);
+                preferencesManager.setisExternalScan(true);
+            } else {
+                //case 2
+                chk_ExternalScan.setChecked(false);
+                preferencesManager.setisExternalScan(false);
             }
         });
         chk_display_loyalty_apps.setOnClickListener((View v) -> {
@@ -3748,6 +3877,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("ShowPrintQR", preferenceManager.isQR());
             jsonObject.put("DisplayStaticQR", preferenceManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
+           jsonObject.put("isExternalInputDevice", preferenceManager.isExternalScan());
             jsonObject.put("ShowMembershipManual", preferenceManager.isMembershipManual());
             jsonObject.put("ShowMembershipHome", preferenceManager.isMembershipHome());
             jsonObject.put("Membership/Loyality", preferenceManager.isLoyality());
@@ -3829,13 +3959,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         if (result != null) {
             if (result.getContents() == null) {
-                AppConstants.xmppamountforscan = "";
+                if (ManualEntry.isLoyaltyFrontQrSelected || ManualEntry.isLoyaltyQrSelected) {
+                    Toast.makeText(this, "Closed", Toast.LENGTH_SHORT).show();
+
+                } else
+                {
+                    AppConstants.xmppamountforscan = "";
                 MyPOSMateApplication.isOpen = false;
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
                 preferenceManager.settriggerReferenceId("");
                 callSetupFragment(SCREENS.MANUALENTRY, null);
 
                 ManualEntry.isUpayselected = false;
+            }
             } else {
 
                 if (!AppConstants.xmppamountforscan.equals("")) {
@@ -3872,12 +4008,25 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             } else if (ManualEntry.isUnionPayQrSelected) {
                                 AppConstants.isScannedCode1 = false;
                                 i.setAction("ScannedCodeUnionPayQr");
-                            } else {
+                            } else if (RefundFragmentUnionPay.isUnionQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedCodeUnionPayRefundQr");
+                                RefundFragmentUnionPay.isUnionQrSelected=false;
+                            }else if (ManualEntry.isLoyaltyQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedBackLoyaltyQr");
+                                ManualEntry.isLoyaltyQrSelected=false;
+                            }else if (ManualEntry.isLoyaltyFrontQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedFrontLoyaltyQr");
+                                ManualEntry.isLoyaltyFrontQrSelected=false;
+                            }else {
                                 i.setAction("ScannedCode1");
                                 AppConstants.isScannedCode1 = true;
                             }
 
                             i.putExtra("identityCode", identityCode);
+                            Log.v("AUTHCODE","Authcodeac "+i.getAction());
                             sendBroadcast(i);
                         }
                     }, 800);
@@ -3896,11 +4045,28 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             } else if (ManualEntry.isUnionPayQrSelected) {
                                 AppConstants.isScannedCode1 = false;
                                 i.setAction("ScannedCodeUnionPayQr");
-                            } else {
+                            } else if (RefundFragment.isAlipayQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedCodeAlipayRefundQr");
+                                RefundFragment.isAlipayQrSelected=false;
+                            }else if (RefundFragmentUnionPay.isUnionQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedCodeUnionPayRefundQr");
+                                RefundFragmentUnionPay.isUnionQrSelected=false;
+                            }else if (ManualEntry.isLoyaltyQrSelected) {
+
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedBackLoyaltyQr");
+                                ManualEntry.isLoyaltyQrSelected=false;
+                            }else if (ManualEntry.isLoyaltyFrontQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedFrontLoyaltyQr");
+                                ManualEntry.isLoyaltyFrontQrSelected=false;
+                            }else {
                                 i.setAction("ScannedCode1");
                                 AppConstants.isScannedCode1 = true;
                             }
-
+                            Log.v("AUTHCODE","Authcodeac2 "+i.getAction());
                             i.putExtra("identityCode", identityCode);
                             sendBroadcast(i);
                         }
@@ -4088,6 +4254,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                   preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
@@ -4142,7 +4309,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    private void print(String body) throws RemoteException {
+    private void    print(String body) throws RemoteException {
 
         try {
             final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
@@ -4688,6 +4855,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonObject.put("ShowPrintQR", preferencesManager.isQR());
             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
+           jsonObject.put("isExternalInputDevice", preferenceManager.isExternalScan());
             jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
             jsonObject.put("ManualEntry", preferencesManager.isManual());
@@ -4884,6 +5052,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));

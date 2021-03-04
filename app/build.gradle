@@ -12,8 +12,8 @@ android {
         multiDexEnabled true
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 21
-        versionName "3.2.26"
+        versionCode 1
+        versionName "1.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -39,8 +39,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation 'com.journeyapps:zxing-android-embedded:3.3.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.google.android.gms:play-services-appindexing:9.8.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:28.0.0'
 
     implementation 'com.squareup.okhttp3:okhttp:3.8.0'
@@ -56,6 +58,7 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.1.57.android'
     implementation 'com.google.guava:guava-base:r03'
     implementation 'com.google.code.gson:gson:2.8.2'
+    //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:26.0.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
     implementation 'com.alibaba:fastjson:1.1.56.android'
@@ -63,7 +66,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation files('libs/SmartPosLib_V3.1.3_20180727.jar')
     implementation project(path: ':printer-utils')
-
+    implementation 'com.google.android.gms:play-services-vision:9.8.0'
 
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.5'

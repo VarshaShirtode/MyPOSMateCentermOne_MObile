@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.quagnitia.myposmate">
     <uses-sdk android:targetSdkVersion="29" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CPAYSDK_PRINTER_MODULE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,10 +36,12 @@
         tools:replace="android:allowBackup">
         <activity android:name="com.quagnitia.myposmate.activities.OrderDetailsActivity"
             android:windowSoftInputMode="adjustPan|adjustResize"
+            android:resizeableActivity="false"
             ></activity>
         <activity
             android:name="com.quagnitia.myposmate.activities.SplashScreen"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,13 +50,15 @@
         </activity>
         <activity
             android:name="com.quagnitia.myposmate.activities.WelcomeScreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:resizeableActivity="false"/>
         <activity
             android:name="com.quagnitia.myposmate.activities.DashboardActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:resizeableActivity="false"/>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -66,10 +72,10 @@
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
        <!-- <activity android:name="com.quagnitia.myposmate.activities.PaymentExpressActivity" />-->
-        <activity android:name="com.quagnitia.myposmate.activities.UnionPayActivity" />
-        <activity android:name="com.quagnitia.myposmate.activities.UnionPayScreen" />
-        <activity android:name="com.quagnitia.myposmate.fragments.TransactionDetailsActivity" />
-        <activity android:name="com.quagnitia.myposmate.activities.TimeZoneActivity" />
+        <activity android:name="com.quagnitia.myposmate.activities.UnionPayActivity"   android:resizeableActivity="false" />
+        <activity android:name="com.quagnitia.myposmate.activities.UnionPayScreen"    android:resizeableActivity="false"/>
+        <activity android:name="com.quagnitia.myposmate.fragments.TransactionDetailsActivity"    android:resizeableActivity="false"/>
+        <activity android:name="com.quagnitia.myposmate.activities.TimeZoneActivity"    android:resizeableActivity="false"/>
 
 
        <!-- <activity android:name="com.printerutils.WebViewActivity"></activity>-->

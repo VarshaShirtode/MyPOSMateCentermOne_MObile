@@ -124,42 +124,48 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
         btn_merchant.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-              try
+                Toast.makeText(OrderDetailsActivity.this,"Printer is not available",Toast.LENGTH_SHORT).show();
+
+            /*    try
               {
                   print(2,jsonObjectDetails.optJSONObject("data"));
               }
               catch (Exception e)
               {
                   e.printStackTrace();
-              }
+              }*/
             }
         });
 
         btn_kitchen.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                try
+                Toast.makeText(OrderDetailsActivity.this,"Printer is not available",Toast.LENGTH_SHORT).show();
+
+               /* try
                 {
                     print(3,jsonObjectDetails.optJSONObject("data"));
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 
         btn_customer.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                try
+                Toast.makeText(OrderDetailsActivity.this,"Printer is not available",Toast.LENGTH_SHORT).show();
+
+               /* try
                 {
                     print(1,jsonObjectDetails.optJSONObject("data"));
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 

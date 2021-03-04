@@ -116,6 +116,19 @@
                 android:textStyle="bold" />
 
             <CheckBox
+                android:id="@+id/chk_ExternalScan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="External Input Device"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+
+            <CheckBox
                 android:id="@+id/chk_loyality"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

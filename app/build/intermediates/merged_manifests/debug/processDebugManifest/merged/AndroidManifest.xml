@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.quagnitia.myposmate"
-    android:versionCode="20"
-    android:versionName="3.2.4" >
+    android:versionCode="1"
+    android:versionName="1.0.4" >
 
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="29" />
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CPAYSDK_PRINTER_MODULE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -47,8 +48,6 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <application
         android:name="com.quagnitia.myposmate.MyPOSMateApplication"
         android:allowBackup="false"
@@ -56,13 +55,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.quagnitia.myposmate.activities.OrderDetailsActivity"
+            android:resizeableActivity="false"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name="com.quagnitia.myposmate.activities.SplashScreen"
+            android:resizeableActivity="false"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -72,11 +72,13 @@
         </activity>
         <activity
             android:name="com.quagnitia.myposmate.activities.WelcomeScreen"
+            android:resizeableActivity="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.quagnitia.myposmate.activities.DashboardActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
+            android:resizeableActivity="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <!--
@@ -91,11 +93,20 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor" />
         <!-- <activity android:name="com.quagnitia.myposmate.activities.PaymentExpressActivity" /> -->
-        <activity android:name="com.quagnitia.myposmate.activities.UnionPayActivity" />
-        <activity android:name="com.quagnitia.myposmate.activities.UnionPayScreen" />
-        <activity android:name="com.quagnitia.myposmate.fragments.TransactionDetailsActivity" />
-        <activity android:name="com.quagnitia.myposmate.activities.TimeZoneActivity" />
-        <activity android:name="com.printerutils.WebViewActivity" />
+        <activity
+            android:name="com.quagnitia.myposmate.activities.UnionPayActivity"
+            android:resizeableActivity="false" />
+        <activity
+            android:name="com.quagnitia.myposmate.activities.UnionPayScreen"
+            android:resizeableActivity="false" />
+        <activity
+            android:name="com.quagnitia.myposmate.fragments.TransactionDetailsActivity"
+            android:resizeableActivity="false" />
+        <activity
+            android:name="com.quagnitia.myposmate.activities.TimeZoneActivity"
+            android:resizeableActivity="false" />
+
+        <!-- <activity android:name="com.printerutils.WebViewActivity"></activity> -->
 
         <receiver
             android:name="com.quagnitia.myposmate.utils.NetworkChangeReceiver"

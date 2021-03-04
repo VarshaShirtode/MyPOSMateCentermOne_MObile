@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\MyPOSMate Final 2020\\MyPOSMateCentermOne\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v23\\values-v23.xml",
+            "outputFile": "E:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v23\\values-v23.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\quagnitia-Ruhi\\.gradle\\caches\\transforms-2\\files-2.1\\8389f2509c934a56ed36a8f0cd6b2157\\res\\values-v23\\values-v23.xml",
+                    "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,19,32,33,34,35,36",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4",

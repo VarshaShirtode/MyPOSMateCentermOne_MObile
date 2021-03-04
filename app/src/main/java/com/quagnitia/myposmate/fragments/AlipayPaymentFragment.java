@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,11 +58,12 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     private String mParam2;
     private View view;
     private Button btn_save, btn_cancel;
-    private ImageView img_qrcode, img_paymentmode, img_success, img_failure;
+    private ImageView img_qrcode, img_paymentmode, img_success, img_failure ,img;
     private String qrcode = "", payment_mode = "";
     private JSONObject jsonObject;
-    private TextView tv_sale_amount, tv_count_down;
+    private TextView tv_sale_amount, tv_count_down,tv_order_badge;
     private IntentFilter intentFilter;
+    RelativeLayout rel_orders;
     private String paymentdetails_result = "";
     private PaymentDetailsReceiver paymentDetailsReceiver;
     private PreferencesManager preferenceManager;
@@ -722,8 +724,25 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         img_qrcode = view.findViewById(R.id.img_qrcode);
         img_paymentmode =  view.findViewById(R.id.img_paymentmode);
         tv_sale_amount = view.findViewById(R.id.tv_sale_amount);
+        tv_order_badge=getActivity().findViewById(R.id.tv_order_badge);
         img_success =  view.findViewById(R.id.img_success);
         img_failure =  view.findViewById(R.id.img_failure);
+        img_failure =  view.findViewById(R.id.img_failure);
+        img =  getActivity().findViewById(R.id.img);
+        rel_orders=  getActivity().findViewById(R.id.rel_orders);
+        rel_orders.setVisibility(View.GONE);
+        /*img.setVisibility(View.GONE);
+        img.setClickable(false);
+        img.setEnabled(false);
+        tv_order_badge.setVisibility(View.GONE);
+        tv_order_badge.setClickable(false);
+        tv_order_badge.setEnabled(false);
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"clicked",Toast.LENGTH_SHORT).show();
+            }
+        });*/
         img_success.setVisibility(View.GONE);
         img_failure.setVisibility(View.GONE);
         if (!qrcode.equals("")) {

@@ -213,6 +213,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
                                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
                                     Date d = df1.parse(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                                     edt_start_datetime.setText(df1.format(d));
+                                   // btn_apply_filter.performClick();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

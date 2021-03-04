@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.quagnitia.myposmate.R;
@@ -30,6 +31,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
     PreferencesManager preferencesManager;
     private String android_id;
     TreeMap<String, String> hashMapKeys;
+    RelativeLayout rel_orders;
 
     public RegistrationActivity() {
         // Required empty public constructor
@@ -76,6 +78,8 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
         btn_save = view.findViewById(R.id.btn_save);
         btn_already_registered = view.findViewById(R.id.btn_already_registered);
         btn_exit = view.findViewById(R.id.btn_exit);
+        rel_orders=  getActivity().findViewById(R.id.rel_orders);
+        rel_orders.setVisibility(View.GONE);
     }
 
     public void initListener() {

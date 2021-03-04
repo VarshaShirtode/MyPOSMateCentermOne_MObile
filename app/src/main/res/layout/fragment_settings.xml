@@ -112,19 +112,23 @@
 
         android:layout_marginTop="20dp"
         android:layout_gravity="center|bottom"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:orientation="vertical"
+        android:gravity="center_horizontal"
+       android:paddingRight="50dp"
+        android:paddingLeft="50dp"
        >
 
         <Button
             android:id="@+id/btn_save"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorBtnBg"
             android:gravity="center"
+            android:textAllCaps="false"
             android:text="@string/save_and_ok"
             android:textColor="@color/colorWhite"
             android:textSize="16sp" />
@@ -132,33 +136,35 @@
         <Button
             android:layout_marginTop="10dp"
             android:id="@+id/btn_cancel"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorBtnBg"
             android:gravity="center"
-            android:text="CLEAR"
+            android:text="Clear"
+            android:textAllCaps="false"
             android:textColor="@color/colorWhite"
             android:textSize="16sp" />
         <Button
             android:layout_marginTop="10dp"
             android:id="@+id/btn_exit"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorBtnBg"
             android:gravity="center"
             android:text="@string/exitapp"
-
+            android:textAllCaps="false"
             android:textColor="@color/colorWhite"
             android:textSize="16sp" />
 
         <Button
             android:layout_marginTop="10dp"
             android:id="@+id/btn_reset"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:color/holo_red_dark"
             android:gravity="center"
-            android:text="RESET TERMINAL SETTINGS"
+            android:textAllCaps="false"
+            android:text="Reset Terminal Settings"
             android:textColor="@color/colorWhite"
             android:textSize="16sp" />
 

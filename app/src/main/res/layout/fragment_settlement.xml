@@ -99,11 +99,13 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="5dp"
                 android:weightSum="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                >
                 <Button
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
-                    android:id="@+id/btn_settlement"
+                    android:id="@+id/btn_settlementold"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:background="@color/colorBtnBg"
@@ -137,16 +139,37 @@
             <Button
                 android:textAllCaps="false"
                 android:layout_gravity="center"
-                android:id="@+id/btn_ok"
+                android:id="@+id/btn_settlement"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@color/colorBtnBg"
                 android:gravity="center"
-                android:padding="5dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+
+                android:text="Alipay/WeChat"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="16dp" />
+            <Button
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:id="@+id/btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBtnBg"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:layout_margin="10dp"
 
                 android:text="Cancel &amp; Close"
                 android:textColor="@color/colorWhite"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
             <Button
                 android:layout_marginTop="5dp"
 
@@ -157,8 +180,10 @@
                 android:layout_height="40dp"
                 android:background="@color/colorBtnBg"
                 android:gravity="center"
-                android:padding="5dp"
-
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
                 android:text="Print Alipay/WeChat"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp" />

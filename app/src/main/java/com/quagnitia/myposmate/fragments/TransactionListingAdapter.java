@@ -107,7 +107,9 @@ public LinearLayout parent;
             }
             else
             {
-                holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee"))));
+                if(!jsonObject.optString("refundFee").equalsIgnoreCase("")||!jsonObject.optString("refundFee").isEmpty()) {
+                    holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee"))));
+                }
             }
 
         }

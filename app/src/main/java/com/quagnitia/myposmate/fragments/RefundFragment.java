@@ -4,16 +4,25 @@ package com.quagnitia.myposmate.fragments;
  * Created by admin on 7/20/2018.
  */
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +39,8 @@ import com.centerm.smartpos.aidl.qrscan.CameraBeanZbar;
 import com.centerm.smartpos.aidl.sys.AidlDeviceManager;
 import com.centerm.smartpos.constant.Constant;
 import com.centerm.smartpos.util.LogUtil;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.scanner.ScannerForBack;
@@ -48,12 +59,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAMERA;
 import static com.quagnitia.myposmate.printer.ApiDemo.TAG;
 
 
 public class RefundFragment extends Fragment implements OnTaskCompleted, View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static boolean isAlipayQrSelected=false;
 
     private String mParam1;
     private String mParam2;
@@ -63,6 +78,8 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
     private View view;
     private ProgressDialog progress;
     TreeMap<String, String> hashMapKeys;
+    IntentFilter intentFilter;
+    RefundReceiver refundReceiver;
 
     public RefundFragment() {
     }
@@ -92,6 +109,10 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        refundReceiver=new RefundReceiver();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("ScannedCodeAlipayRefundQr");
+        getActivity().registerReceiver(refundReceiver, intentFilter);
     }
 
     public void callAuthToken() {
@@ -117,7 +138,6 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
         view.findViewById(R.id.ll_two).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 if (((DashboardActivity) getActivity()).mPopupWindow.isShowing()) {
                     ((DashboardActivity) getActivity()).mPopupWindow.dismiss();
                 }
@@ -169,6 +189,12 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
     boolean isStartScan = false;
     boolean isOkClicked=false;
 
+    /*@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+       // super.onActivityResult(requestCode, resultCode, data);
+Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
+    }
+*/
     @Override
     public void onClick(View v) {
         mContext = getActivity();
@@ -180,19 +206,16 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
                 try {
                     isStartScan = true;
                     callAuthToken();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 break;
+
             case R.id.btn_save1:
                 isOkClicked=true;
                 callAuthToken();
-
-
-
                 break;
+
             case R.id.btn_cancel1:
                 edt_amount1.setText("0.00");
                 edt_account_id.setText("");
@@ -300,7 +323,22 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
                 }
                 if (isStartScan) {
                     isStartScan = false;
-                    stsartFastScan(true);
+                  //  stsartFastScan(true);
+                    if (preferencesManager.isExternalScan())
+                    {
+                        edt_reference_id.requestFocus();
+                        //scanner
+                    }else{
+                        //camera
+                       if(checkPermission()) {
+                           isAlipayQrSelected = true;
+                           IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                           integrator.setOrientationLocked(false);
+                           integrator.initiateScan();
+                       }else{
+                           requestCameraPermission();
+                       }
+                    }
                 }
                 if (isRefundRequestSuccess) {
                     isRefundRequestSuccess = false;
@@ -462,6 +500,76 @@ if(alipaywechatamount.equals(""))alipaywechatamount="0.0";
 
     }
 
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), CAMERA);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+    private static final int PERMISSION_REQUEST_CODE =100 ;
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{CAMERA}, PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    // boolean cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraAccepted) {
+                        isAlipayQrSelected = true;
+                        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                        integrator.setOrientationLocked(false);
+                        integrator.initiateScan();
+                    }
+                    // Snackbar.make(LanguageSelectionActivity.this, "Permission Granted, Now you can access location data and camera.", Snackbar.LENGTH_LONG).show();
+                    //  Toast.makeText(context,"Permission Granted, Now you can access location data and call.",Toast.LENGTH_SHORT).show();
+                    else {
+                        // requestPermission();
+                        Toast.makeText(getActivity(), "Permission Denied, You cannot access Camera.", Toast.LENGTH_SHORT).show();
+
+                        //   Snackbar.make(view, "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(CAMERA)) {
+                                showMessageOKCancel("You need to allow access to Camera",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    requestPermissions(new String[]{CAMERA},
+                                                            PERMISSION_REQUEST_CODE);
+                                                }
+                                            }
+                                        });
+                                return;
+                            }else{
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    requestPermissions(new String[]{CAMERA},
+                                            PERMISSION_REQUEST_CODE);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+
+                break;
+        }
+
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
 
     public AidlDeviceManager manager = null;
 
@@ -575,6 +683,41 @@ if(alipaywechatamount.equals(""))alipaywechatamount="0.0";
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public class RefundReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String ac = intent.getAction();
+            switch (ac) {
+                case "ScannedCodeAlipayRefundQr":
+                    //Toast.makeText(context, "inside receiver", Toast.LENGTH_SHORT).show();
+                    if (intent.hasExtra("identityCode")) {
+                       String auth_code = intent.getStringExtra("identityCode");
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getActivity(), getString(R.string.scan_success) + "\n" + getString(R.string.scan_info) + "\n" + auth_code, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            long SuccessEndTime = System.currentTimeMillis();
+                          //  long SuccessCostTime = SuccessEndTime - startTime;
+                            if (getActivity() != null)
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+
+                                        edt_reference_id.setText(auth_code);
+
+                                        callTransactionDetails1();
+
+                                    }
+                                });
+
+                        }
+                    break;
+
+            }
         }
     }
 

@@ -13,8 +13,8 @@ public final class R {
         private string() {}
 
         public static final int app_name = 0x7f0d0036;
-        public static final int h5_printer_error_image_data_to_print_should_not_be_null = 0x7f0d00b3;
-        public static final int h5_printer_error_not_init_webview = 0x7f0d00b4;
-        public static final int nymph_printer_content_generate_error = 0x7f0d0102;
+        public static final int h5_printer_error_image_data_to_print_should_not_be_null = 0x7f0d00b4;
+        public static final int h5_printer_error_not_init_webview = 0x7f0d00b5;
+        public static final int nymph_printer_content_generate_error = 0x7f0d0103;
     }
 }

@@ -35,6 +35,7 @@ import com.centerm.smartpos.constant.DeviceErrorCode;
 import com.centerm.smartpos.util.LogUtil;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
+import com.quagnitia.myposmate.activities.OrderDetailsActivity;
 import com.quagnitia.myposmate.arke.TransactionNames;
 import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
 import com.quagnitia.myposmate.centrum.ThirtConst;
@@ -394,15 +395,19 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
 
         switch (v.getId()) {
             case R.id.btn_settlement:
-                beginSettlement();
+                Toast.makeText(getActivity(),"DP app is not available",Toast.LENGTH_SHORT).show();
+
+                // beginSettlement();
 
                 break;
             case R.id.btn_print:
-                try {
+                Toast.makeText(getActivity(),"Printer is not available",Toast.LENGTH_SHORT).show();
+
+                /*try {
                     print();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
 
                 break;
             case R.id.btn_apply_filter:

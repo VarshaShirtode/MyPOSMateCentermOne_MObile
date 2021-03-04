@@ -133,6 +133,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         if (getArguments() != null) {
             try {
                 result = getArguments().getString(ARG_PARAM1);
+                Log.v("TOKENRESPONSE","RESULT DATA "+result);
                 if (result != null && !result.equals("")) {
                     jsonObject = new JSONObject(result);
 
@@ -141,19 +142,48 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     } else if (jsonObject.optString("channel").equals("ALIPAY")) {
                         img_payment.setImageResource(R.drawable.ic_smallali);
                     }
+                    Log.v("REQUEST_ID",""+requestId);
 //                    if(isTrigger)
 //                    {
 //                        isTrigger=false;
+                    Log.v("TOKENRESPONSE","isExternalAP "+DashboardActivity.isExternalApp);
+                   /* if (DashboardActivity.isExternalApp) {
+                     DashboardActivity dash=new DashboardActivity();
+                     dash.tv_order_badge.setVisibility(View.GONE);
+                     dash.img.setVisibility(View.GONE);
+                    }else{
+                        DashboardActivity dash=new DashboardActivity();
+                        dash.tv_order_badge.setVisibility(View.VISIBLE);
+                        dash.img.setVisibility(View.VISIBLE);
+                    }*/
+                    /*if (DashboardActivity.isExternalApp) {
+                        btn_ok.setEnabled(true);
+                        btn_email.setEnabled(true);
+                        btn_ok.setClickable(true);
+                        btn_email.setClickable(true);
+                        btn_ok.setOnClickListener(this);
+                        btn_email.setOnClickListener(this);
+                    }else
+                    {
                         callUpdateRequestAPI1(requestId,true);
+                    }*/
+
+                    /*if (!DashboardActivity.isExternalApp) {
+                        Log.v("TOKENRESPONSE","Inside call update");
+                        callUpdateRequestAPI1(requestId,true);
+                    }*/
 //                    }
 
                     if (jsonObject.optString("status").equals("true")
                             || jsonObject.optString("responseCodeThirtyNine").equals("00")
 
                     ) {
+                        Log.v("TOKENRESPONSE","inside status true");
+
                         if (jsonObject.optJSONObject("payment").optString("paymentStatus").equals("FAILED")||
                                 jsonObject.optJSONObject("payment").optString("paymentStatus").equals("CLOSED")
                         ) {
+                            Log.v("TOKENRESPONSE","inside status failed");
                             payment_tag.setText("Payment Unsuccessful");
                             status = "Unsuccessful";
                             payment_image.setImageResource(R.drawable.unsuccessful_icon);
@@ -163,6 +193,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                                 tv_amount.setText("$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal"))));
                             }
                         } else {
+                            Log.v("TOKENRESPONSE","SuCCESS ammount"+"$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
                             payment_tag.setText("Payment Successful");
                             status = "Successful";
                             if (jsonObject.optJSONObject("payment").has("receiptAmount")) {
@@ -174,9 +205,11 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                             }
 
                             payment_image.setImageResource(R.drawable.successful_icon);
+
                         }
 
                     } else {
+                        Log.v("TOKENRESPONSE","inside status unsuccess");
                         status = "Unsuccessful";
                         payment_tag.setText("Payment Unsuccessful");
                         tv_amount.setText("$00.00");
@@ -197,7 +230,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     } else
                         tv_referenceid.setText(jsonObject.optJSONObject("payment").optString("referenceId"));
                     tv_transid.setText(jsonObject.optJSONObject("payment").optString("id"));//increment_id
-
+                    Log.v("TOKENRESPONSE","inside status ende");
                 }
                 if (preferencesManager.getisPrint().equals("true")) {
 //                    bindService();
@@ -205,6 +238,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 }
 
             } catch (Exception e) {
+                Log.v("TOKENRESPONSE","inside exception "+ e.getMessage()+ " "+e.toString());
                 e.printStackTrace();
             }
 
@@ -226,6 +260,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
             hashMapKeys.put("request_id", request_id);
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("executed", executed + "");
+            Log.v("TOKENResponse","inside update request");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
                     .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
@@ -305,13 +340,13 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
     private void print() throws RemoteException {
         JSONObject jsonObject=this.jsonObject.optJSONObject("payment");
-
+/*
         btn_ok.setEnabled(false);
         btn_email.setEnabled(false);
         btn_ok.setOnClickListener(null);
 
         btn_ok.setClickable(false);
-        btn_email.setClickable(false);
+        btn_email.setClickable(false);*/
         final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
         int fontSize = 24;
         list.add(new PrintDataObject("------- " + status + " -------",
@@ -724,6 +759,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
             ((DashboardActivity) mContext).mPopupWindow.dismiss();
         switch (view.getId()) {
             case R.id.btn_ok:
+            //    Toast.makeText(getActivity(),"onclick ok",Toast.LENGTH_SHORT).show();
                 MyPOSMateApplication.isOpen = false;
                 MyPOSMateApplication.isActiveQrcode = false;
 
@@ -748,18 +784,20 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.btn_email:
-                try {
-                    JSON_DATA = "{\"Merchant Name\":\"" + preferencesManager.getmerchant_name() + "\",\"Address\":\"" + preferencesManager.getaddress() + "\"," +
-                            "\"Contact Number\":\"" + preferencesManager.getcontact_no() + "\",\"Contact Email\":" +
-                            "\"" + preferencesManager.getcontact_email() + "\",\"Transaction Number\":\"" + tv_transid.getText().toString() +
-                            "\",\"Reference Number\":\"" + tv_referenceid.getText().toString() +
-                            "\",\"Trade Number\":\"" + tv_tradeno.getText().toString() + "\",\"Date (Local)\":\"持卡人手续费\"," +
-                            "\"Amount\":\"" + tv_amount.getText().toString()
-                            + "\",\"Payment via\":\"" + jsonObject.optString("channel") + "\"}";
-                    print();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Toast.makeText(getActivity(),"Printer is not available",Toast.LENGTH_SHORT).show();
+
+//                try {
+//                    JSON_DATA = "{\"Merchant Name\":\"" + preferencesManager.getmerchant_name() + "\",\"Address\":\"" + preferencesManager.getaddress() + "\"," +
+//                            "\"Contact Number\":\"" + preferencesManager.getcontact_no() + "\",\"Contact Email\":" +
+//                            "\"" + preferencesManager.getcontact_email() + "\",\"Transaction Number\":\"" + tv_transid.getText().toString() +
+//                            "\",\"Reference Number\":\"" + tv_referenceid.getText().toString() +
+//                            "\",\"Trade Number\":\"" + tv_tradeno.getText().toString() + "\",\"Date (Local)\":\"持卡人手续费\"," +
+//                            "\"Amount\":\"" + tv_amount.getText().toString()
+//                            + "\",\"Payment via\":\"" + jsonObject.optString("channel") + "\"}";
+//                    print();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 break;
 
         }
@@ -827,6 +865,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 {
                     isNetConnectionOn=false;
                     Log.v("PaymentProcessing","PaymentProcessing Called connection");
+                    Log.v("TOKENResponse","PaymentProcessing Called connection");
 //                    if(MyPOSMateApplication.mStompClient==null)
 //                    {
                             ((MyPOSMateApplication)getActivity().getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
@@ -915,19 +954,29 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         super.onResume();
 
         bindService();
-        if (preferencesManager.getisPrint().equals("true")) {
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        print();
-                    } catch (Exception e) {
-                    }
-                }
-            }, 100);
-
+        if (DashboardActivity.isExternalApp) {
+            btn_ok.setEnabled(true);
+            btn_email.setEnabled(true);
+            btn_ok.setOnClickListener(this);
+            btn_email.setOnClickListener(this);
         }
+        else
+        {
+            if (preferencesManager.getisPrint().equals("true")) {
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            print();
+                        } catch (Exception e) {
+                        }
+                    }
+                }, 100);
+
+            }
+        }
+
 
     }
 

@@ -475,8 +475,9 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                     tv_union_payment_count.setText(jsonObjectSettlement.optString("upPaymentCount"));
                     tv_union_refund_amount.setText("$" + jsonObjectSettlement.optString("upRefundAmount"));
                     tv_union_refund_count.setText(jsonObjectSettlement.optString("upRefundCount"));
+                  //Varsha Commented
                     // print(jsonObject);
-                    btn_print_alipay.setVisibility(View.VISIBLE);
+                   // btn_print_alipay.setVisibility(View.VISIBLE);
                     tv_settled_on.setVisibility(View.VISIBLE);
 
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

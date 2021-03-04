@@ -5,9 +5,11 @@ package com.quagnitia.myposmate.fragments;
  */
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -31,6 +33,7 @@ import com.centerm.smartpos.aidl.qrscan.CameraBeanZbar;
 import com.centerm.smartpos.aidl.sys.AidlDeviceManager;
 import com.centerm.smartpos.constant.Constant;
 import com.centerm.smartpos.util.LogUtil;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
@@ -68,6 +71,9 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
     private Button btn_scan_reference;
     private VASCallsArkeBusiness vasCallsArkeBusiness;
+    public static boolean isUnionQrSelected=false;
+    RefundReceiver refundReceiver;
+    IntentFilter intentFilter;
 
 
     public RefundFragmentUnionPay() {
@@ -97,6 +103,10 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
+        refundReceiver=new RefundReceiver();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("ScannedCodeUnionPayRefundQr");
+        getActivity().registerReceiver(refundReceiver, intentFilter);
     }
 
     public void callAuthToken() {
@@ -294,7 +304,18 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
             case R.id.btn_scan_reference:
                 try {
-                    stsartFastScan(true);
+                    //stsartFastScan(true);
+                    if (preferenceManager.isExternalScan())
+                    {
+                        edt_reference_id.requestFocus();
+                        //scanner
+                    }else{
+                        //camera
+                        isUnionQrSelected=true;
+                        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                        integrator.setOrientationLocked(false);
+                        integrator.initiateScan();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -857,6 +878,48 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
         }
     }
 
+    public class RefundReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String ac = intent.getAction();
+            switch (ac) {
+                case "ScannedCodeUnionPayRefundQr":
+                    //Toast.makeText(context, "inside receiver", Toast.LENGTH_SHORT).show();
+                    if (intent.hasExtra("identityCode")) {
+                        String auth_code = intent.getStringExtra("identityCode");
+
+                        {
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getActivity(), getString(R.string.scan_success) + "\n" + getString(R.string.scan_info) + "\n" + auth_code, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            long SuccessEndTime = System.currentTimeMillis();
+                           // long SuccessCostTime = SuccessEndTime - startTime;
+                            if (getActivity() != null)
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+
+                                        edt_reference_id.setText(auth_code+ "");
+                                        edt_reference_id.setEnabled(false);
+                                        edt_order_no.setEnabled(false);
+                                        edt_transaction_no.setEnabled(true);
+                                        isScanned = true;
+                                        callAuthToken();
+
+
+                                    }
+                                });
+
+
+                        }
+                    }
+                    break;
+
+            }
+        }
+    }
 
 }
 

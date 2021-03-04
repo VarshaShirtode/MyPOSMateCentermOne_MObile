@@ -385,12 +385,13 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
 
             case R.id.btn_print:
             case R.id.btn_print1:
-                try {
+                Toast.makeText(TransactionDetailsActivity.this,"Printer is not available",Toast.LENGTH_SHORT).show();
+
+                /*try {
                     print();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-
+                }*/
                 break;
             case R.id.btn_refund_uni:
                 final Dialog dialog = new Dialog(TransactionDetailsActivity.this);

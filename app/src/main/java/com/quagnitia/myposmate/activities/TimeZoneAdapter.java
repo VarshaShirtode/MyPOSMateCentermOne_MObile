@@ -1,5 +1,6 @@
 package com.quagnitia.myposmate.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
     }
 public static boolean isUpdateDetails=false;
     @Override
-    public void onBindViewHolder(TimeZoneAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(TimeZoneAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         try {
             TimeZone tz = TimeZone.getTimeZone(arrayList.get(position));
             String s = "";
@@ -209,6 +210,7 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("ShowPrintQR", preferencesManager.isQR());
                             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
                             jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
+                            jsonObject.put("isExternalInputDevice",preferencesManager.isExternalScan());
                             jsonObject.put("Home", preferencesManager.isHome());
                             jsonObject.put("ManualEntry", preferencesManager.isManual());
                             jsonObject.put("Back", preferencesManager.isBack());

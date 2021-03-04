@@ -1,10 +1,14 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F6F5">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
 
+>
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="100dp"
@@ -23,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rel_loyalty"
+        android:layout_marginBottom="-3dp"
         android:orientation="vertical">
 
         <!--start ll_one-->
@@ -55,7 +60,6 @@
 
                 <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_amount"
-                    android:maxLength="16"
                     style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
@@ -63,6 +67,7 @@
                     android:layout_weight="1"
                     android:gravity="center|right"
                     android:inputType="numberDecimal"
+                    android:maxLength="16"
                     android:text="0.00"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
@@ -230,7 +235,7 @@
                 android:visibility="gone" />
 
             <!--payment mode frame-->
-          <FrameLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -238,26 +243,23 @@
                     android:id="@+id/sc_payment_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/payment_scroll_border"
-                    android:padding="2dp">
+                    android:background="@drawable/payment_scroll_border">
 
                     <LinearLayout
-                        android:scrollbars="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:scrollbars="vertical">
 
                         <LinearLayout
-                            android:layout_width="330dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:orientation="vertical"
-                            android:visibility="visible">
+                            android:visibility="gone">
 
 
                             <LinearLayout
@@ -269,11 +271,20 @@
                                 android:weightSum="3">
 
                                 <RelativeLayout
-                                    android:layout_width="103dp"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
 
                                     <ImageView
+                                        android:id="@+id/img_unipay"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_unipay" />
+                                    <!-- <ImageView
                                         android:id="@+id/img_unipay"
                                         android:layout_width="103dp"
                                         android:layout_height="70dp"
@@ -283,16 +294,26 @@
                                         android:layout_marginBottom="5dp"
                                         android:background="@drawable/rec_bg"
                                         android:padding="10dp"
-                                        android:src="@drawable/ic_unipay" />
-
+                                        android:src="@drawable/ic_unipay" />-->
                                     <TextView
+                                        android:id="@+id/tv_unionpay_disabled"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:text="UnionPay Disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="10dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+                                    <!-- <TextView
                                         android:id="@+id/tv_unionpay_disabled"
                                         android:layout_width="103dp"
                                         android:layout_height="70dp"
-                                        android:layout_alignParentLeft="true"
-                                        android:layout_alignParentTop="true"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginBottom="5dp"
                                         android:background="@drawable/rec_gray_bg"
                                         android:gravity="center"
                                         android:padding="10dp"
@@ -300,24 +321,21 @@
                                         android:textColor="@color/colorBlack"
                                         android:textSize="12dp"
                                         android:textStyle="bold"
-                                        android:visibility="gone" />
+                                        android:visibility="visible" />-->
 
                                 </RelativeLayout>
 
                                 <RelativeLayout
-                                    android:layout_width="103dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
                                     android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/img_upay"
-                                        android:layout_width="103dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="70dp"
-                                        android:layout_alignParentTop="true"
                                         android:layout_centerInParent="true"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginBottom="5dp"
+                                        android:layout_margin="5dp"
                                         android:background="@drawable/rec_bg"
                                         android:padding="10dp"
                                         android:src="@drawable/uplan_logo" />
@@ -325,65 +343,59 @@
 
                                     <TextView
                                         android:id="@+id/tv_uplan_disabled"
-                                        android:layout_width="103dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="70dp"
-                                        android:layout_alignParentTop="true"
                                         android:layout_centerInParent="true"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:layout_marginBottom="5dp"
+                                        android:layout_margin="5dp"
                                         android:background="@drawable/rec_gray_bg"
                                         android:gravity="center"
-                                        android:padding="10dp"
+                                        android:padding="5dp"
                                         android:text="Uplan disabled"
                                         android:textColor="@color/colorBlack"
-                                        android:textSize="12dp"
+                                        android:textSize="10dp"
                                         android:textStyle="bold"
                                         android:visibility="gone" />
 
                                 </RelativeLayout>
 
                                 <RelativeLayout
-                                    android:layout_width="103dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
                                     android:layout_weight="1">
-                                        <!--android:text="Click To Scan UnionPay QR"
+                                    <!--android:text="Click To Scan UnionPay QR"
                                         android:textColor="@color/colorBlack"
                                         android:textSize="11sp"
                                         android:textStyle="bold"-->
 
 
-
                                     <RelativeLayout
-                                        android:id="@+id/scanqr_unionpay"
-                                        android:layout_width="103dp"
+                                        android:id="@+id/scanqr_unionpayv"
+                                        android:layout_width="match_parent"
                                         android:layout_height="70dp"
-                                        android:layout_alignParentTop="true"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginBottom="5dp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
                                         android:background="@drawable/rec_bg"
-                                        android:gravity="center"
-                                        android:visibility="visible" >
+                                        android:visibility="visible">
+
                                         <ImageView
-                                            android:src="@drawable/scanner"
+                                            android:layout_width="40dp"
+                                            android:layout_height="30dp"
                                             android:layout_alignParentLeft="true"
                                             android:layout_centerInParent="true"
-                                            android:layout_marginTop="4dp"
                                             android:layout_marginLeft="5dp"
-                                            android:layout_width="40dp"
-                                            android:layout_height="30dp">
+                                            android:layout_marginTop="4dp"
+                                            android:src="@drawable/scanner">
 
                                         </ImageView>
 
                                         <ImageView
-                                            android:src="@drawable/ic_unipay"
+                                            android:layout_width="45dp"
+                                            android:layout_height="40dp"
                                             android:layout_alignParentRight="true"
                                             android:layout_centerInParent="true"
-                                            android:layout_marginBottom="2dp"
-                                            android:layout_width="45dp"
                                             android:layout_marginRight="10dp"
-                                            android:layout_height="40dp">
+                                            android:layout_marginBottom="2dp"
+                                            android:src="@drawable/ic_unipay">
 
                                         </ImageView>
 
@@ -391,19 +403,16 @@
                                     </RelativeLayout>
 
                                     <TextView
-                                        android:id="@+id/tv_scan_uni_disabled"
-                                        android:layout_width="103dp"
+                                        android:id="@+id/tv_scan_uni_disabledv"
+                                        android:layout_width="match_parent"
                                         android:layout_height="70dp"
-                                        android:layout_alignParentTop="true"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginBottom="5dp"
+                                        android:layout_margin="5dp"
                                         android:background="@drawable/rec_gray_bg"
                                         android:gravity="center"
-                                        android:paddingTop="5dp"
+                                        android:padding="5dp"
                                         android:text="UnionPay scan disabled"
                                         android:textColor="@color/colorBlack"
-                                        android:textSize="12dp"
+                                        android:textSize="10dp"
                                         android:textStyle="bold"
                                         android:visibility="gone" />
 
@@ -419,50 +428,52 @@
                                 android:weightSum="3">
 
                                 <com.quagnitia.myposmate.utils.CurrencyEditText
-                                    android:textSize="14sp"
-                                    android:layout_height="18dp"
-                                    app:showSymbol="true"
                                     android:id="@+id/tv_uni_cv"
                                     android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:layout_weight="1"
-                                    android:enabled="false"
                                     android:background="@drawable/edt_conv"
+                                    android:enabled="false"
                                     android:gravity="center"
                                     android:text="0.00"
                                     android:textColor="@color/colorBlue"
-                                    android:textStyle="bold" />
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    app:showSymbol="true" />
 
                                 <com.quagnitia.myposmate.utils.CurrencyEditText
-                                    android:textSize="14sp"
-                                    android:enabled="false"
-                                    app:showSymbol="true"
-                                    android:layout_height="18dp"
                                     android:id="@+id/tv_uni_cv1_uplan"
                                     android:layout_width="match_parent"
+                                    android:layout_height="18dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:layout_weight="1"
                                     android:background="@drawable/edt_conv"
+                                    android:enabled="false"
                                     android:gravity="center"
                                     android:text="0.00"
                                     android:textColor="@color/colorBlue"
-                                    android:textStyle="bold" />
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    app:showSymbol="true" />
 
                                 <com.quagnitia.myposmate.utils.CurrencyEditText
-                                    android:textSize="14sp"
-                                    android:layout_height="18dp"
-                                    android:enabled="false"
-                                    app:showSymbol="true"
-                                    android:id="@+id/tv_uni_cv2_scan_qr"
+                                    android:id="@+id/tv_uni_cv2_scan_qrv"
                                     android:layout_width="match_parent"
+                                    android:layout_height="18dp"
                                     android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:layout_weight="1"
                                     android:background="@drawable/edt_conv"
+                                    android:enabled="false"
                                     android:gravity="center"
                                     android:text="0.00"
                                     android:textColor="@color/colorBlue"
-                                    android:textStyle="bold" />
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    app:showSymbol="true" />
 
                             </LinearLayout>
 
@@ -471,7 +482,7 @@
 
                         <LinearLayout
                             android:id="@+id/ag_v2"
-                            android:layout_width="330dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
@@ -484,14 +495,15 @@
 
 
                             <RelativeLayout
-                                android:layout_width="103dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
                                 <ImageView
                                     android:id="@+id/img_alipay"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="10dp"
@@ -499,76 +511,77 @@
 
                                 <TextView
                                     android:id="@+id/tv_alipay_disabled"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
-                                    android:padding="10dp"
-                                    android:text="Alipay disabled"
+                                    android:padding="5dp"
+                                    android:text="Alipay disabled\n"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="12sp"
+                                    android:textSize="10dp"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
 
                             </RelativeLayout>
 
 
-
                             <RelativeLayout
-                                android:layout_width="103dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
                                 <RelativeLayout
                                     android:id="@+id/scanqr"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_bg"
-
-                                    android:visibility="visible" >
+                                    android:visibility="visible">
 
                                     <ImageView
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
                                         android:layout_alignParentTop="true"
                                         android:layout_centerInParent="true"
                                         android:layout_marginTop="5dp"
+                                        android:src="@drawable/scanner"
+                                        android:visibility="visible" />
+
+                                    <ImageView
                                         android:layout_width="30dp"
                                         android:layout_height="30dp"
-                                        android:src="@drawable/scanner" />
-                                    <ImageView
                                         android:layout_alignParentLeft="true"
                                         android:layout_alignParentBottom="true"
                                         android:layout_marginLeft="10dp"
-                                        android:layout_width="30dp"
                                         android:layout_marginBottom="5dp"
-                                        android:layout_height="30dp"
                                         android:src="@drawable/alipay_logo" />
 
                                     <ImageView
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
                                         android:layout_alignParentRight="true"
                                         android:layout_alignParentBottom="true"
                                         android:layout_marginRight="10dp"
-                                        android:layout_width="30dp"
                                         android:layout_marginBottom="5dp"
-                                        android:layout_height="30dp"
                                         android:src="@drawable/wechat_logo" />
 
                                 </RelativeLayout>
 
                                 <TextView
                                     android:id="@+id/tv_scanqr_disabled"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
-                                    android:paddingTop="5dp"
+                                    android:padding="1dp"
+                                    android:text="Alipay QR scan\ndisabled"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="12sp"
-                                    android:text="Alipay QR scan disabled"
+                                    android:textSize="10dp"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
 
@@ -576,19 +589,18 @@
                             </RelativeLayout>
 
 
-
-
                             <RelativeLayout
-                                android:layout_width="103dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
 
                                 <ImageView
                                     android:id="@+id/img_wechat"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
                                     android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="12dp"
                                     android:scaleType="centerCrop"
@@ -596,15 +608,16 @@
 
                                 <TextView
                                     android:id="@+id/tv_wechat_disabled"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
                                     android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
-                                    android:padding="12dp"
-                                    android:text="WeChat disabled"
+                                    android:padding="5dp"
+                                    android:text="WeChat disabled\n"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="12sp"
+                                    android:textSize="10dp"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
                             </RelativeLayout>
@@ -612,56 +625,60 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="330dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
                             android:layout_marginTop="5dp"
+                            android:layout_marginRight="10dp"
                             android:weightSum="3">
 
                             <com.quagnitia.myposmate.utils.CurrencyEditText
-                                android:textSize="14sp"
-                                android:layout_height="18dp"
-                                android:enabled="false"
                                 android:id="@+id/tv_ali_cv"
-                                app:showSymbol="true"
                                 android:layout_width="match_parent"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/edt_conv"
-                                android:gravity="center"
-                                android:text="0.00"
-                                android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:id="@+id/tv_ali_cv2"
-                                android:gravity="center"
-                                android:weightSum="2"
-                                android:orientation="horizontal"
+                                android:layout_height="18dp"
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
+                                android:background="@drawable/edt_conv"
+                                android:enabled="false"
+                                android:gravity="center"
+                                android:text="0.00"
+                                android:textColor="@color/colorBlue"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                app:showSymbol="true" />
+
+                            <LinearLayout
+                                android:id="@+id/tv_ali_cv2"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
                                 <ImageView
-                                    android:layout_weight="1"
-                                    android:src="@drawable/arrow_alipay"
+                                    android:layout_width="60dp"
+                                    android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_marginRight="2dp"
-                                    android:layout_width="60dp"
-                                    android:layout_height="20dp"></ImageView>
+                                    android:layout_weight="1"
+                                    android:src="@drawable/arrow_alipay"></ImageView>
+
                                 <ImageView
+                                    android:layout_width="60dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentRight="true"
                                     android:layout_marginLeft="2dp"
                                     android:layout_weight="1"
-                                    android:src="@drawable/arrow_wechat"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_width="60dp"
-                                    android:layout_height="20dp"></ImageView>
+                                    android:src="@drawable/arrow_wechat"></ImageView>
                             </LinearLayout>
 
 
-
-                         <!--  <com.quagnitia.myposmate.utils.CurrencyEditText
+                            <!--  <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:textSize="14sp"
                                 android:layout_height="18dp"
                                 android:id="@+id/tv_ali_cv2"
@@ -675,19 +692,20 @@
                                 android:textColor="@color/colorBlue"
                                 android:textStyle="bold" />-->
                             <com.quagnitia.myposmate.utils.CurrencyEditText
-                                android:textSize="14sp"
-                                android:layout_height="18dp"
-                                android:enabled="false"
-                                app:showSymbol="true"
                                 android:id="@+id/tv_ali_cv1"
                                 android:layout_width="match_parent"
+                                android:layout_height="18dp"
                                 android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
+                                android:enabled="false"
                                 android:gravity="center"
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                app:showSymbol="true" />
 
 
                         </LinearLayout>
@@ -695,11 +713,11 @@
 
                         <LinearLayout
                             android:id="@+id/ll_row3"
-                            android:layout_width="330dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="5dp"
                             android:layout_marginRight="10dp"
                             android:background="@color/colorWhite"
                             android:orientation="horizontal"
@@ -707,49 +725,77 @@
                             android:weightSum="3">
 
 
-
                             <RelativeLayout
-                                android:layout_weight="1"
-                                android:layout_width="103dp"
-                                android:layout_height="wrap_content">
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
 
                                 <ImageView
-                                    android:visibility="visible"
                                     android:id="@+id/img_unionpay_qr"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
-                                    android:layout_alignParentTop="true"
-                                    android:layout_marginRight="5dp"
+                                    android:layout_centerInParent="true"
+                                    android:layout_margin="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="10dp"
-                                    android:src="@drawable/unionpay_qr" />
+                                    android:src="@drawable/unionpay_qr"
+
+                                    />
+
+                                <!-- <ImageView
+                                     android:visibility="visible"
+                                     android:id="@+id/img_unionpay_qr"
+                                     android:layout_width="match_parent"
+                                     android:layout_height="70dp"
+                                     android:layout_alignParentTop="true"
+                                     android:layout_marginLeft="5dp"
+                                     android:layout_marginRight="5dp"
+                                     android:background="@drawable/rec_bg"
+                                     android:padding="10dp"
+                                     android:src="@drawable/unionpay_qr" />
+ -->
 
                                 <TextView
-                                    android:visibility="gone"
                                     android:id="@+id/tv_unionpay_qr_disabled"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
-                                    android:textStyle="bold"
-                                    android:textSize="12sp"
-                                    android:gravity="center"
-                                    android:textColor="@color/colorBlack"
-                                    android:text="UnionPay QR disabled"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
+                                    android:layout_marginTop="5dp"
+                                    android:padding="2dp"
+                                    android:layout_gravity="center"
                                     android:background="@drawable/rec_gray_bg"
-                                    android:padding="10dp"
+                                    android:gravity="center"
+                                    android:text="UnionPay QR\ndisabled"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="10dp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone"
+
                                     />
 
                             </RelativeLayout>
 
 
                             <RelativeLayout
-                                android:layout_width="103dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
                                 <ImageView
                                     android:id="@+id/img_poli"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:layout_centerInParent="true"
+                                    android:layout_margin="5dp"
+                                    android:background="@drawable/rec_bg"
+                                    android:padding="10dp"
+                                    android:src="@drawable/poli" />
+
+                                <!--<ImageView
+                                    android:id="@+id/img_poli"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
                                     android:layout_marginRight="5dp"
                                     android:src="@drawable/poli"
@@ -758,64 +804,69 @@
                                     android:background="@drawable/rec_bg"
                                     android:paddingTop="5dp"
                                     android:visibility="visible" />
-
-
+-->
                                 <TextView
-                                    android:layout_alignParentTop="true"
                                     android:id="@+id/tv_poli_disabled"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
+                                    android:layout_centerInParent="true"
+                                    android:layout_margin="5dp"
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
-                                    android:text="Poli disabled"
+                                    android:layout_gravity="center"
+                                    android:padding="5dp"
+                                    android:text="Poli disabled\n"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="12dp"
+                                    android:textSize="10dp"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
 
                             </RelativeLayout>
+
                             <RelativeLayout
                                 android:id="@+id/rel_centrapay_merchant_qr_display"
-                                android:visibility="visible"
-                                android:layout_width="103dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_weight="1"
+                                android:visibility="visible"
+
+                                >
 
                                 <ImageView
                                     android:id="@+id/img_centrapay_merchant_qr_display"
-                                    android:src="@drawable/centerpay"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_alignParentTop="true"
+                                    android:layout_centerInParent="true"
+                                    android:layout_margin="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="10dp"
+                                    android:src="@drawable/centerpay"
                                     android:visibility="visible" />
 
 
                                 <ImageView
-                                    android:src="@drawable/qr_image"
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:layout_marginRight="10dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_alignParentRight="true"
                                     android:layout_alignParentTop="true"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="10dp"
+                                    android:src="@drawable/qr_image"
                                     android:visibility="visible" />
 
                                 <TextView
                                     android:id="@+id/tv_centrapay_merchant_qr_disabled"
-                                    android:layout_width="103dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="70dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
-                                    android:paddingTop="5dp"
+                                    android:padding="5dp"
+                                    android:text="Centrapay Merchant\nQR disabled"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="12sp"
-                                    android:text="Centrapay Merchant QR disabled"
+                                    android:textSize="10dp"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
 
@@ -826,60 +877,301 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:baselineAligned="false"
-                            android:layout_width="330dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
                             android:weightSum="3">
+
                             <com.quagnitia.myposmate.utils.CurrencyEditText
-                                android:textSize="14sp"
-                                android:visibility="visible"
-                                android:enabled="false"
-                                android:layout_height="18dp"
-                                app:showSymbol="true"
                                 android:id="@+id/tv_unionpay_qr_cv"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
+                                android:layout_height="18dp"
                                 android:layout_marginRight="5dp"
+                                android:layout_marginLeft="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
+                                android:enabled="false"
                                 android:gravity="center"
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                app:showSymbol="true" />
 
 
                             <com.quagnitia.myposmate.utils.CurrencyEditText
-                                android:textSize="14sp"
-                                android:enabled="false"
-                                app:showSymbol="true"
-                                android:layout_height="18dp"
                                 android:id="@+id/edt_poli_cnv"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
+                                android:layout_height="18dp"
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
+                                android:enabled="false"
                                 android:gravity="center"
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
-                            <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:textSize="14sp"
-                                android:enabled="false"
-                                app:showSymbol="true"
-                                android:layout_height="18dp"
+                                android:textStyle="bold"
+                                app:showSymbol="true" />
+
+                            <com.quagnitia.myposmate.utils.CurrencyEditText
                                 android:id="@+id/edt_centerpay_mr_qr_cnv"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
+                                android:layout_height="18dp"
                                 android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
+                                android:enabled="false"
                                 android:gravity="center"
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                app:showSymbol="true" />
 
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+
+                            <LinearLayout
+                                android:id="@+id/rel_unionpayv"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/colorWhite"
+                                android:orientation="horizontal"
+                                android:weightSum="3">
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:visibility="gone"
+                                    >
+
+                                    <ImageView
+                                        android:id="@+id/img_unipayv"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_unipay" />
+                                    <!-- <ImageView
+                                        android:id="@+id/img_unipay"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_unipay" />-->
+                                    <TextView
+                                        android:id="@+id/tv_unionpay_disabledv"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:text="UnionPay Disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="10dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+                                    <!-- <TextView
+                                        android:id="@+id/tv_unionpay_disabled"
+                                        android:layout_width="103dp"
+                                        android:layout_height="70dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="10dp"
+                                        android:text="UnionPay Disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="12dp"
+                                        android:textStyle="bold"
+                                        android:visibility="visible" />-->
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:visibility="gone"
+                                    >
+
+                                    <ImageView
+                                        android:id="@+id/img_upayv"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:padding="10dp"
+                                        android:src="@drawable/uplan_logo" />
+
+
+                                    <TextView
+                                        android:id="@+id/tv_uplan_disabledv"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:text="Uplan disabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="10dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1">
+                                    <!--android:text="Click To Scan UnionPay QR"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"-->
+
+
+                                    <RelativeLayout
+                                        android:id="@+id/scanqr_unionpay"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+                                        android:layout_centerInParent="true"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_bg"
+                                        android:visibility="visible">
+
+                                        <ImageView
+                                            android:layout_width="40dp"
+                                            android:layout_height="30dp"
+                                            android:layout_alignParentLeft="true"
+                                            android:layout_centerInParent="true"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginTop="4dp"
+                                            android:src="@drawable/scanner">
+
+                                        </ImageView>
+
+                                        <ImageView
+                                            android:layout_width="45dp"
+                                            android:layout_height="40dp"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_centerInParent="true"
+                                            android:layout_marginRight="10dp"
+                                            android:layout_marginBottom="2dp"
+                                            android:src="@drawable/ic_unipay">
+
+                                        </ImageView>
+
+
+                                    </RelativeLayout>
+
+                                    <TextView
+                                        android:id="@+id/tv_scan_uni_disabled"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="70dp"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/rec_gray_bg"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:text="UnionPay scan\ndisabled"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="10dp"
+                                        android:textStyle="bold"
+                                        android:visibility="gone" />
+
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/img_unipay"
+                                android:weightSum="3">
+                                <com.quagnitia.myposmate.utils.CurrencyEditText
+                                    android:id="@+id/tv_uni_cv2_scan_qr"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_conv"
+                                    android:enabled="false"
+                                    android:gravity="center"
+                                    android:text="0.00"
+                                    android:textColor="@color/colorBlue"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    app:showSymbol="true" />
+
+                                <com.quagnitia.myposmate.utils.CurrencyEditText
+                                    android:id="@+id/tv_uni_cvv"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_conv"
+                                    android:enabled="false"
+                                    android:gravity="center"
+                                    android:text="0.00"
+                                    android:textColor="@color/colorBlue"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    app:showSymbol="true"
+                                    android:visibility="invisible"
+                                    />
+
+                                <com.quagnitia.myposmate.utils.CurrencyEditText
+                                    android:id="@+id/tv_uni_cv1_uplanv"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_conv"
+                                    android:enabled="false"
+                                    android:gravity="center"
+                                    android:text="0.00"
+                                    android:textColor="@color/colorBlue"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    app:showSymbol="true"
+                                    android:visibility="invisible"
+                                    />
+
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
 
                         <LinearLayout
 
@@ -894,13 +1186,13 @@
                             android:orientation="horizontal"
                             android:visibility="gone"
                             android:weightSum="3">
+
                             <RelativeLayout
-                                android:layout_weight="1"
                                 android:layout_width="103dp"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
 
                                 <ImageView
-                                    android:visibility="visible"
                                     android:id="@+id/img_centerpay_scanqr"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
@@ -908,58 +1200,58 @@
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="10dp"
-                                    android:src="@drawable/centerpay" />
+                                    android:src="@drawable/centerpay"
+                                    android:visibility="visible" />
 
                                 <ImageView
-                                    android:src="@drawable/barcode_scanner"
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:layout_marginRight="10dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_alignParentRight="true"
                                     android:layout_alignParentTop="true"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="10dp"
+                                    android:src="@drawable/barcode_scanner"
                                     android:visibility="visible" />
 
 
-
                                 <TextView
-                                    android:visibility="gone"
                                     android:id="@+id/tv_centrapay_barcode_scanner_qr_disabled"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
-                                    android:textStyle="bold"
-                                    android:textSize="12sp"
-                                    android:gravity="center"
-                                    android:textColor="@color/colorBlack"
-                                    android:text="CentraPay Scan disabled"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
+                                    android:gravity="center"
                                     android:padding="10dp"
-                                    />
+                                    android:text="CentraPay Scan disabled"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
 
                             </RelativeLayout>
+
                             <RelativeLayout
-                                android:visibility="invisible"
                                 android:layout_width="103dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_weight="1"
+                                android:visibility="invisible">
 
                                 <ImageView
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
-                                    android:layout_marginRight="5dp"
-                                    android:src="@drawable/poli"
-                                    android:padding="15dp"
                                     android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_bg"
+                                    android:padding="15dp"
                                     android:paddingTop="5dp"
+                                    android:src="@drawable/poli"
                                     android:visibility="visible" />
 
 
                                 <TextView
-                                    android:layout_alignParentTop="true"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
+                                    android:layout_alignParentTop="true"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:background="@drawable/rec_gray_bg"
@@ -971,32 +1263,33 @@
                                     android:visibility="gone" />
 
                             </RelativeLayout>
+
                             <RelativeLayout
-                                android:visibility="invisible"
                                 android:layout_width="103dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_weight="1"
+                                android:visibility="invisible">
 
 
                                 <ImageView
-                                    android:src="@drawable/centerpay"
                                     android:layout_width="103dp"
                                     android:layout_height="70dp"
-                                    android:layout_marginLeft="5dp"
                                     android:layout_alignParentTop="true"
+                                    android:layout_marginLeft="5dp"
                                     android:background="@drawable/rec_bg"
                                     android:padding="10dp"
+                                    android:src="@drawable/centerpay"
                                     android:visibility="visible" />
 
 
                                 <ImageView
-                                    android:src="@drawable/qr_image"
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:layout_marginRight="10dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_alignParentRight="true"
                                     android:layout_alignParentTop="true"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="10dp"
+                                    android:src="@drawable/qr_image"
                                     android:visibility="visible" />
 
                                 <TextView
@@ -1006,9 +1299,9 @@
                                     android:background="@drawable/rec_gray_bg"
                                     android:gravity="center"
                                     android:paddingTop="5dp"
+                                    android:text="WeChat QR scan disabled"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="12sp"
-                                    android:text="WeChat QR scan disabled"
                                     android:textStyle="bold"
                                     android:visibility="gone" />
 
@@ -1017,47 +1310,48 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:visibility="gone"
-                            android:baselineAligned="false"
                             android:layout_width="330dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
                             android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:baselineAligned="false"
+                            android:visibility="gone"
                             android:weightSum="3">
+
                             <com.quagnitia.myposmate.utils.CurrencyEditText
-                                android:textSize="14sp"
-                                android:visibility="visible"
-                                android:enabled="false"
-                                android:layout_height="18dp"
-                                app:showSymbol="true"
                                 android:id="@+id/edt_centrapay_barcode_scanner_cv"
                                 android:layout_width="match_parent"
+                                android:layout_height="18dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
+                                android:enabled="false"
                                 android:gravity="center"
                                 android:text="$0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:visibility="visible"
+                                app:showSymbol="true" />
 
 
                             <com.quagnitia.myposmate.utils.CurrencyEditText
-                                android:textSize="14sp"
-                                android:enabled="false"
-                                app:showSymbol="true"
-                                android:layout_height="18dp"
-                                android:visibility="invisible"
                                 android:layout_width="match_parent"
+                                android:layout_height="18dp"
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edt_conv"
+                                android:enabled="false"
                                 android:gravity="center"
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
-                                android:textStyle="bold" />
-                            <TextView
+                                android:textSize="14sp"
+                                android:textStyle="bold"
                                 android:visibility="invisible"
+                                app:showSymbol="true" />
+
+                            <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -1067,7 +1361,7 @@
                                 android:text="0.00"
                                 android:textColor="@color/colorBlue"
                                 android:textStyle="bold"
-                                />
+                                android:visibility="invisible" />
                         </LinearLayout>
 
 
@@ -1083,7 +1377,7 @@
                     android:text="Please select the payment method from payment display choices under menu."
                     android:textColor="@color/colorBlack"
                     android:visibility="gone" />
-         </FrameLayout>
+            </FrameLayout>
 
         </LinearLayout><!--end ll_one-->
 
@@ -1258,8 +1552,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp"
             android:gravity="center"
             android:textColor="@android:color/holo_red_dark"
@@ -1370,3 +1664,29 @@
     </LinearLayout>
 
 </RelativeLayout>
+<FrameLayout
+android:id="@+id/frameSurfaceView"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:visibility="gone"
+    >
+
+<FrameLayout
+    android:id="@+id/surfaceView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    />
+
+<ImageButton
+    android:id="@+id/imgCloseCamera"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:src="@drawable/ic_close"
+    android:background="@drawable/bg_black"
+    android:layout_gravity="right"
+    />
+
+</FrameLayout>
+
+</FrameLayout>

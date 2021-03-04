@@ -1,5 +1,6 @@
 package com.quagnitia.myposmate.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -13,16 +14,20 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,6 +35,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -70,19 +76,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAMERA;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 public class ManualEntry extends Fragment implements View.OnClickListener, OnTaskCompleted {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int PERMISSION_REQUEST_CODE =10;
     private ProgressDialog progress, progress1;
     private String mParam1;
     private String mParam2;
+
+    //AlternateBarcodeScanner alternateBarcodeScanner;
     public static String pass_amount = "";
     private Button btn_cancel, btn_save1, btn_cancel1;
     private View view;
@@ -91,8 +104,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     private CurrencyEditText edt_amount, edt_amount1;
     private EditText edt_reference, edt_reference1;
     private TextView tv_status_scan, tv_noitem, tv_wechat_qr_scan_cv, tv_unionpay_qr_cv, tv_enable_payment, edt_xmpp_amount, edt_xmpp_amount1, tv_alipay, tv_wechat;
-    private RelativeLayout scanqr_unionpay, scanqr;
-    private ImageView img_alipay, img_wechat, img_unipay, img_upay, img_unionpay_qr;
+    private RelativeLayout scanqr_unionpay, scanqr,rel_orders;
+    private ImageView img_alipay, img_wechat, img_unipay, img_upay, img_unionpay_qr,img;
     public static int selected_screen = 0;
     private PreferencesManager preferenceManager;
     double convenience_amount_alipay = 0.0, convenience_amount_wechat = 0.0,
@@ -140,6 +153,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     TextView tv_poli_disabled;
     TextView tv_centrapay_merchant_qr_disabled;
     EditText edt_centerpay_mr_qr_cnv;
+    public static boolean isLoyaltyQrSelected=false;
+    public static boolean isLoyaltyFrontQrSelected=false;
+
 
     public static ManualEntry newInstance(String param1, String param2) {
         ManualEntry fragment = new ManualEntry();
@@ -185,8 +201,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                              Bundle savedInstanceState) {
 
         funcOnCreateViewCall(inflater, container, savedInstanceState);
+
         return view;
     }
+
+
+
 
     public void funcOnCreateViewCall(LayoutInflater inflater, ViewGroup container,
                                      Bundle savedInstanceState) {
@@ -203,6 +223,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         funcConditionalSwitches(view);
         funcPaymentChoicesUISwitch();
         funcDisabledUISwitch();
+         if (tv_unionpay_qr_cv.getVisibility() == View.INVISIBLE && edt_poli_cnv.getVisibility() == View.INVISIBLE && edt_centerpay_mr_qr_cnv.getVisibility() == View.INVISIBLE) {
+        tv_unionpay_qr_cv.setVisibility(View.GONE);
+        edt_poli_cnv.setVisibility(View.GONE);
+        edt_centerpay_mr_qr_cnv.setVisibility(View.GONE);
+        }
 
 //        if (preferenceManager.isAlipayScan() && preferenceManager.isWeChatScan()) {
 //            scanqr.setText(getActivity().getResources().getString(R.string.click_toaw));
@@ -366,6 +391,19 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             tv_uni_cv2_scan_qr.setVisibility(View.GONE);
         }
 
+      /*  if ((!preferenceManager.isAlipayWechatQrSelected() &&
+                !preferenceManager.is_cnv_uni_display_only())
+                && (!preferenceManager.cnv_uplan_display_and_add() && !preferenceManager.cnv_uplan_display_only())
+                && ((!preferenceManager.cnv_unionpayqr_display_and_add() && !preferenceManager.cnv_unionpayqr_display_only())
+                || !preferenceManager.isUnionPayQrSelected())
+                && ((!preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only())
+                || !preferenceManager.isUnionPayQrCodeDisplaySelected())
+        ) {
+            tv_uni_cv.setVisibility(View.GONE);
+            tv_uni_cv1_uplan.setVisibility(View.GONE);
+            tv_uni_cv2_scan_qr.setVisibility(View.GONE);
+        }*/
+
 
         if ((!preferenceManager.isAlipaySelected() && preferenceManager.isAlipayScan())
                 && (preferenceManager.is_cnv_alipay_display_and_add() || preferenceManager.is_cnv_alipay_display_only())) {
@@ -466,7 +504,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             tv_uni_cv.setVisibility(View.INVISIBLE);
         }
 
-
+       // if (tv_unionpay_qr_cv.getVisibility() == View.INVISIBLE && edt_poli_cnv.getVisibility() == View.INVISIBLE && edt_centerpay_mr_qr_cnv.getVisibility() == View.INVISIBLE) {
+           /* tv_unionpay_qr_cv.setVisibility(View.GONE);
+            edt_poli_cnv.setVisibility(View.GONE);
+            edt_centerpay_mr_qr_cnv.setVisibility(View.GONE);*/
+       // }
     }
 
 
@@ -504,6 +546,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         intentFilter.addAction("ScannedCodeUnionPayQr");
         intentFilter.addAction("PaymentExpressSuccess");
         intentFilter.addAction("PaymentExpressFailure");
+        intentFilter.addAction("ScannedBackLoyaltyQr");
         getActivity().registerReceiver(amountReceiver, intentFilter);
         bindService();
     }
@@ -929,6 +972,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         auth_code = intent.getStringExtra("identityCode");
                         char c[] = auth_code.toCharArray();
                         String str_authcode = String.valueOf(c[0]) + String.valueOf(c[1]) + "";
+                        Log.v("AUTHCODE","aurCode "+auth_code+" Code"+str_authcode);
                         payment_mode = "nochannel";
                         qrMode = "False";
                         openProgressDialog1();
@@ -1038,6 +1082,62 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     MyPOSMateApplication.isOpen = false;
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, intent.getStringExtra("data"));
                     break;
+
+                case "ScannedBackLoyaltyQr":
+                    //Toast.makeText(context, "inside receiver", Toast.LENGTH_SHORT).show();
+                    if (intent.hasExtra("identityCode")) {
+                        String auth_code = intent.getStringExtra("identityCode");
+
+                            long SuccessEndTime = System.currentTimeMillis();
+                           // long SuccessCostTime = SuccessEndTime - startTime;
+                            if (getActivity() != null)
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+
+                                        if (preferenceManager.getLaneIdentifier().equals("")) {
+                                            Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                        } else if (preferenceManager.getPOSIdentifier().equals("")) {
+                                            Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            callMembershipLoyality(auth_code);
+                                            Toast.makeText(getActivity(), auth_code + "", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+
+
+
+
+                    }break;
+
+                case "ScannedFrontLoyaltyQr":
+                    //Toast.makeText(context, "inside receiver", Toast.LENGTH_SHORT).show();
+                    if (intent.hasExtra("identityCode")) {
+                        String auth_code = intent.getStringExtra("identityCode");
+
+                        long SuccessEndTime = System.currentTimeMillis();
+                        // long SuccessCostTime = SuccessEndTime - startTime;
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+
+                                    if (preferenceManager.getLaneIdentifier().equals("")) {
+                                        Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
+                                        Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        callMembershipLoyality(auth_code);
+                                        Toast.makeText(getActivity(), auth_code + "", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
+
+
+
+                    }break;
             }
         }
     }
@@ -1067,12 +1167,13 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 .findViewById(R.id.dialogCancel);
 //        cancel.setText("OK");
         cancel.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-
+                if (progress2 != null) {
+                    if (progress2.isShowing())
+                        progress2.dismiss();
+                }
                 dialog.dismiss();
-
             }
         });
 
@@ -1080,21 +1181,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 .findViewById(R.id.dialogRetry);
 //        retry.setVisibility(View.GONE);
         retry.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 try {
-
-
                     selected_channel = "";
                     callPayNowAlipay();
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
                 dialog.dismiss();
             }
         });
@@ -1115,6 +1209,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         btn_front = view.findViewById(R.id.btn_front);
         rel_membership = view.findViewById(R.id.rel_membership);
         btn_cancel = view.findViewById(R.id.btn_cancel);
+        rel_orders=getActivity().findViewById(R.id.rel_orders);
+        rel_orders.setVisibility(View.VISIBLE);
         btn_save1 = view.findViewById(R.id.btn_save1);
         btn_cancel1 = view.findViewById(R.id.btn_cancel1);
         edt_amount = view.findViewById(R.id.edt_amount);
@@ -1982,8 +2078,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 }
                 xmppAmount = sb.toString().replace(",", "");
 
-
                 if (preferenceManager.is_cnv_alipay_display_and_add()) {
+                  //  Log.v("TOKENRESPONSE","1 "+xmppAmount+" "+auth_code);
+                    Toast.makeText(getActivity(),"1",Toast.LENGTH_SHORT).show();
                     original_amount = original_xmpp_trigger_amount;
                     xmppAmount = convenience_amount_alipay_scan + "";
                     fee_amount = convenience_amount_alipay_scan -
@@ -2001,8 +2098,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("access_id", preferenceManager.getuniqueId());
                     hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
                     hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
+                  if (reference_id.isEmpty())
                         reference_id = new Date().getTime() + "";
+
+                    if (preferenceManager.isExternalScan())
+                    {
+                        reference_id = new Date().getTime() + "";
+                    }
+
                     hashMapKeys.put("reference_id", reference_id);
                     hashMapKeys.put("random_str", new Date().getTime() + "");
                     hashMapKeys.put("grand_total", xmppAmount);
@@ -2030,6 +2133,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
+                    Log.v("TOKENRESPONSE","2 "+xmppAmount+" "+auth_code);
+                   Log.v("TOKENRESPONSE","2"+xmppAmount+" "+auth_code);
+                  //  Toast.makeText(getActivity(),"2",Toast.LENGTH_SHORT).show();
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
                     if (!edt_reference.getText().toString().equals("")) {
@@ -2040,8 +2146,14 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("access_id", preferenceManager.getuniqueId());
                     hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
                     hashMapKeys.put("config_id", preferenceManager.getConfigId());
-                    if (reference_id.isEmpty())
+                 if (reference_id.isEmpty())
                         reference_id = new Date().getTime() + "";
+
+                    if (preferenceManager.isExternalScan())
+                    {
+                        reference_id = new Date().getTime() + "";
+                    }
+
                     hashMapKeys.put("reference_id", reference_id);
                     hashMapKeys.put("random_str", new Date().getTime() + "");
                     hashMapKeys.put("grand_total", xmppAmount);
@@ -2066,6 +2178,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
             } else {
+                Log.v("TOKENRESPONSE","3 "+xmppAmount+" "+auth_code);
+              //  Toast.makeText(getActivity(),"3 Display and Add",Toast.LENGTH_SHORT).show();
                 String amount = "";
                 char[] ch = edt_amount.getText().toString().toCharArray();
                 StringBuilder sb = new StringBuilder();
@@ -2078,6 +2192,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     }
                 }
                 amount = sb.toString().replace(",", "");
+
                 if (preferenceManager.is_cnv_alipay_display_and_add()) {
                     original_amount = amount;
                     amount = convenience_amount_alipay_scan + "";
@@ -2085,7 +2200,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             Double.parseDouble(edt_amount.getText().toString().replace(",", ""))
                             + "";
                     fee_percentage = preferenceManager.getcnv_alipay();
-
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
                     if (!edt_reference.getText().toString().equals("")) {
@@ -2098,6 +2212,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("config_id", preferenceManager.getConfigId());
                     if (reference_id.isEmpty())
                         reference_id = new Date().getTime() + "";
+                    if (preferenceManager.isExternalScan())
+                    {
+                        reference_id = new Date().getTime() + "";
+                    }
                     hashMapKeys.put("reference_id", reference_id);
                     hashMapKeys.put("random_str", new Date().getTime() + "");
                     hashMapKeys.put("grand_total", amount);
@@ -2123,6 +2241,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
+                    Log.v("TOKENRESPONSE","4 "+xmppAmount+" "+auth_code);
+
+                  //  Toast.makeText(getActivity(),"4 Display only",Toast.LENGTH_SHORT).show();
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
                     if (!edt_reference.getText().toString().equals("")) {
@@ -2134,9 +2255,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
                     hashMapKeys.put("config_id", preferenceManager.getConfigId());
                     if (reference_id.isEmpty())
-
-
                         reference_id = new Date().getTime() + "";
+
+                    if (preferenceManager.isExternalScan())
+                    {
+                        reference_id = new Date().getTime() + "";
+                    }
                     hashMapKeys.put("reference_id", reference_id);
                     hashMapKeys.put("random_str", new Date().getTime() + "");
                     hashMapKeys.put("grand_total", amount);
@@ -2377,7 +2501,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             if (countDownTimer != null)
                 countDownTimer.cancel();
             // qrScan.initiateScan();
-            startQuickScan(true);
+           // startQuickScan(true);
         } else
             beginBussiness(reference_id);
     }
@@ -3135,64 +3259,93 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+      /* if (IntentIntegrator.REQUEST_CODE == requestCode) {
 
-        if (data.hasExtra("responseCodeThirtyNine")) {
-            try {
-                Bundle bundle = new Bundle();
-                bundle.putAll(data.getExtras());
-                JSONObject json = new JSONObject();
-                Set<String> keys = bundle.keySet();
-                for (String key : keys) {
-                    // if (bundle.get(key) != null)
-                    json.put(key, JSONObject.wrap(bundle.get(key)));
-                }
+           IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+           if (result != null) {
+               if (result.getContents() == null) {
+                   Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT).show();
+               } else {
+                   String buyerIdentityCode = data != null ? data.getStringExtra("SCAN_RESULT") : null;
+                   if (buyerIdentityCode != null && !buyerIdentityCode.equalsIgnoreCase("")) {
+                       Toast.makeText(getActivity(), "code " + buyerIdentityCode, Toast.LENGTH_SHORT).show();
+*//*
+                        Intent intent = new Intent();
+                        intent.setAction(ConstantValue.FILTER_PRODUCT_SCAN);
+                        intent.putExtra("Barcode", buyerIdentityCode);
+                        sendBroadcast(intent);*//*
+//                        }
 
-                switch (TransactionType) {
+                   } else {
+                       Toast.makeText(getActivity(), "Invalid barcode/UID", Toast.LENGTH_SHORT).show();
+                   }
+               }
+           }
+       }
+*/
+        if (data!=null) {
 
-                    case ThirtConst.TransType.SALE:
-                        json.put("orderNumber", jsonObjectSale.optString("orderNumber"));
-                        break;
-                    case ThirtConst.TransType.COUPON_SALE:
-                        json.put("orderNumber", jsonObjectCouponSale.optString("orderNumber"));
-                        break;
-                }
-
-
-                if (json.optString("responseCodeThirtyNine").equals("00")) {
-                    onTaskCompleted(json.toString(), "Arke");
-                } else {
-                    onTaskCompleted(json.toString(), "Arke");
-                    auth_code = "";
-                    isUnionPayQrSelected = false;
-                    isUpayselected = false;
-                    reference_id = "";
-                    preferenceManager.setreference_id("");
-                    callAuthToken();
-                }
-
-
-            } catch (Exception e) {
-                //Handle exception here
-
-            }
-
-        }
-
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(getActivity(), "Result Not Found", Toast.LENGTH_LONG).show();
-            } else {
+            if (data.hasExtra("responseCodeThirtyNine")) {
                 try {
-                    JSONObject obj = new JSONObject(result.getContents());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), result.getContents(), Toast.LENGTH_LONG).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putAll(data.getExtras());
+                    JSONObject json = new JSONObject();
+                    Set<String> keys = bundle.keySet();
+                    for (String key : keys) {
+                        // if (bundle.get(key) != null)
+                        json.put(key, JSONObject.wrap(bundle.get(key)));
+                    }
+
+                    switch (TransactionType) {
+
+                        case ThirtConst.TransType.SALE:
+                            json.put("orderNumber", jsonObjectSale.optString("orderNumber"));
+                            break;
+                        case ThirtConst.TransType.COUPON_SALE:
+                            json.put("orderNumber", jsonObjectCouponSale.optString("orderNumber"));
+                            break;
+                    }
+
+
+                    if (json.optString("responseCodeThirtyNine").equals("00")) {
+                        onTaskCompleted(json.toString(), "Arke");
+                    } else {
+                        onTaskCompleted(json.toString(), "Arke");
+                        auth_code = "";
+                        isUnionPayQrSelected = false;
+                        isUpayselected = false;
+                        reference_id = "";
+                        preferenceManager.setreference_id("");
+                        callAuthToken();
+                    }
+
+
+                } catch (Exception e) {
+                    //Handle exception here
+
                 }
+
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Result Not Found", Toast.LENGTH_LONG).show();
+                } else {
+                    try {
+                        JSONObject obj = new JSONObject(result.getContents());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), result.getContents(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
+        }else{
+            Toast.makeText(getActivity(), "Application is not installed", Toast.LENGTH_LONG).show();
         }
+
     }
 
 
@@ -3390,7 +3543,34 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
             case R.id.scanqr:
-                _funcAlipayWeChatQRScan();
+                if (preferenceManager.isExternalScan())
+                {
+                    _funcAlipayWeChatQRScanExternal();
+                  /*  showScanDialog();
+                    Toast.makeText(getActivity(),"External Input Device is enabled",Toast.LENGTH_SHORT).show();
+              */  }else{
+                    _funcAlipayWeChatQRScan();
+                }
+
+               /* TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                if (Objects.requireNonNull(manager).getPhoneType() != TelephonyManager.PHONE_TYPE_NONE) {
+                    Toast.makeText(getActivity(),"Scanner is not available",Toast.LENGTH_SHORT).show();
+                }else if (Objects.requireNonNull(manager).getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+                        Toast.makeText(getActivity(),"Scanner is not available",Toast.LENGTH_SHORT).show();
+                    }else {
+                        _funcAlipayWeChatQRScan();
+                }*/
+               /* if (preferenceManager.isExternalScan())
+                {
+
+                    Toast.makeText(getActivity(),"External Input Device is enabled",Toast.LENGTH_SHORT).show();
+                }else{
+                // _funcAlipayWeChatQRScan();
+                    _funcAlipayWeChatQRScanQR();
+                 //performBarcodeScan();
+                    Toast.makeText(getActivity(),"External Input Device is disabled",Toast.LENGTH_SHORT).show();
+                }*/
+
                 break;
 
             case R.id.btn_save1:
@@ -3413,10 +3593,29 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case R.id.scanqr_unionpay:
-                if (preferenceManager.isUnionPayQrCodeDisplaySelected())
-                    _funcUPIQRScan();
-                else if (preferenceManager.isUnionPayQrSelected())
-                    _funcDPQRScan();
+               /* TelephonyManager managers = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                if (Objects.requireNonNull(managers).getPhoneType() != TelephonyManager.PHONE_TYPE_NONE) {
+                  Toast.makeText(getActivity(),"Scanner is not available",Toast.LENGTH_SHORT).show();
+                  }else if (Objects.requireNonNull(managers).getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+                    Toast.makeText(getActivity(),"Scanner is not available",Toast.LENGTH_SHORT).show();
+                }else {
+*/
+                if (preferenceManager.isExternalScan())
+                {
+                    if (preferenceManager.isUnionPayQrCodeDisplaySelected())
+                        _funcUPIQRScanExternal();
+                   /* else if (preferenceManager.isUnionPayQrSelected())
+                        _funcDPQRScanExternal();*/
+                  /*  showScanUnionPayDialog();
+                    Toast.makeText(getActivity(),"External Input Device is enabled",Toast.LENGTH_SHORT).show();
+              */  }else{
+                    if (preferenceManager.isUnionPayQrCodeDisplaySelected())
+                        _funcUPIQRScan();
+                  /*  else if (preferenceManager.isUnionPayQrSelected())
+                        _funcDPQRScan();*/
+                }
+
+              //  }
                 break;
 
             case R.id.img_upay:
@@ -3433,6 +3632,558 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
         }
+    }
+
+    private void _funcDPQRScanExternal() {
+        //Scan customer wallet qr code and perfom
+        //transaction through Dynamic Pay App
+        unionpay_payment_option = "DP-QR";
+        selected_screen = 4;
+        isUpayselected = false;
+        if (preferenceManager.getunion_pay_resp().equals("")) {
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_unionpayqrscan + "";
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                isUnionPayQrSelected = true;
+                isunionPayQrScanSelectedForSale = true;
+                auth_code = "";
+                callUnionPayQRScan();
+            }
+        } else {
+            AppConstants.isUnionQrSelected = true;
+            callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+        }
+
+    }
+
+    private void _funcUPIQRScanExternal() {
+        //Scan customer wallet qr code and perfom
+        //transaction through MyPOSMate cloud
+        unionpay_payment_option = "UPI-QRScan";
+        selected_screen = 4;
+        isUpayselected = false;
+        isUnionPayQrSelected = true;
+        if (preferenceManager.getunion_pay_resp().equals("")) {
+            payment_mode = "";
+            qrMode = "False";
+            preferenceManager.setupay_amount(edt_amount.getText().toString());
+            xmppAmount = convenience_amount_unionpayqrdisplay + "";
+
+            if (MyPOSMateApplication.isOpen) {
+                payment_mode = "UPI-QRScan";
+                qrMode = "False";
+                showScanUnionPayDialog();
+            } else {
+                if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+                } else {
+                    payment_mode = "UPI-QRScan";
+                    qrMode = "False";
+                   showScanUnionPayDialog();
+                }
+            }
+
+        } else {
+            AppConstants.isUnionQrSelected = true;
+            callUnionPayStatus(preferenceManager.getunion_pay_resp(), "true");
+        }
+    }
+
+    private void showScanAlipayDialog() {//ScanAlipay
+            final Dialog dialog = new Dialog(getActivity());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            LayoutInflater lf = (LayoutInflater) (getActivity())
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View dialogview = lf.inflate(R.layout.scanner_dialog, null);
+            TextView title = (TextView) dialogview.findViewById(R.id.title);
+           // title.setText("Please Enter Your ConfigId");
+            EditText body = (EditText) dialogview
+                    .findViewById(R.id.dialogBody);
+            dialog.setContentView(dialogview);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            lp.gravity = Gravity.CENTER;
+            dialog.getWindow().setAttributes(lp);
+            dialog.show();
+            TextView cancel = (TextView) dialogview
+                .findViewById(R.id.tv_cancel);
+
+            TextView ok = (TextView) dialogview
+                .findViewById(R.id.tv_ok);
+
+           body.setOnKeyListener(new View.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                String barcode = body.getText().toString().trim();
+                // Toast.makeText(getActivity(),""+barcode,Toast.LENGTH_SHORT).show();
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER && barcode.length() > 0) {
+                    Log.v("SCANNES",barcode);
+                    body.setText(barcode);
+
+                            ok.performClick();
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+            ok.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    String barcode= body.getText().toString().trim();
+                    if (barcode.equalsIgnoreCase("")||barcode.isEmpty())
+                    {
+                        Toast.makeText(getActivity(),"Please enter the code in input box",Toast.LENGTH_SHORT).show();
+                    }else {
+                        ProgressDialog p = new ProgressDialog(mmContext == null ? getActivity() : mmContext);
+                        p.setMessage("Sending request.......");
+                        p.setCancelable(false);
+                        p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        p.setIndeterminate(true);
+                        p.show();
+                        final Handler handlers = new Handler();
+                        handlers.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!AppConstants.xmppamountforscan.equals("")) {
+
+//                    when user get the amount xmpp trigger and if the scan qr button is pressed
+//                    of alipay and wechat then on launch of qr scan screen the xmpp trigger state
+//                    of manual entry screen gets reset.So the further procedure gets stuck as all the values are reset to zero.
+//                    To avoid the value reset we would again initiate the xmpp amount json data on manual entry screen
+//                    so that all the values will be calculated once the qr is scanned from wallet.And
+//                    once you reach here we will fire a amount trigger broadcast and then send the scanned code so that the payNow procedure works properly
+
+                                    final Handler handler1 = new Handler();
+                                    handler1.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent ia = new Intent();
+                                            ia.setAction("AmountTrigger");
+                                            ia.putExtra("data", preferenceManager.getamountdata());
+                                            getActivity().sendBroadcast(ia);
+
+                                        }
+                                    }, 400);
+
+                                    final Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            Toast.makeText(getActivity(), "Scanned: " + body.getText().toString(), Toast.LENGTH_LONG).show();
+                                            String identityCode = body.getText().toString();
+                                            Intent i = new Intent();
+                                            if (ManualEntry.isUpayselected) {
+                                                AppConstants.isScannedCode1 = false;
+                                                i.setAction("ScannedCode");
+                                            } else if (ManualEntry.isUnionPayQrSelected) {
+                                                AppConstants.isScannedCode1 = false;
+                                                i.setAction("ScannedCodeUnionPayQr");
+                                            } else {
+                                                i.setAction("ScannedCode1");
+                                                AppConstants.isScannedCode1 = true;
+                                            }
+
+                                            i.putExtra("identityCode", identityCode);
+                                            Log.v("AUTHCODE", "Authcodeac " + i.getAction());
+                                            getActivity().sendBroadcast(i);
+                                            if (p != null && p.isShowing()) {
+                                                p.dismiss();
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    }, 800);
+
+                                } else {
+                                    final Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getActivity(), "Scanned : " + body.getText().toString(), Toast.LENGTH_LONG).show();
+                                            String identityCode = body.getText().toString();
+                                            Intent i = new Intent();
+                                            if (ManualEntry.isUpayselected) {
+                                                AppConstants.isScannedCode1 = false;
+                                                i.setAction("ScannedCode");
+                                            } else if (ManualEntry.isUnionPayQrSelected) {
+                                                AppConstants.isScannedCode1 = false;
+                                                i.setAction("ScannedCodeUnionPayQr");
+                                            } else {
+                                                i.setAction("ScannedCode1");
+                                                AppConstants.isScannedCode1 = true;
+                                            }
+                                            Log.v("AUTHCODE", "Authcodeac2 " + i.getAction());
+                                            i.putExtra("identityCode", identityCode);
+                                            getActivity().sendBroadcast(i);
+                                            if (p != null && p.isShowing()) {
+                                                p.dismiss();
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    }, 500);
+
+                                }
+
+                            }
+
+                        }, 1000);
+                        dialog.dismiss();
+                    }
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+    }
+
+    private void showScanUnionPayDialog() {//ScanUnionpay
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        LayoutInflater lf = (LayoutInflater) (getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.scanner_dialog, null);
+        TextView title = (TextView) dialogview.findViewById(R.id.title);
+        // title.setText("Please Enter Your ConfigId");
+        EditText body = (EditText) dialogview
+                .findViewById(R.id.dialogBody);
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        TextView ok = (TextView) dialogview
+                .findViewById(R.id.tv_ok);
+        body.setOnKeyListener(new View.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                String barcode = body.getText().toString();
+                // Toast.makeText(getActivity(),""+barcode,Toast.LENGTH_SHORT).show();
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER && barcode.length() > 0) {
+                    body.setText(barcode);
+                       ok.performClick();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        ok.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String barcode= body.getText().toString().trim();
+                if (barcode.equalsIgnoreCase("")||barcode.isEmpty())
+                {
+                    Toast.makeText(getActivity(),"Please enter the code in input box",Toast.LENGTH_SHORT).show();
+                }else {
+                    final Handler handlers = new Handler();
+                    handlers.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!AppConstants.xmppamountforscan.equals("")) {
+
+                                final Handler handler1 = new Handler();
+                                handler1.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent ia = new Intent();
+                                        ia.setAction("AmountTrigger");
+                                        ia.putExtra("data", preferenceManager.getamountdata());
+                                        getActivity().sendBroadcast(ia);
+
+                                    }
+                                }, 400);
+
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Scanned: " + body.getText().toString(), Toast.LENGTH_LONG).show();
+                                        String identityCode = body.getText().toString();
+                                        Intent i = new Intent();
+                                        if (ManualEntry.isUpayselected) {
+                                            AppConstants.isScannedCode1 = false;
+                                            i.setAction("ScannedCode");
+                                        } else if (ManualEntry.isUnionPayQrSelected) {
+                                            AppConstants.isScannedCode1 = false;
+                                            i.setAction("ScannedCodeUnionPayQr");
+                                        } else {
+                                            i.setAction("ScannedCode1");
+                                            AppConstants.isScannedCode1 = true;
+                                        }
+
+                                        i.putExtra("identityCode", identityCode);
+                                        Log.v("AUTHCODE", "Authcodeac " + i.getAction());
+                                        getActivity().sendBroadcast(i);
+                                    }
+                                }, 800);
+
+                            } else {
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Scanned else : " + body.getText().toString(), Toast.LENGTH_LONG).show();
+                                        String identityCode = body.getText().toString();
+                                        Intent i = new Intent();
+                                        if (ManualEntry.isUpayselected) {
+                                            AppConstants.isScannedCode1 = false;
+                                            i.setAction("ScannedCode");
+                                        } else if (ManualEntry.isUnionPayQrSelected) {
+                                            AppConstants.isScannedCode1 = false;
+                                            i.setAction("ScannedCodeUnionPayQr");
+                                        } else {
+                                            i.setAction("ScannedCode1");
+                                            AppConstants.isScannedCode1 = true;
+                                        }
+                                        Log.v("AUTHCODE", "Authcodeac2 " + i.getAction());
+                                        i.putExtra("identityCode", identityCode);
+                                        getActivity().sendBroadcast(i);
+                                    }
+                                }, 500);
+
+                            }
+                        }
+                    }, 1000);
+                    dialog.dismiss();
+                }
+            }
+        });
+        TextView cancel = (TextView) dialogview
+                .findViewById(R.id.tv_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
+
+    }
+    private void showScanBackCameraDialog() {//ScanBack Camera
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        LayoutInflater lf = (LayoutInflater) (getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.scanner_dialog, null);
+        TextView title = (TextView) dialogview.findViewById(R.id.title);
+        // title.setText("Please Enter Your ConfigId");
+        EditText body = (EditText) dialogview
+                .findViewById(R.id.dialogBody);
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        TextView cancel = (TextView) dialogview
+                .findViewById(R.id.tv_cancel);
+
+        TextView ok = (TextView) dialogview
+                .findViewById(R.id.tv_ok);
+
+        body.setOnKeyListener(new View.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                String barcode = body.getText().toString().trim();
+                // Toast.makeText(getActivity(),""+barcode,Toast.LENGTH_SHORT).show();
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER && barcode.length() > 0) {
+                    Log.v("SCANNES",barcode);
+                    body.setText(barcode);
+                    ok.performClick();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String auth_code = body.getText().toString();
+                if (auth_code.equalsIgnoreCase("")||auth_code.isEmpty())
+                {
+                Toast.makeText(getActivity(),"Please enter the code in input box",Toast.LENGTH_SHORT).show();
+                }else {
+                    ProgressDialog p = new ProgressDialog(mmContext == null ? getActivity() : mmContext);
+                    p.setMessage("Sending request.......");
+                    p.setCancelable(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.setIndeterminate(true);
+                    p.show();
+                    final Handler handlers = new Handler();
+                    handlers.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(p!=null&&p.isShowing()) {
+                                p.dismiss();
+                            }
+                            long SuccessEndTime = System.currentTimeMillis();
+                            // long SuccessCostTime = SuccessEndTime - startTime;
+                            if (getActivity() != null)
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+
+                                        if (preferenceManager.getLaneIdentifier().equals("")) {
+                                            Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                        } else if (preferenceManager.getPOSIdentifier().equals("")) {
+                                            Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            callMembershipLoyality(auth_code);
+                                            Toast.makeText(getActivity(), auth_code + "", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+
+
+                        }
+
+                    }, 1000);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+    }
+    private void _funcAlipayWeChatQRScanQR() {
+        //Scanning qr from customer wallet and performing transaction
+        //through MyPOSMate cloud
+        isUnionPayQrSelected = false;
+        isUpayselected = false;
+        if (MyPOSMateApplication.isOpen) {
+            payment_mode = "";
+            qrMode = "False";
+            open();
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                payment_mode = "";
+                qrMode = "False";
+                open();
+            }
+        }
+    }
+
+
+    FrameLayout surfaceViewContainer;
+    private void switchBarcodeUI(boolean b) {
+        try {
+            if (b) {
+                getActivity().findViewById(R.id.frameSurfaceView).setVisibility(View.VISIBLE);
+                surfaceViewContainer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("","");
+                    }
+                });
+            } else{
+                getActivity().findViewById(R.id.frameSurfaceView).setVisibility(View.GONE);
+                surfaceViewContainer.removeAllViews();
+//               alternateBarcodeScanner.removeCallBack();
+                surfaceViewContainer.setOnClickListener(null);
+             //  alternateBarcodeScanner = null;
+                surfaceViewContainer = null;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+          //  alternateBarcodeScanner = null;
+            surfaceViewContainer = null;
+        }
+    }
+
+
+    private void performBarcodeScan() {
+        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+        integrator.setOrientationLocked(false);
+        integrator.initiateScan();
+      /*  surfaceViewContainer = (FrameLayout) getActivity().findViewById(R.id.surfaceView);
+        if(surfaceViewContainer != null){
+            SurfaceView cameraSurface = new SurfaceView(getActivity());
+            surfaceViewContainer.addView(cameraSurface);
+            switchBarcodeUI(true);
+            getActivity().findViewById(R.id.imgCloseCamera).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switchBarcodeUI(false);
+                }
+            });*/
+          /*alternateBarcodeScanner = new AlternateBarcodeScanner(getActivity(), cameraSurface,
+                    new AlternateBarcodeScanner.BarcodeListener() {
+                        @Override
+                        public void onBarcodeReceived(@NotNull String barcodeValue) {
+
+                           *//* Intent intent = new Intent();
+                            intent.setAction(ConstantValue.FILTER_PRODUCT_SCAN);
+                            intent.putExtra("Barcode", barcodeValue);
+                            getActivity().sendBroadcast(intent);*//*
+                        }
+                    });
+            alternateBarcodeScanner.initialiseDetectorsAndSources();
+*/
+      //  }else{
+           /* String selected=mPreferences.getString(ConstantValue.SCANNEROPTION);
+            if(selected.equals(""))
+            {
+                mPreferences.putString(ConstantValue.SCANNEROPTION,"CAMERA");
+            }
+            if(mPreferences.getString(ConstantValue.SCANNEROPTION).equals("CAMERA"))
+            {*/
+              /*  IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.setOrientationLocked(false);
+                integrator.initiateScan();*/
+           /* }else{
+                Toast.makeText(getActivity(),"Barcode Scanner.. In Progress",Toast.LENGTH_SHORT).show();
+            }*/
+
+            /*IntentIntegrator integrator = new IntentIntegrator(getActivity());
+            integrator.setOrientationLocked(false);
+            integrator.initiateScan();*/
+     //   }
     }
 
     public static boolean isMerchantQrDisplaySelected = false;
@@ -3774,6 +4525,32 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
     }
 
+
+    private void _funcAlipayWeChatQRScanExternal() {
+        //Scanning qr from customer wallet and performing transaction
+        //through MyPOSMate cloud
+        isUnionPayQrSelected = false;
+        isUpayselected = false;
+        if (MyPOSMateApplication.isOpen) {
+            payment_mode = "";
+            qrMode = "False";
+         showScanAlipayDialog();
+            Toast.makeText(getActivity(),"External Input Device is enabled",Toast.LENGTH_SHORT).show();
+
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                payment_mode = "";
+                qrMode = "False";
+                showScanAlipayDialog();
+                Toast.makeText(getActivity(),"External Input Device is enabled",Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
+
     boolean isTriggerCancelled = false;
 
     private void _funcCancelButton() {
@@ -3861,10 +4638,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
     public void open() {
-//        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-//        integrator.setOrientationLocked(true);
-//        integrator.initiateScan();
-        startQuickScan(true);
+        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+        integrator.setOrientationLocked(true);
+        integrator.initiateScan();
+
+
     }
 
     private Dialog dialog, dialog1;
@@ -4084,6 +4862,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case "paynow":
+                Log.v("PAY_RESPONSE","respay "+result);
                 _parsePayNowResponse(jsonObject);
                 break;
 
@@ -4114,11 +4893,38 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         }
         if (isBack) {
 //            isBack = false;
-            stsartFastScan(true);//Back
+          //  stsartFastScan(true);//Back
+            if (preferenceManager.isExternalScan())
+            {
+                //edt_reference_id.requestFocus();
+                //scanner
+
+                showScanBackCameraDialog();
+            }else{
+                //camera
+                isLoyaltyQrSelected=true;
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.setOrientationLocked(false);
+                integrator.initiateScan();
+            }
         }
         if (isFront) {
 //            isFront = false;
-            stsartFastScan(false);//front
+           // stsartFastScan(false);//front
+
+            if (preferenceManager.isExternalScan())
+            {
+                //edt_reference_id.requestFocus();
+                //scanner
+                showScanBackCameraDialog();
+            }else{
+                //camera
+                isLoyaltyFrontQrSelected=true;
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.setOrientationLocked(false);
+                integrator.setCameraId(1);
+                integrator.initiateScan();
+            }
         }
         if (isTransactionDetails) {
             isTransactionDetails = false;
@@ -4344,14 +5150,50 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (!jsonObject.has("reference_id")) {
             jsonObject.putOpt("referenceId", reference_id);
         }
+
         if (jsonObject.optBoolean("status") == false) {
+            String res=String.valueOf(jsonObject);
+           // Toast.makeText(getActivity(), "false"+ res, Toast.LENGTH_LONG).show();
+
+            if (progress != null) {
+                if (progress.isShowing())
+                    progress.dismiss();
+            }
+
             edt_amount.setText("");
             edt_amount1.setText("");
             preferenceManager.setreference_id("");
             reference_id = "";
+
+               if (progress != null) {
+                    if (progress.isShowing())
+                        progress.dismiss();
+                }
+
+                if (progress2 != null) {
+                    if (progress2.isShowing())
+                        progress2.dismiss();
+                }
+
+
+           // callTransactionDetails();
             Toast.makeText(getActivity(), jsonObject.optString("message") + ".Please try again", Toast.LENGTH_LONG).show();
             ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+
             return;
+        }
+        else if (jsonObject.optString("error").equalsIgnoreCase("invalid_token")){
+            if (progress != null) {
+                if (progress.isShowing())
+                    progress.dismiss();
+            }
+
+            if (progress2 != null) {
+                if (progress2.isShowing())
+                    progress2.dismiss();
+            }
+            Toast.makeText(getActivity(), jsonObject.optString("error") + ".Please try again", Toast.LENGTH_LONG).show();
+
         }
         if (progress.isShowing())
             progress.dismiss();
@@ -5666,7 +6508,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 }
 
                 @Override
-                public void onCaptured(String arg0, int arg1) throws RemoteException {
+                public void onCaptured(String arg0, int arg1) throws RemoteException{} /*{
                     long SuccessEndTime = System.currentTimeMillis();
                     long SuccessCostTime = SuccessEndTime - startTime;
                     if (getActivity() != null)
@@ -5704,7 +6546,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                                                 Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
                                                 String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
                                                 Intent i = new Intent();
-                                                if (ManualEntry.isUpayselected) {
+                                                if (                                                                                                                                                                        ManualEntry.isUpayselected) {
                                                     AppConstants.isScannedCode1 = false;
                                                     i.setAction("ScannedCode");
                                                 } else if (ManualEntry.isUnionPayQrSelected) {
@@ -5725,7 +6567,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Toast.makeText(getActivity(), "Scanned: " + arg0, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getActivity(), "Scanned : "  + arg0, Toast.LENGTH_LONG).show();
                                                 String identityCode = arg0;//data.getStringExtra("SCAN_RESULT");
                                                 Intent i = new Intent();
                                                 if (ManualEntry.isUpayselected) {
@@ -5753,7 +6595,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         });
 
 
-                }
+                }*/
             });
         } catch (Exception e) {
             e.printStackTrace();

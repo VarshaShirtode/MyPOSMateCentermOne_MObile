@@ -344,6 +344,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     preferenceManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
                     preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
                     preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
                     preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));

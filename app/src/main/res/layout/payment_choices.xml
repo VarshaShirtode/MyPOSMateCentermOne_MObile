@@ -250,7 +250,9 @@
         <RelativeLayout
             android:id="@+id/rel_unionpay_pc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
 
             <CheckBox
                 android:id="@+id/chk_unionpay_card"
@@ -321,7 +323,9 @@
         <RelativeLayout
             android:id="@+id/rel_unionpay_qr_pc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
             <!-- android:id="@+id/chk_unionpay_qr_code"-->
             <CheckBox
                 android:id="@+id/chk_unionpay_qr_merchant_display1"
@@ -400,7 +404,9 @@
         <RelativeLayout
             android:id="@+id/rel_uplan_pc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
