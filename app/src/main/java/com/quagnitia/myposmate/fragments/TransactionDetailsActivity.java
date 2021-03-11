@@ -780,7 +780,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     public void callCancelTransaction(JSONObject jsonObject,String pass) {
         openProgressDialog();
 
-
         //v2 signature implementation
         hashMapKeys.clear();
         hashMapKeys.put("access_id", preferenceManager.getuniqueId());
@@ -802,6 +801,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     double refunded_amount = 0.00;
 
     public void parseTransactionDetailsResponse(JSONObject jsonObject) throws Exception {
+        Log.v("TRANSRESPONSE",jsonObject.toString());
 
         JSONObject jsonObjectPayment = jsonObject.optJSONObject("payment");
         String serverResponse = "";
@@ -1038,7 +1038,13 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             findViewById(R.id.ll1).setVisibility(View.GONE);
             findViewById(R.id.ll2).setVisibility(View.GONE);
             findViewById(R.id.ll3).setVisibility(View.GONE);
-        } else if (newjson.optString("Message Status").equals("FAILED") &&
+        } else if (newjson.optString("Message Status").equals("PENDING")&&
+                json.optString("Payment By").equals("CENTRA_PAY")) { //Pending
+            btn_refund.setVisibility(View.GONE);
+            findViewById(R.id.ll1).setVisibility(View.GONE);
+            findViewById(R.id.ll2).setVisibility(View.GONE);
+            findViewById(R.id.ll3).setVisibility(View.GONE);
+        }else if (newjson.optString("Message Status").equals("FAILED") &&
                 json.optString("Payment By").equals("UNION_PAY")) { //closed
             btn_refund.setVisibility(View.GONE);
             findViewById(R.id.ll1).setVisibility(View.GONE);
@@ -1056,7 +1062,6 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             findViewById(R.id.ll2).setVisibility(View.GONE);
             findViewById(R.id.ll3).setVisibility(View.GONE);
         }
-
 
         if (jsonObjectPayment.has("thirdParty")
                 && !jsonObjectPayment.optBoolean("thirdParty")

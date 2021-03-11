@@ -15,7 +15,7 @@ MERGED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagniti
 MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\5dd336bba07dd715060779cca5cd9e68\AndroidManifest.xml:16:1-23:12
 MERGED from [com.android.support:support-v4:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\0c020028228b3243a4d94c278772f9d9\AndroidManifest.xml:17:1-22:12
 MERGED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-13:12
-MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.22] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\f33bfcfb3bf125b61e3b1d147ead1c63\AndroidManifest.xml:2:1-9:12
+MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.23] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\981c35a3466f3cc791a84da1b259418e\AndroidManifest.xml:2:1-9:12
 MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\b96d052a9eff43f2e6682480cb31154c\AndroidManifest.xml:15:1-20:12
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fc75e8b902774b1b687accef0a4aebda\AndroidManifest.xml:2:1-10:12
 MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\9822b0ef826976ec2aa08ea242974e72\AndroidManifest.xml:17:1-28:12
@@ -92,8 +92,8 @@ MERGED from [com.android.support:support-v4:28.0.0] C:\Users\quagnitia\.gradle\c
 MERGED from [com.android.support:support-v4:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\0c020028228b3243a4d94c278772f9d9\AndroidManifest.xml:20:5-44
 MERGED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
 MERGED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
-MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.22] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\f33bfcfb3bf125b61e3b1d147ead1c63\AndroidManifest.xml:5:5-7:41
-MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.22] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\f33bfcfb3bf125b61e3b1d147ead1c63\AndroidManifest.xml:5:5-7:41
+MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.23] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\981c35a3466f3cc791a84da1b259418e\AndroidManifest.xml:5:5-7:41
+MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.23] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\981c35a3466f3cc791a84da1b259418e\AndroidManifest.xml:5:5-7:41
 MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\b96d052a9eff43f2e6682480cb31154c\AndroidManifest.xml:18:5-43
 MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\b96d052a9eff43f2e6682480cb31154c\AndroidManifest.xml:18:5-43
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fc75e8b902774b1b687accef0a4aebda\AndroidManifest.xml:6:5-43

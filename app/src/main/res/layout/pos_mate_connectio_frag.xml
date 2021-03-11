@@ -77,7 +77,7 @@
 
 
 
-    <TextView
+   <!--<TextView
         android:layout_above="@+id/rel_membership"
         android:id="@+id/tv_status_scan"
         android:layout_width="wrap_content"
@@ -151,9 +151,95 @@
                 android:textSize="14sp" />
 
         </LinearLayout>
+-->
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/rel_loyalty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:visibility="visible">
+
+
+            <RelativeLayout
+                android:id="@+id/rel_membership"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/button_shadow">
+
+                <Button
+
+                    android:id="@+id/tv_status_scan_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="Membership/Loyality"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/tv_status_scan_button"
+                    android:layout_alignLeft="@id/tv_status_scan_button"
+                    android:layout_alignRight="@+id/tv_status_scan_button"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btn_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="Back Camera"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorBlue"
+                        android:textSize="14sp" />
+
+                    <Button
+                        android:id="@+id/btn_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="Front Camera"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorBlue"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+            <include
+                android:visibility="gone"
+                layout="@layout/loyalty_layout"
+                ></include>
+
+            <TextView
+                android:id="@+id/tv_status_scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel_membership"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="Thank you for using Membership/Loyality"
+                android:textColor="@color/colorBlue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 
-
-
-</RelativeLayout>

@@ -1,26 +1,40 @@
 package com.quagnitia.myposmate.fragments;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +46,8 @@ import com.centerm.smartpos.aidl.qrscan.CameraBeanZbar;
 import com.centerm.smartpos.aidl.sys.AidlDeviceManager;
 import com.centerm.smartpos.constant.Constant;
 import com.centerm.smartpos.util.LogUtil;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.quagnitia.myposmate.BuildConfig;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
@@ -53,6 +69,8 @@ import java.util.UUID;
 
 import pl.droidsonroids.gif.GifTextView;
 
+import static android.Manifest.permission.CAMERA;
+
 public class PosMateConnectioFrag extends Fragment implements View.OnClickListener, OnTaskCompleted {
 
     private View view;
@@ -68,10 +86,28 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     private ImageView close_btn;
     private Timer timer;
     TreeMap<String, String> hashMapKeys;
+    LinearLayout ll_membership_loyalty_app;
+    TextView tv_status_scan_button1, tv_status_scan_button2;
+    Button btn_back1;
+    Button btn_front1;
+    Button btn_loyalty_apps;
+    public static boolean isLoyaltyQrSelectedPos=false;
+    public static boolean isLoyaltyFrontQrSelectedPos=false;
+    RefundReceiver refundReceiver;
 
     public static PosMateConnectioFrag newInstance(String param1, String param2) {
         PosMateConnectioFrag fragment = new PosMateConnectioFrag();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        refundReceiver=new RefundReceiver();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("ScannedPosBack");
+        intentFilter.addAction("ScannedPosFront");
+        getActivity().registerReceiver(refundReceiver, intentFilter);
     }
 
     @Override
@@ -145,8 +181,15 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         //tv_status_scan_button.setOnClickListener(this);
         btn_back.setOnClickListener(this);
         btn_front.setOnClickListener(this);
-
-
+        ll_membership_loyalty_app = view.findViewById(R.id.ll_membership_loyalty_app);
+        tv_status_scan_button1 = view.findViewById(R.id.tv_status_scan_button1);
+        tv_status_scan_button2 = view.findViewById(R.id.tv_status_scan_button2);
+        btn_back1 = view.findViewById(R.id.btn_back1);
+        btn_front1 = view.findViewById(R.id.btn_front1);
+        btn_loyalty_apps = view.findViewById(R.id.btn_loyalty_apps);
+        btn_back1.setOnClickListener(this);
+        btn_front1.setOnClickListener(this);
+        btn_loyalty_apps.setOnClickListener(this);
 //        if (!preferencesManager.isLoyality()) {
 //            tv_status_scan.setVisibility(View.INVISIBLE);
 //            tv_status_scan_button.setVisibility(View.GONE);
@@ -156,6 +199,112 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 //        }
 
 
+        /*if (preferencesManager.isMembershipHome()) {
+            rel_membership.setVisibility(View.VISIBLE);
+            tv_status_scan.setVisibility(View.INVISIBLE);
+            tv_status_scan_button.setVisibility(View.VISIBLE);
+            if (preferencesManager.isFront()) {
+                btn_front.setVisibility(View.VISIBLE);
+                btn_back.setVisibility(View.GONE);
+            }
+            if (preferencesManager.isBack()) {
+                btn_front.setVisibility(View.GONE);
+                btn_back.setVisibility(View.VISIBLE);
+            }
+            if (preferencesManager.isBack() && preferencesManager.isFront()) {
+                btn_front.setVisibility(View.VISIBLE);
+                btn_back.setVisibility(View.VISIBLE);
+            }
+            if (!preferencesManager.isBack() && !preferencesManager.isFront()) {
+                rel_membership.setVisibility(View.GONE);
+            }
+
+        } else {
+            rel_membership.setVisibility(View.GONE);
+            tv_status_scan.setVisibility(View.GONE);
+            tv_status_scan_button.setVisibility(View.GONE);
+        }*/
+        funcLoyaltyAppSwitches();
+        
+    }
+    public void funcLoyaltyAppSwitches() {
+        Log.v("DisplayChoice","App "+preferencesManager.isDisplayLoyaltyApps());
+        Log.v("DisplayChoice","Front "+preferencesManager.isFront());
+        Log.v("DisplayChoice","Back "+preferencesManager.isBack());
+        Log.v("DisplayChoice","Manual "+preferencesManager.isMembershipHome());
+
+        if (preferencesManager.isDisplayLoyaltyApps()) {
+            rel_membership.setVisibility(View.GONE);
+            ll_membership_loyalty_app.setVisibility(View.VISIBLE);
+            tv_status_scan.setVisibility(View.GONE);
+            if (preferencesManager.isMembershipHome()) {
+                if (preferencesManager.isFront() &&
+                        preferencesManager.isBack() &&
+                        preferencesManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+                    ll_membership_loyalty_app.setWeightSum(3);
+                    tv_status_scan_button1.setVisibility(View.VISIBLE);
+                    tv_status_scan_button2.setVisibility(View.VISIBLE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.VISIBLE);
+                    btn_front1.setVisibility(View.VISIBLE);
+                } else if (!preferencesManager.isFront() &&
+                        preferencesManager.isBack() &&
+                        preferencesManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+                    ll_membership_loyalty_app.setWeightSum(2);
+                    tv_status_scan_button1.setVisibility(View.VISIBLE);
+                    tv_status_scan_button2.setVisibility(View.GONE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.VISIBLE);
+                    btn_front1.setVisibility(View.GONE);
+                } else if (preferencesManager.isFront() &&
+                        !preferencesManager.isBack() &&
+                        preferencesManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+                    ll_membership_loyalty_app.setWeightSum(2);
+                    tv_status_scan_button1.setVisibility(View.GONE);
+                    tv_status_scan_button2.setVisibility(View.VISIBLE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.GONE);
+                    btn_front1.setVisibility(View.VISIBLE);
+                } else if (!preferencesManager.isFront() &&
+                        !preferencesManager.isBack() &&
+                        preferencesManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+                    ll_membership_loyalty_app.setWeightSum(1);
+                    tv_status_scan_button1.setVisibility(View.GONE);
+                    tv_status_scan_button2.setVisibility(View.GONE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.GONE);
+                    btn_front1.setVisibility(View.GONE);
+                }
+
+            }
+            else{
+                if (preferencesManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+                    ll_membership_loyalty_app.setWeightSum(1);
+                    tv_status_scan_button1.setVisibility(View.GONE);
+                    tv_status_scan_button2.setVisibility(View.GONE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.GONE);
+                    btn_front1.setVisibility(View.GONE);
+                }
+            }
+
+        } else {
+            funcMembershipLoyalityUISwitch();
+        }
+    }
+
+
+    public void funcMembershipLoyalityUISwitch() {
         if (preferencesManager.isMembershipHome()) {
             rel_membership.setVisibility(View.VISIBLE);
             tv_status_scan.setVisibility(View.INVISIBLE);
@@ -182,8 +331,8 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             tv_status_scan_button.setVisibility(View.GONE);
         }
 
-
     }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -207,6 +356,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             ((DashboardActivity) mContext).mPopupWindow.dismiss();
 
         switch (view.getId()) {
+            case R.id.btn_front1:
             case R.id.btn_front:
             case R.id.tv_status_scan_button:
                 try {
@@ -224,8 +374,12 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 }
                 break;
 
+            case R.id.btn_loyalty_apps:
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.LOYALTY_APPS, null);
+                break;
 
             case R.id.btn_back:
+            case R.id.btn_back1:
                 try {
                     if (preferencesManager.getLaneIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
@@ -239,6 +393,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 break;
 
             case R.id.btn_reconnect:
@@ -444,16 +599,96 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 }
                 if (isBack) {
                     isBack = false;
-                    stsartFastScan(true);//Back
+                   // stsartFastScan(true);//Back
+
+                    if (preferencesManager.isExternalScan())
+                    {
+                        //edt_reference_id.requestFocus();
+                        //scanner
+
+                        showScanBackCameraDialog();
+                    }else{
+                        //camera
+                        if (checkPermission()) {
+                            isLoyaltyQrSelectedPos=true;
+                            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                            integrator.setOrientationLocked(false);
+                            integrator.initiateScan();
+                        }else{
+                            showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
+
+                        }
+
+                    }
                 }
                 if (isFront) {
                     isFront = false;
-                    stsartFastScan(false);//front
+                   // stsartFastScan(false);//front
+                    if (preferencesManager.isExternalScan())
+                    {
+                        //edt_reference_id.requestFocus();
+                        //scanner
+                        showScanBackCameraDialog();
+                    }else{
+                        //camera
+                        if (checkPermission()) {
+                            isLoyaltyFrontQrSelectedPos=true;
+                            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                            integrator.setOrientationLocked(false);
+                            integrator.setCameraId(1);
+                            integrator.initiateScan();
+                        }else{
+                            showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
+
+                        }
+
+                    }
                 }
                 break;
 
             case "saveLoyaltyInfo":
+
                 progress.dismiss();
+                if (jsonObject.optBoolean("status")) {
+                    Log.v("RESCAN",isFront +" "+isBack);
+                    tv_status_scan.setVisibility(View.VISIBLE);
+                    tv_status_scan.setText("Thank you for using Membership/Loyality");
+                    tv_status_scan_button.setText("Rescan Membership/Loyality");
+                    if (isFront) {
+                        isFront = false;
+                        tv_status_scan.setVisibility(View.VISIBLE);
+                        tv_status_scan_button2.setText("Rescan Membership/Loyality");
+                        tv_status_scan_button2.setGravity(Gravity.CENTER | Gravity.TOP);
+                    } else {
+                        tv_status_scan.setVisibility(View.GONE);
+                        tv_status_scan_button2.setGravity(Gravity.CENTER);
+                    }
+                    if (isBack) {
+                        isBack = false;
+                        tv_status_scan.setVisibility(View.VISIBLE);
+                        tv_status_scan_button1.setText("Rescan Membership/Loyality");
+                        tv_status_scan_button1.setGravity(Gravity.CENTER | Gravity.TOP);
+                    } else {
+                        tv_status_scan.setVisibility(View.GONE);
+                        tv_status_scan_button1.setGravity(Gravity.CENTER);
+                    }
+
+                    Toast.makeText(getActivity(), "Loyality data uploaded successfully ", Toast.LENGTH_SHORT).show();
+                } else {
+                    tv_status_scan.setVisibility(View.VISIBLE);
+                    tv_status_scan.setText("Membership/Loyality could not be scanned");
+                    tv_status_scan_button.setText("Rescan Membership/Loyality");
+                    if (isFront) {
+                        isFront = false;
+                        tv_status_scan_button2.setText("Rescan Membership/Loyality");
+                    }
+                    if (isBack) {
+                        isBack = false;
+                        tv_status_scan_button1.setText("Rescan Membership/Loyality");
+                    }
+                    Toast.makeText(getActivity(), "Loyality data upload failed ", Toast.LENGTH_SHORT).show();
+                }
+                /*progress.dismiss();
                 if (jsonObject.optBoolean("status")) {
                     tv_status_scan.setVisibility(View.VISIBLE);
                     tv_status_scan.setText("Thank you for using Membership/Loyality");
@@ -464,10 +699,121 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     tv_status_scan.setText("Membership/Loyality could not be scanned");
                     tv_status_scan_button.setText("Rescan Membership/Loyality");
                     Toast.makeText(getActivity(), "Loyality data upload failed ", Toast.LENGTH_SHORT).show();
-                }
+                }*/
                 break;
         }
 
+
+    }
+    private void showMessageOK(String message) {
+        AlertDialog.Builder alert=new AlertDialog.Builder(getActivity());
+        alert.setMessage(message);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                }
+            }
+        });
+        alert.setCancelable(false);
+        alert.show();
+
+    }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getActivity(), CAMERA);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+    private void showScanBackCameraDialog() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        LayoutInflater lf = (LayoutInflater) (getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.scanner_dialog, null);
+        TextView title = (TextView) dialogview.findViewById(R.id.title);
+        // title.setText("Please Enter Your ConfigId");
+        EditText body = (EditText) dialogview
+                .findViewById(R.id.dialogBody);
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        TextView cancel = (TextView) dialogview
+                .findViewById(R.id.tv_cancel);
+        TextView ok = (TextView) dialogview
+                .findViewById(R.id.tv_ok);
+
+        body.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                String barcode = body.getText().toString().trim();
+                // Toast.makeText(getActivity(),""+barcode,Toast.LENGTH_SHORT).show();
+                if (keyCode == KeyEvent.KEYCODE_ENTER && barcode.length() > 0) {
+                    Log.v("SCANNES",barcode);
+                    body.setText(barcode);
+                    ok.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String auth_code = body.getText().toString();
+                if (auth_code.equalsIgnoreCase("")||auth_code.isEmpty())
+                {
+                    Toast.makeText(getActivity(),"Please enter the code in input box",Toast.LENGTH_SHORT).show();
+                }else {
+                    ProgressDialog p = new ProgressDialog(getActivity());
+                    p.setMessage("Sending request.......");
+                    p.setCancelable(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.setIndeterminate(true);
+                    p.show();
+                    final Handler handlers = new Handler();
+                    handlers.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(p!=null&&p.isShowing()) {
+                                p.dismiss();
+                            }
+                            long SuccessEndTime = System.currentTimeMillis();
+                            // long SuccessCostTime = SuccessEndTime - startTime;
+                            if (getActivity() != null)
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        if (preferencesManager.getLaneIdentifier().equals("")) {
+                                            Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                        } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                            Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            callMembershipLoyality(auth_code);
+                                            Toast.makeText(getActivity(), auth_code + "", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+                        }
+                    }, 1000);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
     }
 
@@ -592,4 +938,73 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
     }
+
+
+    public class RefundReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String ac = intent.getAction();
+            switch (ac) {
+                case "ScannedPosBack":
+                    isBack=true;
+                    //Toast.makeText(context, "inside receiver", Toast.LENGTH_SHORT).show();
+                    if (intent.hasExtra("identityCode")) {
+                        String auth_code = intent.getStringExtra("identityCode");
+
+                        long SuccessEndTime = System.currentTimeMillis();
+                        // long SuccessCostTime = SuccessEndTime - startTime;
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+
+                                    if (preferencesManager.getLaneIdentifier().equals("")) {
+                                        Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                    } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                        Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        callMembershipLoyality(auth_code);
+                                        Toast.makeText(getActivity(), auth_code + "", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
+
+
+
+                    }break;
+
+                case "ScannedPosFront":
+                    isFront=true;
+                    //Toast.makeText(context, "inside receiver", Toast.LENGTH_SHORT).show();
+                    if (intent.hasExtra("identityCode")) {
+                        String auth_code = intent.getStringExtra("identityCode");
+
+                        long SuccessEndTime = System.currentTimeMillis();
+                        // long SuccessCostTime = SuccessEndTime - startTime;
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+
+                                    if (preferencesManager.getLaneIdentifier().equals("")) {
+                                        Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                    } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                        Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        callMembershipLoyality(auth_code);
+                                        Toast.makeText(getActivity(), auth_code + "", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
+
+
+
+                    }break;
+
+            }
+        }
+    }
+
 }

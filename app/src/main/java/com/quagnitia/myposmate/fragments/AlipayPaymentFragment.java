@@ -818,7 +818,14 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                     if (countDownTimerxmpp != null)
                         countDownTimerxmpp.cancel();
                     MyPOSMateApplication.isActiveQrcode = false;
-                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+                    if (preferenceManager.isManual()) {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+
+                    } else if (preferenceManager.isHome()) {
+                        ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
+
+                    }
+                  //  ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     return;
                 }
                 openProgressDialog();

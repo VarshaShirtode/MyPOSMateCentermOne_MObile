@@ -1,5 +1,6 @@
 package com.quagnitia.myposmate.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -234,7 +235,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, PERMISSION_REQUEST_CODE);
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
@@ -272,7 +273,49 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
 
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
+
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // now, you have permission go ahead
+            // TODO: something
+
+        } else {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(DashboardActivity.this,
+                    CAMERA)) {
+                // now, user has denied permission (but not permanently!)
+
+            } else {
+showMessageOK("You have previously declined this permission.\n" +
+                "You must approve this permission in \"Permissions\" in the app settings on your device.");
+                // now, user has denied permission permanently!
+/*
+
+                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "You have previously declined this permission.\n" +
+                        "You must approve this permission in \"Permissions\" in the app settings on your device.", Snackbar.LENGTH_LONG).setAction("Settings", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+
+                    }
+                });
+                View snackbarView = snackbar.getView();
+                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setMaxLines(5);  //Or as much as you need
+                snackbar.show();
+*/
+
+            }
+
+        }
+        return;
     }
+
 
     private void showMessageOKCancel(String message) {
     /*new AlertDialog.Builder(DashboardActivity.this)
@@ -1735,6 +1778,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         edt_up_upi_qr_cv = dialogView.findViewById(R.id.edt_up_upi_qr_cv);
         edt_up_upi_qr_cv1 = dialogView.findViewById(R.id.edt_up_upi_qr_cv1);
         edt_up_upi_qr_amount = dialogView.findViewById(R.id.edt_up_upi_qr_amount);
+
         // upi_note = dialogView.findViewById(R.id.upi_note);
     }
 
@@ -2970,20 +3014,22 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             edt_ali_cv.setText(preferenceManager.getcnv_alipay());
             edt_wechat_cv.setText(preferenceManager.getcnv_wechat());
             if (!preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.00") &&
-                    !preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("")
-            )
+                    !preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals(""))
                 edt_up_upi_qr_cv.setText(preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
-            else
+            else {
+                if(!preferenceManager.get_cnv_unimerchantqrdisplayLower().equalsIgnoreCase(""))
                 edt_up_upi_qr_cv.setText(preferenceManager.get_cnv_unimerchantqrdisplayLower());
+            }
 
             if (!preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("0.00") &&
-                    !preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals("")
-
-            )
+                    !preferenceManager.getCnv_up_upiqr_mpmcloud_higher().equals(""))
                 edt_up_upi_qr_cv1.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
-            else
+            else {
+                if(!preferenceManager.get_cnv_unimerchantqrdisplayHigher().equalsIgnoreCase(""))
                 edt_up_upi_qr_cv1.setText(preferenceManager.get_cnv_unimerchantqrdisplayHigher());
 
+            }
+            if(!preferenceManager.getCnv_up_upiqr_mpmcloud_amount().equalsIgnoreCase(""))
             edt_up_upi_qr_amount.setText(preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
 
 
@@ -4020,6 +4066,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                                 AppConstants.isScannedCode1 = false;
                                 i.setAction("ScannedFrontLoyaltyQr");
                                 ManualEntry.isLoyaltyFrontQrSelected=false;
+                            }
+                            else if (PosMateConnectioFrag.isLoyaltyQrSelectedPos) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedPosBack");
+                                PosMateConnectioFrag.isLoyaltyQrSelectedPos=false;
+                            }else if (PosMateConnectioFrag.isLoyaltyFrontQrSelectedPos) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedPosFront");
+                                PosMateConnectioFrag.isLoyaltyFrontQrSelectedPos=false;
                             }else {
                                 i.setAction("ScannedCode1");
                                 AppConstants.isScannedCode1 = true;
@@ -4062,6 +4117,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                                 AppConstants.isScannedCode1 = false;
                                 i.setAction("ScannedFrontLoyaltyQr");
                                 ManualEntry.isLoyaltyFrontQrSelected=false;
+                            }else if (PosMateConnectioFrag.isLoyaltyQrSelectedPos) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedPosBack");
+                                PosMateConnectioFrag.isLoyaltyQrSelectedPos=false;
+                            }else if (PosMateConnectioFrag.isLoyaltyFrontQrSelectedPos) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ScannedPosFront");
+                                PosMateConnectioFrag.isLoyaltyFrontQrSelectedPos=false;
                             }else {
                                 i.setAction("ScannedCode1");
                                 AppConstants.isScannedCode1 = true;

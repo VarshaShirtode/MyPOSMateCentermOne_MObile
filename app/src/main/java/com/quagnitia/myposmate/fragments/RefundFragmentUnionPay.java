@@ -4,17 +4,23 @@ package com.quagnitia.myposmate.fragments;
  * Created by admin on 7/20/2018.
  */
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -34,6 +40,7 @@ import com.centerm.smartpos.aidl.sys.AidlDeviceManager;
 import com.centerm.smartpos.constant.Constant;
 import com.centerm.smartpos.util.LogUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.quagnitia.myposmate.BuildConfig;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.arke.VASCallsArkeBusiness;
@@ -54,6 +61,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static android.Manifest.permission.CAMERA;
 import static com.quagnitia.myposmate.fragments.ManualEntry.shadaf;
 
 
@@ -311,10 +319,16 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
                         //scanner
                     }else{
                         //camera
-                        isUnionQrSelected=true;
-                        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                        integrator.setOrientationLocked(false);
-                        integrator.initiateScan();
+                        if (checkPermission()) {
+                            isUnionQrSelected=true;
+                            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                            integrator.setOrientationLocked(false);
+                            integrator.initiateScan();
+                        }else{
+                            showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
+
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -383,7 +397,25 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
 
         }
     }
+    private void showMessageOK(String message) {
+        AlertDialog.Builder alert=new AlertDialog.Builder(getActivity());
+        alert.setMessage(message);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                }
+            }
+        });
+        alert.setCancelable(false);
+        alert.show();
 
+    }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getActivity(), CAMERA);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
     String roundTwoDecimals(double d) {
         DecimalFormat twoDForm = new DecimalFormat("#0.00");
         return twoDForm.format(d);

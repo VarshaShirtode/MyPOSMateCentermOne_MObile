@@ -1,14 +1,19 @@
 package com.quagnitia.myposmate.fragments;
 
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -17,6 +22,7 @@ import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -50,6 +56,7 @@ import com.centerm.smartpos.constant.Constant;
 import com.centerm.smartpos.util.LogUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.quagnitia.myposmate.BuildConfig;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
@@ -1273,13 +1280,20 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         btn_front1 = view.findViewById(R.id.btn_front1);
         btn_loyalty_apps = view.findViewById(R.id.btn_loyalty_apps);
 
-        funcLoyaltyAppSwitches();
+
+            funcLoyaltyAppSwitches();
+
         funcNewUISwitchBasedOnPref();
 
     }
 
 
     public void funcLoyaltyAppSwitches() {
+        Log.v("DisplayChoice","App "+preferenceManager.isDisplayLoyaltyApps());
+        Log.v("DisplayChoice","Front "+preferenceManager.isFront());
+        Log.v("DisplayChoice","Back "+preferenceManager.isBack());
+        Log.v("DisplayChoice","Manual "+preferenceManager.isMembershipManual());
+
         if (preferenceManager.isDisplayLoyaltyApps()) {
             rel_membership.setVisibility(View.GONE);
             ll_membership_loyalty_app.setVisibility(View.VISIBLE);
@@ -1331,6 +1345,18 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     btn_front1.setVisibility(View.GONE);
                 }
 
+            }
+            else{
+                if (preferenceManager.isDisplayLoyaltyApps()) {
+                    view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+                    view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+                    ll_membership_loyalty_app.setWeightSum(1);
+                    tv_status_scan_button1.setVisibility(View.GONE);
+                    tv_status_scan_button2.setVisibility(View.GONE);
+                    btn_loyalty_apps.setVisibility(View.VISIBLE);
+                    btn_back1.setVisibility(View.GONE);
+                    btn_front1.setVisibility(View.GONE);
+                }
             }
 
         } else {
@@ -4638,11 +4664,37 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
     public void open() {
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.setOrientationLocked(true);
-        integrator.initiateScan();
+        if(checkPermission()) {
+           // Toast.makeText(getActivity(), "inside checked", Toast.LENGTH_SHORT).show();
+            IntentIntegrator integrator = new IntentIntegrator(getActivity());
+            integrator.setOrientationLocked(true);
+            integrator.initiateScan();
+        }else{
+            //Toast.makeText(getActivity(), "inside not checked", Toast.LENGTH_SHORT).show();
+            showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
 
+        }
 
+    }
+
+       private void showMessageOK(String message) {
+        AlertDialog.Builder alert=new AlertDialog.Builder(getActivity());
+        alert.setMessage(message);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                }
+            }
+        });
+        alert.setCancelable(false);
+        alert.show();
+
+    }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getActivity(), CAMERA);
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private Dialog dialog, dialog1;
@@ -4902,10 +4954,15 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 showScanBackCameraDialog();
             }else{
                 //camera
-                isLoyaltyQrSelected=true;
-                IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                integrator.setOrientationLocked(false);
-                integrator.initiateScan();
+                if (checkPermission()) {
+                    isLoyaltyQrSelected = true;
+                    IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                    integrator.setOrientationLocked(false);
+                    integrator.initiateScan();
+                }else{
+                    showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
+
+                }
             }
         }
         if (isFront) {
@@ -4919,11 +4976,17 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 showScanBackCameraDialog();
             }else{
                 //camera
-                isLoyaltyFrontQrSelected=true;
-                IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                integrator.setOrientationLocked(false);
-                integrator.setCameraId(1);
-                integrator.initiateScan();
+                if (checkPermission()) {
+                    isLoyaltyFrontQrSelected=true;
+                    IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                    integrator.setOrientationLocked(false);
+                    integrator.setCameraId(1);
+                    integrator.initiateScan();
+                }else{
+                    showMessageOK("You need to allow Permission access to Camera from Application Setting, Do you want to continue?");
+
+                }
+
             }
         }
         if (isTransactionDetails) {
