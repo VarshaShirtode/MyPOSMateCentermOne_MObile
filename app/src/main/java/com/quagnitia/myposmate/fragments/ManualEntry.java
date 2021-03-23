@@ -554,6 +554,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         intentFilter.addAction("PaymentExpressSuccess");
         intentFilter.addAction("PaymentExpressFailure");
         intentFilter.addAction("ScannedBackLoyaltyQr");
+        intentFilter.addAction("ScannedFrontLoyaltyQr");
         getActivity().registerReceiver(amountReceiver, intentFilter);
         bindService();
     }
@@ -1216,8 +1217,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         btn_front = view.findViewById(R.id.btn_front);
         rel_membership = view.findViewById(R.id.rel_membership);
         btn_cancel = view.findViewById(R.id.btn_cancel);
-        rel_orders=getActivity().findViewById(R.id.rel_orders);
-        rel_orders.setVisibility(View.VISIBLE);
+        /*rel_orders=getActivity().findViewById(R.id.rel_orders);
+        rel_orders.setVisibility(View.VISIBLE);*/
         btn_save1 = view.findViewById(R.id.btn_save1);
         btn_cancel1 = view.findViewById(R.id.btn_cancel1);
         edt_amount = view.findViewById(R.id.edt_amount);
@@ -1281,7 +1282,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         btn_loyalty_apps = view.findViewById(R.id.btn_loyalty_apps);
 
 
-            funcLoyaltyAppSwitches();
+      funcLoyaltyAppSwitches();
 
         funcNewUISwitchBasedOnPref();
 

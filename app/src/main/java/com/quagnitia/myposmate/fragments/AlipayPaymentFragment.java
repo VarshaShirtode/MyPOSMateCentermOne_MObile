@@ -730,7 +730,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         img_failure =  view.findViewById(R.id.img_failure);
         img =  getActivity().findViewById(R.id.img);
         rel_orders=  getActivity().findViewById(R.id.rel_orders);
-        rel_orders.setVisibility(View.GONE);
+        rel_orders.setEnabled(false);
         /*img.setVisibility(View.GONE);
         img.setClickable(false);
         img.setEnabled(false);
@@ -927,6 +927,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         if (okHttpHandler != null) {
             okHttpHandler.cancel(true);
         }
+        rel_orders.setEnabled(true);
     }
 
     @Override

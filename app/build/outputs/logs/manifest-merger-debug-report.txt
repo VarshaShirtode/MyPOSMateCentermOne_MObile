@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\23befd6bf53dda8c8f53cb589932c873\AndroidManifest.xml:2:1-11:12
 MERGED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ee2160c46a4875b99e229be9dec08359\AndroidManifest.xml:17:1-55:12
 MERGED from [com.android.support:appcompat-v7:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\0d51caf23d496c999894760c2ce57a6d\AndroidManifest.xml:17:1-22:12
@@ -14,12 +14,12 @@ MERGED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia\.grad
 MERGED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fcb47ae21d41ce24bd504d560a85a97c\AndroidManifest.xml:2:1-5:12
 MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\5dd336bba07dd715060779cca5cd9e68\AndroidManifest.xml:16:1-23:12
 MERGED from [com.android.support:support-v4:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\0c020028228b3243a4d94c278772f9d9\AndroidManifest.xml:17:1-22:12
-MERGED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-13:12
+MERGED from [:lib] E:\INFIDIGI_PROJECTS\1MPM\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-13:12
 MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.23] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\981c35a3466f3cc791a84da1b259418e\AndroidManifest.xml:2:1-9:12
 MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\b96d052a9eff43f2e6682480cb31154c\AndroidManifest.xml:15:1-20:12
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fc75e8b902774b1b687accef0a4aebda\AndroidManifest.xml:2:1-10:12
 MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\9822b0ef826976ec2aa08ea242974e72\AndroidManifest.xml:17:1-28:12
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:2:1-23:12
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:2:1-23:12
 MERGED from [com.android.support:support-fragment:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\3e3496625f40a7e1d26734cbf4d29970\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:animated-vector-drawable:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\05c9507f63988b3cc057d9245bfa91e9\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-core-ui:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\8facc100e8be3ed3f0d5db7a1f00dda7\AndroidManifest.xml:17:1-22:12
@@ -47,29 +47,29 @@ MERGED from [android.arch.lifecycle:livedata:1.1.1] C:\Users\quagnitia\.gradle\c
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\8b5493006b15631bd9288e621cff0a89\AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\1b484bf5be6e9a9ac8594ebf1108725e\AndroidManifest.xml:17:1-22:12
 MERGED from [pl.droidsonroids.relinker:relinker:1.4.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ad9b7a727293c4a0956b19d5989766a9\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
 	package
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:4:5-38
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:4:5-38
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:3:5-51
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:1-106:12
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:1-106:12
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:2:11-69
 uses-sdk
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:5-47
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\23befd6bf53dda8c8f53cb589932c873\AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\23befd6bf53dda8c8f53cb589932c873\AndroidManifest.xml:5:5-7:41
 MERGED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ee2160c46a4875b99e229be9dec08359\AndroidManifest.xml:19:5-43
@@ -90,8 +90,8 @@ MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagn
 MERGED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\5dd336bba07dd715060779cca5cd9e68\AndroidManifest.xml:17:5-42
 MERGED from [com.android.support:support-v4:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\0c020028228b3243a4d94c278772f9d9\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-v4:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\0c020028228b3243a4d94c278772f9d9\AndroidManifest.xml:20:5-44
-MERGED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
-MERGED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:lib] E:\INFIDIGI_PROJECTS\1MPM\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
+MERGED from [:lib] E:\INFIDIGI_PROJECTS\1MPM\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:7:5-9:41
 MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.23] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\981c35a3466f3cc791a84da1b259418e\AndroidManifest.xml:5:5-7:41
 MERGED from [pl.droidsonroids.gif:android-gif-drawable:1.2.23] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\981c35a3466f3cc791a84da1b259418e\AndroidManifest.xml:5:5-7:41
 MERGED from [io.reactivex.rxjava2:rxandroid:2.1.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\b96d052a9eff43f2e6682480cb31154c\AndroidManifest.xml:18:5-43
@@ -100,8 +100,8 @@ MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia\.gradle\cac
 MERGED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fc75e8b902774b1b687accef0a4aebda\AndroidManifest.xml:6:5-43
 MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\9822b0ef826976ec2aa08ea242974e72\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\9822b0ef826976ec2aa08ea242974e72\AndroidManifest.xml:20:5-44
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:7:5-9:41
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:7:5-9:41
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:7:5-9:41
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:7:5-9:41
 MERGED from [com.android.support:support-fragment:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\3e3496625f40a7e1d26734cbf4d29970\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-fragment:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\3e3496625f40a7e1d26734cbf4d29970\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:animated-vector-drawable:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\05c9507f63988b3cc057d9245bfa91e9\AndroidManifest.xml:20:5-44
@@ -156,90 +156,90 @@ MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia\.gradle\caches\
 MERGED from [android.arch.core:runtime:1.1.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\1b484bf5be6e9a9ac8594ebf1108725e\AndroidManifest.xml:20:5-44
 MERGED from [pl.droidsonroids.relinker:relinker:1.4.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ad9b7a727293c4a0956b19d5989766a9\AndroidManifest.xml:5:5-43
 MERGED from [pl.droidsonroids.relinker:relinker:1.4.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ad9b7a727293c4a0956b19d5989766a9\AndroidManifest.xml:5:5-43
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
-INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:5-47
+INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:5-47
 	android:targetSdkVersion
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:15-44
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:15-44
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:5:5-47
-		INJECTED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:5:5-47
+		INJECTED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:7:5-78
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:12:5-78
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:12:5-78
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:7:5-78
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:12:5-78
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:12:5-78
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:7:22-75
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:7:22-75
 uses-permission#android.permission.CPAYSDK_PRINTER_MODULE
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:8:5-81
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:8:5-81
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:8:22-78
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:8:22-78
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:9:5-79
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:9:5-79
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:9:22-76
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:9:22-76
 uses-permission#android.permission.INTERNET
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:10:5-67
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:11:5-67
-MERGED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:11:5-67
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:10:5-67
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:11:5-67
+MERGED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:11:5-67
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:10:22-64
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:10:22-64
 uses-permission#android.permission.ACCESS_WIFI_STATE
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:11:5-76
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:11:5-76
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:11:22-73
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:11:22-73
 uses-permission#com.wizarpos.paymentrouter.permission.WIZARPOS_PAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:14:5-90
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:14:5-90
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:14:22-87
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:14:22-87
 uses-permission#com.wizarpos.cardinfolink.CloudPosPaymentClient.permission.CLOUDPAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:15:5-107
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:15:5-107
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:15:22-104
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:15:22-104
 uses-permission#com.wizarpos.fjumspos.CloudPosPaymentClient.permission.CLOUDPAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:16:5-103
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:16:5-103
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:16:22-100
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:16:22-100
 uses-permission#com.wizarpos.allinpay_gd.payment.CloudPosPaymentClient.permission.CLOUDPAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:17:5-114
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:17:5-114
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:17:22-111
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:17:22-111
 uses-permission#com.unionpay.CloudPosPaymentClient.permission.CLOUDPAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:18:5-94
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:18:5-94
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:18:22-91
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:18:22-91
 uses-permission#com.wizarpos.cuppos.CloudPosPaymentClient.permission.CLOUDPAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:19:5-101
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:19:5-101
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:19:22-98
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:19:22-98
 uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.CLOUDPAY
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:20:5-107
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:20:5-107
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:20:22-104
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:20:22-104
 uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.REVERSE
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:21:5-106
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:21:5-106
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:21:22-103
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:21:22-103
 uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.CLOUDPAY_SIGN
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:22:5-112
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:22:5-112
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:22:22-109
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:22:22-109
 uses-permission#com.tesla.tunguska.cuppay.CloudPosPaymentClient.permission.REVERSE_SIGN
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:23:5-111
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:23:5-111
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:23:22-108
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:23:22-108
 uses-permission#android.permission.CLOUDPOS_PUSHSERVICE
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:24:5-79
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:24:5-79
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:24:22-76
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:24:22-76
 uses-permission#android.permission.CPAYSDK_QUICK_SCAN
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:25:5-77
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:25:5-77
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:25:22-74
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:25:22-74
 application
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:27:5-104:19
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:27:5-104:19
 REJECTED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\23befd6bf53dda8c8f53cb589932c873\AndroidManifest.xml:9:5-20
 REJECTED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ee2160c46a4875b99e229be9dec08359\AndroidManifest.xml:45:5-53:19
 REJECTED from [com.google.android.gms:play-services-appindexing:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\da216704adb11ea7466b6e6cb9242a0b\AndroidManifest.xml:18:5-19
@@ -248,146 +248,146 @@ REJECTED from [com.google.android.gms:play-services-base:9.8.0] C:\Users\quagnit
 REJECTED from [com.google.firebase:firebase-common:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\eeb85b17c7cf22bdc68c8eefb14bfb75\AndroidManifest.xml:4:5-7:19
 REJECTED from [com.google.android.gms:play-services-tasks:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fcb47ae21d41ce24bd504d560a85a97c\AndroidManifest.xml:4:5-19
 REJECTED from [com.google.android.gms:play-services-basement:9.8.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\5dd336bba07dd715060779cca5cd9e68\AndroidManifest.xml:19:5-21:19
-REJECTED from [:lib] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:5-20
+REJECTED from [:lib] E:\INFIDIGI_PROJECTS\1MPM\lib\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:11:5-20
 REJECTED from [com.jakewharton.timber:timber:4.5.1] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\fc75e8b902774b1b687accef0a4aebda\AndroidManifest.xml:8:5-20
 REJECTED from [com.android.support:recyclerview-v7:26.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\9822b0ef826976ec2aa08ea242974e72\AndroidManifest.xml:22:5-26:19
-REJECTED from [:printer-utils] E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\printer-utils\build\.transforms\b30267489e57aade018651f37caecc25\AndroidManifest.xml:14:5-21:19
+REJECTED from [:printer-utils] E:\INFIDIGI_PROJECTS\1MPM\printer-utils\build\.transforms\944ee7d67383d85c59564670e0948984\AndroidManifest.xml:14:5-21:19
 REJECTED from [com.android.support:support-compat:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\debe3ff70e1221512a4f2db92744b9ee\AndroidManifest.xml:22:5-94
 REJECTED from [com.android.support:versionedparcelable:28.0.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\7ea74bf61a52334ed3629a97f2a5fcce\AndroidManifest.xml:22:5-23:19
 	tools:node
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:33:9-29
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:33:9-29
 	android:supportsRtl
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:32:9-35
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:32:9-35
 	android:label
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:31:9-41
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:31:9-41
 	tools:overrideLibrary
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:35:9-49
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:35:9-49
 	android:icon
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:30:9-43
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:30:9-43
 	android:allowBackup
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:29:9-36
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:29:9-36
 	android:theme
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:34:9-40
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:34:9-40
 	tools:replace
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:36:9-44
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:36:9-44
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:28:9-68
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:28:9-68
 activity#com.quagnitia.myposmate.activities.OrderDetailsActivity
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:37:9-40:25
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:37:9-40:25
 	android:windowSoftInputMode
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:38:13-65
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:38:13-65
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:39:13-47
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:39:13-47
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:37:19-89
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:37:19-89
 activity#com.quagnitia.myposmate.activities.SplashScreen
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:41:9-50:20
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:41:9-50:20
 	android:screenOrientation
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:43:13-49
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:43:13-49
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:44:13-47
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:44:13-47
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:42:13-75
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:42:13-75
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:45:13-49:29
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:45:13-49:29
 action#android.intent.action.MAIN
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:46:17-69
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:46:17-69
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:46:25-66
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:46:25-66
 category#android.intent.category.LAUNCHER
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:48:17-77
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:48:17-77
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:48:27-74
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:48:27-74
 activity#com.quagnitia.myposmate.activities.WelcomeScreen
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:51:9-54:49
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:51:9-54:49
 	android:screenOrientation
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:53:13-49
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:53:13-49
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:54:13-47
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:54:13-47
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:52:13-76
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:52:13-76
 activity#com.quagnitia.myposmate.activities.DashboardActivity
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:55:9-61:49
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:55:9-61:49
 	android:screenOrientation
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:59:13-49
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:59:13-49
 	android:windowSoftInputMode
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:60:13-65
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:60:13-65
 	android:exported
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:58:13-36
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:58:13-36
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:61:13-47
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:61:13-47
 	android:configChanges
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:57:13-59
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:57:13-59
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:56:13-80
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:56:13-80
 meta-data#com.google.android.gms.version
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:66:9-68:69
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:66:9-68:69
 	android:value
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:68:13-66
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:68:13-66
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:67:13-58
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:67:13-58
 activity#com.journeyapps.barcodescanner.CaptureActivity
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:70:9-73:49
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:70:9-73:49
 	android:screenOrientation
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:72:13-51
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:72:13-51
 	tools:replace
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:73:13-46
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:73:13-46
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:71:13-74
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:71:13-74
 activity#com.quagnitia.myposmate.activities.UnionPayActivity
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:75:9-125
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:75:9-125
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:75:88-122
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:75:88-122
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:75:19-85
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:75:19-85
 activity#com.quagnitia.myposmate.activities.UnionPayScreen
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:76:9-123
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:76:9-123
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:76:87-121
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:76:87-121
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:76:19-83
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:76:19-83
 activity#com.quagnitia.myposmate.fragments.TransactionDetailsActivity
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:77:9-134
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:77:9-134
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:77:98-132
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:77:98-132
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:77:19-94
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:77:19-94
 activity#com.quagnitia.myposmate.activities.TimeZoneActivity
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:78:9-125
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:78:9-125
 	android:resizeableActivity
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:78:89-123
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:78:89-123
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:78:19-85
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:78:19-85
 receiver#com.quagnitia.myposmate.utils.NetworkChangeReceiver
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:83:9-92:20
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:83:9-92:20
 	android:enabled
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:85:13-35
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:85:13-35
 	android:exported
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:86:13-36
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:86:13-36
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:84:13-79
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:84:13-79
 intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE+action:name:android.net.wifi.STATE_CHANGED+action:name:android.net.wifi.WIFI_STATE_CHANGED
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:87:13-91:29
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:87:13-91:29
 action#android.net.conn.CONNECTIVITY_CHANGE
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:88:17-79
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:88:17-79
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:88:25-76
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:88:25-76
 action#android.net.wifi.WIFI_STATE_CHANGED
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:89:17-78
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:89:17-78
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:89:25-75
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:89:25-75
 action#android.net.wifi.STATE_CHANGED
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:90:17-73
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:90:17-73
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:90:25-70
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:90:25-70
 receiver#com.quagnitia.myposmate.utils.ConnectivityReceiver
-ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:94:9-103:20
+ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:94:9-103:20
 	android:enabled
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:96:13-35
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:96:13-35
 	android:exported
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:97:13-36
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:97:13-36
 	android:name
-		ADDED from E:\MPM\MyPOSMateCentermOne_2122021\MyPOSMateCentermOne\app\src\main\AndroidManifest.xml:95:13-78
+		ADDED from E:\INFIDIGI_PROJECTS\1MPM\app\src\main\AndroidManifest.xml:95:13-78
 uses-permission#android.permission.CAMERA
 ADDED from [com.journeyapps:zxing-android-embedded:3.4.0] C:\Users\quagnitia\.gradle\caches\transforms-2\files-2.1\ee2160c46a4875b99e229be9dec08359\AndroidManifest.xml:21:5-65
 	android:name

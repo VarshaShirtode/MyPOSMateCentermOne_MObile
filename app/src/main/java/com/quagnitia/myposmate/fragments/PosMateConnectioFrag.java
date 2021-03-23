@@ -94,6 +94,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     public static boolean isLoyaltyQrSelectedPos=false;
     public static boolean isLoyaltyFrontQrSelectedPos=false;
     RefundReceiver refundReceiver;
+    RelativeLayout rel_orders;
 
     public static PosMateConnectioFrag newInstance(String param1, String param2) {
         PosMateConnectioFrag fragment = new PosMateConnectioFrag();
@@ -190,6 +191,10 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         btn_back1.setOnClickListener(this);
         btn_front1.setOnClickListener(this);
         btn_loyalty_apps.setOnClickListener(this);
+
+       /* rel_orders=getActivity().findViewById(R.id.rel_orders);
+        rel_orders.setVisibility(View.VISIBLE);*/
+
 //        if (!preferencesManager.isLoyality()) {
 //            tv_status_scan.setVisibility(View.INVISIBLE);
 //            tv_status_scan_button.setVisibility(View.GONE);
@@ -227,7 +232,55 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         funcLoyaltyAppSwitches();
         
     }
-    public void funcLoyaltyAppSwitches() {
+    public void innerCall()
+    {
+        if (preferencesManager.isFront() &&
+                preferencesManager.isBack() &&
+                preferencesManager.isDisplayLoyaltyApps()) {
+            view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+            ll_membership_loyalty_app.setWeightSum(3);
+            tv_status_scan_button1.setVisibility(View.VISIBLE);
+            tv_status_scan_button2.setVisibility(View.VISIBLE);
+            btn_loyalty_apps.setVisibility(View.VISIBLE);
+            btn_back1.setVisibility(View.VISIBLE);
+            btn_front1.setVisibility(View.VISIBLE);
+        } else if (!preferencesManager.isFront() &&
+                preferencesManager.isBack() &&
+                preferencesManager.isDisplayLoyaltyApps()) {
+            view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+            ll_membership_loyalty_app.setWeightSum(2);
+            tv_status_scan_button1.setVisibility(View.VISIBLE);
+            tv_status_scan_button2.setVisibility(View.GONE);
+            btn_loyalty_apps.setVisibility(View.VISIBLE);
+            btn_back1.setVisibility(View.VISIBLE);
+            btn_front1.setVisibility(View.GONE);
+        } else if (preferencesManager.isFront() &&
+                !preferencesManager.isBack() &&
+                preferencesManager.isDisplayLoyaltyApps()) {
+            view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+            view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+            ll_membership_loyalty_app.setWeightSum(2);
+            tv_status_scan_button1.setVisibility(View.GONE);
+            tv_status_scan_button2.setVisibility(View.VISIBLE);
+            btn_loyalty_apps.setVisibility(View.VISIBLE);
+            btn_back1.setVisibility(View.GONE);
+            btn_front1.setVisibility(View.VISIBLE);
+        } else if (!preferencesManager.isFront() &&
+                !preferencesManager.isBack() &&
+                preferencesManager.isDisplayLoyaltyApps()) {
+            view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+            view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+            ll_membership_loyalty_app.setWeightSum(1);
+            tv_status_scan_button1.setVisibility(View.GONE);
+            tv_status_scan_button2.setVisibility(View.GONE);
+            btn_loyalty_apps.setVisibility(View.VISIBLE);
+            btn_back1.setVisibility(View.GONE);
+            btn_front1.setVisibility(View.GONE);
+        }
+    }
+    public void funcLoyaltyAppSwitches(){
         Log.v("DisplayChoice","App "+preferencesManager.isDisplayLoyaltyApps());
         Log.v("DisplayChoice","Front "+preferencesManager.isFront());
         Log.v("DisplayChoice","Back "+preferencesManager.isBack());

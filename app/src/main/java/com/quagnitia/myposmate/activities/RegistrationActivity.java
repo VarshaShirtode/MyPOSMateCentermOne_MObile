@@ -119,7 +119,7 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
                         edt_access_id.setError("Please enter access id");
 
                     if (edt_merchant_id.getText().toString().equals(""))
-                        edt_merchant_id.setError("Please enter merchant id");
+                        edt_merchant_id.setError("Please enter branch id");
 
 //                    if (edt_terminal_id.getText().toString().equals(""))
 //                        edt_terminal_id.setError("Please enter terminal id");

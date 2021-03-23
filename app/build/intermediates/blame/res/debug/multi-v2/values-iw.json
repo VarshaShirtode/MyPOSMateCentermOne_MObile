@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "E:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-iw\\values-iw.xml",
+            "outputFile": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-iw\\values-iw.xml",
             "map": [
                 {
                     "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\5dd336bba07dd715060779cca5cd9e68\\res\\values-iw\\values.xml",

@@ -190,7 +190,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private EditText edt_up_upi_qr_amount;
     private TextView upi_note;
     JSONObject jsonObjectLoyalty;
-    private RelativeLayout rel_orders;
+    public RelativeLayout rel_orders;
     MySoundPlayer mySoundPlayer;
 
     @Override

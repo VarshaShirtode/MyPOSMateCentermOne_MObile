@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -1474,12 +1475,16 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                         preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                         preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
                     }
-
+                    ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     //  initChat(jsonObject.optString("terminal_xmpp_jid").toString(),jsonObject.optString("terminal_xmpp_password").toString());
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                 } else {
+                    preferencesManager.setuniqueId("");
+                    preferencesManager.clearPreferences();
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS,null);
+                    ((DashboardActivity) getActivity()).img_menu.setEnabled(false);
                     Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
-                }
+                  }
 
                 if (preferencesManager.is_cnv_alipay_display_and_add() ||
                         preferencesManager.is_cnv_alipay_display_only()) {
@@ -1506,6 +1511,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             e.printStackTrace();
         }
         return new String(bytes, "UTF-8");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((DashboardActivity) getActivity()).rel_orders.setVisibility(View.VISIBLE);
     }
 
 }

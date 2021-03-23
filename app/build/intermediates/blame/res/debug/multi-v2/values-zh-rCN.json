@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "E:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-zh-rCN\\values-zh-rCN.xml",
+            "outputFile": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-zh-rCN\\values-zh-rCN.xml",
             "map": [
                 {
                     "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\dd4f2545d6741ee3e6d68172f73dcdf9\\res\\values-zh-rCN\\values.xml",
@@ -18,23 +18,6 @@
                         "startOffsets": "2714,2817,2978,3095,3199,3363,3481,3760,3927,4030,4191,4308,4471,4609,4695,4782",
                         "endColumns": "102,160,116,103,163,117,120,166,102,160,116,162,137,85,86,102",
                         "endOffsets": "2812,2973,3090,3194,3358,3476,3597,3922,4025,4186,4303,4466,4604,4690,4777,4880"
-                    }
-                },
-                {
-                    "source": "E:\\MPM\\MyPOSMateCentermOne_2122021\\MyPOSMateCentermOne\\printer-utils\\build\\.transforms\\b30267489e57aade018651f37caecc25\\res\\values-zh-rCN\\values-zh-rCN.xml",
-                    "from": {
-                        "startLines": "2,3,4,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,103,201,275",
-                        "endColumns": "47,97,73,73",
-                        "endOffsets": "98,196,270,344"
-                    },
-                    "to": {
-                        "startLines": "29,47,48,49",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "2666,4885,4983,5057",
-                        "endColumns": "47,97,73,73",
-                        "endOffsets": "2709,4978,5052,5126"
                     }
                 },
                 {
@@ -86,6 +69,23 @@
                         "startOffsets": "105,201,296,396,478,575,681,757,833,924,1017,1115,1211,1306,1399,1494,1586,1677,1768,1846,1942,2038,2133,2230,2325,2423,2572,5131",
                         "endColumns": "95,94,99,81,96,105,75,75,90,92,97,95,94,92,94,91,90,90,77,95,95,94,96,94,97,148,93,77",
                         "endOffsets": "196,291,391,473,570,676,752,828,919,1012,1110,1206,1301,1394,1489,1581,1672,1763,1841,1937,2033,2128,2225,2320,2418,2567,2661,5204"
+                    }
+                },
+                {
+                    "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\printer-utils\\build\\.transforms\\944ee7d67383d85c59564670e0948984\\res\\values-zh-rCN\\values-zh-rCN.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,103,201,275",
+                        "endColumns": "47,97,73,73",
+                        "endOffsets": "98,196,270,344"
+                    },
+                    "to": {
+                        "startLines": "29,47,48,49",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "2666,4885,4983,5057",
+                        "endColumns": "47,97,73,73",
+                        "endOffsets": "2709,4978,5052,5126"
                     }
                 },
                 {
