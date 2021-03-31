@@ -548,6 +548,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
         hashMapKeys.put("hubID", getIntent().getStringExtra("hub_id"));
         hashMapKeys.put("myPOSMateOrderID", getIntent().getStringExtra("myPOSMateOrderID"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
+        Log.v("ORDERDETAILS","hubid-"+getIntent().getStringExtra("hub_id"));
+        Log.v("ORDERDETAILS","order-"+getIntent().getStringExtra("myPOSMateOrderID"));
         new OkHttpHandler(this, this, null, "OrderDetails")
                 .execute(AppConstants.BASE_URL3 + AppConstants.ORDER_DETAILS
                         + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferencesManager.getauthToken());

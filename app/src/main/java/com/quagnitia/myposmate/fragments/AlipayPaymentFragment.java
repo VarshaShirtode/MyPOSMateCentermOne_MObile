@@ -121,9 +121,11 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
             qrcode = jsonObject.optString("codeUrl");//+"&access_token="+preferenceManager.getauthToken();
             payment_mode = getArguments().getString(ARG_PARAM2);
+            Log.v("QR","yes Qr"+ qrcode);
         } else {
             qrcode = "";
             payment_mode = "";
+            Log.v("QR","No Qr");
         }
         initLoader();
         initUI(view);
@@ -358,6 +360,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
     public void onTaskCompleted(String result, String TAG) throws Exception {
 
         JSONObject jsonObject = new JSONObject(result);
+        Log.v("ALIPAYRESPOSNE",TAG+ " "+jsonObject.toString());
         switch (TAG) {
             case "updateRequest":
                 _parseUpdateRequest(jsonObject);
@@ -451,6 +454,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         callAuthToken();
         if (progress != null)
             progress.dismiss();
+
         if (jsonObject.optBoolean("status")) {
             countDownTimer11.cancel();
             isCloseTradeFinished = true;

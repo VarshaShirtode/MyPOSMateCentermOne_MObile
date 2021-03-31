@@ -127,7 +127,7 @@ if(!isTimerCalled)
                     conn.setDoOutput(true);
                     OutputStream os = conn.getOutputStream();
                     Log.v(TAG + " Request", postDataParams.toString());
-                    Log.v("TOKENResponse",TAG + " Request "+ postDataParams.toString());
+                  //  Log.v("TOKENRESPONSE",TAG + " Request "+ postDataParams.toString());
                     BufferedWriter writer = new BufferedWriter(
                             new OutputStreamWriter(os, "UTF-8"));
                     writer.write(getPostDataString(postDataParams));
@@ -138,7 +138,10 @@ if(!isTimerCalled)
 
             } else {
                 conn.setRequestMethod("GET");
+                Log.v("TOKENRESPONSE",TAG + " Request GET"+requestURL);
             }
+           // Log.v("TOKENRESPONSE",TAG + " Request "+ postDataParams.toString());
+
             String line;
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
@@ -157,7 +160,7 @@ if(!isTimerCalled)
 
 
             Log.v("Response:" + TAG, response);
-            Log.v("TOKENREQUEST",TAG + " Request "+ postDataParams.toString());
+            Log.v("TOKENRESPONSE",TAG + " Request "+ postDataParams.toString());
 
         } catch (SocketTimeoutException s) {
 
