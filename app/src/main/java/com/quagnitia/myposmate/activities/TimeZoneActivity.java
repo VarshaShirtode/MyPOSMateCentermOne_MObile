@@ -289,7 +289,22 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     if (jsonObject1.has("MerchantId"))
                         preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
 
+                    ArrayList tipList=new ArrayList();
+                    tipList.add(jsonObject1.optString("DefaultTip1"));
+                    tipList.add(jsonObject1.optString("DefaultTip2"));
+                    tipList.add(jsonObject1.optString("DefaultTip3"));
+                    tipList.add(jsonObject1.optString("DefaultTip4"));
+                    tipList.add(jsonObject1.optString("DefaultTip5"));
+                    preferenceManager.setTipPercentage("Tip",tipList);
 
+                    preferenceManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+
+                    preferenceManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferenceManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferenceManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
 
                     preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));

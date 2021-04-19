@@ -113,13 +113,17 @@
             android:paddingLeft="10dp"
             android:text="Terminal Settings"
             android:textColor="@color/colorBlack"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+             android:visibility="gone"
+             />
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/tv_timezone"
@@ -129,13 +133,17 @@
             android:paddingLeft="10dp"
             android:text="Timezone Setting"
             android:textColor="@color/colorBlack"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="gone"
+            />
 
 
         <TextView
@@ -146,12 +154,16 @@
             android:paddingLeft="10dp"
             android:text="Display Choices"
             android:textColor="@color/colorBlack"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/tv_payment_choices"
@@ -161,12 +173,16 @@
             android:paddingLeft="10dp"
             android:text="Payment Choices"
             android:textColor="@color/colorBlack"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/tv_about"
@@ -176,13 +192,17 @@
             android:paddingLeft="10dp"
             android:text="Branch Details"
             android:textColor="@color/colorBlack"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="gone"
+            />-->
 
         <RelativeLayout
             android:id="@+id/rel_refund"
@@ -275,7 +295,21 @@
             android:layout_height="0.5dp"
             android:background="@color/colorLine" />
 
+        <TextView
+            android:id="@+id/tv_settingMenu"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:text="Settings Menus"
+            android:textColor="@color/colorBlack"
+            android:textSize="15sp" />
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorLine" />
         <TextView
             android:id="@+id/tv_close"
             android:layout_width="match_parent"

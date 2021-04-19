@@ -7,7 +7,6 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
 >
     <Button
         android:id="@+id/btn_cancel"
@@ -58,6 +57,21 @@
                     android:textStyle="bold" />
 
 
+               <!-- <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_amount"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center|right"
+                    android:inputType="numberDecimal"
+                    android:maxLength="16"
+                    android:text="0.00"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:locale="en_US" />-->
+
                 <com.quagnitia.myposmate.utils.CurrencyEditText
                     android:id="@+id/edt_amount"
                     style="@style/EditTextStyle"
@@ -71,7 +85,9 @@
                     android:text="0.00"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    app:locale="en_US" />
+                    app:locale="en_US"
+                    />
+
 
 
             </LinearLayout>

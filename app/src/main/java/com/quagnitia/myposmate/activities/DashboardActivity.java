@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -80,6 +81,7 @@ import com.quagnitia.myposmate.fragments.RefundFragmentUnionPay;
 
 import com.quagnitia.myposmate.fragments.Settings;
 import com.quagnitia.myposmate.fragments.Settlement;
+import com.quagnitia.myposmate.fragments.TipSetting;
 import com.quagnitia.myposmate.fragments.TransactionDetailsActivity;
 import com.quagnitia.myposmate.fragments.TransactionListing;
 import com.quagnitia.myposmate.fragments.TriggerFragment;
@@ -97,6 +99,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -192,6 +195,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     JSONObject jsonObjectLoyalty;
     public RelativeLayout rel_orders;
     MySoundPlayer mySoundPlayer;
+    private TextView tv_settingMenu;
+    private PopupWindow mPopupWindows;
+    private TextView tv_tip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -552,6 +558,8 @@ showMessageOK("You have previously declined this permission.\n" +
             if (mPopupWindow.isShowing()) {
                 mPopupWindow.dismiss();
             }
+            if (mPopupWindows.isShowing())
+                mPopupWindows.dismiss();
             v.performClick();
             return false;
         });
@@ -570,7 +578,7 @@ showMessageOK("You have previously declined this permission.\n" +
     }
 
     public enum SCREENS {
-        POSMATECONNECTION, ORDERS, LOYALTY_APPS, SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP
+        POSMATECONNECTION, ORDERS, LOYALTY_APPS, SETTINGS, THIRD_PARTY, SETTLEMEMT, MANUALENTRY, TRANSACTION_LIST, EOD, REGISTRATION, REFUND, REFUND_UNIONPAY, ALIPAYPAYMENT, PAYMENTPROCESSING, ABOUT, HELP,TIP
     }
 
 
@@ -691,6 +699,7 @@ showMessageOK("You have previously declined this permission.\n" +
             e.printStackTrace();
         }
         displayMenu();
+        displaySubMenu();
     }
 
     public void initListener() {
@@ -743,8 +752,50 @@ showMessageOK("You have previously declined this permission.\n" +
         tv_display_choices.setOnClickListener((View v) -> funcMenuDisplayChoices());
         tv_payment_choices.setOnClickListener((View v) -> funcMenuPaymentChoices());
         tv_orders.setOnClickListener((View v) -> funcOrders());
+        tv_settingMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_settingMenu.setTextColor(Color.parseColor("#1565C0"));
+
+                final float scale = getResources().getDisplayMetrics().density;
+                int width = (int) (150 * scale + 0.5f);
+                int height = (int) (75 * scale + 0.5f);
+                mPopupWindows.showAtLocation(inner_frame, Gravity.LEFT, width, height);
+            }
+        });
     }
 
+    public void displaySubMenu() {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View customView = inflater.inflate(R.layout.pop_window_layout_sub, null);
+        final float scale = getResources().getDisplayMetrics().density;
+        int width = (int) (150 * scale + 0.5f);
+        mPopupWindows = new PopupWindow(
+                customView,
+                width,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        funcInitiateDisplaySubMenuViews(customView);
+
+        tv_timezone.setOnClickListener((View v) -> funcMenuTimezone());
+        tv_settings.setOnClickListener((View v) -> funcMenuSettings());
+        tv_about.setOnClickListener((View v) -> funcMenuAbout());
+        tv_display_choices.setOnClickListener((View v) -> funcMenuDisplayChoices());
+        tv_payment_choices.setOnClickListener((View v) -> funcMenuPaymentChoices());
+        tv_tip.setOnClickListener((View v) -> funcMenuTipSetting());
+
+    }
+
+    private void funcInitiateDisplaySubMenuViews(View customView) {
+        tv_timezone = customView.findViewById(R.id.tv_timezone);
+        tv_settings = customView.findViewById(R.id.tv_settings);
+        tv_about = customView.findViewById(R.id.tv_about);
+        tv_display_choices = customView.findViewById(R.id.tv_display_choices);
+        tv_payment_choices = customView.findViewById(R.id.tv_payment_choices);
+        tv_tip=customView.findViewById(R.id.tv_tip);
+        inner_frame = (FrameLayout) findViewById(R.id.inner_frame);
+    }
 
     public void funcOrders() {
         callAuthToken();
@@ -753,6 +804,8 @@ showMessageOK("You have previously declined this permission.\n" +
         tv_order_badge.setVisibility(View.GONE);
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         //  if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.ORDERS, null);
 //        } else {
@@ -761,6 +814,8 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcInitiateDisplayMenuViews(View customView) {
@@ -781,6 +836,8 @@ showMessageOK("You have previously declined this permission.\n" +
         tv_close = customView.findViewById(R.id.tv_close);
         tv_display_choices = customView.findViewById(R.id.tv_display_choices);
         tv_payment_choices = customView.findViewById(R.id.tv_payment_choices);
+        tv_settingMenu = customView.findViewById(R.id.tv_settingMenu);
+
         inner_frame = (FrameLayout) findViewById(R.id.inner_frame);
         tv_refund_unipay.setVisibility(View.GONE);
         tv_refund.setVisibility(View.GONE);
@@ -790,7 +847,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
-
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         //   if (preferencesManager.isAuthenticated()) {
 
 
@@ -884,6 +942,8 @@ showMessageOK("You have previously declined this permission.\n" +
 
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
+            if (mPopupWindows.isShowing())
+                mPopupWindows.dismiss();
             return;
         }
     }
@@ -893,6 +953,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
 
         final Dialog dialog = new Dialog(DashboardActivity.this);
         dialog.setCancelable(false);
@@ -963,6 +1025,8 @@ showMessageOK("You have previously declined this permission.\n" +
 
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
+            if (mPopupWindows.isShowing())
+                mPopupWindows.dismiss();
             return;
         }
     }
@@ -971,6 +1035,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
 
         final Dialog dialog = new Dialog(DashboardActivity.this);
         dialog.setCancelable(false);
@@ -1031,6 +1097,8 @@ showMessageOK("You have previously declined this permission.\n" +
 
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
+            if (mPopupWindows.isShowing())
+                mPopupWindows.dismiss();
             return;
         }
     }
@@ -1040,6 +1108,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         // if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.SETTLEMEMT, null);
 //        } else {
@@ -1047,6 +1117,8 @@ showMessageOK("You have previously declined this permission.\n" +
 //        }
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
+            if (mPopupWindows.isShowing())
+                mPopupWindows.dismiss();
             return;
         }
     }
@@ -1058,6 +1130,8 @@ showMessageOK("You have previously declined this permission.\n" +
 
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         // if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.REFUND_UNIONPAY, null);
 //        } else {
@@ -1066,12 +1140,16 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuTimezone() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
 
         Intent i = new Intent(DashboardActivity.this, TimeZoneActivity.class);
         startActivity(i);
@@ -1079,6 +1157,8 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
 
@@ -1086,6 +1166,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         //  if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.EOD, null);
 //        } else {
@@ -1094,12 +1176,16 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void functionMenuTransactionLog() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         // if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.TRANSACTION_LIST, null);
 //        } else {
@@ -1108,12 +1194,16 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuHome() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         // if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.POSMATECONNECTION, null);
 //        } else {
@@ -1122,6 +1212,8 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public static boolean isRefundOptionOpen = false;
@@ -1130,6 +1222,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         // if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.REFUND, null);
 //        } else {
@@ -1138,12 +1232,17 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuScan() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         if (preferencesManager.isAuthenticated()) {
             callSetupFragment(SCREENS.MANUALENTRY, "Scan");
         } else {
@@ -1152,12 +1251,16 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuManualEntry() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         //  if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.MANUALENTRY, null);
 //        } else {
@@ -1166,22 +1269,31 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuSettings() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         callSetupFragment(SCREENS.SETTINGS, null);
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuHelp() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
         if (preferencesManager.isAuthenticated()) {
             callSetupFragment(SCREENS.HELP, null);
         } else {
@@ -1190,6 +1302,8 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
 
     }
 
@@ -1197,6 +1311,8 @@ showMessageOK("You have previously declined this permission.\n" +
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
 //        if (preferencesManager.isAuthenticated()) {
         callSetupFragment(SCREENS.ABOUT, null);
 //        } else {
@@ -1205,12 +1321,187 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
+    }
+
+    public void funcMenuTipSetting() {
+        callAuthToken();
+        //  if (preferencesManager.isAuthenticated()) {
+        final Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.fragment_tipsetting, null);
+        CheckBox chk_switchTip,chk_default1,chk_default2,chk_default3,chk_default4,chk_default5,chk_custom;
+        chk_switchTip= dialogview.findViewById(R.id.chk_switchTip);
+        chk_default1= dialogview.findViewById(R.id.chk_default1);
+        chk_default2= dialogview.findViewById(R.id.chk_default2);
+        chk_default3= dialogview.findViewById(R.id.chk_default3);
+        chk_default4= dialogview.findViewById(R.id.chk_default4);
+        chk_default5= dialogview.findViewById(R.id.chk_default5);
+        chk_custom= dialogview.findViewById(R.id.chk_custom);
+        EditText edt_default1,edt_default2,edt_default3,edt_default4,edt_default5;
+        edt_default1= dialogview.findViewById(R.id.edt_default1);
+        edt_default2= dialogview.findViewById(R.id.edt_default2);
+        edt_default3= dialogview.findViewById(R.id.edt_default3);
+        edt_default4= dialogview.findViewById(R.id.edt_default4);
+        edt_default5= dialogview.findViewById(R.id.edt_default5);
+
+
+
+        if (preferenceManager.isSwitchTip())
+        {
+            chk_switchTip.setChecked(true);
+        }else{
+            chk_switchTip.setChecked(false);
+        }
+
+        if (preferenceManager.isTipDefault1())
+        {
+            chk_default1.setChecked(true);
+        }else{
+            chk_default1.setChecked(false);
+        }
+
+        if (preferenceManager.isTipDefault2())
+        {
+            chk_default2.setChecked(true);
+        }else{
+            chk_default2.setChecked(false);
+        }
+
+        if (preferenceManager.isTipDefault3())
+        {
+            chk_default3.setChecked(true);
+        }else{
+            chk_default3.setChecked(false);
+        }
+
+        if (preferenceManager.isTipDefault4())
+        {
+            chk_default4.setChecked(true);
+        }else{
+            chk_default4.setChecked(false);
+        }
+
+        if (preferenceManager.isTipDefault5())
+        {
+            chk_default5.setChecked(true);
+        }else{
+            chk_default5.setChecked(false);
+        }
+
+        if (preferenceManager.isTipDefaultCustom())
+        {
+            chk_custom.setChecked(true);
+        }else{
+            chk_custom.setChecked(false);
+        }
+        Button btn_save_and_ok = dialogview.findViewById(R.id.btn_save_and_ok);
+        Button btn_cancel_and_close = dialogview.findViewById(R.id.btn_cancel_and_close);
+
+        btn_cancel_and_close.setOnClickListener((View v) -> {
+            dialog.dismiss();
+            // callGetBranchDetails_new();
+        });
+
+        btn_save_and_ok.setOnClickListener((View v) -> {
+            String def1=edt_default1.getText().toString().trim();
+            String def2=edt_default2.getText().toString().trim();
+            String def3=edt_default3.getText().toString().trim();
+            String def4=edt_default4.getText().toString().trim();
+            String def5=edt_default5.getText().toString().trim();
+
+
+
+           /* preferenceManager.setTipDefault1(def1);
+            preferenceManager.setTipDefault2(def2);
+            preferenceManager.setTipDefault3(def3);
+            preferenceManager.setTipDefault4(def4);
+            preferenceManager.setTipDefault5(def5);*/
+            ArrayList tipList=new ArrayList();
+            tipList.add(def1);
+            tipList.add(def2);
+            tipList.add(def3);
+            tipList.add(def4);
+            tipList.add(def5);
+            preferenceManager.setTipPercentage("Tip",tipList);
+            if (chk_switchTip.isChecked())
+            {
+                preferenceManager.setisSwitchTip(true);
+            }else{
+                preferenceManager.setisSwitchTip(false);
+            }
+
+            if (chk_default1.isChecked())
+            {
+                preferenceManager.setisTipDefault1(true);
+            }else{
+                preferenceManager.setisTipDefault1(false);
+            }
+
+            if (chk_default2.isChecked())
+            {
+                preferenceManager.setisTipDefault2(true);
+            }else{
+                preferenceManager.setisTipDefault2(false);
+            }
+
+            if (chk_default3.isChecked())
+            {
+                preferenceManager.setisTipDefault3(true);
+            }else{
+                preferenceManager.setisTipDefault3(false);
+            }
+
+            if (chk_default4.isChecked())
+            {
+                preferenceManager.setisTipDefault4(true);
+            }else{
+                preferenceManager.setisTipDefault4(false);
+            }
+
+            if (chk_default5.isChecked())
+            {
+                preferenceManager.setisTipDefault5(true);
+            }else{
+                preferenceManager.setisTipDefault5(false);
+            }
+
+            if (chk_custom.isChecked())
+            {
+                preferenceManager.setisTipDefaultCustom(true);
+            }else{
+                preferenceManager.setisTipDefaultCustom(false);
+            }
+
+            callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
+            dialog.dismiss();
+        });
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+        if (mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+        }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     public void funcMenuClose() {
         callAuthToken();
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
 //        finish();
         if (openFragmentsReceiver != null)
             unregisterReceiver(openFragmentsReceiver);
@@ -1648,6 +1939,8 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
 
@@ -1696,6 +1989,8 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
         }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
     }
 
     //Method for initializing all the views of payment choices option.
@@ -3833,10 +4128,10 @@ showMessageOK("You have previously declined this permission.\n" +
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            Double upilowerFee = edt_up_upi_qr_cv.getText().toString().isEmpty() ? 0.00 :
+           /* Double upilowerFee = edt_up_upi_qr_cv.getText().toString().isEmpty() ? 0.00 :
                     Double.parseDouble(edt_up_upi_qr_cv.getText().toString());
             Double upihigherFee = edt_up_upi_qr_cv1.getText().toString().isEmpty() ? 0.00 :
-                    Double.parseDouble(edt_up_upi_qr_cv1.getText().toString());
+                    Double.parseDouble(edt_up_upi_qr_cv1.getText().toString());*/
             switch (editText.getId()) {
                 case R.id.edt_centrapay_cv:
                 case R.id.edt_poli_cv:
@@ -3968,6 +4263,21 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("CentrapayFeeValue", preferenceManager.getcnv_centrapay());
             jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
             jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
+
+            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+            jsonObject.put("DefaultTip1", tipList.get(0));
+            jsonObject.put("DefaultTip2", tipList.get(1));
+            jsonObject.put("DefaultTip3", tipList.get(2));
+            jsonObject.put("DefaultTip4", tipList.get(3));
+            jsonObject.put("DefaultTip5", tipList.get(4));
+            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
+            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
+            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
+            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
+            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
+            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -4283,7 +4593,22 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
                     preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
 
+                    ArrayList tipList=new ArrayList();
+                    tipList.add(jsonObject1.optString("DefaultTip1"));
+                    tipList.add(jsonObject1.optString("DefaultTip2"));
+                    tipList.add(jsonObject1.optString("DefaultTip3"));
+                    tipList.add(jsonObject1.optString("DefaultTip4"));
+                    tipList.add(jsonObject1.optString("DefaultTip5"));
+                    preferencesManager.setTipPercentage("Tip",tipList);
 
+                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+
+                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
 
                     preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                     preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
@@ -4692,17 +5017,22 @@ showMessageOK("You have previously declined this permission.\n" +
             case R.id.rel_orders:
                 if (mPopupWindow.isShowing())
                     mPopupWindow.dismiss();
+                if (mPopupWindows.isShowing())
+                    mPopupWindows.dismiss();
                 disableBadge();
                 callSetupFragment(SCREENS.ORDERS, null);
                 break;
             case R.id.img_menu:
                 if (mPopupWindow.isShowing())
                     mPopupWindow.dismiss();
+                if (mPopupWindows.isShowing())
+                    mPopupWindows.dismiss();
                 else {
                     final float scale = getResources().getDisplayMetrics().density;
                     int width = (int) (150 * scale + 0.5f);
                     int height = (int) (75 * scale + 0.5f);
                     mPopupWindow.showAtLocation(inner_frame, Gravity.LEFT | Gravity.TOP, 0, height);
+                    tv_settingMenu.setTextColor(Color.parseColor("#000000"));
                 }
 
                 break;
@@ -4719,6 +5049,8 @@ showMessageOK("You have previously declined this permission.\n" +
             default:
                 if (mPopupWindow.isShowing())
                     mPopupWindow.dismiss();
+                if (mPopupWindows.isShowing())
+                    mPopupWindows.dismiss();
         }
     }
 
@@ -4737,6 +5069,8 @@ showMessageOK("You have previously declined this permission.\n" +
 
         if (mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
+            if (mPopupWindows.isShowing())
+                mPopupWindows.dismiss();
             return;
         }
 
@@ -4785,6 +5119,11 @@ showMessageOK("You have previously declined this permission.\n" +
                 fragment = Settings.newInstance("", "");
                 CURRENTFRAGMENT = SCREENS.SETTINGS.toString();
                 break;
+
+           /* case TIP:
+                fragment = TipSetting.newInstance("", "");
+                CURRENTFRAGMENT = SCREENS.TIP.toString();
+                break;*/
 
 
             case SETTLEMEMT:
@@ -4964,6 +5303,21 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
             jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
 
+            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+            jsonObject.put("DefaultTip1", tipList.get(0));
+            jsonObject.put("DefaultTip2", tipList.get(1));
+            jsonObject.put("DefaultTip3", tipList.get(2));
+            jsonObject.put("DefaultTip4", tipList.get(3));
+            jsonObject.put("DefaultTip5", tipList.get(4));
+            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
+            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
+            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
+            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
+            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
+            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+
 
             hashMapKeys.clear();
             hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
@@ -5078,6 +5432,22 @@ showMessageOK("You have previously declined this permission.\n" +
 //                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
+                    ArrayList tipList=new ArrayList();
+                    tipList.add(jsonObject1.optString("DefaultTip1"));
+                    tipList.add(jsonObject1.optString("DefaultTip2"));
+                    tipList.add(jsonObject1.optString("DefaultTip3"));
+                    tipList.add(jsonObject1.optString("DefaultTip4"));
+                    tipList.add(jsonObject1.optString("DefaultTip5"));
+                    preferencesManager.setTipPercentage("Tip",tipList);
+
+                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+
+                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));

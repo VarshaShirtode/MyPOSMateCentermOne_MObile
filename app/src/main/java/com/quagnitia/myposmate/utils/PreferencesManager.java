@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class PreferencesManager {
 
     public static final String SHARED_PREFERENCES_NAME = "MyPOasMatePref";
@@ -159,6 +161,160 @@ public class PreferencesManager {
 
     private String branchName="branchName";
 
+    private String isTipDefault1="isTipDefault1";
+    private String isTipDefault2="isTipDefault2";
+    private String isTipDefault3="isTipDefault3";
+    private String isTipDefault4="isTipDefault4";
+    private String isTipDefault5="isTipDefault5";
+    private String isTipDefaultCustom="isTipDefaultCustom";
+
+    private String isSwitchTip="isSwitchTip";
+
+    /*private String etTipDefault1="etTipDefault1";
+    private String etTipDefault2="etTipDefault2";
+    private String etTipDefault3="etTipDefault3";
+    private String etTipDefault4="etTipDefault4";
+    private String etTipDefault5="etTipDefault5";
+
+    public String getTipDefault1() {
+        return sharedPreferences.getString(etTipDefault1, "");
+    }
+
+    public void setTipDefault1(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(etTipDefault1, text);
+        editor.apply();
+    }
+
+    public String getTipDefault2() {
+        return sharedPreferences.getString(etTipDefault2, "");
+    }
+
+    public void setTipDefault2(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(etTipDefault2, text);
+        editor.apply();
+    }
+
+    public String getTipDefault3() {
+        return sharedPreferences.getString(etTipDefault3, "");
+    }
+
+    public void setTipDefault3(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(etTipDefault3, text);
+        editor.apply();
+    }
+
+    public String getTipDefault4() {
+        return sharedPreferences.getString(etTipDefault4, "");
+    }
+
+    public void setTipDefault4(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(etTipDefault4, text);
+        editor.apply();
+    }
+
+    public String getTipDefault5() {
+        return sharedPreferences.getString(etTipDefault5, "");
+    }
+
+    public void setTipDefault5(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(etTipDefault5, text);
+        editor.apply();
+    }*/
+
+
+
+
+    public void setTipPercentage(String arrayName,ArrayList<String> array) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(arrayName +"_size", array.size());
+        for(int i=0;i<array.size();i++)
+            editor.putString(arrayName + "_" + i, array.get(i));
+        editor.apply();
+    }
+    public static ArrayList<String> getTipPercentage(String arrayName) {
+        int size = sharedPreferences.getInt(arrayName + "_size", 0);
+        ArrayList<String> array = new ArrayList<>(size);
+        for(int i=0;i<size;i++)
+            array.add(sharedPreferences.getString(arrayName + "_" + i, null));
+        return array;
+    }
+
+    public Boolean isSwitchTip() {
+        return sharedPreferences.getBoolean(isSwitchTip, false);
+    }
+
+    public void setisSwitchTip(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isSwitchTip, text);
+        editor.apply();
+
+    }
+
+    public Boolean isTipDefault1() {
+        return sharedPreferences.getBoolean(isTipDefault1, false);
+    }
+
+    public void setisTipDefault1(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isTipDefault1, text);
+        editor.apply();
+
+    }
+    public Boolean isTipDefault2() {
+        return sharedPreferences.getBoolean(isTipDefault2, false);
+    }
+
+    public void setisTipDefault2(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isTipDefault2, text);
+        editor.apply();
+
+    }
+    public Boolean isTipDefault3() {
+        return sharedPreferences.getBoolean(isTipDefault3, false);
+    }
+
+    public void setisTipDefault3(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isTipDefault3, text);
+        editor.apply();
+
+    }
+    public Boolean isTipDefault4() {
+        return sharedPreferences.getBoolean(isTipDefault4, false);
+    }
+
+    public void setisTipDefault4(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isTipDefault4, text);
+        editor.apply();
+
+    }
+    public Boolean isTipDefault5() {
+        return sharedPreferences.getBoolean(isTipDefault5, false);
+    }
+
+    public void setisTipDefault5(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isTipDefault5, text);
+        editor.apply();
+
+    }
+    public Boolean isTipDefaultCustom() {
+        return sharedPreferences.getBoolean(isTipDefaultCustom, false);
+    }
+
+    public void setisTipDefaultCustom(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isTipDefaultCustom, text);
+        editor.apply();
+
+    }
 
     public String getbranchName() {
         return sharedPreferences.getString(branchName, "");

@@ -169,6 +169,21 @@ public static boolean isUpdateDetails=false;
 
                         try {
                             JSONObject jsonObject = new JSONObject();
+                            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+                            jsonObject.put("DefaultTip1", tipList.get(0));
+                            jsonObject.put("DefaultTip2", tipList.get(1));
+                            jsonObject.put("DefaultTip3", tipList.get(2));
+                            jsonObject.put("DefaultTip4", tipList.get(3));
+                            jsonObject.put("DefaultTip5", tipList.get(4));
+                            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
+                            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
+                            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
+                            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
+                            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
+                            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+                            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+                            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+
                             jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
                             jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
                             jsonObject.put("CnvCentrapayDisplayAndAdd", preferencesManager.is_cnv_centrapay_display_and_add());

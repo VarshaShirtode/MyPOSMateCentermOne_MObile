@@ -59,7 +59,6 @@
                     android:gravity="center|right"
                     android:inputType="numberDecimal"
                     android:text="0.00"
-                    app:locale="en_US"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 

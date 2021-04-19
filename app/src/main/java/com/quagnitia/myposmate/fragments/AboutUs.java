@@ -30,6 +30,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -725,6 +726,23 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
         try {
 
             JSONObject jsonObject = new JSONObject();
+
+            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+            jsonObject.put("DefaultTip1", tipList.get(0));
+            jsonObject.put("DefaultTip2", tipList.get(1));
+            jsonObject.put("DefaultTip3", tipList.get(2));
+            jsonObject.put("DefaultTip4", tipList.get(3));
+            jsonObject.put("DefaultTip5", tipList.get(4));
+            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
+
+            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
+            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
+            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
+            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
+            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
+            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+
             jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
             jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
             jsonObject.put("CnvCentrapayDisplayAndAdd", preferencesManager.is_cnv_centrapay_display_and_add());
@@ -949,6 +967,21 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     if (jsonObject1.has("MerchantId"))
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
 
+                    ArrayList tipList=new ArrayList();
+                    tipList.add(jsonObject1.optString("DefaultTip1"));
+                    tipList.add(jsonObject1.optString("DefaultTip2"));
+                    tipList.add(jsonObject1.optString("DefaultTip3"));
+                    tipList.add(jsonObject1.optString("DefaultTip4"));
+                    tipList.add(jsonObject1.optString("DefaultTip5"));
+                    preferencesManager.setTipPercentage("Tip",tipList);
+
+                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
@@ -1076,6 +1109,24 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
 
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
+
+                    ArrayList tipList=new ArrayList();
+                    tipList.add(jsonObject1.optString("DefaultTip1"));
+                    tipList.add(jsonObject1.optString("DefaultTip2"));
+                    tipList.add(jsonObject1.optString("DefaultTip3"));
+                    tipList.add(jsonObject1.optString("DefaultTip4"));
+                    tipList.add(jsonObject1.optString("DefaultTip5"));
+                    preferencesManager.setTipPercentage("Tip",tipList);
+
+                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+
+
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));

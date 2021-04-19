@@ -25,41 +25,41 @@ public final class R {
     public static final class color {
         private color() {}
 
-        public static final int zxing_custom_possible_result_points = 0x7f05006c;
-        public static final int zxing_custom_result_view = 0x7f05006d;
-        public static final int zxing_custom_viewfinder_laser = 0x7f05006e;
-        public static final int zxing_custom_viewfinder_mask = 0x7f05006f;
-        public static final int zxing_possible_result_points = 0x7f050070;
-        public static final int zxing_result_view = 0x7f050071;
-        public static final int zxing_status_text = 0x7f050072;
-        public static final int zxing_transparent = 0x7f050073;
-        public static final int zxing_viewfinder_laser = 0x7f050074;
-        public static final int zxing_viewfinder_mask = 0x7f050075;
+        public static final int zxing_custom_possible_result_points = 0x7f050075;
+        public static final int zxing_custom_result_view = 0x7f050076;
+        public static final int zxing_custom_viewfinder_laser = 0x7f050077;
+        public static final int zxing_custom_viewfinder_mask = 0x7f050078;
+        public static final int zxing_possible_result_points = 0x7f050079;
+        public static final int zxing_result_view = 0x7f05007a;
+        public static final int zxing_status_text = 0x7f05007b;
+        public static final int zxing_transparent = 0x7f05007c;
+        public static final int zxing_viewfinder_laser = 0x7f05007d;
+        public static final int zxing_viewfinder_mask = 0x7f05007e;
     }
     public static final class id {
         private id() {}
 
-        public static final int centerCrop = 0x7f080062;
-        public static final int fitCenter = 0x7f080126;
-        public static final int fitXY = 0x7f080127;
-        public static final int zxing_back_button = 0x7f0802b6;
-        public static final int zxing_barcode_scanner = 0x7f0802b7;
-        public static final int zxing_barcode_surface = 0x7f0802b8;
-        public static final int zxing_camera_error = 0x7f0802b9;
-        public static final int zxing_decode = 0x7f0802ba;
-        public static final int zxing_decode_failed = 0x7f0802bb;
-        public static final int zxing_decode_succeeded = 0x7f0802bc;
-        public static final int zxing_possible_result_points = 0x7f0802bd;
-        public static final int zxing_preview_failed = 0x7f0802be;
-        public static final int zxing_prewiew_size_ready = 0x7f0802bf;
-        public static final int zxing_status_view = 0x7f0802c0;
-        public static final int zxing_viewfinder_view = 0x7f0802c1;
+        public static final int centerCrop = 0x7f08006f;
+        public static final int fitCenter = 0x7f080140;
+        public static final int fitXY = 0x7f080141;
+        public static final int zxing_back_button = 0x7f080303;
+        public static final int zxing_barcode_scanner = 0x7f080304;
+        public static final int zxing_barcode_surface = 0x7f080305;
+        public static final int zxing_camera_error = 0x7f080306;
+        public static final int zxing_decode = 0x7f080307;
+        public static final int zxing_decode_failed = 0x7f080308;
+        public static final int zxing_decode_succeeded = 0x7f080309;
+        public static final int zxing_possible_result_points = 0x7f08030a;
+        public static final int zxing_preview_failed = 0x7f08030b;
+        public static final int zxing_prewiew_size_ready = 0x7f08030c;
+        public static final int zxing_status_view = 0x7f08030d;
+        public static final int zxing_viewfinder_view = 0x7f08030e;
     }
     public static final class layout {
         private layout() {}
 
-        public static final int zxing_barcode_scanner = 0x7f0a006f;
-        public static final int zxing_capture = 0x7f0a0070;
+        public static final int zxing_barcode_scanner = 0x7f0a0077;
+        public static final int zxing_capture = 0x7f0a0078;
     }
     public static final class raw {
         private raw() {}

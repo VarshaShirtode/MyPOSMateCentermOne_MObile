@@ -6,6 +6,7 @@
 
     <color name="colorHeader">#455A64</color>
     <color name="colorPopupBg">#DDDDDD</color>
+    <color name="colorPopupBgs">#F0F0F0</color>
     <color name="colorLine">#818181</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
@@ -15,4 +16,13 @@
     <color name="colorOrange">#E65100</color>
     <color name="colorIndigo">#4B0082</color>
 
+    <!--Colors for Keyboard-->
+    <color name="colorKeyGray">#eceff1</color>
+    <color name="colorKeyGreen">#1b9d2c</color>
+    <color name="colorKeyBlue">#425cfb</color>
+    <color name="colorKeyPurple">#632289</color>
+    <color name="colorKeyYellow">#e3f705</color>
+    <color name="colorKeyRed">#fc4242</color>
+    <color name="colorKeyBlack">#37474f</color>
+    <color name="colorRed">#FA4F4F</color>
 </resources>

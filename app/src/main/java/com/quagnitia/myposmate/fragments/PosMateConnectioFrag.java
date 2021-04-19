@@ -153,7 +153,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
         return view;
     }
-
+  
     public void checkAvaliability() {
         if (isNetworkAvailable()) {
             tv_status.setText("MyPOSMate® is online. Please wait while connecting.");
@@ -229,9 +229,127 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             tv_status_scan.setVisibility(View.GONE);
             tv_status_scan_button.setVisibility(View.GONE);
         }*/
-        funcLoyaltyAppSwitches();
-        
+       // funcLoyaltyAppSwitches();
+        funcLoyaltyAppSwitchesNew();
     }
+
+    private void funcLoyaltyAppSwitchesNew() {
+        {
+            Log.v("DisplayChoice","App "+preferencesManager.isDisplayLoyaltyApps());
+            Log.v("DisplayChoice","Front "+preferencesManager.isFront());
+            Log.v("DisplayChoice","Back "+preferencesManager.isBack());
+            Log.v("DisplayChoice","Manual "+preferencesManager.isMembershipHome());
+            if(preferencesManager.isDisplayLoyaltyApps()&&!preferencesManager.isMembershipHome()) {
+                onlyLoyaltyApp();
+            }else if(!preferencesManager.isDisplayLoyaltyApps()&&preferencesManager.isMembershipHome())
+            {
+                //Sub UI
+                if (preferencesManager.isFront() &&
+                        preferencesManager.isBack()) {
+                    rel_membership.setVisibility(View.VISIBLE);
+                    ll_membership_loyalty_app.setVisibility(View.GONE);
+                    tv_status_scan.setVisibility(View.GONE);
+                }else if (!preferencesManager.isFront() &&
+                        preferencesManager.isBack()) {
+                    onlyFront(View.GONE,1);
+                }else if (preferencesManager.isFront() &&
+                        !preferencesManager.isBack()) {
+                    onlyBack(View.GONE,1);
+                }else if (!preferencesManager.isFront() &&
+                        !preferencesManager.isBack()) {
+                    blankUI();
+                }
+            }else if(preferencesManager.isDisplayLoyaltyApps()&&preferencesManager.isMembershipHome())
+            {
+                rel_membership.setVisibility(View.GONE);
+                ll_membership_loyalty_app.setVisibility(View.VISIBLE);
+                tv_status_scan.setVisibility(View.GONE);
+
+                //Sub UI
+                if (preferencesManager.isFront() &&
+                        preferencesManager.isBack()) {
+                    showAll();
+                }else if (!preferencesManager.isFront() &&
+                        preferencesManager.isBack()) {
+                    onlyFront(View.VISIBLE,2);
+                }else if (preferencesManager.isFront() &&
+                        !preferencesManager.isBack()) {
+                    onlyBack(View.VISIBLE,2);
+                }else if (!preferencesManager.isFront() &&
+                        !preferencesManager.isBack()) {
+                    onlyLoyaltyApp();
+                }
+            }else if (!preferencesManager.isDisplayLoyaltyApps()&&!preferencesManager.isMembershipHome())
+            {
+                blankUI();
+            }
+
+        }
+    }
+    private void showAll() {
+        view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+        ll_membership_loyalty_app.setWeightSum(3);
+        tv_status_scan_button1.setVisibility(View.VISIBLE);
+        tv_status_scan_button2.setVisibility(View.VISIBLE);
+        btn_loyalty_apps.setVisibility(View.VISIBLE);
+        btn_back1.setVisibility(View.VISIBLE);
+        btn_front1.setVisibility(View.VISIBLE);
+    }
+
+    private void blankUI() {
+        rel_membership.setVisibility(View.GONE);
+        ll_membership_loyalty_app.setVisibility(View.GONE);
+        tv_status_scan.setVisibility(View.GONE);
+    }
+
+    private void onlyBack(int layaltyApp, int wtsum) {
+
+        rel_membership.setVisibility(View.GONE);
+        ll_membership_loyalty_app.setVisibility(View.VISIBLE);
+        tv_status_scan.setVisibility(View.GONE);
+
+        view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+        view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
+        ll_membership_loyalty_app.setWeightSum(wtsum);
+        tv_status_scan_button1.setVisibility(View.GONE);
+        tv_status_scan_button2.setVisibility(View.VISIBLE);
+        btn_loyalty_apps.setVisibility(layaltyApp);
+        btn_back1.setVisibility(View.GONE);
+        btn_front1.setVisibility(View.VISIBLE);
+    }
+
+    private void onlyFront(int layaltyApp, int wtsum) {
+        rel_membership.setVisibility(View.GONE);
+        ll_membership_loyalty_app.setVisibility(View.VISIBLE);
+        tv_status_scan.setVisibility(View.GONE);
+
+        view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+        ll_membership_loyalty_app.setWeightSum(wtsum);
+        tv_status_scan_button1.setVisibility(View.VISIBLE);
+        tv_status_scan_button2.setVisibility(View.GONE);
+        btn_loyalty_apps.setVisibility(layaltyApp);
+        btn_back1.setVisibility(View.VISIBLE);
+        btn_front1.setVisibility(View.GONE);
+    }
+
+    private void onlyLoyaltyApp() {
+        rel_membership.setVisibility(View.GONE);
+        ll_membership_loyalty_app.setVisibility(View.VISIBLE);
+        tv_status_scan.setVisibility(View.GONE);
+
+        //Sub UI
+        view.findViewById(R.id.ll_back).setVisibility(View.GONE);
+        view.findViewById(R.id.ll_front).setVisibility(View.GONE);
+        ll_membership_loyalty_app.setWeightSum(1);
+        tv_status_scan_button1.setVisibility(View.GONE);
+        tv_status_scan_button2.setVisibility(View.GONE);
+        btn_loyalty_apps.setVisibility(View.VISIBLE);
+        btn_back1.setVisibility(View.GONE);
+        btn_front1.setVisibility(View.GONE);
+    }
+
     public void innerCall()
     {
         if (preferencesManager.isFront() &&
@@ -713,18 +831,17 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                         tv_status_scan_button2.setText("Rescan Membership/Loyality");
                         tv_status_scan_button2.setGravity(Gravity.CENTER | Gravity.TOP);
                     } else {
-                        tv_status_scan.setVisibility(View.GONE);
-                        tv_status_scan_button2.setGravity(Gravity.CENTER);
+                        if (isBack) {
+                            isBack = false;
+                            tv_status_scan.setVisibility(View.VISIBLE);
+                            tv_status_scan_button1.setText("Rescan Membership/Loyality");
+                            tv_status_scan_button1.setGravity(Gravity.CENTER | Gravity.TOP);
+                        } else {
+                            tv_status_scan.setVisibility(View.GONE);
+                            tv_status_scan_button1.setGravity(Gravity.CENTER);
+                        }
                     }
-                    if (isBack) {
-                        isBack = false;
-                        tv_status_scan.setVisibility(View.VISIBLE);
-                        tv_status_scan_button1.setText("Rescan Membership/Loyality");
-                        tv_status_scan_button1.setGravity(Gravity.CENTER | Gravity.TOP);
-                    } else {
-                        tv_status_scan.setVisibility(View.GONE);
-                        tv_status_scan_button1.setGravity(Gravity.CENTER);
-                    }
+
 
                     Toast.makeText(getActivity(), "Loyality data uploaded successfully ", Toast.LENGTH_SHORT).show();
                 } else {
@@ -734,8 +851,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     if (isFront) {
                         isFront = false;
                         tv_status_scan_button2.setText("Rescan Membership/Loyality");
-                    }
-                    if (isBack) {
+                    }else if (isBack) {
                         isBack = false;
                         tv_status_scan_button1.setText("Rescan Membership/Loyality");
                     }

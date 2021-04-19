@@ -918,6 +918,11 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                     case "referenceId":
                         json.put("Reference Number", value);
                         break;
+
+                    case "tip_amount":
+                        json.put("Tip Amount",value);
+                        break;
+
                     case "terminalId":
                         json.put("Terminal Id", value);
                         break;
@@ -1813,6 +1818,12 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
                         true));
             }
 
+            if (jsonObject.has("tip_amount") && !jsonObject.optString("tip_amount").equals("0.0") &&
+                    !jsonObject.optString("tip_amount").equals("0.00")) {
+                list.add(new PrintDataObject("Tip Amount:" + jsonObject.optString("currency") + " " + jsonObject.optString("tip_amount"),
+                        fontSize, false, PrintDataObject.ALIGN.LEFT, false,
+                        true));
+            }
 
             if (jsonObjectTransactionDetails.has("refunds") && jsonObjectTransactionDetails.optJSONArray("refunds") != null)
                 if (jsonObjectTransactionDetails.optJSONArray("refunds").length() != 0) {
