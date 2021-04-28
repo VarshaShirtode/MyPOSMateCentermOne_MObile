@@ -208,12 +208,12 @@
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\layout\\abc_action_mode_close_item_material.xml"
     },
     {
-        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\color_abc_background_cache_hint_selector_material_light.xml.flat",
-        "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\color\\abc_background_cache_hint_selector_material_light.xml"
-    },
-    {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_list_pressed_holo_light.9.png.flat",
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\drawable-xhdpi-v4\\abc_list_pressed_holo_light.9.png"
+    },
+    {
+        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\color_abc_background_cache_hint_selector_material_light.xml.flat",
+        "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\color\\abc_background_cache_hint_selector_material_light.xml"
     },
     {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\layout_pc_layout.xml.flat",
@@ -928,16 +928,16 @@
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\drawable-xhdpi-v4\\abc_scrubber_primary_mtrl_alpha.9.png"
     },
     {
+        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable_btn_border_red.xml.flat",
+        "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\drawable\\btn_border_red.xml"
+    },
+    {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_scan.png.flat",
         "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\drawable\\ic_scan.png"
     },
     {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notification_bg_normal.9.png.flat",
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\debe3ff70e1221512a4f2db92744b9ee\\res\\drawable-hdpi-v4\\notification_bg_normal.9.png"
-    },
-    {
-        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable_btn_border_red.xml.flat",
-        "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\drawable\\btn_border_red.xml"
     },
     {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_ic_menu_share_mtrl_alpha.png.flat",
@@ -1592,12 +1592,12 @@
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\drawable-mdpi-v4\\abc_menu_hardkey_panel_mtrl_mult.9.png"
     },
     {
-        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_loyalty_apps.xml.flat",
-        "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\layout\\fragment_loyalty_apps.xml"
-    },
-    {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\layout_keyboard_custom.xml.flat",
         "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\layout\\keyboard_custom.xml"
+    },
+    {
+        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_loyalty_apps.xml.flat",
+        "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\layout\\fragment_loyalty_apps.xml"
     },
     {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_abc_ic_menu_selectall_mtrl_alpha.png.flat",

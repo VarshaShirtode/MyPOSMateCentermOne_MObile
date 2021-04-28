@@ -18,8 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -97,25 +99,25 @@ public LinearLayout parent;
         }
 
 
-        holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))));
+        holder.tv_amount.setText(currencyFormat(roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal")))));
         holder.tv_type.setText(jsonObject.optString("type"));
         if(jsonObject.optString("type").equals("REFUND"))
         {
             if(jsonObject.optString("channel").equals("UNION_PAY"))
             {
-                holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee"))));
+                holder.tv_amount.setText(currencyFormat(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee")))));
             }
             else
             {
                 if(!jsonObject.optString("refundFee").equalsIgnoreCase("")||!jsonObject.optString("refundFee").isEmpty()) {
-                    holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee"))));
+                    holder.tv_amount.setText(currencyFormat(roundTwoDecimals(Float.valueOf(jsonObject.optString("refundFee")))));
                 }
             }
 
         }
         else
         {
-            holder.tv_amount.setText(roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal"))));
+            holder.tv_amount.setText(currencyFormat(roundTwoDecimals(Float.valueOf(jsonObject.optString("grandTotal")))));
         }
 
         holder.tv_scheme.setText(jsonObject.optString("channel"));
@@ -166,6 +168,15 @@ public LinearLayout parent;
 
             }
         });
+    }
+
+    private String currencyFormat(String grandTotal) {
+        double number = Double.parseDouble(grandTotal);
+        String COUNTRY = "US";
+        String LANGUAGE = "en";
+        String str = NumberFormat.getCurrencyInstance(new Locale(LANGUAGE, COUNTRY)).format(number);
+
+        return str;
     }
 
     @Override

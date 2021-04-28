@@ -119,22 +119,22 @@ public final class R {
         public static final int intent_extra_data = 0x7f08017f;
         public static final int large_icon_uri = 0x7f080184;
         public static final int light = 0x7f080187;
-        public static final int match_global_nicknames = 0x7f0801ca;
-        public static final int none = 0x7f0801d1;
-        public static final int normal = 0x7f0801d2;
-        public static final int omnibox_title_section = 0x7f0801d6;
-        public static final int omnibox_url_section = 0x7f0801d7;
-        public static final int plain = 0x7f0801e0;
-        public static final int radio = 0x7f0801e7;
-        public static final int rfc822 = 0x7f08020b;
-        public static final int standard = 0x7f080232;
-        public static final int text = 0x7f08023d;
-        public static final int text1 = 0x7f08023e;
-        public static final int text2 = 0x7f08023f;
-        public static final int thing_proto = 0x7f080243;
-        public static final int url = 0x7f0802f7;
-        public static final int wide = 0x7f0802ff;
-        public static final int wrap_content = 0x7f080302;
+        public static final int match_global_nicknames = 0x7f0801cb;
+        public static final int none = 0x7f0801d2;
+        public static final int normal = 0x7f0801d3;
+        public static final int omnibox_title_section = 0x7f0801d7;
+        public static final int omnibox_url_section = 0x7f0801d8;
+        public static final int plain = 0x7f0801e1;
+        public static final int radio = 0x7f0801e8;
+        public static final int rfc822 = 0x7f08020c;
+        public static final int standard = 0x7f080233;
+        public static final int text = 0x7f08023e;
+        public static final int text1 = 0x7f08023f;
+        public static final int text2 = 0x7f080240;
+        public static final int thing_proto = 0x7f080244;
+        public static final int url = 0x7f0802f8;
+        public static final int wide = 0x7f080300;
+        public static final int wrap_content = 0x7f080303;
     }
     public static final class integer {
         private integer() {}

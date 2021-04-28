@@ -168,6 +168,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     EditText edt_centerpay_mr_qr_cnv;
     public static boolean isLoyaltyQrSelected=false;
     public static boolean isLoyaltyFrontQrSelected=false;
+    private boolean isTipDialogSelected=false;
 
 
     public static ManualEntry newInstance(String param1, String param2) {
@@ -919,6 +920,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         } else {
                             if (edt_amount.getText().toString().equals("") || edt_amount.getText().toString().equals("0.00")) {
                                 Toast.makeText(getActivity(), "Please enter the amount.", Toast.LENGTH_LONG).show();
+
                             } else {
                                 beginBussinessCoupon(preferenceManager.getupay_reference_id(), auth_code);
                             }
@@ -1226,6 +1228,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         btn_save1 = view.findViewById(R.id.btn_save1);
         btn_cancel1 = view.findViewById(R.id.btn_cancel1);
         edt_amount = view.findViewById(R.id.edt_amount);
+        edt_amount.setCursorVisible(false);
+
       //  edt_amount.addTextChangedListener(new MoneyTextWatcher(edt_amount));
 
         edt_amount.setLocale(new Locale("en", "US"));
@@ -1766,7 +1770,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         edt_amount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callKeyboardDialog();
+
+                callKeyboardDialog(edt_amount.getText().toString().trim());
             }
         });
     }
@@ -5038,7 +5043,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             case R.id.img_wechat:
                 selected_option = 6;
                 if (preferenceManager.isSwitchTip()) {
-
                     showTipDialog();
                 } else
                     _funcWeChat();
@@ -5046,10 +5050,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
             case R.id.img_alipay:
                 selected_option = 4;
-                if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
-                } else
-                    _funcAlipay();
+
+                    if (preferenceManager.isSwitchTip()) {
+                        showTipDialog();
+                    } else
+                        _funcAlipay();
+
                 break;
 
             case R.id.img_poli:
@@ -5295,7 +5301,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     int selected_option = 0;
     String tip_amount="0.00";
     private void showTipDialog() {
-
+if (!isTipDialogSelected) {
+    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+    }
+    else {
         callAuthToken();
 // if (preferencesManager.isAuthenticated()) {
         final Dialog dialog = new Dialog(getActivity());
@@ -5357,11 +5367,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         txtPercent4.setText(tipList.get(3) + "%");
         txtPercent5.setText(tipList.get(4) + "%");
 
-        txtPrice1.setText("$" + calculatePrice(tipList.get(0)));
-        txtPrice2.setText("$" + calculatePrice(tipList.get(1)));
-        txtPrice3.setText("$" + calculatePrice(tipList.get(2)));
-        txtPrice4.setText("$" + calculatePrice(tipList.get(3)));
-        txtPrice5.setText("$" + calculatePrice(tipList.get(4)));
+        txtPrice1.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(0))));
+        txtPrice2.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(1))));
+        txtPrice3.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(2))));
+        txtPrice4.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(3))));
+        txtPrice5.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(4))));
 
         txtAmt1.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(0))));
         txtAmt2.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(1))));
@@ -5371,9 +5381,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         txtAmount.setText(edt_amount.getText().toString());
 
 
-        LinearLayout ll_custome_keyboard=dialogview.findViewById(R.id.ll_custome_keyboard);
-        if(preferenceManager.isTipDefaultCustom())
-        {
+        LinearLayout ll_custome_keyboard = dialogview.findViewById(R.id.ll_custome_keyboard);
+        if (preferenceManager.isTipDefaultCustom()) {
             ll_defaultCustom.setVisibility(View.VISIBLE);
             ll_defaultCustom_disable.setVisibility(View.GONE);
 
@@ -5414,7 +5423,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         } else {
                             keyboard_amount = "0.00";
                         }
-                        tip_amount=keyboard_amount.replace(",","");
+                        tip_amount = keyboard_amount.replace(",", "");
                         callPaymentOptions(selected_option);
                         dialog.dismiss();
                     }
@@ -5425,6 +5434,12 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         txtNoTip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                    isTipDialogSelected = false;
+                } else {
+                    isTipDialogSelected = true;
+                }
                 callAuthToken();
                 isSkipTipping = true;
                 callPaymentOptions(selected_option);
@@ -5532,9 +5547,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 dialog.dismiss();
             }
         });
-
-
     }
+}
+    }
+
+
    /* private void showTipDialog() {
 
         callAuthToken();
@@ -5734,15 +5751,18 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
     private double calculatePrice(String per) {
-    //    NumberFormat f = NumberFormat.getInstance(); // Gets a NumberFormat with the default locale, you can specify a Locale as first parameter (like Locale.FRENCH)
+        NumberFormat f = NumberFormat.getInstance(); // Gets a NumberFormat with the default locale, you can specify a Locale as first parameter (like Locale.FRENCH)
         double amount=0.0;
-       // try {
-        //    double cent = f.parse(per).doubleValue();
+
+
+        try {
+            double cent = f.parse(per).doubleValue();
              String amt= amountformat(edt_amount.getText().toString());
-            amount=Double.parseDouble(amt)*(Double.parseDouble(per)/100);
-        /*} catch (ParseException e) {
+            amount=calculatecnv(amt)*(calculatecnv(per)/100);
+        } catch (ParseException e) {
             e.printStackTrace();
-        }*/
+
+        }
         return amount;
     }
     private double calculatecnv(String per) {
@@ -5761,6 +5781,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         try {
             double cent = f.parse(per).doubleValue();
             String amt= amountformat(edt_amount.getText().toString());
+            Log.v("AMOUNTDATA","amou"+edt_amount.getText().toString());
             amount=Double.parseDouble(amt)*(cent/100);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -6602,7 +6623,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 callTerminalPayAlipay();
             }
         }
-
+   //  isTipDialogSelected=false;
     }
 
     private void _funcWeChat() {
@@ -6906,6 +6927,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
         if (AlipayPaymentFragment.isCloseTrade) {
+
             openProgressDialog();
             callAuthToken();
             AlipayPaymentFragment.isCloseTrade = false;
@@ -6993,11 +7015,18 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 progress.dismiss();
             if (!TAG.equals("unionpaystatus"))
                 Toast.makeText(getActivity(), "No data from server.", Toast.LENGTH_LONG).show();
+
+            if(pr.isShowing())
+            {
+                pr.dismiss();
+            }
             return;
         }
         if (!TAG.equals("Arke")) {
             if (progress != null && progress.isShowing())
                 progress.dismiss();
+
+
         }
 
         jsonObject = new JSONObject(result);
@@ -7024,7 +7053,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 break;
 
             case "paynow":
-                Log.v("PAY_RESPONSE","respay "+result);
+                if(pr!=null&&pr.isShowing())
+                {
+                    pr.dismiss();
+                }
+                 Log.v("PAY_RESPONSE","respay "+result);
                 _parsePayNowResponse(jsonObject);
                 break;
 
@@ -7316,6 +7349,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
 
     private void _parsePayNowResponse(JSONObject jsonObject) throws JSONException, Exception {
+        Log.v("AMT_Data","Parse "+ edt_amount.getText().toString().trim());
+
         callAuthToken();
         AppConstants.xmppamountforscan = ""; //added on 12th march 2019
         if (!jsonObject.has("reference_id")) {
@@ -7364,7 +7399,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     progress2.dismiss();
             }
             Toast.makeText(getActivity(), jsonObject.optString("error") + ".Please try again", Toast.LENGTH_LONG).show();
-
         }
         if (progress.isShowing())
             progress.dismiss();
@@ -7374,6 +7408,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         preferenceManager.setincrement_id(jsonObject.optString("incrementId"));
         if (!payment_mode.equals("nochannel")) {
             if (MyPOSMateApplication.isOpen) {
+                Log.v("AMT_Data","isopen"+ edt_amount.getText().toString().trim());
 
                 if (isMerchantQrDisplaySelected && preferenceManager.isMerchantDPARDisplay() &&
                         preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -7471,6 +7506,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             } else if (!preferenceManager.is_cnv_alipay_display_and_add() &&
                     !preferenceManager.is_cnv_wechat_display_and_add()) {
                 jsonObject.put("amount", edt_amount.getText().toString().trim());
+                Log.v("AMT_Data","nk dff "+ edt_amount.getText().toString().trim());
+
             } else if (preferenceManager.is_cnv_alipay_display_and_add() &&
                     preferenceManager.is_cnv_wechat_display_and_add()) {
 
@@ -7484,9 +7521,11 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 } else {
                     if (payment_mode.equals("ALIPAY"))
                         jsonObject.put("amount", convenience_amount_alipay + "");
-                    else if (payment_mode.equals("WECHAT"))
+                    else if (payment_mode.equals("WECHAT")) {
                         jsonObject.put("amount", convenience_amount_wechat + "");
-                    else
+                        Log.v("AMT_Data","C "+ edt_amount.getText().toString().trim());
+
+                    }else
                         jsonObject.put("amount", xmppAmount);
                 }
             } else if (preferenceManager.is_cnv_alipay_display_and_add() &&
@@ -7512,20 +7551,25 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     else
                         jsonObject.put("amount", xmppAmount);
                 } else {
-                    if (payment_mode.equals("WECHAT"))
+                    if (payment_mode.equals("WECHAT")) {
                         jsonObject.put("amount", convenience_amount_wechat + "");
-                    else
+                        Log.v("AMT_Data","Ccf "+ edt_amount.getText().toString().trim());
+
+                    }  else
                         jsonObject.put("amount", xmppAmount);
                 }
-            } else
+            } else {
                 jsonObject.put("amount", edt_amount.getText().toString().trim());
+                 }
             String qrcode = jsonObject.optString("codeUrl");
+            Log.v("AMT_Data","Noram"+ jsonObject.optString("amount"));
 
-            if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+          if (preferenceManager.isSwitchTip() && !isSkipTipping) {
                 if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
                         !tip_amount.equals("0.0")) {
-                    String amt = roundTwoDecimals(Double.parseDouble(jsonObject.optString("amount")) + Double.parseDouble(tip_amount));
+                    String amt = roundTwoDecimals(Double.parseDouble(amountformat(jsonObject.optString("amount"))) + Double.parseDouble(tip_amount));
                     jsonObject.put("amount", amt + "");
+                    Log.v("AMT_Data","nk"+ amt);
                 }
             }
 
@@ -7754,7 +7798,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isSkipTipping = false;
                 if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
                         !tip_amount.equals("0.0")) {
-                    String amt =roundTwoDecimals(Double.parseDouble(jsonObjectSale.get("amount").toString()) + Double.parseDouble(tip_amount));
+                    String amt =roundTwoDecimals(Double.parseDouble(amountformat(jsonObjectSale.get("amount").toString())) + Double.parseDouble(tip_amount));
                     jsonObjectSale.put("amount", amt + "");
                 }
             }
@@ -7845,7 +7889,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isSkipTipping = false;
                 if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
                         !tip_amount.equals("0.0")) {
-                    String amt =roundTwoDecimals(Double.parseDouble(jsonObjectCouponSale.get("amount").toString()) + Double.parseDouble(tip_amount));
+                    String amt =roundTwoDecimals(Double.parseDouble(amountformat(jsonObjectCouponSale.get("amount").toString())) + Double.parseDouble(tip_amount));
                     jsonObjectCouponSale.put("amount", amt + "");
                 }
             }
@@ -7937,7 +7981,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isSkipTipping = false;
                 if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
                         !tip_amount.equals("0.0")) {
-                    String amt =roundTwoDecimals(Double.parseDouble(jsonObjectSale.get("amount").toString()) + Double.parseDouble(tip_amount));
+                    String amt =roundTwoDecimals(Double.parseDouble(amountformat(jsonObjectSale.get("amount").toString())) + Double.parseDouble(tip_amount));
                     jsonObjectSale.put("amount", amt + "");
                 }
             }
@@ -9081,6 +9125,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             String amt = df.format(Double.parseDouble(xmppAmount) + Double.parseDouble(tip_amount));
                             hashMapKeys.put("grand_total", amt + "");
                             hashMapKeys.put("tip_amount", tip_amount + "");
+                            Log.v("TIP",tip_amount);
                         }
                     } else {
                         isSkipTipping = false;
@@ -9126,6 +9171,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                             String amt = df.format(Double.parseDouble(xmppAmount) + Double.parseDouble(tip_amount));
                             hashMapKeys.put("grand_total", amt + "");
                             hashMapKeys.put("tip_amount", tip_amount + "");
+                            Log.v("TIP",tip_amount);
                         }
                     } else {
                         isSkipTipping = false;
@@ -9493,7 +9539,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMapKeys.put("reference_id", reference_id);
                     hashMapKeys.put("random_str", new Date().getTime() + "");
 
-                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
+
+
+                    hashMapKeys.put("grand_total", xmppAmount);
 
                     hashMapKeys.put("original_amount", original_amount);
                     hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
@@ -9539,7 +9587,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                         reference_id = new Date().getTime() + "";
                     hashMapKeys.put("reference_id", reference_id);
                     hashMapKeys.put("random_str", new Date().getTime() + "");
-                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
+                    hashMapKeys.put("grand_total", xmppAmount);
 
 //                    hashMapKeys.put("grand_total", df.format(Double.parseDouble(xmppAmount)) + "");
 //                    hashMapKeys.put("auth_code", auth_code);
@@ -9970,7 +10018,8 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     public String keyboard_amount = "0.00";
 
-    public void callKeyboardDialog() {
+    public void callKeyboardDialog(String amount) {
+
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -9986,12 +10035,16 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         CurrencyEditText edt_amount_key = (CurrencyEditText) dialogview.findViewById(R.id.edt_amount);
-
+        if(amount.equals("")||amount.equals("0.00")) {
+            edt_amount.setText("0.00");
+            edt_amount_key.setText("0.00");
+        }else{
+            edt_amount_key.setText(amount);
+        }
         com.quagnitia.myposmate.utils.MyKeyboard keyboard = (com.quagnitia.myposmate.utils.MyKeyboard) dialogview.findViewById(R.id.keyboard);
 
         // prevent system keyboard from appearing when EditText is tapped
-        edt_amount_key.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        edt_amount_key.setTextIsSelectable(true);
+        edt_amount_key.setShowSoftInputOnFocus(false);
 
         // pass the InputConnection from the EditText to the keyboard
         InputConnection ic = edt_amount_key.onCreateInputConnection(new EditorInfo());
@@ -10001,7 +10054,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         mButtonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 dialog.dismiss();
             }
         });
@@ -10026,8 +10078,19 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         dialog.show();
 
     }
-
+    ProgressDialog pr;
     public void callPaymentOptions(int selected_option) {
+        if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+            isTipDialogSelected=false;
+        } else {
+            isTipDialogSelected=true;
+        }
+        pr=new ProgressDialog(getActivity());
+        pr.setMessage("Loading QR..");
+        pr.setCanceledOnTouchOutside(false);
+        pr.setCancelable(false);
+        pr.show();
+
         switch (selected_option) {
             case 1:
                 selected_option = 1;

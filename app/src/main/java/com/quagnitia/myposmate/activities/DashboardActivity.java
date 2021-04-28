@@ -1399,6 +1399,17 @@ showMessageOK("You have previously declined this permission.\n" +
         }else{
             chk_custom.setChecked(false);
         }
+
+        ArrayList<String> tipListSaved = preferenceManager.getTipPercentage("Tip");
+
+        if(tipListSaved.size()!=0) {
+            edt_default1.setText(tipListSaved.get(0));
+            edt_default2.setText(tipListSaved.get(1));
+            edt_default3.setText(tipListSaved.get(2));
+            edt_default4.setText(tipListSaved.get(3));
+            edt_default5.setText(tipListSaved.get(4));
+        }
+
         Button btn_save_and_ok = dialogview.findViewById(R.id.btn_save_and_ok);
         Button btn_cancel_and_close = dialogview.findViewById(R.id.btn_cancel_and_close);
 
@@ -5023,10 +5034,14 @@ showMessageOK("You have previously declined this permission.\n" +
                 callSetupFragment(SCREENS.ORDERS, null);
                 break;
             case R.id.img_menu:
-                if (mPopupWindow.isShowing())
-                    mPopupWindow.dismiss();
-                if (mPopupWindows.isShowing())
+
+                if (mPopupWindows.isShowing()) {
                     mPopupWindows.dismiss();
+                }
+
+                if (mPopupWindow.isShowing()) {
+                    mPopupWindow.dismiss();
+                }
                 else {
                     final float scale = getResources().getDisplayMetrics().density;
                     int width = (int) (150 * scale + 0.5f);

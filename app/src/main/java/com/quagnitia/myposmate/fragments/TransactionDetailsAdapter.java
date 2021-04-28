@@ -12,8 +12,10 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -115,11 +117,23 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
 
             }
 
+             if (jsonObject.names().getString(position).equals("Payment Amount"))
+             {
+                 holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    private String currencyFormat(String grandTotal) {
+        double number = Double.parseDouble(grandTotal);
+        String COUNTRY = "US";
+        String LANGUAGE = "en";
+        String str = NumberFormat.getCurrencyInstance(new Locale(LANGUAGE, COUNTRY)).format(number);
 
+        return str;
+    }
     @Override
     public int getItemCount() {
         return jsonObject.length();

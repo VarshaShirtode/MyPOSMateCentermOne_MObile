@@ -31,6 +31,7 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
+import com.quagnitia.myposmate.fragments.TransactionDetailsActivity;
 import com.quagnitia.myposmate.utils.AppConstants;
 import com.quagnitia.myposmate.utils.MD5Class;
 import com.quagnitia.myposmate.utils.OkHttpHandler;
@@ -40,8 +41,10 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.TreeMap;
 
 import static com.quagnitia.myposmate.fragments.ManualEntry.isMerchantQrDisplaySelected;
@@ -765,7 +768,9 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             }
             amount = sb.toString();
 
-            tv_sale_amount.setText("Sale amount in " + preferenceManager.getcurrency() + " " + "$" + roundTwoDecimals(Float.valueOf(amount.replace(",", ""))));
+          //  tv_sale_amount.setText("Sale amount in " + preferenceManager.getcurrency() + " "  +"$"+roundTwoDecimals(Float.valueOf(amount.replace(",", ""))));
+            tv_sale_amount.setText("Sale amount in " + preferenceManager.getcurrency() + " "  + currencyFormat(roundTwoDecimals(Float.valueOf(amount.replace(",", "")))));
+
             if (payment_mode.equals("ALIPAY")) {
                 // img_paymentmode.setImageResource(R.drawable.ic_smallali);
             } else if (payment_mode.equals("WECHAT")) {
@@ -805,6 +810,14 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         }.start();
 
 
+    }
+    private String currencyFormat(String grandTotal) {
+        double number = Double.parseDouble(grandTotal);
+        String COUNTRY = "US";
+        String LANGUAGE = "en";
+        String str = NumberFormat.getCurrencyInstance(new Locale(LANGUAGE, COUNTRY)).format(number);
+
+        return str;
     }
 
     public void initListener() {
