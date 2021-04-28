@@ -40,11 +40,13 @@ import com.quagnitia.myposmate.utils.PreferencesManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -458,24 +460,25 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                             Integer.parseInt(jsonObjectSettlement.optString("upPaymentCount")) +
                             Integer.parseInt(jsonObjectSettlement.optString("upRefundCount"));
 
-                    tv_payment_amount.setText("$" + roundTwoDecimals(paymentamount));
+                    tv_payment_amount.setText(currencyFormat(roundTwoDecimals(paymentamount)));
                     tv_payment_count.setText(paymentcount + "");
-                    tv_refunded_amount.setText("$" + roundTwoDecimals(refundedAmount));
+                    tv_refunded_amount.setText(currencyFormat(roundTwoDecimals(refundedAmount)));
                     tv_refund_count.setText(refundcount+"");
                     tv_total_transactions.setText(totalTransactions + "");
-                    tv_ali_payment_amount.setText("$" + jsonObjectSettlement.optString("alipayPaymentAmount"));
+                    tv_ali_payment_amount.setText(currencyFormat(jsonObjectSettlement.optString("alipayPaymentAmount")));
                     tv_ali_payment_count.setText(jsonObjectSettlement.optString("alipayPaymentCount"));
-                    tv_ali_refund_amount.setText("$" + jsonObjectSettlement.optString("alipayRefundAmount"));
+                    tv_ali_refund_amount.setText(currencyFormat(jsonObjectSettlement.optString("alipayRefundAmount")));
                     tv_ali_refund_count.setText(jsonObjectSettlement.optString("alipayRefundCount"));
-                    tv_we_payment_amount.setText("$" + jsonObjectSettlement.optString("wechatPaymentAmount"));
+                    tv_we_payment_amount.setText(currencyFormat(jsonObjectSettlement.optString("wechatPaymentAmount")));
                     tv_we_payment_count.setText(jsonObjectSettlement.optString("wechatPaymentCount"));
-                    tv_we_refund_amount.setText("$" + jsonObjectSettlement.optString("wechatRefundAmount"));
+                    tv_we_refund_amount.setText(currencyFormat(jsonObjectSettlement.optString("wechatRefundAmount")));
                     tv_we_refund_count.setText(jsonObjectSettlement.optString("wechatRefundCount"));
-                    tv_union_payment_amount.setText("$" + jsonObjectSettlement.optString("upPaymentAmount"));
+                    tv_union_payment_amount.setText(currencyFormat(jsonObjectSettlement.optString("upPaymentAmount")));
                     tv_union_payment_count.setText(jsonObjectSettlement.optString("upPaymentCount"));
-                    tv_union_refund_amount.setText("$" + jsonObjectSettlement.optString("upRefundAmount"));
+                    tv_union_refund_amount.setText(currencyFormat(jsonObjectSettlement.optString("upRefundAmount")));
                     tv_union_refund_count.setText(jsonObjectSettlement.optString("upRefundCount"));
-                  //Varsha Commented
+
+                    //Varsha Commented
                     // print(jsonObject);
                    // btn_print_alipay.setVisibility(View.VISIBLE);
                     tv_settled_on.setVisibility(View.VISIBLE);
@@ -739,6 +742,13 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             Toast.makeText(getActivity(), getString(R.string.printer_need_paper), Toast.LENGTH_SHORT).show();
         }
     }
+    private String currencyFormat(String grandTotal) {
+        double number = Double.parseDouble(grandTotal);
+        String COUNTRY = "US";
+        String LANGUAGE = "en";
+        String str = NumberFormat.getCurrencyInstance(new Locale(LANGUAGE, COUNTRY)).format(number);
 
+        return str;
+    }
 
 }

@@ -122,6 +122,31 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
                  holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
              }
 
+            if (jsonObject.names().getString(position).equals("Tip Amount"))
+            {
+                holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+            }
+
+            if (jsonObject.names().getString(position).equals("Receipt Amount"))
+            {
+                holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+            }
+
+            if (jsonObject.names().getString(position).equals("Actual Paid Amount"))
+            {
+                holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+            }
+
+            if (jsonObject.names().getString(position).equals("Amount Refunded"))
+            {
+                holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+            }
+            if (jsonObject.names().getString(position).equals("Remaining Amount"))
+            {
+                holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

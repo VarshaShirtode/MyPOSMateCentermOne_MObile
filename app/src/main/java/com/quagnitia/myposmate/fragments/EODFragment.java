@@ -49,12 +49,14 @@ import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -516,32 +518,39 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
                         Integer.parseInt(unionpaySummary.optString("paymentCount")) +
                         Integer.parseInt(unionpaySummary.optString("refundCount"));
 
-                tv_payment_amount.setText("$" + roundTwoDecimals(paymentamount));
+                tv_payment_amount.setText(currencyFormat(roundTwoDecimals(paymentamount)));
                 tv_payment_count.setText(paymentcount + "");
-                tv_refunded_amount.setText("$" + roundTwoDecimals(Double.parseDouble(jsonObject.optJSONObject("totalSummary").optString("refundAmount"))));
+                tv_refunded_amount.setText(currencyFormat(roundTwoDecimals(Double.parseDouble(jsonObject.optJSONObject("totalSummary").optString("refundAmount")))));
                 tv_refund_count.setText(jsonObject.optJSONObject("totalSummary").optString("refundCount"));
                 tv_total_transactions.setText(totalTransactions + "");
 
-                tv_ali_payment_amount.setText("$" + roundTwoDecimals(Double.parseDouble(alipaySummary.optString("paymentAmount"))));
+                tv_ali_payment_amount.setText(currencyFormat(roundTwoDecimals(Double.parseDouble(alipaySummary.optString("paymentAmount")))));
                 tv_ali_payment_count.setText(alipaySummary.optString("paymentCount"));
-                tv_ali_refund_amount.setText("$" + roundTwoDecimals(Double.parseDouble(alipaySummary.optString("refundAmount"))));
+                tv_ali_refund_amount.setText(currencyFormat(roundTwoDecimals(Double.parseDouble(alipaySummary.optString("refundAmount")))));
                 tv_ali_refund_count.setText(alipaySummary.optString("refundCount"));
 
-                tv_we_payment_amount.setText("$" + roundTwoDecimals(Double.parseDouble(wechatSummary.optString("paymentAmount"))));
+                tv_we_payment_amount.setText(currencyFormat(roundTwoDecimals(Double.parseDouble(wechatSummary.optString("paymentAmount")))));
                 tv_we_payment_count.setText(wechatSummary.optString("paymentCount"));
-                tv_we_refund_amount.setText("$" + roundTwoDecimals(Double.parseDouble(wechatSummary.optString("refundAmount"))));
+                tv_we_refund_amount.setText(currencyFormat( roundTwoDecimals(Double.parseDouble(wechatSummary.optString("refundAmount")))));
                 tv_we_refund_count.setText(wechatSummary.optString("refundCount"));
 
-                tv_union_payment_amount.setText("$" + roundTwoDecimals(Double.parseDouble(unionpaySummary.optString("paymentAmount"))));
+                tv_union_payment_amount.setText(currencyFormat(roundTwoDecimals(Double.parseDouble(unionpaySummary.optString("paymentAmount")))));
                 tv_union_payment_count.setText(unionpaySummary.optString("paymentCount"));
-                tv_union_refund_amount.setText("$" + roundTwoDecimals(Double.parseDouble(unionpaySummary.optString("refundAmount"))));
+                tv_union_refund_amount.setText(currencyFormat(roundTwoDecimals(Double.parseDouble(unionpaySummary.optString("refundAmount")))));
                 tv_union_refund_count.setText(unionpaySummary.optString("refundCount"));
 
                 break;
 
         }
     }
+    private String currencyFormat(String grandTotal) {
+        double number = Double.parseDouble(grandTotal);
+        String COUNTRY = "US";
+        String LANGUAGE = "en";
+        String str = NumberFormat.getCurrencyInstance(new Locale(LANGUAGE, COUNTRY)).format(number);
 
+        return str;
+    }
     /**
      * Print.
      */

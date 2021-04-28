@@ -53,6 +53,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,6 +61,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -188,20 +190,20 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                             status = "Unsuccessful";
                             payment_image.setImageResource(R.drawable.unsuccessful_icon);
                             if (jsonObject.optJSONObject("payment").has("receiptAmount")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
+                                tv_amount.setText(currencyFormat(roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount")))));
                             } else if (jsonObject.optJSONObject("payment").has("grandTotal")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal"))));
+                                tv_amount.setText(currencyFormat(roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal")))));
                             }
                         } else {
                             Log.v("TOKENRESPONSE","SuCCESS ammount"+"$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
                             payment_tag.setText("Payment Successful");
                             status = "Successful";
                             if (jsonObject.optJSONObject("payment").has("receiptAmount")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount"))));
+                                tv_amount.setText(currencyFormat( roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("receiptAmount")))));
                             } else if (jsonObject.optJSONObject("payment").has("amount")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("amount"))));
+                                tv_amount.setText(currencyFormat(roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("amount")))));
                             } else if (jsonObject.optJSONObject("payment").has("grandTotal")) {
-                                tv_amount.setText("$" + roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal"))));
+                                tv_amount.setText(currencyFormat(roundTwoDecimals(Double.valueOf(jsonObject.optJSONObject("payment").optString("grandTotal")))));
                             }
 
                             payment_image.setImageResource(R.drawable.successful_icon);
@@ -1033,5 +1035,14 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
             getActivity().unbindService(conn);
         }
         getActivity().stopService(intentService);
+    }
+
+    private String currencyFormat(String grandTotal) {
+        double number = Double.parseDouble(grandTotal);
+        String COUNTRY = "US";
+        String LANGUAGE = "en";
+        String str = NumberFormat.getCurrencyInstance(new Locale(LANGUAGE, COUNTRY)).format(number);
+
+        return str;
     }
 }
