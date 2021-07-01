@@ -98,6 +98,8 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -408,8 +410,6 @@ showMessageOK("You have previously declined this permission.\n" +
 
                 img_menu.setVisibility(View.GONE);
                 try {
-
-
                     isExternalApp = true;
                     tv_close_ext.setVisibility(View.VISIBLE);
                     JSONObject jsonObject = new JSONObject(getIntent().getExtras().getString("TestData"));
@@ -433,10 +433,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-
-
         }
     }
 
@@ -667,9 +664,16 @@ showMessageOK("You have previously declined this permission.\n" +
     public void openProgressDialog() {
         progress = new ProgressDialog(DashboardActivity.this);
         progress.setMessage(getResources().getString(R.string.loading));
+      //  progress.setMessage("DashLoading");
         progress.setCancelable(false);
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
+        progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progress.dismiss();//dismiss dialog
+            }
+        });
         progress.show();
     }
 
@@ -1561,6 +1565,7 @@ showMessageOK("You have previously declined this permission.\n" +
         final CheckBox chk_ali_display_and_add = dialogview.findViewById(R.id.chk_ali_display_and_add);
         final CheckBox chk_ali_display_only = dialogview.findViewById(R.id.chk_ali_display_only);
 
+        final CheckBox chk_drag_drop = dialogview.findViewById(R.id.chk_drag_drop);
 
         if (preferencesManager.getshowReference().equals("true")) {
             chk_reference.setChecked(true);
@@ -1592,6 +1597,14 @@ showMessageOK("You have previously declined this permission.\n" +
         } else {
             chk_ExternalScan.setChecked(false);
             chk_ExternalScan.setSelected(false);
+        }
+
+        if (preferencesManager.isDragDrop()) {
+            chk_drag_drop.setChecked(true);
+            chk_drag_drop.setSelected(true);
+        } else {
+            chk_drag_drop.setChecked(false);
+            chk_drag_drop.setSelected(false);
         }
 
         if (preferencesManager.isDisplayLoyaltyApps()) {
@@ -1788,6 +1801,18 @@ showMessageOK("You have previously declined this permission.\n" +
                 preferencesManager.setisExternalScan(false);
             }
         });
+
+        chk_drag_drop.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_drag_drop.setChecked(true);
+                preferencesManager.setDragDrop(true);
+            } else {
+                //case 2
+                chk_drag_drop.setChecked(false);
+                preferencesManager.setDragDrop(false);
+            }
+        });
+
         chk_display_loyalty_apps.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_display_loyalty_apps.setChecked(true);
@@ -3688,7 +3713,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
                     if (chk_up_upi_qr_display_and_add.isChecked() || chk_upi_qr_display_only.isChecked()) {
                         if (chk_unionpay_qr_code.isChecked()) {
-                            Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : Double.parseDouble(edt_up_upi_qr_amount.getText().toString());
+                            Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : calculatecnv(edt_up_upi_qr_amount.getText().toString());
                             if (a != 0.00) {
                                 preferencesManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
                                 preferencesManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
@@ -3707,7 +3732,7 @@ showMessageOK("You have previously declined this permission.\n" +
                         }
 
                         if (chk_upi_qr_merchant_display.isChecked()) {
-                            Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : Double.parseDouble(edt_up_upi_qr_amount.getText().toString());
+                            Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : calculatecnv(edt_up_upi_qr_amount.getText().toString());
                             if (a != 0.00) {
                                 preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
                                 preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
@@ -4229,7 +4254,8 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("ShowPrintQR", preferenceManager.isQR());
             jsonObject.put("DisplayStaticQR", preferenceManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
-           jsonObject.put("isExternalInputDevice", preferenceManager.isExternalScan());
+            jsonObject.put("isExternalInputDevice", preferenceManager.isExternalScan());
+            jsonObject.put("isDragDrop", preferenceManager.isDragDrop());
             jsonObject.put("ShowMembershipManual", preferenceManager.isMembershipManual());
             jsonObject.put("ShowMembershipHome", preferenceManager.isMembershipHome());
             jsonObject.put("Membership/Loyality", preferenceManager.isLoyality());
@@ -4289,6 +4315,7 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
             jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -4496,7 +4523,10 @@ showMessageOK("You have previously declined this permission.\n" +
         }
         if (progress.isShowing())
             progress.dismiss();
+
+
         JSONObject jsonObject = new JSONObject(result);
+        Log.v("MYRESULT",result+TAG);
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
@@ -4528,14 +4558,29 @@ showMessageOK("You have previously declined this permission.\n" +
                         if (isDisplayChoicesDataSaved) {
                             isDisplayChoicesDataSaved = false;
                             callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
-                        } else
+                            Log.v("MYRESULT",result);
+                        } else {
                             callUpdateBranchDetailsNew();
+                            Log.v("MYRESULT","newupdate1 "+result);
+                        }
                     } else {
+                        Log.v("MYRESULT","elase delted "+result);
                         if (isDisplayChoicesDataSaved) {
                             isDisplayChoicesDataSaved = false;
                             callUpdateBranchDetails(funcPrepareDisplayChoicesJSONObject());
+                            Log.v("MYRESULT","newupdate3 "+result);
                         } else
+                        {
+                            if(progress!=null)
+                            {
+                                if (progress.isShowing())
+                                {
+                                    progress.dismiss();
+                                }
+                            }
                             callUpdateBranchDetailsNew();
+                        Log.v("MYRESULT","newupdate2 "+result);
+                    }
 //                        callDeleteTerminal();
                     }
 
@@ -4585,6 +4630,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 break;
 
             case "UpdateBranchDetailsNew":
+                Log.v("MYRESULT","New "+result);
                 callAuthToken();
                 break;
             case "UpdateBranchDetails":
@@ -4620,6 +4666,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
                     preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
                     preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
                     preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
                     preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
@@ -4654,6 +4701,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                    preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
@@ -5239,6 +5287,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
 
     public void callUpdateBranchDetailsNew() {
+
         openProgressDialog();
         try {
             JSONObject jsonObject = new JSONObject();
@@ -5273,7 +5322,8 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
            jsonObject.put("isExternalInputDevice", preferenceManager.isExternalScan());
-            jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
+            jsonObject.put("isDragDrop", preferenceManager.isDragDrop());
+           jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
             jsonObject.put("ManualEntry", preferencesManager.isManual());
             jsonObject.put("Back", preferencesManager.isBack());
@@ -5332,6 +5382,7 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
             jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
 
 
             hashMapKeys.clear();
@@ -5463,6 +5514,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
                     preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
                     preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
@@ -5501,6 +5553,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
@@ -5571,5 +5624,14 @@ showMessageOK("You have previously declined this permission.\n" +
             }
         }
     }
-
+    private double calculatecnv(String per) {
+        NumberFormat f = NumberFormat.getInstance(); // Gets a NumberFormat with the default locale, you can specify a Locale as first parameter (like Locale.FRENCH)
+        double cent=0.0;
+        try {
+            cent = f.parse(per).doubleValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cent;
+    }
 }

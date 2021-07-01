@@ -11,18 +11,17 @@
         android:textSize="16sp"
         android:padding="5dp"
         android:textStyle="bold"
-
         android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/colorBlue"
         />
 
     <TextView
         android:id="@+id/txtAmount"
         style="@style/TextViewStyle"
         android:layout_width="wrap_content"
-
         android:layout_weight="2"
-        android:text="$1,000.00"
+        android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
@@ -33,7 +32,8 @@
         android:id="@+id/txtChoose"
         style="@style/TextViewStyle"
         android:layout_width="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="2"
         android:text="Please choose a Tip Amount"
         android:textSize="14sp"
@@ -62,17 +62,25 @@
         android:layout_centerHorizontal="true"
         android:background="@color/colorRed"
         android:layout_below="@+id/txtChoose"
+        android:layout_marginBottom="10dp"
         />
-
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/recyclerTip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:layout_below="@+id/txtNoTip"
+    ></android.support.v7.widget.RecyclerView>
     <LinearLayout
         android:id="@+id/llOne"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/txtNoTip"
+        android:layout_below="@+id/recyclerTip"
         android:weightSum="3"
         android:padding="5dp"
         android:background="@color/colorWhite"
+        android:visibility="gone"
         >
         <LinearLayout
             android:id="@+id/ll_default1"
@@ -508,6 +516,7 @@
         android:weightSum="3"
         android:padding="5dp"
         android:background="@color/colorWhite"
+        android:visibility="gone"
         >
         <LinearLayout
             android:id="@+id/ll_default4"
@@ -874,7 +883,9 @@
             android:textStyle="bold"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
 
         </TextView>
 

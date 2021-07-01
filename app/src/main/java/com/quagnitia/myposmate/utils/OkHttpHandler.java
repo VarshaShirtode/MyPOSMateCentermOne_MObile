@@ -114,7 +114,7 @@ if(!isTimerCalled)
                     OutputStream os = conn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(
                             new OutputStreamWriter(os, "UTF-8"));
-                    Log.v(TAG + " Request", postDataParams.toString());
+                    Log.v(TAG + " Request", conn.getOutputStream().toString());
                     writer.write(getPostDataString(postDataParams));
                     writer.flush();
                     writer.close();

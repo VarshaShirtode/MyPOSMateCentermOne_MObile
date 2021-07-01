@@ -183,6 +183,7 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
                             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
                             jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+                            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
 
                             jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
                             jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
@@ -226,6 +227,9 @@ public static boolean isUpdateDetails=false;
                             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
                             jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
                             jsonObject.put("isExternalInputDevice",preferencesManager.isExternalScan());
+
+                            jsonObject.put("isDragDrop", preferencesManager.isDragDrop());
+
                             jsonObject.put("Home", preferencesManager.isHome());
                             jsonObject.put("ManualEntry", preferencesManager.isManual());
                             jsonObject.put("Back", preferencesManager.isBack());

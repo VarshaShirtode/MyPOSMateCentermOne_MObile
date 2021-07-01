@@ -54,7 +54,17 @@
                 android:text="Alipay WeChat Scan QR"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
+            <CheckBox
+                android:id="@+id/chk_drag_drop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Rearrange Payment icon"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <CheckBox
                 android:id="@+id/chk_print_receipt"

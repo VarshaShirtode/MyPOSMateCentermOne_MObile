@@ -305,6 +305,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
                     preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
                     preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferenceManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
                     preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
@@ -360,6 +361,8 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
                     preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
+
                     preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
                     preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
                     preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));

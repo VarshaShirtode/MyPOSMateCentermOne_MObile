@@ -142,7 +142,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                             preferencesManager.setIsConnected(true);
                             preferencesManager.setIsAuthenticated(true);
                             Log.v("MyPOSMate®", "Connected....");
-                            toast("Stomp connection opened");
+                         //   toast("Stomp connection opened");
                             Intent i = new Intent();
                             i.setAction("Connected");
                             sendBroadcast(i);
@@ -166,7 +166,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                 mStompClient.disconnect();
                             preferencesManager.setIsConnected(false);
                             preferencesManager.setIsAuthenticated(false);
-                            toast("Stomp connection closed");
+                           // toast("Stomp connection closed");
                             Log.v("MyPOSMate®", "ConnectionClosed....");
                             Intent i1 = new Intent();
                             i1.setAction("ConnectionClosed");

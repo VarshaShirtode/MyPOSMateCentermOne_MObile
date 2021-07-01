@@ -742,6 +742,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
             jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
             jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
+            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
 
             jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
             jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
@@ -783,6 +784,8 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
             jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
             jsonObject.put("isExternalInputDevice",preferencesManager.isExternalScan());
+
+            jsonObject.put("isDragDrop", preferencesManager.isDragDrop());
 
             jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
             jsonObject.put("Home", preferencesManager.isHome());
@@ -982,6 +985,9 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
                     preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
                     preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
+
+
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
@@ -1019,6 +1025,8 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferencesManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
+
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
                     preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
                     preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
@@ -1125,7 +1133,7 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
                     preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
                     preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
-
+                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
@@ -1164,6 +1172,8 @@ public class AboutUs extends Fragment implements View.OnClickListener, OnTaskCom
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferencesManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
+
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));

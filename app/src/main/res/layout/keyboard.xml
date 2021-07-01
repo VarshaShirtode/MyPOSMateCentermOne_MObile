@@ -10,7 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        
+        >
 
         <Button
             android:layout_margin="1dp"
@@ -19,9 +21,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+
             android:layout_weight="1"
-            android:text="1"/>
+            android:text="1"
+            android:textSize="30dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
         <Button
             android:layout_margin="1dp"
@@ -30,9 +36,12 @@
             android:background="@drawable/btn_white_border"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="2"/>
+            android:text="2"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
         <Button
             android:layout_margin="1dp"
@@ -41,9 +50,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="3" />
+            android:text="3"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
 
     </LinearLayout>
@@ -61,9 +73,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="4"/>
+            android:text="4"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
         <Button
             android:layout_margin="1dp"
@@ -72,9 +87,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="5"/>
+            android:text="5"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
         <Button
             android:layout_margin="1dp"
             android:background="@drawable/btn_white_border"
@@ -82,9 +100,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="6"/>
+            android:text="6"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
     </LinearLayout>
 
@@ -102,9 +123,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="7"/>
+            android:text="7"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
         <Button
             android:layout_margin="1dp"
@@ -113,9 +136,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="8"/>
+            android:text="8"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
         <Button
             android:layout_margin="1dp"
@@ -124,9 +149,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="9"/>
+            android:text="9"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
 
 
@@ -146,8 +173,11 @@
             android:background="@drawable/btn_border_red"
             android:text="DELETE"
             android:textColor="@color/colorWhite"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
+
         <Button
             android:layout_margin="1dp"
             android:background="@drawable/btn_white_border"
@@ -155,9 +185,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="30dp"
             android:layout_weight="1"
-            android:text="0"/>
+            android:text="0"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
         <Button
             android:layout_margin="1dp"
@@ -167,9 +200,12 @@
             android:textColor="@color/colorWhite"
             android:layout_height="match_parent"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:layout_weight="1"
-            android:text="OK"/>
+            android:text="OK"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            />
 
     </LinearLayout>
 
@@ -183,7 +219,10 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textStyle="bold"
-        android:textSize="18sp">
+        android:textSize="18sp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        >
 
 
     </TextView>

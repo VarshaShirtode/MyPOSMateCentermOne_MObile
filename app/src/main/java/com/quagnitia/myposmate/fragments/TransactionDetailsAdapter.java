@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.utils.PreferencesManager;
@@ -127,7 +128,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
                 holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
             }
 
-            if (jsonObject.names().getString(position).equals("Receipt Amount"))
+           if (jsonObject.names().getString(position).equals("Receipt Amount"))
             {
                 holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
             }
@@ -145,7 +146,11 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
             {
                 holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
             }
-
+            if (jsonObject.names().getString(position).equals("Fee Amount"))
+            {
+                holder.tv_details_value.setText(currencyFormat(jsonObject.optString(jsonObject.names().getString(position))));
+               // Toast.makeText(mContext,"fee",Toast.LENGTH_SHORT).show();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

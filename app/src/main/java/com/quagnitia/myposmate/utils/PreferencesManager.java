@@ -114,6 +114,7 @@ public class PreferencesManager {
     private String isQR="isQR";
     private String isStaticQR="isStaticQR";
     private String isExternalscanner="isExternalscanner";
+    private String isDragDrop="isDragDrop";
     private String isDisplayLoyaltyApps="isDisplayLoyaltyApps";
 
     private String LoyaltyData="LoyaltyData";
@@ -170,6 +171,38 @@ public class PreferencesManager {
 
     private String isSwitchTip="isSwitchTip";
 
+    /*drag drop start*/
+    private String FIRST_TIME_CALL="FIRST_TIME_CALL";
+    private String paymentmodelist="paymentmodelist";
+    public String getPaymentmodelist() {
+        return paymentmodelist;
+    }
+
+    public void setPaymentmodelist(String paymentmodelist) {
+        this.paymentmodelist = paymentmodelist;
+    }
+
+    public void putString(String key, String value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public String getString(String key) {
+        return sharedPreferences.getString(key, "");
+    }
+
+    public boolean isFirstTimeCall() {
+        return sharedPreferences.getBoolean(FIRST_TIME_CALL, true);
+    }
+
+    public void setFirstTimeCall(boolean firstTimeCall) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(this.FIRST_TIME_CALL, firstTimeCall);
+        editor.commit();
+    }
+
+    /*drag drop end*/
     /*private String etTipDefault1="etTipDefault1";
     private String etTipDefault2="etTipDefault2";
     private String etTipDefault3="etTipDefault3";
@@ -571,6 +604,17 @@ public class PreferencesManager {
         editor.apply();
 
     }
+
+    public boolean isDragDrop() {
+        return sharedPreferences.getBoolean(isDragDrop, false);
+    }
+
+    public void setDragDrop(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isDragDrop, text);
+        editor.apply();
+    }
+
 
     public boolean isDisplayLoyaltyApps() {
         return sharedPreferences.getBoolean(isDisplayLoyaltyApps, false);

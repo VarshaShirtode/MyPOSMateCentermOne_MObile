@@ -981,6 +981,7 @@ id center
 id centerCrop
 id center_horizontal
 id center_vertical
+id centrapay
 id chains
 id checkbox
 id chk_ExternalScan
@@ -1010,6 +1011,7 @@ id chk_default5
 id chk_display_ads
 id chk_display_loyalty_apps
 id chk_display_static_qr
+id chk_drag_drop
 id chk_entertainment_book
 id chk_front
 id chk_gst_no
@@ -1190,6 +1192,7 @@ id fill_vertical
 id fitCenter
 id fitXY
 id forever
+id form_image
 id frameSurfaceView
 id getPOSInfo
 id getPayInfo
@@ -1284,6 +1287,7 @@ id ll_back
 id ll_bottom
 id ll_cup_reference_id
 id ll_custome_keyboard
+id ll_default
 id ll_default1
 id ll_default1_disable
 id ll_default2
@@ -1325,6 +1329,7 @@ id ll_upi
 id ll_void
 id ll_we
 id login
+id main_layout
 id mainui
 id match_global_nicknames
 id media_actions
@@ -1356,6 +1361,7 @@ id progress_horizontal
 id progressbar
 id queryBalance
 id radio
+id recyclerTip
 id recycler_view
 id rel_alipay
 id rel_alipay_pc
@@ -1395,7 +1401,14 @@ id rfc822
 id right
 id right_icon
 id right_side
+id rlTop
+id rlTop1
+id rlTop2
+id rlTop3
+id rlTop4
 id sc_payment_mode
+id scanner
+id scanners
 id scanqr
 id scanqr_unionpay
 id scanqr_unionpayv
@@ -1474,6 +1487,7 @@ id tv_cancel
 id tv_centrapay_barcode_scanner_qr_disabled
 id tv_centrapay_merchant_qr_disabled
 id tv_close
+id tv_cnv
 id tv_count_down
 id tv_custom
 id tv_date_time
@@ -1602,6 +1616,7 @@ id txt1
 id txt2
 id txtAmount
 id txtAmountLable
+id txtAmt
 id txtAmt1
 id txtAmt2
 id txtAmt3
@@ -1609,11 +1624,13 @@ id txtAmt4
 id txtAmt5
 id txtChoose
 id txtNoTip
+id txtPercent
 id txtPercent1
 id txtPercent2
 id txtPercent3
 id txtPercent4
 id txtPercent5
+id txtPrice
 id txtPrice1
 id txtPrice2
 id txtPrice3
@@ -1718,6 +1735,7 @@ layout fragment_settings
 layout fragment_settlement
 layout fragment_tipsetting
 layout fragment_trigger
+layout grid_item
 layout header
 layout keyboard
 layout keyboard_custom
@@ -1765,6 +1783,7 @@ layout refund_fragment_unionpay
 layout refund_layout_unionpay
 layout reset_terminal_dialog
 layout retry_dialog
+layout row_tip
 layout scanner_dialog
 layout select_dialog_item_material
 layout select_dialog_multichoice_material

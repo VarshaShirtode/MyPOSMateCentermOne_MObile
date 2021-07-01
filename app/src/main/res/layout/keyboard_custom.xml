@@ -20,8 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="1"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
 
         <Button
@@ -32,8 +34,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="2"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
 
         <Button
@@ -44,8 +48,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="3"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
 
         <Button
@@ -56,9 +62,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="4"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <Button
             android:layout_margin="1dp"
             android:background="@drawable/btn_white_border"
@@ -67,8 +82,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="5"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
         <Button
             android:layout_margin="1dp"
@@ -78,20 +95,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="6"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-
-
-
         <Button
             android:layout_margin="1dp"
             android:background="@drawable/btn_white_border"
@@ -100,8 +108,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="7"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
         <Button
             android:layout_margin="1dp"
@@ -111,9 +121,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="8"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <Button
             android:layout_margin="1dp"
             android:background="@drawable/btn_white_border"
@@ -122,8 +141,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="9"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+
             />
 
         <Button
@@ -134,8 +156,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="0"
-            android:textSize="18sp"
+            android:textSize="25sp"
             android:textStyle="bold"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             />
         <Button
             android:layout_margin="1dp"
@@ -145,8 +169,11 @@
             android:background="@drawable/btn_border_red"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="11sp"
-            android:text="DELETE"/>
+            android:textSize="25sp"
+            android:text="DEL"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            />
 
 
         <Button
@@ -157,37 +184,12 @@
             android:textColor="@color/colorWhite"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="11sp"
-            android:text="OK"/>
+            android:textSize="25sp"
+            android:text="OK"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            />
 
     </LinearLayout>
-
-   <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-
-
-
-
-
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-
-    </LinearLayout>
--->
-
-
-
 
 </LinearLayout>

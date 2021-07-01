@@ -145,6 +145,10 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                         img_payment.setImageResource(R.drawable.ic_smallali);
                     }
                     Log.v("REQUEST_ID",""+requestId);
+                    if (!DashboardActivity.isExternalApp) {
+                        callUpdateRequestAPI1(requestId,true);
+                    }
+
 //                    if(isTrigger)
 //                    {
 //                        isTrigger=false;
@@ -248,6 +252,8 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         callAuthToken();
         return view;
     }
+
+
     TreeMap<String, String> hashMapKeys;
     public void callUpdateRequestAPI1(String request_id, boolean executed) {
         openProgressDialog();
@@ -262,7 +268,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
             hashMapKeys.put("request_id", request_id);
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("executed", executed + "");
-            Log.v("TOKENResponse","inside update request");
+            Log.v("TOKENResponse","inside update request "+executed);
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
                     .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
@@ -855,7 +861,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 if(progress.isShowing())
                     progress.dismiss();
                 callAuthToken();
-             //   _parseUpdateRequest(jsonObject);
+               // _parseUpdateRequest(jsonObject);
                 break;
             case "AuthToken":
 //                if(progress.isShowing())
