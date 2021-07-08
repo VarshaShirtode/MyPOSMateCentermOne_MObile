@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -149,6 +150,7 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
             if (mData.get(position).isConv()==true) {
                 holder.tv_cnv.setVisibility(View.VISIBLE);
                 holder.tv_cnv.setText(mData.get(position).getCnv_amt());
+                Log.v("CONVE","in adapter "+mData.get(position).getName()+" "+ mData.get(position).isConv());
             } else{
                 holder.tv_cnv.setVisibility(View.GONE);             ;
             }

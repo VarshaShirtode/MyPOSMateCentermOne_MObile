@@ -264,8 +264,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     }
 
 
-
-
     public void funcOnCreateViewCall(LayoutInflater inflater, ViewGroup container,
                                      Bundle savedInstanceState) {
         funcBeforeUIRender();
@@ -2110,6 +2108,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 cnvAmount="0.00";
                 isConv=false;
             }
+        }else{
+            cnvAmount="0.00";
+            isConv=false;
         }
     }
 
@@ -2133,6 +2134,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isConv=false;
                 cnvAmount="0.00";
             }
+        }else{
+            isConv=false;
+            cnvAmount="0.00";
         }
     }
 
@@ -2156,6 +2160,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isConv=false;
                 cnvAmount="0.00";
             }
+        }else{
+            isConv=false;
+            cnvAmount="0.00";
         }
     }
 
@@ -2180,6 +2187,9 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isConv=false;
                 cnvAmount="0.00";
             }
+        }else{
+            cnvAmount="0.00";
+            isConv=false;
         }
     }
 
@@ -2204,6 +2214,10 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isConv=false;
                 cnvAmount="0.00";
             }
+        }
+        else{
+            isConv=false;
+            cnvAmount="0.00";
         }
     }
 
@@ -10716,6 +10730,7 @@ if (!isTipDialogSelected) {
         }
 
         if (preferenceManager.isPoliSelected()) {
+            Log.v("CONVE","Poli Selected "+preferenceManager.isPoliSelected());
             MyObject m5 = new MyObject();
             m5.setName("Poli disabled");
             m5.setLogo(R.drawable.poli);
