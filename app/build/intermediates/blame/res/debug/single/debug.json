@@ -1060,6 +1060,10 @@
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\drawable-xhdpi-v4\\abc_textfield_default_mtrl_alpha.9.png"
     },
     {
+        "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\layout_lay_show_amount_dialog.xml.flat",
+        "source": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\src\\main\\res\\layout\\lay_show_amount_dialog.xml"
+    },
+    {
         "merged": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\res\\merged\\debug\\drawable_abc_seekbar_track_material.xml.flat",
         "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\0d51caf23d496c999894760c2ce57a6d\\res\\drawable\\abc_seekbar_track_material.xml"
     },

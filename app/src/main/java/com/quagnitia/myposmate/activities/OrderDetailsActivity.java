@@ -109,15 +109,11 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
         edt_status = findViewById(R.id.edt_status);
         edt_ready_by = findViewById(R.id.edt_ready_by);
 
-
         tv_subtotal=findViewById(R.id.tv_subtotal);
         tv_total=findViewById(R.id.tv_total);
         tv_surcharge=findViewById(R.id.tv_surcharge);
         tv_delivery=findViewById(R.id.tv_delivery);
         tv_discount=findViewById(R.id.tv_discount);
-
-
-
 
         findViewById(R.id.btn_status).setOnClickListener((View) -> showStatusDialog());
         findViewById(R.id.btn_cancel).setOnClickListener((View) -> finish());

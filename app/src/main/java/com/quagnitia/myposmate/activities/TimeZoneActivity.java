@@ -86,11 +86,11 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
             // ...
         }
 
-
+       //Set Adapter
         timeZoneAdapter = new TimeZoneAdapter(this, arrayList);
         recycler_view.setAdapter(timeZoneAdapter);
 
-
+       //Filter according to search
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -160,12 +160,13 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         }
         return strDecryptedText;
     }
+
+
     public void callAuthToken() {
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
         new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
-
     }
 
     public String toHex(String arg) {
@@ -186,10 +187,12 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         }
         return new String(bytes, "UTF-8");
     }
+
     private PreferencesManager preferenceManager;
     TreeMap<String, String> hashMapKeys;
     JSONObject updateDetailsJson=null;
 
+    //Update changes on Server
     public void callUpdateBranchDetails(JSONObject jsonObject) {
 
         if(isUpdateDetails)

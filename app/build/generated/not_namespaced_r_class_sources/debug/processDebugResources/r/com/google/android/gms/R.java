@@ -132,9 +132,9 @@ public final class R {
         public static final int text1 = 0x7f08024c;
         public static final int text2 = 0x7f08024d;
         public static final int thing_proto = 0x7f080251;
-        public static final int url = 0x7f080309;
-        public static final int wide = 0x7f080311;
-        public static final int wrap_content = 0x7f080314;
+        public static final int url = 0x7f08030a;
+        public static final int wide = 0x7f080312;
+        public static final int wrap_content = 0x7f080315;
     }
     public static final class integer {
         private integer() {}

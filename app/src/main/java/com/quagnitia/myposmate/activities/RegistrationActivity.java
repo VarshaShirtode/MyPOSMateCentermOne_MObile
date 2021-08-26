@@ -188,10 +188,12 @@ public class RegistrationActivity extends Fragment implements View.OnClickListen
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
                     preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                   //Register to server
                     callRegistartionAPI();
                 }
                 break;
             case "Registration":
+                //Registration
                 if (jsonObject.optBoolean("status")||
                         jsonObject.optBoolean("success")) {
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);

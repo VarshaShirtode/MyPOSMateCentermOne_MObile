@@ -150,6 +150,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         if (!AppConstants.isRegistered)
 //            callGetBranchDetails_old();
         {
+
             isGetBranchDetailsCalled = true;
             callAuthToken();
         } else {
@@ -645,7 +646,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
             new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -653,7 +653,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
     public void callGetBranchDetails_newwithconfig(String configId) {
-
         openProgressDialog();
         try {
 
@@ -970,8 +969,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 //                jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
-
-
                     if (preferencesManager.isResetTerminal()) {
                         edt_unique_id.setText("");
                         preferencesManager.setuniqueId("");
@@ -1082,13 +1079,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     if (jsonObject1.has("MerchantId")) {
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
                     }
-
-
                 }
-
-
             } else {
-
                 if (jsonObject.has("configId")) {
                     preferencesManager.setConfigId(decryption(jsonObject.optString("configId")));
                 }
@@ -1100,13 +1092,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 if (jsonObject.has("terminalId")) {
                     preferencesManager.setterminalId(decryption(jsonObject.optString("terminalId")));
                 }
-
 //                if (jsonObject.has("accessId")) {
 //                    preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
 //                }
             }
-
-
         } catch (Exception e) {
             if (jsonObject.has("configId")) {
                 preferencesManager.setConfigId(decryption(jsonObject.optString("configId")));

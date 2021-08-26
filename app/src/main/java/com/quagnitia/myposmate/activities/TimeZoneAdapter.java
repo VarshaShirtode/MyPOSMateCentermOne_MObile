@@ -92,6 +92,7 @@ public static boolean isUpdateDetails=false;
 
 
             holder.tv_timezone.setText(tz.getDisplayName() + " (" + arrayList.get(position) + ")");
+           //Checked TimeZone
             if (preferencesManager.isTimeZoneChecked() &&
                     !preferencesManager.getTimeZone().equals("") &&
                     preferencesManager.getTimeZone().

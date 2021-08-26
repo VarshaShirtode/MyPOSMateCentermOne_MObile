@@ -64,6 +64,7 @@ import com.centerm.smartpos.constant.DeviceErrorCode;
 import com.centerm.smartpos.util.LogUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
 import com.quagnitia.myposmate.BuildConfig;
 import com.quagnitia.myposmate.MyPOSMateApplication;
 import com.quagnitia.myposmate.R;
@@ -937,7 +938,6 @@ showMessageOK("You have previously declined this permission.\n" +
         btn_cancel.setOnClickListener((View v) ->
                 {
                     dialog.dismiss();
-
                 }
         );
 
@@ -1092,7 +1092,6 @@ showMessageOK("You have previously declined this permission.\n" +
         btn_cancel.setOnClickListener((View v) ->
                 {
                     dialog.dismiss();
-
                 }
         );
 
@@ -1164,7 +1163,6 @@ showMessageOK("You have previously declined this permission.\n" +
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
     }
-
 
     public void funcMenuEOD() {
         callAuthToken();
@@ -1530,6 +1528,8 @@ showMessageOK("You have previously declined this permission.\n" +
 
     boolean isDisplayChoicesDataSaved = false;
 
+
+    //Display Choices Dialog
     public void funcMenuDisplayChoices() {
         callAuthToken();
         //   if (preferencesManager.isAuthenticated()) {
@@ -1980,6 +1980,7 @@ showMessageOK("You have previously declined this permission.\n" +
     }
 
 
+    //Payment Choices Dialog
     public void funcMenuPaymentChoices() {
         callAuthToken();
         //  if (preferencesManager.isAuthenticated()) {
@@ -2261,9 +2262,6 @@ showMessageOK("You have previously declined this permission.\n" +
             }
         });
     }
-
-
-
 
 
     private void _poli_chkListener() {
@@ -2901,7 +2899,6 @@ showMessageOK("You have previously declined this permission.\n" +
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
-
         });
     }
 
@@ -2911,8 +2908,6 @@ showMessageOK("You have previously declined this permission.\n" +
             if (((CheckBox) v).isChecked()) {
                 chk_uplan_qr.setChecked(true);
                 preferencesManager.setisUplanSelected(true);
-
-
             } else {
                 //case 2
                 chk_uplan_qr.setChecked(false);
@@ -2926,7 +2921,6 @@ showMessageOK("You have previously declined this permission.\n" +
                 edt_uplan_cv.setText("0.00");
             }
         });
-
     }
 
     private void _uplan_DAADD_DONLY_chkListener() {
@@ -4620,6 +4614,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 }
 
                 break;
+
             case "GetBranchDetailsNew":
                 _NewUser(jsonObject);
                 callAuthToken();
@@ -4633,17 +4628,16 @@ showMessageOK("You have previously declined this permission.\n" +
                 Log.v("MYRESULT","New "+result);
                 callAuthToken();
                 break;
+
             case "UpdateBranchDetails":
                 callAuthToken();
                 if (jsonObject.has("otherData")) {
                     JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 
-
                     if (jsonObject1.has("ConfigId"))
                         preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
                     if (jsonObject1.has("MerchantId"))
                         preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
-
 
                     preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
                     preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
@@ -4700,7 +4694,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
                     preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
                     preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
-                   preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
                     preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
                     preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
@@ -4756,7 +4750,7 @@ showMessageOK("You have previously declined this permission.\n" +
     }
 
 
-    private void    print(String body) throws RemoteException {
+    private void print(String body) throws RemoteException {
 
         try {
             final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
@@ -4946,7 +4940,6 @@ showMessageOK("You have previously declined this permission.\n" +
             switch (ac) {
 
                 case "ThirdParty":
-
                     callSetupFragment(SCREENS.THIRD_PARTY, "xmpp");
                     final Handler handler11 = new Handler();
                     handler11.postDelayed(new Runnable() {
@@ -4961,7 +4954,6 @@ showMessageOK("You have previously declined this permission.\n" +
                     }, 500);
                     break;
 
-
                 case "PrintTrigger":
                     try {
                         triggerjsonObject = new JSONObject(intent.getStringExtra("data"));
@@ -4972,8 +4964,6 @@ showMessageOK("You have previously declined this permission.\n" +
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                     break;
 
                 case "OrderDetails":
@@ -4987,8 +4977,6 @@ showMessageOK("You have previously declined this permission.\n" +
                             tv_order_badge.setVisibility(View.VISIBLE);
                             mySoundPlayer.stopCurrentSound(1);
                         } else {
-
-
                             callAuthToken();
                             Intent orderIntent = new Intent(DashboardActivity.this, OrderDetailsActivity.class);
                             orderIntent.putExtra("hub_id", jsonObject.optString("hub_id"));
@@ -5032,7 +5020,6 @@ showMessageOK("You have previously declined this permission.\n" +
                         }
                     }, 500);
 
-
                     break;
 
 
@@ -5054,7 +5041,6 @@ showMessageOK("You have previously declined this permission.\n" +
                             callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                         }
                     }
-
                     break;
 
                 case "RECONNECT1":
@@ -5062,8 +5048,6 @@ showMessageOK("You have previously declined this permission.\n" +
                     preferencesManager.setIsConnected(false);
                     AppConstants.isNetOff = true;
                     callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
-
-
                     break;
 
             }
@@ -5117,6 +5101,8 @@ showMessageOK("You have previously declined this permission.\n" +
         }
     }
 
+
+    //On device back pressed
     @Override
     public void onBackPressed() {
 
@@ -5153,6 +5139,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
     }
 
+    //Fragments Screens
     public void callSetupFragment(SCREENS screens, Object data) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -5209,11 +5196,9 @@ showMessageOK("You have previously declined this permission.\n" +
                 } else
                     fragment = ManualEntry.newInstance("", "");
 
-
                 CURRENTFRAGMENT = SCREENS.MANUALENTRY.toString();
-
-
                 break;
+
             case ALIPAYPAYMENT:
                 if (data != null) {
                     HashMap hashMap = (HashMap) data;
@@ -5234,7 +5219,6 @@ showMessageOK("You have previously declined this permission.\n" +
                 fragment = AboutUs.newInstance("", "");
                 CURRENTFRAGMENT = SCREENS.ABOUT.toString();
                 break;
-
 
             case TRANSACTION_LIST:
                 fragment = TransactionListing.newInstance("", "");
@@ -5262,7 +5246,6 @@ showMessageOK("You have previously declined this permission.\n" +
                 CURRENTFRAGMENT = SCREENS.REFUND.toString();
                 break;
 
-
             case REFUND_UNIONPAY:
                 fragment = RefundFragmentUnionPay.newInstance("", "");
                 CURRENTFRAGMENT = SCREENS.REFUND_UNIONPAY.toString();
@@ -5286,6 +5269,7 @@ showMessageOK("You have previously declined this permission.\n" +
     }
 
 
+    //Update Branch details from Preference to server
     public void callUpdateBranchDetailsNew() {
 
         openProgressDialog();
@@ -5426,6 +5410,7 @@ showMessageOK("You have previously declined this permission.\n" +
         timer.start();
     }
 
+    // Update from preference
     public void callUpdateBranchDetails(JSONObject jsonObject) {
 
         openProgressDialog();
@@ -5469,6 +5454,8 @@ showMessageOK("You have previously declined this permission.\n" +
         return new String(bytes, "UTF-8");
     }
 
+
+    //get branch details from server
     public void callGetBranchDetails_new() {
 
         openProgressDialog();
@@ -5490,11 +5477,12 @@ showMessageOK("You have previously declined this permission.\n" +
         }
     }
 
+    // Save data to preference from server if user is new.
     public void _NewUser(JSONObject jsonObject) throws Exception {
         try {
             if (jsonObject.optString("success").equals("true")) {
 
-
+                 // Add data in Preferences
 //                JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {

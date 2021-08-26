@@ -117,7 +117,7 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
           //  holder.textfield.setText("" + mData.get(position).getName().replace(" disabled",""));
 
 
-
+// Visibility on off according number of icons
             if (mData.get(position).getSelected_option()==5)
             {
                 holder.rlTop1.setVisibility(View.GONE);

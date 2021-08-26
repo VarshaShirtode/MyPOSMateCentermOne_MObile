@@ -18,16 +18,16 @@ public class AppConstants {
 
 
     //Live Server
- /*   public static String BASE_URL3 = "https://liveone.myposmate.com/api/v1/";
+   public static String BASE_URL3 = "https://liveone.myposmate.com/api/v1/";
     public static String BASE_URL2 = "https://liveone.myposmate.com/api/v1/terminal/";
     public static String AUTH = "https://liveone.myposmate.com/oauth/token";
     public static String serverIp = "liveone.myposmate.com";
-*/
+
     //Test Server
-    public static String BASE_URL3 = "https://one.myposmate.com/api/v1/";
+   /* public static String BASE_URL3 = "https://one.myposmate.com/api/v1/";
     public static String BASE_URL2 = "https://one.myposmate.com/api/v1/terminal/";
     public static String AUTH = "https://one.myposmate.com/oauth/token";
-    public static String serverIp = "one.myposmate.com";
+    public static String serverIp = "one.myposmate.com";*/
 //one.myposmate.com commit
 
 

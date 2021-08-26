@@ -1483,6 +1483,7 @@ id tv_ali_refund_count
 id tv_alipay
 id tv_alipay_disabled
 id tv_amount
+id tv_amt
 id tv_cancel
 id tv_centrapay_barcode_scanner_qr_disabled
 id tv_centrapay_merchant_qr_disabled
@@ -1749,6 +1750,7 @@ layout lay_dp_uplan
 layout lay_mpm_centrapay
 layout lay_mpm_poli
 layout lay_mpm_up_merchant_qr
+layout lay_show_amount_dialog
 layout lay_void_dialog
 layout lay_wechat_qr
 layout layout_alipay_static_qr

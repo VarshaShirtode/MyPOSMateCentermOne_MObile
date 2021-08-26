@@ -644,7 +644,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     }
 
-
     public void funcConditionalSwitches(View view) {
         if (getArguments() != null) {
             if (getArguments().getString(ARG_PARAM1).equals("xmpp")) {
@@ -1336,7 +1335,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         btn_back1 = view.findViewById(R.id.btn_back1);
         btn_front1 = view.findViewById(R.id.btn_front1);
         btn_loyalty_apps = view.findViewById(R.id.btn_loyalty_apps);
-
 
      // funcLoyaltyAppSwitches();
       funcLoyaltyAppSwitchesNew();
@@ -5607,13 +5605,13 @@ if (!isTipDialogSelected) {
                     public void onClick(View v) {
                         callAuthToken();
                         if (!edt_amount_key.getText().toString().equals("")) {
-
                             keyboard_amount = edt_amount_key.getText().toString();
                         } else {
                             keyboard_amount = "0.00";
                         }
                         tip_amount = keyboard_amount.replace(",", "");
-                        callPaymentOptions(selected_option);
+                        showAmountDialog(keyboard_amount);
+                       /* callPaymentOptions(selected_option);*/
                         dialog.dismiss();
                     }
                 });
@@ -5832,6 +5830,45 @@ if (!isTipDialogSelected) {
     }
 }
     }
+
+    private void showAmountDialog(String amount)
+    {
+        final Dialog dialog = new Dialog(getActivity());
+//dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater lf = (LayoutInflater) (getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.lay_show_amount_dialog, null);
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+        Button btn_cancel=(Button)dialogview.findViewById(R.id.btn_cancel);
+        Button btn_ok=(Button)dialogview.findViewById(R.id.btn_ok);
+        TextView tv_amt=(TextView) dialogview.findViewById(R.id.tv_amt);
+        tv_amt.setText(amount);
+        btn_cancel.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btn_ok.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                callPaymentOptions(selected_option);
+                dialog.dismiss();
+
+            }
+        });
+
+    }
+
 
 
    /* private void showTipDialog() {
