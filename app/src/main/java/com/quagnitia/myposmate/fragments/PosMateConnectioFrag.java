@@ -74,7 +74,7 @@ import static android.Manifest.permission.CAMERA;
 public class PosMateConnectioFrag extends Fragment implements View.OnClickListener, OnTaskCompleted {
 
     private View view;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private TextView tv_status, tv_status_scan;
     private IntentFilter intentFilter;
     private ProgressBar progressbar;
@@ -127,11 +127,11 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         intentFilter.addAction("Reconnect");
 
         getActivity().registerReceiver(myReceiver, intentFilter);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
-        preferencesManager.setisResetTerminal(false);
+        preferenceManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager.setisResetTerminal(false);
         initUI();
         bindService();
-        if (preferencesManager.isAuthenticated()) {
+        if (preferenceManager.isAuthenticated()) {
             ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
             tv_status.setText("MyPOSMate® is authenticated successfully.");
             tv_status.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
@@ -195,7 +195,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
        /* rel_orders=getActivity().findViewById(R.id.rel_orders);
         rel_orders.setVisibility(View.VISIBLE);*/
 
-//        if (!preferencesManager.isLoyality()) {
+//        if (!preferenceManager.isLoyality()) {
 //            tv_status_scan.setVisibility(View.INVISIBLE);
 //            tv_status_scan_button.setVisibility(View.GONE);
 //        } else {
@@ -204,23 +204,23 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 //        }
 
 
-        /*if (preferencesManager.isMembershipHome()) {
+        /*if (preferenceManager.isMembershipHome()) {
             rel_membership.setVisibility(View.VISIBLE);
             tv_status_scan.setVisibility(View.INVISIBLE);
             tv_status_scan_button.setVisibility(View.VISIBLE);
-            if (preferencesManager.isFront()) {
+            if (preferenceManager.isFront()) {
                 btn_front.setVisibility(View.VISIBLE);
                 btn_back.setVisibility(View.GONE);
             }
-            if (preferencesManager.isBack()) {
+            if (preferenceManager.isBack()) {
                 btn_front.setVisibility(View.GONE);
                 btn_back.setVisibility(View.VISIBLE);
             }
-            if (preferencesManager.isBack() && preferencesManager.isFront()) {
+            if (preferenceManager.isBack() && preferenceManager.isFront()) {
                 btn_front.setVisibility(View.VISIBLE);
                 btn_back.setVisibility(View.VISIBLE);
             }
-            if (!preferencesManager.isBack() && !preferencesManager.isFront()) {
+            if (!preferenceManager.isBack() && !preferenceManager.isFront()) {
                 rel_membership.setVisibility(View.GONE);
             }
 
@@ -235,51 +235,51 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
     private void funcLoyaltyAppSwitchesNew() {
         {
-            Log.v("DisplayChoice","App "+preferencesManager.isDisplayLoyaltyApps());
-            Log.v("DisplayChoice","Front "+preferencesManager.isFront());
-            Log.v("DisplayChoice","Back "+preferencesManager.isBack());
-            Log.v("DisplayChoice","Manual "+preferencesManager.isMembershipHome());
-            if(preferencesManager.isDisplayLoyaltyApps()&&!preferencesManager.isMembershipHome()) {
+            Log.v("DisplayChoice","App "+preferenceManager.isDisplayLoyaltyApps());
+            Log.v("DisplayChoice","Front "+preferenceManager.isFront());
+            Log.v("DisplayChoice","Back "+preferenceManager.isBack());
+            Log.v("DisplayChoice","Manual "+preferenceManager.isMembershipHome());
+            if(preferenceManager.isDisplayLoyaltyApps()&&!preferenceManager.isMembershipHome()) {
                 onlyLoyaltyApp();
-            }else if(!preferencesManager.isDisplayLoyaltyApps()&&preferencesManager.isMembershipHome())
+            }else if(!preferenceManager.isDisplayLoyaltyApps()&&preferenceManager.isMembershipHome())
             {
                 //Sub UI
-                if (preferencesManager.isFront() &&
-                        preferencesManager.isBack()) {
+                if (preferenceManager.isFront() &&
+                        preferenceManager.isBack()) {
                     rel_membership.setVisibility(View.VISIBLE);
                     ll_membership_loyalty_app.setVisibility(View.GONE);
                     tv_status_scan.setVisibility(View.GONE);
-                }else if (!preferencesManager.isFront() &&
-                        preferencesManager.isBack()) {
+                }else if (!preferenceManager.isFront() &&
+                        preferenceManager.isBack()) {
                     onlyFront(View.GONE,1);
-                }else if (preferencesManager.isFront() &&
-                        !preferencesManager.isBack()) {
+                }else if (preferenceManager.isFront() &&
+                        !preferenceManager.isBack()) {
                     onlyBack(View.GONE,1);
-                }else if (!preferencesManager.isFront() &&
-                        !preferencesManager.isBack()) {
+                }else if (!preferenceManager.isFront() &&
+                        !preferenceManager.isBack()) {
                     blankUI();
                 }
-            }else if(preferencesManager.isDisplayLoyaltyApps()&&preferencesManager.isMembershipHome())
+            }else if(preferenceManager.isDisplayLoyaltyApps()&&preferenceManager.isMembershipHome())
             {
                 rel_membership.setVisibility(View.GONE);
                 ll_membership_loyalty_app.setVisibility(View.VISIBLE);
                 tv_status_scan.setVisibility(View.GONE);
 
                 //Sub UI
-                if (preferencesManager.isFront() &&
-                        preferencesManager.isBack()) {
+                if (preferenceManager.isFront() &&
+                        preferenceManager.isBack()) {
                     showAll();
-                }else if (!preferencesManager.isFront() &&
-                        preferencesManager.isBack()) {
+                }else if (!preferenceManager.isFront() &&
+                        preferenceManager.isBack()) {
                     onlyFront(View.VISIBLE,2);
-                }else if (preferencesManager.isFront() &&
-                        !preferencesManager.isBack()) {
+                }else if (preferenceManager.isFront() &&
+                        !preferenceManager.isBack()) {
                     onlyBack(View.VISIBLE,2);
-                }else if (!preferencesManager.isFront() &&
-                        !preferencesManager.isBack()) {
+                }else if (!preferenceManager.isFront() &&
+                        !preferenceManager.isBack()) {
                     onlyLoyaltyApp();
                 }
-            }else if (!preferencesManager.isDisplayLoyaltyApps()&&!preferencesManager.isMembershipHome())
+            }else if (!preferenceManager.isDisplayLoyaltyApps()&&!preferenceManager.isMembershipHome())
             {
                 blankUI();
             }
@@ -352,9 +352,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
     public void innerCall()
     {
-        if (preferencesManager.isFront() &&
-                preferencesManager.isBack() &&
-                preferencesManager.isDisplayLoyaltyApps()) {
+        if (preferenceManager.isFront() &&
+                preferenceManager.isBack() &&
+                preferenceManager.isDisplayLoyaltyApps()) {
             view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
             view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
             ll_membership_loyalty_app.setWeightSum(3);
@@ -363,9 +363,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             btn_loyalty_apps.setVisibility(View.VISIBLE);
             btn_back1.setVisibility(View.VISIBLE);
             btn_front1.setVisibility(View.VISIBLE);
-        } else if (!preferencesManager.isFront() &&
-                preferencesManager.isBack() &&
-                preferencesManager.isDisplayLoyaltyApps()) {
+        } else if (!preferenceManager.isFront() &&
+                preferenceManager.isBack() &&
+                preferenceManager.isDisplayLoyaltyApps()) {
             view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
             view.findViewById(R.id.ll_front).setVisibility(View.GONE);
             ll_membership_loyalty_app.setWeightSum(2);
@@ -374,9 +374,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             btn_loyalty_apps.setVisibility(View.VISIBLE);
             btn_back1.setVisibility(View.VISIBLE);
             btn_front1.setVisibility(View.GONE);
-        } else if (preferencesManager.isFront() &&
-                !preferencesManager.isBack() &&
-                preferencesManager.isDisplayLoyaltyApps()) {
+        } else if (preferenceManager.isFront() &&
+                !preferenceManager.isBack() &&
+                preferenceManager.isDisplayLoyaltyApps()) {
             view.findViewById(R.id.ll_back).setVisibility(View.GONE);
             view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
             ll_membership_loyalty_app.setWeightSum(2);
@@ -385,9 +385,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             btn_loyalty_apps.setVisibility(View.VISIBLE);
             btn_back1.setVisibility(View.GONE);
             btn_front1.setVisibility(View.VISIBLE);
-        } else if (!preferencesManager.isFront() &&
-                !preferencesManager.isBack() &&
-                preferencesManager.isDisplayLoyaltyApps()) {
+        } else if (!preferenceManager.isFront() &&
+                !preferenceManager.isBack() &&
+                preferenceManager.isDisplayLoyaltyApps()) {
             view.findViewById(R.id.ll_back).setVisibility(View.GONE);
             view.findViewById(R.id.ll_front).setVisibility(View.GONE);
             ll_membership_loyalty_app.setWeightSum(1);
@@ -399,19 +399,19 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         }
     }
     public void funcLoyaltyAppSwitches(){
-        Log.v("DisplayChoice","App "+preferencesManager.isDisplayLoyaltyApps());
-        Log.v("DisplayChoice","Front "+preferencesManager.isFront());
-        Log.v("DisplayChoice","Back "+preferencesManager.isBack());
-        Log.v("DisplayChoice","Manual "+preferencesManager.isMembershipHome());
+        Log.v("DisplayChoice","App "+preferenceManager.isDisplayLoyaltyApps());
+        Log.v("DisplayChoice","Front "+preferenceManager.isFront());
+        Log.v("DisplayChoice","Back "+preferenceManager.isBack());
+        Log.v("DisplayChoice","Manual "+preferenceManager.isMembershipHome());
 
-        if (preferencesManager.isDisplayLoyaltyApps()) {
+        if (preferenceManager.isDisplayLoyaltyApps()) {
             rel_membership.setVisibility(View.GONE);
             ll_membership_loyalty_app.setVisibility(View.VISIBLE);
             tv_status_scan.setVisibility(View.GONE);
-            if (preferencesManager.isMembershipHome()) {
-                if (preferencesManager.isFront() &&
-                        preferencesManager.isBack() &&
-                        preferencesManager.isDisplayLoyaltyApps()) {
+            if (preferenceManager.isMembershipHome()) {
+                if (preferenceManager.isFront() &&
+                        preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
                     view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
                     view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
                     ll_membership_loyalty_app.setWeightSum(3);
@@ -420,9 +420,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     btn_loyalty_apps.setVisibility(View.VISIBLE);
                     btn_back1.setVisibility(View.VISIBLE);
                     btn_front1.setVisibility(View.VISIBLE);
-                } else if (!preferencesManager.isFront() &&
-                        preferencesManager.isBack() &&
-                        preferencesManager.isDisplayLoyaltyApps()) {
+                } else if (!preferenceManager.isFront() &&
+                        preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
                     view.findViewById(R.id.ll_back).setVisibility(View.VISIBLE);
                     view.findViewById(R.id.ll_front).setVisibility(View.GONE);
                     ll_membership_loyalty_app.setWeightSum(2);
@@ -431,9 +431,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     btn_loyalty_apps.setVisibility(View.VISIBLE);
                     btn_back1.setVisibility(View.VISIBLE);
                     btn_front1.setVisibility(View.GONE);
-                } else if (preferencesManager.isFront() &&
-                        !preferencesManager.isBack() &&
-                        preferencesManager.isDisplayLoyaltyApps()) {
+                } else if (preferenceManager.isFront() &&
+                        !preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
                     view.findViewById(R.id.ll_back).setVisibility(View.GONE);
                     view.findViewById(R.id.ll_front).setVisibility(View.VISIBLE);
                     ll_membership_loyalty_app.setWeightSum(2);
@@ -442,9 +442,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     btn_loyalty_apps.setVisibility(View.VISIBLE);
                     btn_back1.setVisibility(View.GONE);
                     btn_front1.setVisibility(View.VISIBLE);
-                } else if (!preferencesManager.isFront() &&
-                        !preferencesManager.isBack() &&
-                        preferencesManager.isDisplayLoyaltyApps()) {
+                } else if (!preferenceManager.isFront() &&
+                        !preferenceManager.isBack() &&
+                        preferenceManager.isDisplayLoyaltyApps()) {
                     view.findViewById(R.id.ll_back).setVisibility(View.GONE);
                     view.findViewById(R.id.ll_front).setVisibility(View.GONE);
                     ll_membership_loyalty_app.setWeightSum(1);
@@ -457,7 +457,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
             }
             else{
-                if (preferencesManager.isDisplayLoyaltyApps()) {
+                if (preferenceManager.isDisplayLoyaltyApps()) {
                     view.findViewById(R.id.ll_back).setVisibility(View.GONE);
                     view.findViewById(R.id.ll_front).setVisibility(View.GONE);
                     ll_membership_loyalty_app.setWeightSum(1);
@@ -476,23 +476,23 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
 
 
     public void funcMembershipLoyalityUISwitch() {
-        if (preferencesManager.isMembershipHome()) {
+        if (preferenceManager.isMembershipHome()) {
             rel_membership.setVisibility(View.VISIBLE);
             tv_status_scan.setVisibility(View.INVISIBLE);
             tv_status_scan_button.setVisibility(View.VISIBLE);
-            if (preferencesManager.isFront()) {
+            if (preferenceManager.isFront()) {
                 btn_front.setVisibility(View.VISIBLE);
                 btn_back.setVisibility(View.GONE);
             }
-            if (preferencesManager.isBack()) {
+            if (preferenceManager.isBack()) {
                 btn_front.setVisibility(View.GONE);
                 btn_back.setVisibility(View.VISIBLE);
             }
-            if (preferencesManager.isBack() && preferencesManager.isFront()) {
+            if (preferenceManager.isBack() && preferenceManager.isFront()) {
                 btn_front.setVisibility(View.VISIBLE);
                 btn_back.setVisibility(View.VISIBLE);
             }
-            if (!preferencesManager.isBack() && !preferencesManager.isFront()) {
+            if (!preferenceManager.isBack() && !preferenceManager.isFront()) {
                 rel_membership.setVisibility(View.GONE);
             }
 
@@ -531,9 +531,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             case R.id.btn_front:
             case R.id.tv_status_scan_button:
                 try {
-                    if (preferencesManager.getLaneIdentifier().equals("")) {
+                    if (preferenceManager.getLaneIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                    } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                     } else {
                         isFront = true;
@@ -552,9 +552,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
             case R.id.btn_back:
             case R.id.btn_back1:
                 try {
-                    if (preferencesManager.getLaneIdentifier().equals("")) {
+                    if (preferenceManager.getLaneIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                    } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
                         Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                     } else {
                         isBack = true;
@@ -639,9 +639,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     tv_status.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                     progressbar.setVisibility(View.GONE);
                     btn_reconnect.setVisibility(View.GONE);
-                    //  preferencesManager.setIsManual(true);
+                    //  preferenceManager.setIsManual(true);
 
-                    if (preferencesManager.isManual()) {
+                    if (preferenceManager.isManual()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     } else {
 
@@ -663,9 +663,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     tv_status.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                     progressbar.setVisibility(View.GONE);
                     btn_reconnect.setVisibility(View.GONE);
-                    //  preferencesManager.setIsManual(true);
+                    //  preferenceManager.setIsManual(true);
 
-                    if (preferencesManager.isManual()) {
+                    if (preferenceManager.isManual()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     } else {
 
@@ -725,17 +725,17 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
     public void callMembershipLoyality(String qr_data) {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("access_id", preferencesManager.getuniqueId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("device_id", UUID.randomUUID().toString().replace("-", ""));
         hashMapKeys.put("qr_data", qr_data);
         hashMapKeys.put("random_str", new Date().getTime() + "");
-        hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
-        hashMapKeys.put("pos_id", preferencesManager.getPOSIdentifier());
+        hashMapKeys.put("lane_id", preferenceManager.getLaneIdentifier());
+        hashMapKeys.put("pos_id", preferenceManager.getPOSIdentifier());
         new OkHttpHandler(getActivity(), this, null, "saveLoyaltyInfo")
-                .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
     public void callAuthToken() {
@@ -743,7 +743,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -757,14 +757,14 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isNetConnectionOn) {
                     isNetConnectionOn = false;
 //                    if(MyPOSMateApplication.mStompClient==null)
 //                    {
                     Log.v("ConnectFrag","ConnectFrag Called connection");
-                            ((MyPOSMateApplication) getActivity().getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+                            ((MyPOSMateApplication) getActivity().getApplicationContext()).initiateStompConnection(preferenceManager.getauthToken());
 //                    }
 
                 }
@@ -772,7 +772,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                     isBack = false;
                    // stsartFastScan(true);//Back
 
-                    if (preferencesManager.isExternalScan())
+                    if (preferenceManager.isExternalScan())
                     {
                         //edt_reference_id.requestFocus();
                         //scanner
@@ -795,7 +795,7 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                 if (isFront) {
                     isFront = false;
                    // stsartFastScan(false);//front
-                    if (preferencesManager.isExternalScan())
+                    if (preferenceManager.isExternalScan())
                     {
                         //edt_reference_id.requestFocus();
                         //scanner
@@ -959,9 +959,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                             if (getActivity() != null)
                                 getActivity().runOnUiThread(new Runnable() {
                                     public void run() {
-                                        if (preferencesManager.getLaneIdentifier().equals("")) {
+                                        if (preferenceManager.getLaneIdentifier().equals("")) {
                                             Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                                        } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                        } else if (preferenceManager.getPOSIdentifier().equals("")) {
                                             Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                                         } else {
                                             callMembershipLoyality(auth_code);
@@ -1037,9 +1037,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
 
-                                if (preferencesManager.getLaneIdentifier().equals("")) {
+                                if (preferenceManager.getLaneIdentifier().equals("")) {
                                     Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                                } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                } else if (preferenceManager.getPOSIdentifier().equals("")) {
                                     Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                                 } else {
                                     callMembershipLoyality(arg0);
@@ -1126,9 +1126,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                             getActivity().runOnUiThread(new Runnable() {
                                 public void run() {
 
-                                    if (preferencesManager.getLaneIdentifier().equals("")) {
+                                    if (preferenceManager.getLaneIdentifier().equals("")) {
                                         Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                                    } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
                                         Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                                     } else {
                                         callMembershipLoyality(auth_code);
@@ -1155,9 +1155,9 @@ public class PosMateConnectioFrag extends Fragment implements View.OnClickListen
                             getActivity().runOnUiThread(new Runnable() {
                                 public void run() {
 
-                                    if (preferencesManager.getLaneIdentifier().equals("")) {
+                                    if (preferenceManager.getLaneIdentifier().equals("")) {
                                         Toast.makeText(getActivity(), "Please update lane identifier in branch details option.", Toast.LENGTH_LONG).show();
-                                    } else if (preferencesManager.getPOSIdentifier().equals("")) {
+                                    } else if (preferenceManager.getPOSIdentifier().equals("")) {
                                         Toast.makeText(getActivity(), "Please update pos identifier in branch details option.", Toast.LENGTH_LONG).show();
                                     } else {
                                         callMembershipLoyality(auth_code);

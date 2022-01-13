@@ -72,7 +72,7 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
 
     private String mParam1;
     private String mParam2;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private Button btn_save1, btn_cancel1, btn_scan;
     private EditText edt_amount1, edt_transaction_no, edt_reference1, edt_merchant_id, edt_account_id, edt_reference_id;
     private View view;
@@ -121,7 +121,7 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -129,7 +129,7 @@ public class RefundFragment extends Fragment implements OnTaskCompleted, View.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.refund_fragment, container, false);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
         bindService();
         callAuthToken();
@@ -221,8 +221,8 @@ Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
                 edt_account_id.setText("");
                 edt_merchant_id.setText("");
                 edt_reference1.setText("");
-                edt_reference_id.setText(preferencesManager.getreference_id());
-                if (preferencesManager.isManual()) {
+                edt_reference_id.setText(preferenceManager.getreference_id());
+                if (preferenceManager.isManual()) {
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                 } else {
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
@@ -235,14 +235,14 @@ Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
     public void callTransactionDetails2() {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("terminal_id", preferencesManager.getterminalId().toString());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("reference_id", edt_reference_id.getText().toString());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails2")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
@@ -250,28 +250,28 @@ Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
     public void callTransactionDetails1() {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("terminal_id", preferencesManager.getterminalId().toString());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("reference_id", edt_reference_id.getText().toString());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails1")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
 
     public void callTransactionDetails() {
         hashMapKeys.clear();
-        hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("terminal_id", preferencesManager.getterminalId().toString());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("reference_id", edt_reference_id.getText().toString());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
@@ -280,17 +280,17 @@ Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
         try {
             //v2 signature implementation
             hashMapKeys.clear();
-            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
+            hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("reference_id", edt_reference_id.getText().toString());
             hashMapKeys.put("refund_amount", edt_amount1.getText().toString());
             hashMapKeys.put("refund_password", edt_account_id.getText().toString());
             hashMapKeys.put("refund_reason", edt_reference1.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "refundNow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.REFUND + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -319,12 +319,12 @@ Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
 
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isStartScan) {
                     isStartScan = false;
                   //  stsartFastScan(true);
-                    if (preferencesManager.isExternalScan())
+                    if (preferenceManager.isExternalScan())
                     {
                         edt_reference_id.requestFocus();
                         //scanner
@@ -363,7 +363,7 @@ Toast.makeText(getActivity(),"Fragmwen",Toast.LENGTH_SHORT).show();
                     if ((jsonObject.optString("refundStatus").equals("SUCCESS") ||
                             jsonObject.optString("refundStatus").equals("PROCESSING"))) {
                         edt_amount1.setText("0.00");
-                        preferencesManager.setreference_id("");
+                        preferenceManager.setreference_id("");
                         Toast.makeText(getActivity(), "Refund Request Successful", Toast.LENGTH_LONG).show();
                         alipaywechatamount = "0.0";
                         isRefundRequestSuccess = true;

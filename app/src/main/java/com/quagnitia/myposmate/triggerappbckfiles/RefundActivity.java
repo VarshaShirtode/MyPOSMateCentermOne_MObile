@@ -35,14 +35,14 @@ import static com.example.triggerdemoapp.MainActivity._POS_REQUEST_STATUS;
 public class RefundActivity extends AppCompatActivity implements View.OnClickListener, OnTaskCompleted {
 
     private Button btn_send, btn_cancel;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private EditText edt_amount, edt_reference_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_refund);
-        preferencesManager = PreferencesManager.getInstance(this);
+        preferenceManager = PreferencesManager.getInstance(this);
         initUI();
         initListener();
         callAuthToken();
@@ -73,16 +73,16 @@ public class RefundActivity extends AppCompatActivity implements View.OnClickLis
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
     public void callRefundAPI() {
         openProgressDialog();
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("reference_id", edt_reference_id.getText().toString());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("grand_total", edt_amount.getText().toString());
@@ -90,7 +90,7 @@ public class RefundActivity extends AppCompatActivity implements View.OnClickLis
 
         new OkHttpHandler(RefundActivity.this, this, null, "_POS_REQUEST").
                 execute(_POS_REQUEST
-                        + MD5Class.generateSignatureString(hashMapKeys,this)+"&access_token="+preferencesManager.getauthToken());
+                        + MD5Class.generateSignatureString(hashMapKeys,this)+"&access_token="+preferenceManager.getauthToken());
 
     }
 
@@ -125,16 +125,16 @@ boolean isRefund=false;
 
 
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
-        hashMapKeys.put("reference_id", preferencesManager.getreference_id());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("reference_id", preferenceManager.getreference_id());
         hashMapKeys.put("random_str", new Date().getTime() + "");
 
 
         String url = POSMATE_GET_TXN//"https://myposmate.com/api/v3/pos/getTransactionDetails"
-                + MD5Class.generateSignatureString(hashMapKeys,this)+"&access_token="+preferencesManager.getauthToken();
+                + MD5Class.generateSignatureString(hashMapKeys,this)+"&access_token="+preferenceManager.getauthToken();
         handler.execute(url);
 
 
@@ -142,12 +142,12 @@ boolean isRefund=false;
     public void callRequestStatus(String request_id) {
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
         hashMapKeys.put("request_id",request_id);
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         String url = _POS_REQUEST_STATUS
                 + MD5Class.generateSignatureString(hashMapKeys,this)
-                +"&access_token="+preferencesManager.getauthToken();
+                +"&access_token="+preferenceManager.getauthToken();
         new OkHttpHandler(RefundActivity.this, this,
                 null, "requestStatus").execute(url);
     }
@@ -159,7 +159,7 @@ boolean isTransaction=false,isRefundInitiated=false;
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if(isRefund)
                 {
@@ -241,7 +241,7 @@ boolean isTransaction=false,isRefundInitiated=false;
             case "_POS_REQUEST":
                 if (jsonObject.optBoolean("status")) {
                     openProgressDialog();
-                    preferencesManager.setreference_id(edt_reference_id.getText().toString());
+                    preferenceManager.setreference_id(edt_reference_id.getText().toString());
                     new CountDownTimer(2000, 1000) {
                         public void onFinish() {
                             requestId=jsonObject.optString("requestId");

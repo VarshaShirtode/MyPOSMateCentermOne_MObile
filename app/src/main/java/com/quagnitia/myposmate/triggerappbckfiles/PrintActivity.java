@@ -35,13 +35,13 @@ import static com.example.triggerdemoapp.MainActivity._POS_REQUEST;
 
 public class PrintActivity extends AppCompatActivity implements View.OnClickListener ,OnTaskCompleted{
     private Button btn_print, btn_cancel;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private EditText  edt_amount,edt_reference_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print);
-        preferencesManager = PreferencesManager.getInstance(this);
+        preferenceManager = PreferencesManager.getInstance(this);
         callAuthToken();
         initUI();
         initListener();
@@ -49,7 +49,7 @@ public class PrintActivity extends AppCompatActivity implements View.OnClickList
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
     public void initUI() {
@@ -141,9 +141,9 @@ Dialog mDialog;
     public void callPOSRequestAPI() {
         openProgressDialog();
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("request_type", "PRINT");
         byte[] data = new byte[0];
@@ -159,16 +159,16 @@ Dialog mDialog;
                 execute(_POS_REQUEST
                         +
                         MD5Class.generateSignatureString(hashMapKeys, this)
-                        + "&access_token=" + preferencesManager.getauthToken());
+                        + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
     public void callPOSRequestStatusAPI(String request_id) {
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
         hashMapKeys.put("request_id", request_id);
         hashMapKeys.put("executed","false");
         hashMapKeys.put("random_str", new Date().getTime() + "");
@@ -179,7 +179,7 @@ Dialog mDialog;
                 execute(POSMATE_POS_REQUEST_STATUS
                         +
                         MD5Class.generateSignatureString(hashMapKeys, this)
-                        + "&access_token=" + preferencesManager.getauthToken());
+                        + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
@@ -212,7 +212,7 @@ boolean isPrint=false;
 
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isPrint)
                 {
@@ -232,7 +232,7 @@ boolean isPrint=false;
                     progress.dismiss();
                 if (jsonObject.optString("status").equalsIgnoreCase("true") ||
                         jsonObject.optString("status").equalsIgnoreCase("TRADE_SUCCESS")) {
-                    preferencesManager.setreference_id(jsonObject.optString("reference_id"));
+                    preferenceManager.setreference_id(jsonObject.optString("reference_id"));
                     request_id=jsonObject.optString("requestId");
                     openProgressDialog1();
                     isUpdate=true;

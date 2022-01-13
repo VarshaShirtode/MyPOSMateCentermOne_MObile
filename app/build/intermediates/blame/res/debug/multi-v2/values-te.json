@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "E:\\INFIDIGI_PROJECTS\\1MPM\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-te\\values-te.xml",
+            "outputFile": "E:\\INFIDIGI_PROJECTS\\VISA_1MPM\\1MPM\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-te\\values-te.xml",
             "map": [
                 {
                     "source": "C:\\Users\\quagnitia\\.gradle\\caches\\transforms-2\\files-2.1\\dd4f2545d6741ee3e6d68172f73dcdf9\\res\\values-te\\values.xml",

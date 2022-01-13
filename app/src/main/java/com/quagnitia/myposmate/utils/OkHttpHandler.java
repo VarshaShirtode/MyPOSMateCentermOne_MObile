@@ -18,10 +18,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.activities.DashboardActivity;
 import com.quagnitia.myposmate.fragments.TransactionDetailsActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -47,14 +49,14 @@ public class OkHttpHandler extends AsyncTask {
     private String TAG, dup_url = "";
     private Context mContext;
     public static boolean isWebserviceRunning = false;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
 
     public OkHttpHandler(Context context, OnTaskCompleted listener, HashMap<String, String> postDataParams, String TAG) {
         this.listener = listener;
         this.TAG = TAG;
         this.mContext = context;
         this.postDataParams = postDataParams;
-        preferencesManager = PreferencesManager.getInstance(mContext);
+        preferenceManager = PreferencesManager.getInstance(mContext);
     }
 
     public OkHttpHandler(OnTaskCompleted listener, String TAG, Activity baseActivity) {
@@ -100,8 +102,8 @@ if(!isTimerCalled)
             if (postDataParams != null) {
                 String auth = new String(Base64.encode((AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET).getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
                 if (TAG.equals("AuthToken") || TAG.equals("AuthTokenCloseTrade")) {
-                    String formData = "username=" + preferencesManager.getMerchantId() + "&password=" + preferencesManager.getConfigId() + "&grant_type=password";
-//                    String auth =new String(Base64.encode(( preferencesManager.getMerchantId() + ":" + preferencesManager.getConfigId()).getBytes(),Base64.URL_SAFE| Base64.NO_WRAP));
+                    String formData = "username=" + preferenceManager.getMerchantId() + "&password=" + preferenceManager.getConfigId() + "&grant_type=password";
+//                    String auth =new String(Base64.encode(( preferenceManager.getMerchantId() + ":" + preferenceManager.getConfigId()).getBytes(),Base64.URL_SAFE| Base64.NO_WRAP));
 
 
                     conn.setRequestMethod("POST");
@@ -135,6 +137,7 @@ if(!isTimerCalled)
                     writer.close();
                     os.close();
                 }
+                Log.v("TOKENRESPONSE",TAG + " Request "+ postDataParams.toString());
 
             } else {
                 conn.setRequestMethod("GET");
@@ -216,6 +219,7 @@ if(!isTimerCalled)
     @Override
     protected String doInBackground(Object[] objects) {
         dup_url = objects[0].toString();
+        Log.v("TOKENRESPONSE",TAG + " req7uest = "+dup_url.toString());
         isWebserviceRunning = true;
         return uploadData(objects[0].toString(), postDataParams, TAG);
     }
@@ -228,13 +232,20 @@ if(!isTimerCalled)
             isWebserviceRunning = false;
             countDownTimer11.cancel();
             Log.v("TOKENRESPONSE",TAG + " response = "+o.toString());
-            listener.onTaskCompleted(o.toString(), TAG);
+            if (TAG.equals("GetConnections"))
+            {
+                JSONArray json = new JSONArray(o.toString());
+                listener.onTaskCompleted(String.valueOf(json), TAG);
+            }else {
+                listener.onTaskCompleted(o.toString(), TAG);
+            }
             AppConstants.isPostReceived = true;
             cancel(true);
 
         } catch (Exception e) {
             AppConstants.isPostReceived = true;
             cancel(true);
+            Log.v("TOKENRESPONSE",TAG + " Exceptiom = "+e.getLocalizedMessage() + "");
             Log.e("ReadJSONFeedTask", e.getLocalizedMessage() + "");
         }
     }

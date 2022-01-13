@@ -53,7 +53,15 @@
                     android:textSize="16sp" />
 
             </LinearLayout>
-
+<TextView
+    android:id="@+id/txtServer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Select Connection       "
+    android:layout_gravity="center_horizontal"
+    android:layout_margin="2dp"
+android:visibility="gone"
+    ></TextView>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -177,6 +185,17 @@
                     android:background="@color/colorBtnBg"
                     android:gravity="center"
                     android:text="Exit App"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
+                <Button
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/btn_connect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorBtnBg"
+                    android:gravity="center"
+                    android:text="Change Connection "
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp" />

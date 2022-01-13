@@ -81,7 +81,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     private EditText edt_last_settlement_date;
     private LinearLayout ll_we;
     private Button btn_settlement_unionpay, btn_print_alipay, btn_settlement, btn_ok;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private TextView tv_payment_amount, tv_settled_on, tv_payment_count, tv_refunded_amount, tv_refund_count, tv_total_transactions;
     private TextView tv_ali_payment_amount, tv_ali_payment_count, tv_ali_refund_amount, tv_ali_refund_count,
             tv_we_payment_amount, tv_we_payment_count, tv_we_refund_amount, tv_we_refund_count, tv_union_payment_amount,
@@ -151,15 +151,15 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     }
 
     public void initials() {
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
         initUI();
         initListener();
         callAuthToken();
-        if(!preferencesManager.getcontact_email().equals(""))
+        if(!preferenceManager.getcontact_email().equals(""))
         {
             isSettlementReport = true;
-            edt_email.setText(preferencesManager.getcontact_email());
+            edt_email.setText(preferenceManager.getcontact_email());
         }
 
     }
@@ -230,7 +230,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     }
 
     public void funcOK() {
-        if (preferencesManager.isManual()) {
+        if (preferenceManager.isManual()) {
             ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
         } else {
             ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
@@ -249,13 +249,13 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                 return;
             }
             hashMapKeys.put("email",edt_email.getText().toString());
-            hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
-            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
+            hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
+            hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "SettlementReports")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SETTLEMENT_REPORT + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SETTLEMENT_REPORT + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -264,7 +264,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
 
     public void callTimeStamp() {
         try {
-            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferenceManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,52 +283,52 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             }
 
 
-            if (preferencesManager.getLaneIdentifier().equals("")) {
+            if (preferenceManager.getLaneIdentifier().equals("")) {
                 Toast.makeText(getActivity(), "Please fill in the lane identifier in branch info", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
                 return;
             }
-            if (preferencesManager.getPOSIdentifier().equals("")) {
+            if (preferenceManager.getPOSIdentifier().equals("")) {
                 progress.dismiss();
                 Toast.makeText(getActivity(), "Please fill in the pos identifier in branch info", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if( preferencesManager.getmerchant_name().equals(""))
+            if( preferenceManager.getmerchant_name().equals(""))
             {
                 progress.dismiss();
                 Toast.makeText(getActivity(), "Please fill in the branch name in branch info", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if( preferencesManager.getTerminalIdentifier().equals(""))
+            if( preferenceManager.getTerminalIdentifier().equals(""))
             {
                 progress.dismiss();
                 Toast.makeText(getActivity(), "Please fill in the terminal identifier in branch info", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            hashMapKeys.put("access_id",preferencesManager.getuniqueId());
-            hashMapKeys.put("branch_name", preferencesManager.getmerchant_name());
+            hashMapKeys.put("access_id",preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_name", preferenceManager.getmerchant_name());
           //  if(!datetime.equals(""))
           //  hashMapKeys.put("timezone", datetime.replace(" ","T"));
-            hashMapKeys.put("lane_id", preferencesManager.getLaneIdentifier());
-            hashMapKeys.put("pos_id", preferencesManager.getPOSIdentifier());
+            hashMapKeys.put("lane_id", preferenceManager.getLaneIdentifier());
+            hashMapKeys.put("pos_id", preferenceManager.getPOSIdentifier());
             if(edt_email.getText().toString().equals(""))
             {
                 Toast.makeText(getActivity(), "Please enter the email id", Toast.LENGTH_SHORT).show();
                 return;
             }
             hashMapKeys.put("email", edt_email.getText().toString());
-            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
             hashMapKeys.put("random_str", new Date().getTime() + "");
 //            hashMapKeys.put("signature",MD5Class.generateSignatureString(hashMapKeys, getActivity()));
-//            hashMapKeys.put("access_token",preferencesManager.getauthToken());
+//            hashMapKeys.put("access_token",preferenceManager.getauthToken());
             HashMap hashMap=new HashMap();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, null, "Settle")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SETTLE + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SETTLE + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
         } catch (Exception e) {
@@ -360,7 +360,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -372,7 +372,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             Date d = df1.parse(ss1[0] + " " + ss1[1]);
             datetime = df2.format(d);
 
@@ -420,7 +420,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                 break;
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isSettlementReport) {
                     isSettlementReport = false;
@@ -486,7 +486,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     df1.setTimeZone(TimeZone.getTimeZone("UTC"));
                     SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+                    df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     tv_settled_on.setText("Settled On: " + df2.format(df1.parse(jsonObjectSettlement.optString("settlementDate"))).replace("T", " "));
 
                 } else {
@@ -503,7 +503,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     df1.setTimeZone(TimeZone.getTimeZone("UTC"));
                     SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+                    df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     edt_last_settlement_date.setText(df2.format(df1.parse(jsonObject1.optString("settlementDate"))).replace("T", " "));
                 }
                 break;
@@ -517,7 +517,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
     public void print(JSONObject jsonObjectSettlement) throws RemoteException {
 
         try {
-//            JSONObject jsonObject = new JSONObject(preferencesManager.getmerchant_info());
+//            JSONObject jsonObject = new JSONObject(preferenceManager.getmerchant_info());
             final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
 
             int fontSize = 24;
@@ -528,11 +528,11 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             list.add(new PrintDataObject("Branch Name:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            list.add(new PrintDataObject(preferencesManager.getbranchName(),
+            list.add(new PrintDataObject(preferenceManager.getbranchName(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            if (!preferencesManager.getmerchant_name().equals("")) {
-                list.add(new PrintDataObject("Branch Info: " + preferencesManager.getmerchant_name(),
+            if (!preferenceManager.getmerchant_name().equals("")) {
+                list.add(new PrintDataObject("Branch Info: " + preferenceManager.getmerchant_name(),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }
@@ -540,7 +540,7 @@ public class Settlement extends Fragment implements OnTaskCompleted {
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             list.add(new PrintDataObject("Settlement Date: " + df2.format(df1.parse(jsonObjectSettlement.optString("settlementDate" +
                     ""))).replace("T", " "),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,

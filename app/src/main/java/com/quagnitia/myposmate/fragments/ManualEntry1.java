@@ -1480,7 +1480,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -1490,7 +1490,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken1").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken1").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -1985,7 +1985,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -2019,7 +2019,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -2078,7 +2078,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -2113,7 +2113,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -2189,7 +2189,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -2223,7 +2223,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -2282,7 +2282,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -2317,7 +2317,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -2634,7 +2634,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -2655,7 +2655,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -2679,7 +2679,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }
@@ -2758,7 +2758,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -2779,7 +2779,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -2803,7 +2803,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }
@@ -3008,7 +3008,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             AppConstants.EXTERNAL_APP_UNIONPAY_RESPONSE = URLDecoder.decode(s + json_data + "}", "UTF-8");
 
             new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -3065,7 +3065,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
             hashMapKeys.put("executed", executed + "");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -3085,7 +3085,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
         hashMapKeys.put("reference_id", reference_id);
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -3167,7 +3167,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
         hashMapKeys.put("lane_id", preferenceManager.getLaneIdentifier());
         hashMapKeys.put("pos_id", preferenceManager.getPOSIdentifier());
         new OkHttpHandler(getActivity(), this, null, "saveLoyaltyInfo")
-                .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -4833,7 +4833,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -4862,7 +4862,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -4917,7 +4917,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -4944,7 +4944,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -5013,7 +5013,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -5042,7 +5042,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -5097,7 +5097,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -5124,7 +5124,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -5193,7 +5193,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -5222,7 +5222,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -5277,7 +5277,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -5304,7 +5304,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -5379,7 +5379,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -5407,7 +5407,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 }
 
@@ -5462,7 +5462,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -5490,7 +5490,7 @@ public class ManualEntry1 extends Fragment implements View.OnClickListener, OnTa
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {

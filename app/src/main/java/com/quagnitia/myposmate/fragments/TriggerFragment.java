@@ -163,7 +163,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("random_str", new Date().getTime() + "");
 
             new OkHttpHandler(getActivity(), this, null, "refundNow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.REFUND +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -189,7 +189,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("executed", executed+"");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -214,7 +214,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("executed", executed + "");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -238,7 +238,7 @@ public class TriggerFragment extends Fragment implements View.OnClickListener, O
             hashMapKeys.put("request_type",type);
 
             new OkHttpHandler(getActivity(), this, null, "requestTerminal")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REQUEST_TERMINAL +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.REQUEST_TERMINAL +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -461,7 +461,7 @@ boolean isCancel=false;
         hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS
                         + MD5Class.generateSignatureString(hashMapKeys, getActivity())
                         + "&access_token=" + preferenceManager.getauthToken());
     }
@@ -475,7 +475,7 @@ boolean isCancel=false;
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -750,7 +750,7 @@ boolean isUpdateCancelStatus=false;
 
 
             new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -843,7 +843,7 @@ boolean isUpdateCancelStatus=false;
             s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(getActivity()).getauthToken();//.getuniqueId();
             String signature = MD5Class.MD5(s2);
             new OkHttpHandler(getActivity(), this, null, "saveTransaction")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();

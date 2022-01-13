@@ -102,7 +102,7 @@
 //
 ////    public void callTransactionDetails() {
 ////        openProgressDialog();
-////        new OkHttpHandler(this, this, null, "TransactionDetails").execute(AppConstants.BASE_URL2 + AppConstants.V2_getGatewayTransactionDetails
+////        new OkHttpHandler(this, this, null, "TransactionDetails").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_getGatewayTransactionDetails
 ////                + "?reference_id=" + jsonObject.optString("reference_id") + "&terminal_id=" + preferenceManager.getterminalId().toString() +
 ////                "&access_id=" + preferenceManager.getuniqueId() + "&is_mobile_device=true");
 ////    }

@@ -33,7 +33,7 @@ public class TransactionListingAdapter extends
 
     private Context mContext;
     private JSONArray jsonArray;
-PreferencesManager preferencesManager;
+PreferencesManager preferenceManager;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tv_reference_id, tv_date_time, tv_amount, tv_type, tv_result, tv_scheme;
 public LinearLayout parent;
@@ -53,7 +53,7 @@ public LinearLayout parent;
     public TransactionListingAdapter(Context mContext,JSONArray jsonArray) {
         this.mContext = mContext;
         this.jsonArray=jsonArray;
-        preferencesManager=PreferencesManager.getInstance(mContext);
+        preferenceManager=PreferencesManager.getInstance(mContext);
     }
 
     @Override
@@ -90,7 +90,7 @@ public LinearLayout parent;
             Date d=df.parse(jsonObject.optString("createDate"));
 
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             holder.tv_date_time.setText(df1.format(d).replace("T"," "));
         }
         catch (Exception e)

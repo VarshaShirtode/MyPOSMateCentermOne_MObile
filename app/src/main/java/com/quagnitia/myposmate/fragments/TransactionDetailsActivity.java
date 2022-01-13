@@ -210,7 +210,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(this).getauthToken();//.getuniqueId();
             String signature = MD5Class.MD5(s2);
             new OkHttpHandler(TransactionDetailsActivity.this, this, null, "saveTransaction")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -227,7 +227,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         hashMapKeys.put("reference_id", getIntent().getStringExtra("reference_id"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(TransactionDetailsActivity.this, this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
     }
 
     public void callRefundApi() {
@@ -245,7 +245,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
             hashMapKeys.put("random_str", new Date().getTime() + "");
 
             new OkHttpHandler(TransactionDetailsActivity.this, this, null, "refundNow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.REFUND + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
 
 
             callAuthToken();
@@ -506,7 +506,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(TransactionDetailsActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(TransactionDetailsActivity.this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -791,7 +791,7 @@ public class TransactionDetailsActivity extends AppCompatActivity implements Vie
         hashMapKeys.put("refund_password",pass);
 
         new OkHttpHandler(TransactionDetailsActivity.this, this, null, "CloseTrade")
-                .execute(AppConstants.BASE_URL2 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, TransactionDetailsActivity.this) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, TransactionDetailsActivity.this) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
 
 
     }

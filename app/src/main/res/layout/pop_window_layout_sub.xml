@@ -111,7 +111,20 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/colorLine" />
+        <TextView
+            android:id="@+id/tv_Connections"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:text="Connections"
+            android:textColor="@color/colorBlack"
+            android:textSize="15sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorLine" />
     </LinearLayout>
 
 </ScrollView>

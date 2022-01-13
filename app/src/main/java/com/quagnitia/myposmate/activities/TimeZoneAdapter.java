@@ -26,7 +26,7 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
     private Context mContext;
     JSONObject jsonObject;
     ArrayList<String> arrayList;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tv_timezone;
@@ -43,7 +43,7 @@ public class TimeZoneAdapter extends RecyclerView.Adapter<TimeZoneAdapter.MyView
     public TimeZoneAdapter(Context mContext, ArrayList<String> arrayList) {
         this.arrayList = arrayList;
         this.mContext = mContext;
-        preferencesManager = PreferencesManager.getInstance(mContext);
+        preferenceManager = PreferencesManager.getInstance(mContext);
     }
 
     @Override
@@ -93,9 +93,9 @@ public static boolean isUpdateDetails=false;
 
             holder.tv_timezone.setText(tz.getDisplayName() + " (" + arrayList.get(position) + ")");
            //Checked TimeZone
-            if (preferencesManager.isTimeZoneChecked() &&
-                    !preferencesManager.getTimeZone().equals("") &&
-                    preferencesManager.getTimeZone().
+            if (preferenceManager.isTimeZoneChecked() &&
+                    !preferenceManager.getTimeZone().equals("") &&
+                    preferenceManager.getTimeZone().
                             equals(holder.tv_timezone.getText().toString())) {
                 holder.chkBox.setSelected(true);
                 holder.chkBox.setChecked(true);
@@ -110,59 +110,59 @@ public static boolean isUpdateDetails=false;
                     if (holder.chkBox.isChecked()) {
                         holder.chkBox.setSelected(true);
                         holder.chkBox.setChecked(true);
-                        preferencesManager.setisTimeZoneChecked(true);
-                        preferencesManager.setTimeZone(holder.tv_timezone.getText().toString());
-                        preferencesManager.setTimeZoneId(arrayList.get(position));
+                        preferenceManager.setisTimeZoneChecked(true);
+                        preferenceManager.setTimeZone(holder.tv_timezone.getText().toString());
+                        preferenceManager.setTimeZoneId(arrayList.get(position));
                         String s=TimeZone.getTimeZone(arrayList.get(position))
                                 .getDisplayName(false, TimeZone.SHORT);
                         if (arrayList.get(position).equals("Australia/Perth")) {
-                            preferencesManager.setTimezoneAbrev("AWST");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("AWST");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Eucla")) {
-                            preferencesManager.setTimezoneAbrev("ACWST");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("ACWST");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Darwin")) {
-                            preferencesManager.setTimezoneAbrev("ACST");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("ACST");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Brisbane")) {
-                            preferencesManager.setTimezoneAbrev("AEST");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("AEST");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Adelaide")) {
-                            preferencesManager.setTimezoneAbrev("ACDT");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("ACDT");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Sydney")) {
-                            preferencesManager.setTimezoneAbrev("AEDT");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("AEDT");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Australia/Lord_Howe")) {
-                            preferencesManager.setTimezoneAbrev("LHDT");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("LHDT");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Fiji")) {
-                            preferencesManager.setTimezoneAbrev("FJT");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("FJT");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Auckland")) {
-//                            preferencesManager.setTimezoneAbrev(s);
-                            preferencesManager.setTimezoneAbrev("NZST");
+//                            preferenceManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("NZST");
                         }
                         else
                         if (arrayList.get(position).equals("Pacific/Chatham")) {
-                            preferencesManager.setTimezoneAbrev("CHADT");
-//                            preferencesManager.setTimezoneAbrev(s);
+                            preferenceManager.setTimezoneAbrev("CHADT");
+//                            preferenceManager.setTimezoneAbrev(s);
                         }
 
 
@@ -170,102 +170,102 @@ public static boolean isUpdateDetails=false;
 
                         try {
                             JSONObject jsonObject = new JSONObject();
-                            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+                            ArrayList tipList=preferenceManager.getTipPercentage("Tip");
                             jsonObject.put("DefaultTip1", tipList.get(0));
                             jsonObject.put("DefaultTip2", tipList.get(1));
                             jsonObject.put("DefaultTip3", tipList.get(2));
                             jsonObject.put("DefaultTip4", tipList.get(3));
                             jsonObject.put("DefaultTip5", tipList.get(4));
-                            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
-                            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
-                            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
-                            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
-                            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
-                            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-                            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-                            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
-                            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
+                            jsonObject.put("SwitchOnTip", preferenceManager.isSwitchTip());
+                            jsonObject.put("DefaultTip1IsEnabled", preferenceManager.isTipDefault1());
+                            jsonObject.put("DefaultTip2IsEnabled", preferenceManager.isTipDefault2());
+                            jsonObject.put("DefaultTip3IsEnabled", preferenceManager.isTipDefault3());
+                            jsonObject.put("DefaultTip4IsEnabled", preferenceManager.isTipDefault4());
+                            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+                            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+                            jsonObject.put("CustomTip", preferenceManager.isTipDefaultCustom());
+                            jsonObject.put("PaymentModePosition", preferenceManager.getString("DATA"));
 
-                            jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
-                            jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
-                            jsonObject.put("CnvCentrapayDisplayAndAdd", preferencesManager.is_cnv_centrapay_display_and_add());
-                            jsonObject.put("CnvCentrapayDisplayOnly", preferencesManager.is_cnv_centrapay_display_only());
+                            jsonObject.put("CentrapaySelected", preferenceManager.isCentrapayMerchantQRDisplaySelected());
+                            jsonObject.put("CentrapayFeeValue", preferenceManager.getcnv_centrapay());
+                            jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
+                            jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
 
-                            jsonObject.put("PoliSelected", preferencesManager.isPoliSelected());
-                            jsonObject.put("PoliFeeValue", preferencesManager.getcnv_poli());
-                            jsonObject.put("CnvPoliDisplayAndAdd", preferencesManager.is_cnv_poli_display_and_add());
-                            jsonObject.put("CnvPoliDisplayOnly", preferencesManager.is_cnv_poli_display_only());
+                            jsonObject.put("PoliSelected", preferenceManager.isPoliSelected());
+                            jsonObject.put("PoliFeeValue", preferenceManager.getcnv_poli());
+                            jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
+                            jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
 
-                            jsonObject.put("accessId",preferencesManager.getuniqueId());
-                            jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
-                            jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
-                            jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
-                            jsonObject.put("CnvAlipayDisplayOnly", preferencesManager.is_cnv_alipay_display_only());
+                            jsonObject.put("accessId",preferenceManager.getuniqueId());
+                            jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
+                            jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
+                            jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
+                            jsonObject.put("CnvAlipayDisplayOnly", preferenceManager.is_cnv_alipay_display_only());
 
-                            jsonObject.put("WeChatSelected", preferencesManager.isWechatSelected());
-                            jsonObject.put("WeChatValue", preferencesManager.getcnv_wechat());
-                            jsonObject.put("CnvWeChatDisplayAndAdd", preferencesManager.is_cnv_wechat_display_and_add());
-                            jsonObject.put("CnvWeChatDisplayOnly", preferencesManager.is_cnv_wechat_display_only());
+                            jsonObject.put("WeChatSelected", preferenceManager.isWechatSelected());
+                            jsonObject.put("WeChatValue", preferenceManager.getcnv_wechat());
+                            jsonObject.put("CnvWeChatDisplayAndAdd", preferenceManager.is_cnv_wechat_display_and_add());
+                            jsonObject.put("CnvWeChatDisplayOnly", preferenceManager.is_cnv_wechat_display_only());
 
-                            jsonObject.put("AlipayScanQR", preferencesManager.isAlipayScan());
-                            jsonObject.put("WeChatScanQR", preferencesManager.isWeChatScan());
+                            jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
+                            jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
 
-                            jsonObject.put("MerchantId", preferencesManager.getMerchantId());
-                            jsonObject.put("ConfigId", preferencesManager.getConfigId());
-                            jsonObject.put("UnionPay", preferencesManager.isUnionPaySelected());
-                            jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
-                            jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
-                            jsonObject.put("UnionPayQrValue", preferencesManager.getcnv_uniqr());
-                            jsonObject.put("UplanValue", preferencesManager.getcnv_uplan());
-                            jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
-                            jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
-                            jsonObject.put("Uplan", preferencesManager.isUplanSelected());
-                            jsonObject.put("AlipayWeChatPay", preferencesManager.isaggregated_singleqr());
-                            jsonObject.put("AlipayWeChatScanQR", preferencesManager.isAlipayWechatQrSelected());
-                            jsonObject.put("PrintReceiptautomatically", preferencesManager.getisPrint());
-                            jsonObject.put("ShowReference", preferencesManager.getshowReference());
-                            jsonObject.put("ShowPrintQR", preferencesManager.isQR());
-                            jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
-                            jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
-                            jsonObject.put("isExternalInputDevice",preferencesManager.isExternalScan());
+                            jsonObject.put("MerchantId", preferenceManager.getMerchantId());
+                            jsonObject.put("ConfigId", preferenceManager.getConfigId());
+                            jsonObject.put("UnionPay", preferenceManager.isUnionPaySelected());
+                            jsonObject.put("UnionPayQR", preferenceManager.isUnionPayQrSelected());
+                            jsonObject.put("isUnionPayQrCodeDisplaySelected", preferenceManager.isUnionPayQrCodeDisplaySelected());
+                            jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
+                            jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
+                            jsonObject.put("CnvUnionpayDisplayAndAdd", preferenceManager.is_cnv_uni_display_and_add());
+                            jsonObject.put("CnvUnionpayDisplayOnly", preferenceManager.is_cnv_uni_display_only());
+                            jsonObject.put("Uplan", preferenceManager.isUplanSelected());
+                            jsonObject.put("AlipayWeChatPay", preferenceManager.isaggregated_singleqr());
+                            jsonObject.put("AlipayWeChatScanQR", preferenceManager.isAlipayWechatQrSelected());
+                            jsonObject.put("PrintReceiptautomatically", preferenceManager.getisPrint());
+                            jsonObject.put("ShowReference", preferenceManager.getshowReference());
+                            jsonObject.put("ShowPrintQR", preferenceManager.isQR());
+                            jsonObject.put("DisplayStaticQR", preferenceManager.isStaticQR());
+                            jsonObject.put("isDisplayLoyaltyApps",preferenceManager.isDisplayLoyaltyApps());
+                            jsonObject.put("isExternalInputDevice",preferenceManager.isExternalScan());
 
-                            jsonObject.put("isDragDrop", preferencesManager.isDragDrop());
+                            jsonObject.put("isDragDrop", preferenceManager.isDragDrop());
 
-                            jsonObject.put("Home", preferencesManager.isHome());
-                            jsonObject.put("ManualEntry", preferencesManager.isManual());
-                            jsonObject.put("Back", preferencesManager.isBack());
-                            jsonObject.put("Front", preferencesManager.isFront());
-                            jsonObject.put("ShowMembershipManual", preferencesManager.isMembershipManual());
-                            jsonObject.put("ShowMembershipHome", preferencesManager.isMembershipHome());
-                            jsonObject.put("ConvenienceFee", preferencesManager.isConvenienceFeeSelected());
-                            jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
-                            jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
-                            jsonObject.put("EnableBranchName", preferencesManager.getBranchName());
-                            jsonObject.put("EnableBranchAddress", preferencesManager.getBranchAddress());
-                            jsonObject.put("EnableBranchEmail", preferencesManager.getBranchEmail());
-                            jsonObject.put("EnableBranchContactNo", preferencesManager.getBranchPhoneNo());
-                            jsonObject.put("EnableBranchGSTNo", preferencesManager.getGSTNo());
-                            jsonObject.put("TimeZoneId", preferencesManager.getTimeZoneId());
-                            jsonObject.put("TimeZone", preferencesManager.getTimeZone());
-                            jsonObject.put("isTimeZoneChecked", preferencesManager.isTimeZoneChecked());
+                            jsonObject.put("Home", preferenceManager.isHome());
+                            jsonObject.put("ManualEntry", preferenceManager.isManual());
+                            jsonObject.put("Back", preferenceManager.isBack());
+                            jsonObject.put("Front", preferenceManager.isFront());
+                            jsonObject.put("ShowMembershipManual", preferenceManager.isMembershipManual());
+                            jsonObject.put("ShowMembershipHome", preferenceManager.isMembershipHome());
+                            jsonObject.put("ConvenienceFee", preferenceManager.isConvenienceFeeSelected());
+                            jsonObject.put("AlipayWechatvalue", preferenceManager.getcnv_alipay());
+                            jsonObject.put("UnionPayvalue", preferenceManager.getcnv_uni());
+                            jsonObject.put("EnableBranchName", preferenceManager.getBranchName());
+                            jsonObject.put("EnableBranchAddress", preferenceManager.getBranchAddress());
+                            jsonObject.put("EnableBranchEmail", preferenceManager.getBranchEmail());
+                            jsonObject.put("EnableBranchContactNo", preferenceManager.getBranchPhoneNo());
+                            jsonObject.put("EnableBranchGSTNo", preferenceManager.getGSTNo());
+                            jsonObject.put("TimeZoneId", preferenceManager.getTimeZoneId());
+                            jsonObject.put("TimeZone", preferenceManager.getTimeZone());
+                            jsonObject.put("isTimeZoneChecked", preferenceManager.isTimeZoneChecked());
 
-                            jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
-                            jsonObject.put("isTerminalIdentifier", preferencesManager.isTerminalIdentifier());
-                            jsonObject.put("isPOSIdentifier", preferencesManager.isPOSIdentifier());
-                            jsonObject.put("isLaneIdentifier", preferencesManager.isLaneIdentifier());
-                            jsonObject.put("LaneIdentifier", preferencesManager.getLaneIdentifier());
-                            jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
-                            jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
+                            jsonObject.put("Membership/Loyality", preferenceManager.isLoyality());
+                            jsonObject.put("isTerminalIdentifier", preferenceManager.isTerminalIdentifier());
+                            jsonObject.put("isPOSIdentifier", preferenceManager.isPOSIdentifier());
+                            jsonObject.put("isLaneIdentifier", preferenceManager.isLaneIdentifier());
+                            jsonObject.put("LaneIdentifier", preferenceManager.getLaneIdentifier());
+                            jsonObject.put("TerminalIdentifier", preferenceManager.getTerminalIdentifier());
+                            jsonObject.put("POSIdentifier", preferenceManager.getPOSIdentifier());
 
                             jsonObject.put("isUpdated", true);
-                            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
-                            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-                            jsonObject.put("CnvUPIQrMPMCloudValue",preferencesManager.getcnv_up_upiqr_mpmcloud_lower());
-                            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferencesManager.getCnv_up_upiqr_mpmcloud_higher());
-                            jsonObject.put("CnvUPIQRMPMCloudAmount",preferencesManager.getCnv_up_upiqr_mpmcloud_amount());
-                            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferencesManager.get_cnv_unimerchantqrdisplayHigher());
-                            jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
-                            jsonObject.put("cnv_unimerchantqrdisplay",preferencesManager.get_cnv_unimerchantqrdisplayLower());
+                            jsonObject.put("CnvUPIQrMPMCloudDAADD",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+                            jsonObject.put("CnvUPIQrMPMCloudDOnly",preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+                            jsonObject.put("CnvUPIQrMPMCloudValue",preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
+                            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+                            jsonObject.put("CnvUPIQRMPMCloudAmount",preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+                            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferenceManager.get_cnv_unimerchantqrdisplayHigher());
+                            jsonObject.put("isMerchantDPARDisplay",preferenceManager.isMerchantDPARDisplay());
+                            jsonObject.put("cnv_unimerchantqrdisplay",preferenceManager.get_cnv_unimerchantqrdisplayLower());
 
                             isUpdateDetails=true;
                             ((TimeZoneActivity) mContext).callUpdateBranchDetails(jsonObject);
@@ -277,9 +277,9 @@ public static boolean isUpdateDetails=false;
                     } else {
                         holder.chkBox.setSelected(false);
                         holder.chkBox.setChecked(false);
-                        preferencesManager.setisTimeZoneChecked(false);
-                        preferencesManager.setTimeZone("");
-                        preferencesManager.setTimeZoneId("");
+                        preferenceManager.setisTimeZoneChecked(false);
+                        preferenceManager.setTimeZone("");
+                        preferenceManager.setTimeZoneId("");
                         notifyDataSetChanged();
 
                     }

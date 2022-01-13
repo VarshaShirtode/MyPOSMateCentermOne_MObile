@@ -52,7 +52,7 @@ import ua.naiksoftware.stomp.dto.StompMessage;
 
 public class MyPOSMateApplication extends Application implements OnTaskCompleted {//ConnectionListener
     private Handler handler;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private static MyPOSMateApplication mInstance;
     public static boolean isActiveQrcode = false, isOpen = false;
 
@@ -78,7 +78,7 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
         super.onCreate();
         mInstance = this;
         context = getApplicationContext();
-        preferencesManager = PreferencesManager.getInstance(getApplicationContext());
+        preferenceManager = PreferencesManager.getInstance(getApplicationContext());
         handler = new Handler();
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -89,13 +89,15 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getApplicationContext(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getApplicationContext(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
     }
 
 
     public void initiateStompConnection(String access_token) {
         if (mStompClient == null) {
-            mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + AppConstants.serverIp
+           /* mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + AppConstants.serverIp
+                    + "/websocket?access_token=" + access_token);*/
+            mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + preferenceManager.getBaseURL().replace("https://","")
                     + "/websocket?access_token=" + access_token);
 
             resetSubscriptions();
@@ -106,11 +108,13 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 Intent i1 = new Intent();
                 i1.setAction("Authenticated");
                 sendBroadcast(i1);
-                preferencesManager.setIsAuthenticated(true);
+                preferenceManager.setIsAuthenticated(true);
             }
             else if(!mStompClient.isConnected())
             {
-                mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + AppConstants.serverIp
+                /*mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + AppConstants.serverIp
+                        + "/websocket?access_token=" + access_token);*/
+                mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "wss://" + preferenceManager.getBaseURL().replace("https://","")
                         + "/websocket?access_token=" + access_token);
 
                 resetSubscriptions();
@@ -139,8 +143,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
                         case OPENED:
-                            preferencesManager.setIsConnected(true);
-                            preferencesManager.setIsAuthenticated(true);
+                            preferenceManager.setIsConnected(true);
+                            preferenceManager.setIsAuthenticated(true);
                             Log.v("MyPOSMate®", "Connected....");
                          //   toast("Stomp connection opened");
                             Intent i = new Intent();
@@ -151,8 +155,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                         case ERROR:
                             if(mStompClient!=null)
                             mStompClient.disconnect();
-                            preferencesManager.setIsConnected(false);
-                            preferencesManager.setIsAuthenticated(false);
+                            preferenceManager.setIsConnected(false);
+                            preferenceManager.setIsAuthenticated(false);
                             Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
                             toast("Stomp connection error");
                             Log.v("MyPOSMate®", "ConnectionClosedOnError....");
@@ -164,8 +168,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                         case CLOSED:
                             if(mStompClient!=null)
                                 mStompClient.disconnect();
-                            preferencesManager.setIsConnected(false);
-                            preferencesManager.setIsAuthenticated(false);
+                            preferenceManager.setIsConnected(false);
+                            preferenceManager.setIsAuthenticated(false);
                            // toast("Stomp connection closed");
                             Log.v("MyPOSMate®", "ConnectionClosed....");
                             Intent i1 = new Intent();
@@ -174,8 +178,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                             resetSubscriptions();
                             break;
                         case FAILED_SERVER_HEARTBEAT:
-                            preferencesManager.setIsConnected(false);
-                            preferencesManager.setIsAuthenticated(false);
+                            preferenceManager.setIsConnected(false);
+                            preferenceManager.setIsAuthenticated(false);
                             toast("Stomp failed server heartbeat");
                             break;
 
@@ -193,14 +197,14 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
     void onSubscribe() {
 
         List<StompHeader> headers = new ArrayList<>();
-        headers.add(new StompHeader("terminal_id", preferencesManager.getterminalId()));
-        headers.add(new StompHeader("access_id", preferencesManager.getuniqueId()));
-        headers.add(new StompHeader("config_id", preferencesManager.getConfigId()));
-        headers.add(new StompHeader("branch_id", preferencesManager.getMerchantId()));
-        Disposable dispTopic = mStompClient.topic(generateTopic(preferencesManager.getMerchantId(),
-                preferencesManager.getConfigId(),
-                preferencesManager.getterminalId(),
-                preferencesManager.getuniqueId()),headers)
+        headers.add(new StompHeader("terminal_id", preferenceManager.getterminalId()));
+        headers.add(new StompHeader("access_id", preferenceManager.getuniqueId()));
+        headers.add(new StompHeader("config_id", preferenceManager.getConfigId()));
+        headers.add(new StompHeader("branch_id", preferenceManager.getMerchantId()));
+        Disposable dispTopic = mStompClient.topic(generateTopic(preferenceManager.getMerchantId(),
+                preferenceManager.getConfigId(),
+                preferenceManager.getterminalId(),
+                preferenceManager.getuniqueId()),headers)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
@@ -223,19 +227,19 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
             //v2 signature implementation
             hashMapKeys = new TreeMap<>();
             hashMapKeys.clear();
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
             hashMapKeys.put("request_id", request_id);
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("executed", executed + "");
             hashMapKeys.put("request_info","DEVICE_BUSY");
 
             new OkHttpHandler(this, this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, this)
-                            + "&access_token=" + preferencesManager.getauthToken());
+                            + "&access_token=" + preferenceManager.getauthToken());
 
 
         } catch (Exception e) {
@@ -281,8 +285,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
 
                             switch (jsonObject.optString("request_type")) {
                                 case "NEW_ORDER":
-                                    int count=preferencesManager.getOrderBadgeCount();
-                                    preferencesManager.setOrderBadgeCount(count+1);
+                                    int count=preferenceManager.getOrderBadgeCount();
+                                    preferenceManager.setOrderBadgeCount(count+1);
                                     intent.setAction("OrderDetails");
                                     intent.putExtra("data", message.getPayload());
                                     sendBroadcast(intent);
@@ -309,8 +313,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                 case "PAY":
                                     if (jsonObject.optString("amount").equals("0.00")) {
                                         Toast.makeText(MyPOSMateApplication.this, "Amount triggered is zero.Please enter the amount greater than 0", Toast.LENGTH_LONG).show();
-                                    } else if (!preferencesManager.isUnipaySelected() &&
-                                            !preferencesManager.isaggregated_singleqr()) {
+                                    } else if (!preferenceManager.isUnipaySelected() &&
+                                            !preferenceManager.isaggregated_singleqr()) {
                                         Toast.makeText(MyPOSMateApplication.this, "Please select the payment option", Toast.LENGTH_LONG).show();
                                     } else {
                                         intent.setAction("ManualEntry");
@@ -356,8 +360,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
                                     sendBroadcast(intent);
                                     break;
                                 case "NEW_ORDER":
-                                    int count=preferencesManager.getOrderBadgeCount();
-                                    preferencesManager.setOrderBadgeCount(count+1);
+                                    int count=preferenceManager.getOrderBadgeCount();
+                                    preferenceManager.setOrderBadgeCount(count+1);
                                     intent.setAction("OrderDetails");
                                     intent.putExtra("data", message.getPayload());
                                     sendBroadcast(intent);
@@ -520,8 +524,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
     public void onTerminate() {
         Log.v("MyPOSMate®", "OnTerminate....");
         onDestroyApp();
-        preferencesManager.setIsConnected(false);
-        preferencesManager.setIsAuthenticated(false);
+        preferenceManager.setIsConnected(false);
+        preferenceManager.setIsAuthenticated(false);
         try {
             deviceService.unregister();
         } catch (RemoteException e) {
@@ -534,8 +538,8 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
 
 
     public void checkAvaliability() {
-        preferencesManager.setIsConnected(false);
-        preferencesManager.setIsAuthenticated(false);
+        preferenceManager.setIsConnected(false);
+        preferenceManager.setIsAuthenticated(false);
         if (isNetworkAvailable()) {
             Intent i = new Intent();
             i.setAction("NetConnectionOn");
@@ -565,13 +569,13 @@ public class MyPOSMateApplication extends Application implements OnTaskCompleted
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
 
                 if (isNetConnectionOn) {
                     isNetConnectionOn = false;
                     Log.v("Dashboard", "MyPOSMateApplication Called connection");
-                    ((MyPOSMateApplication) this.getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+                    ((MyPOSMateApplication) this.getApplicationContext()).initiateStompConnection(preferenceManager.getauthToken());
 
                 }
 

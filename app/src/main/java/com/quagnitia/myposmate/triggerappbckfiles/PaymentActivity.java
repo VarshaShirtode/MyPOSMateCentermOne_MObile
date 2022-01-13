@@ -32,14 +32,14 @@ import static com.example.triggerdemoapp.MainActivity._POS_REQUEST_STATUS;
 public class PaymentActivity extends AppCompatActivity implements View.OnClickListener, OnTaskCompleted {
 
     private Button btn_send, btn_cancel;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private EditText edt_amount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-        preferencesManager = PreferencesManager.getInstance(this);
+        preferenceManager = PreferencesManager.getInstance(this);
         initUI();
         initListener();
         callAuthToken();
@@ -48,7 +48,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -77,12 +77,12 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     public void callRequestStatus(String request_id) {
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
         hashMapKeys.put("request_id", request_id);
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("random_str", new Date().getTime() + "");
         String url = _POS_REQUEST_STATUS
                 + MD5Class.generateSignatureString(hashMapKeys, this)
-                + "&access_token=" + preferencesManager.getauthToken();
+                + "&access_token=" + preferenceManager.getauthToken();
         new OkHttpHandler(PaymentActivity.this, this,
                 null, "requestStatus").execute(url);
     }
@@ -91,19 +91,19 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
     public void callPosmateLandi() {
         openProgressDialog();
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("request_type", "PAY");
         hashMapKeys.put("grand_total", edt_amount.getText().toString());
         hashMapKeys.put("reference_id", new Date().getTime() + "");
-        preferencesManager.setreference_id(hashMapKeys.get("reference_id"));
+        preferenceManager.setreference_id(hashMapKeys.get("reference_id"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
 
 
         String url = _POS_REQUEST
                 + MD5Class.generateSignatureString(hashMapKeys, this)
-                + "&access_token=" + preferencesManager.getauthToken();
+                + "&access_token=" + preferenceManager.getauthToken();
         new OkHttpHandler(PaymentActivity.this, this, null, "posmate_req").
                 execute(url);
 
@@ -117,16 +117,16 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
 
         TreeMap<String, String> hashMapKeys = new TreeMap<>();
-//        hashMapKeys.put("terminal_id",preferencesManager.getterminalId());
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
-        hashMapKeys.put("reference_id", preferencesManager.getreference_id());
+//        hashMapKeys.put("terminal_id",preferenceManager.getterminalId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
+        hashMapKeys.put("reference_id", preferenceManager.getreference_id());
         hashMapKeys.put("random_str", new Date().getTime() + "");
 
 
         String url = POSMATE_GET_TXN
                 + MD5Class.generateSignatureString(hashMapKeys, this)
-                + "&access_token=" + preferencesManager.getauthToken();
+                + "&access_token=" + preferenceManager.getauthToken();
         handler.execute(url);
 
 
@@ -220,7 +220,7 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isTrigger) {
                     isTrigger = false;

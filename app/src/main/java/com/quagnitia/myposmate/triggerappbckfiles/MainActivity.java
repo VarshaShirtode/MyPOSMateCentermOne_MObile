@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
     private EditText edt_merchant_id, edt_terminal_id, edt_config_id, edt_access_id, edt_amount;
     private Button btn_save, btn_exit, btn_pay, btn_create_order,btn_refund,btn_print;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        preferencesManager = PreferencesManager.getInstance(this);
+        preferenceManager = PreferencesManager.getInstance(this);
         initUI();
         initListener();
         autoFillValues();
@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
 
     public void autoFillValues() {
-        edt_merchant_id.setText(preferencesManager.getMerchantId());
-        edt_access_id.setText(preferencesManager.getuniqueId());
-        edt_config_id.setText(preferencesManager.getConfigId());
-        edt_terminal_id.setText(preferencesManager.getterminalId());
+        edt_merchant_id.setText(preferenceManager.getMerchantId());
+        edt_access_id.setText(preferenceManager.getuniqueId());
+        edt_config_id.setText(preferenceManager.getConfigId());
+        edt_terminal_id.setText(preferenceManager.getterminalId());
     }
 
 
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isOrderCreate)
                 {
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -159,11 +159,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         switch (v.getId()) {
 
             case R.id.btn_create_order:
-                if (preferencesManager.getMerchantId().equals("")) {
+                if (preferenceManager.getMerchantId().equals("")) {
                     Toast.makeText(this, "Please enter your merchant id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getConfigId().equals("")) {
+                } else if (preferenceManager.getConfigId().equals("")) {
                     Toast.makeText(this, "Please enter your config id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getuniqueId().equals("")) {
+                } else if (preferenceManager.getuniqueId().equals("")) {
                     Toast.makeText(this, "Please enter your access id", Toast.LENGTH_SHORT).show();
                 } else {
                     isOrderCreate=true;
@@ -173,11 +173,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
                 break;
 
             case R.id.btn_print:
-                if (preferencesManager.getMerchantId().equals("")) {
+                if (preferenceManager.getMerchantId().equals("")) {
                     Toast.makeText(this, "Please enter your merchant id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getConfigId().equals("")) {
+                } else if (preferenceManager.getConfigId().equals("")) {
                     Toast.makeText(this, "Please enter your config id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getuniqueId().equals("")) {
+                } else if (preferenceManager.getuniqueId().equals("")) {
                     Toast.makeText(this, "Please enter your access id", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent i = new Intent(MainActivity.this, PrintActivity.class);
@@ -191,10 +191,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
                         || !edt_config_id.getText().toString().equals("")
                         || !edt_access_id.getText().toString().equals("")
                         || !edt_merchant_id.getText().toString().equals("")) {
-                    preferencesManager.setterminalId(edt_terminal_id.getText().toString());
-                    preferencesManager.setConfigId(edt_config_id.getText().toString());
-                    preferencesManager.setMerchantId(edt_merchant_id.getText().toString());
-                    preferencesManager.setuniqueId(edt_access_id.getText().toString());
+                    preferenceManager.setterminalId(edt_terminal_id.getText().toString());
+                    preferenceManager.setConfigId(edt_config_id.getText().toString());
+                    preferenceManager.setMerchantId(edt_merchant_id.getText().toString());
+                    preferenceManager.setuniqueId(edt_access_id.getText().toString());
                     Toast.makeText(this, "Settings Saved Successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
@@ -206,11 +206,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
                 break;
 
             case R.id.btn_pay:
-                if (preferencesManager.getMerchantId().equals("")) {
+                if (preferenceManager.getMerchantId().equals("")) {
                     Toast.makeText(this, "Please enter your merchant id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getConfigId().equals("")) {
+                } else if (preferenceManager.getConfigId().equals("")) {
                     Toast.makeText(this, "Please enter your config id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getuniqueId().equals("")) {
+                } else if (preferenceManager.getuniqueId().equals("")) {
                     Toast.makeText(this, "Please enter your access id", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent i = new Intent(MainActivity.this, PaymentActivity.class);
@@ -219,11 +219,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
 
                 break;
             case R.id.btn_refund:
-                if (preferencesManager.getMerchantId().equals("")) {
+                if (preferenceManager.getMerchantId().equals("")) {
                     Toast.makeText(this, "Please enter your merchant id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getConfigId().equals("")) {
+                } else if (preferenceManager.getConfigId().equals("")) {
                     Toast.makeText(this, "Please enter your config id", Toast.LENGTH_SHORT).show();
-                } else if (preferencesManager.getuniqueId().equals("")) {
+                } else if (preferenceManager.getuniqueId().equals("")) {
                     Toast.makeText(this, "Please enter your access id", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent i1 = new Intent(MainActivity.this, RefundActivity.class);

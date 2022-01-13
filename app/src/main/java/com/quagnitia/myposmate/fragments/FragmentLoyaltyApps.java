@@ -40,7 +40,7 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
     View view;
     Button btn_cancel;
     ImageView img_one,img_two,img_three,img_fly_buys,img_air_points,img_smart_fuel,img_goody;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
 
 
 
@@ -87,7 +87,7 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
 
     public void initUI()
     {
-        preferencesManager=PreferencesManager.getInstance(getActivity());
+        preferenceManager=PreferencesManager.getInstance(getActivity());
         btn_cancel=view.findViewById(R.id.btn_cancel);
         img_one=view.findViewById(R.id.img_one);
         img_two=view.findViewById(R.id.img_two);
@@ -115,7 +115,7 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
         switch (v.getId())
         {
             case R.id.btn_cancel:
-                if(preferencesManager.isManual())
+                if(preferenceManager.isManual())
                 {
                     ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY,null);
                 }
@@ -150,11 +150,11 @@ public class FragmentLoyaltyApps extends Fragment implements View.OnClickListene
 
     public void callCam()
     {
-//        if(preferencesManager.isFront())
+//        if(preferenceManager.isFront())
 //        {
 //            stsartFastScan(false);//front
 //        }
-//        else if(preferencesManager.isBack())
+//        else if(preferenceManager.isBack())
 //        {
             stsartFastScan(true);//Back
 //        }

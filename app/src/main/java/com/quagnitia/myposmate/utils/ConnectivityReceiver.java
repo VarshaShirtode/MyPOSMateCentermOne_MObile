@@ -29,14 +29,14 @@ public class ConnectivityReceiver
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null
                 && activeNetwork.isConnectedOrConnecting();
-        PreferencesManager preferencesManager=PreferencesManager.getInstance(context);
+        PreferencesManager preferenceManager=PreferencesManager.getInstance(context);
         if (isConnected) {
             MyPOSMateApplication.mStompClient=null;
             Intent i = new Intent();
             i.setAction("RECONNECT");
             i.putExtra("NetON","true");
             context.sendBroadcast(i);
-            // initChat(preferencesManager.getUsername(), preferencesManager.getPassword());
+            // initChat(preferenceManager.getUsername(), preferenceManager.getPassword());
         } else {
             Intent i = new Intent();
             i.setAction("NetConnectionOff");

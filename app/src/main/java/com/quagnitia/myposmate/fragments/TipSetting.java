@@ -20,7 +20,7 @@ public class TipSetting extends Fragment implements View.OnClickListener, OnTask
     private String mParam1;
     private String mParam2;
     private View view;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
 
     public TipSetting() {
         // Required empty public constructor
@@ -49,7 +49,7 @@ public class TipSetting extends Fragment implements View.OnClickListener, OnTask
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tipsetting, container, false);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
 
         try
         {

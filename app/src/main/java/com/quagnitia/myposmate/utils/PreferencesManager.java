@@ -13,7 +13,7 @@ public class PreferencesManager {
     /**
      * Instance
      */
-    private static PreferencesManager preferencesManager = null;
+    private static PreferencesManager preferenceManager = null;
 
     /**
      * Shared Preferences
@@ -23,6 +23,18 @@ public class PreferencesManager {
     /**
      * Preferences variables
      */
+    private String BaseURL = "BaseUrl";
+    private String EditConnection = "EditConnection";
+
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
+
+    private int selectedPosition;
 
     private String terminalId = "terminalId";
     private String terminalIp = "terminalIp";
@@ -44,6 +56,7 @@ public class PreferencesManager {
     private String isMerchantDPARDisplay="isMerchantDPARDisplay";
     private String isUnipaySelected="isUnipaySelected";
     private String isUplanSelected="isUplanSelected";
+    private String isZipSelected="isZipSelected";
     private String isAlipayWechatQrSelected="isAlipayWechatQrSelected";
     private String isUnionPayQrSelected="isUnionPayQrSelected";
     private String isUnionPayQrCodeDisplaySelected="isUnionPayQrCodeDisplaySelected";
@@ -76,6 +89,8 @@ public class PreferencesManager {
     private String cnv_poli="cnv_poli";
     private String cnv_alipay="cnv_alipay";
     private String cnv_wechat="cnv_wechat";
+    private String cnv_zip_display_and_add="cnv_zip_display_and_add";
+    private String cnv_zip_display_only="cnv_zip_display_only";
     private String cnv_alipay_display_and_add="cnv_alipay_display_and_add";
     private String cnv_alipay_display_only="cnv_alipay_display_only";
     private String cnv_poli_display_and_add="cnv_poli_display_and_add";
@@ -124,7 +139,7 @@ public class PreferencesManager {
     private String authTokenCloseTrade="authTokenCloseTrade";
     private String isResetTerminal="isResetTerminal";
     private String timezoneabrev="timezoneabrev";
-
+    private String cnv_zip="cnv_zip";
 
     //added preference fields on 3/3/2020
 
@@ -170,6 +185,7 @@ public class PreferencesManager {
     private String isTipDefaultCustom="isTipDefaultCustom";
 
     private String isSwitchTip="isSwitchTip";
+    private String isSwitchLive="isSwitchLive";
 
     /*drag drop start*/
     private String FIRST_TIME_CALL="FIRST_TIME_CALL";
@@ -199,6 +215,68 @@ public class PreferencesManager {
     public void setFirstTimeCall(boolean firstTimeCall) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(this.FIRST_TIME_CALL, firstTimeCall);
+        editor.commit();
+    }
+    public boolean isZipSelected() {
+        return sharedPreferences.getBoolean(isZipSelected, false);
+    }
+
+    public void setisZipSelected(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isZipSelected, text);
+        editor.apply();
+
+    }
+
+    private String isZipScan="isZipScan";
+    public boolean isZipScan() {
+        return sharedPreferences.getBoolean(isZipScan, false);
+    }
+
+    public void setisZipScan(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isZipScan, text);
+        editor.apply();
+
+    }
+    public String getcnv_zip() {
+        return sharedPreferences.getString(cnv_zip, "");
+    }
+
+    public void setcnv_zip(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(cnv_zip, text);
+        editor.apply();
+
+    }
+    public boolean is_cnv_zip_display_and_add() {
+        return sharedPreferences.getBoolean(cnv_zip_display_and_add, false);
+    }
+
+    public void setcnv_zip_diaplay_and_add(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_zip_display_and_add, text);
+        editor.apply();
+
+    }
+    public boolean is_cnv_zip_display_only() {
+        return sharedPreferences.getBoolean(cnv_zip_display_only, false);
+    }
+
+    public void setcnv_zip_diaplay_only(boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(cnv_zip_display_only, text);
+        editor.apply();
+
+    }
+
+    public boolean isEditConnection() {
+        return sharedPreferences.getBoolean(EditConnection, false);
+    }
+
+    public void setEditConnection(boolean editConnection) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(EditConnection, editConnection);
         editor.commit();
     }
 
@@ -286,6 +364,16 @@ public class PreferencesManager {
         editor.putBoolean(isSwitchTip, text);
         editor.apply();
 
+    }
+
+    public Boolean isSwitchLive() {
+        return sharedPreferences.getBoolean(isSwitchLive, false);
+    }
+
+    public void setisSwitchLive(Boolean text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(isSwitchLive, text);
+        editor.apply();
     }
 
     public Boolean isTipDefault1() {
@@ -1418,7 +1506,7 @@ public class PreferencesManager {
 
 
 Context mContext;
-    private PreferencesManager(Context context) {
+    public PreferencesManager(Context context) {
         mContext=context;
         sharedPreferences = context.getSharedPreferences(
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -1426,14 +1514,14 @@ Context mContext;
 
     public static PreferencesManager getInstance(Context context) {
 
-        if (preferencesManager == null) {
+        if (preferenceManager == null) {
             Log.v("Preference status", "new object of " + context);
-            preferencesManager = new PreferencesManager(context);
+            preferenceManager = new PreferencesManager(context);
         } else {
             Log.v("Preference status", "old object of " + context);
         }
 
-        return preferencesManager;
+        return preferenceManager;
     }
 
 
@@ -1723,6 +1811,16 @@ Context mContext;
         editor.putBoolean(isAuthenticated, text);
         editor.apply();
 
+    }
+
+    public String getBaseURL() {
+        return sharedPreferences.getString(BaseURL, "https://liveone.myposmate.com");
+    }
+
+    public void setBaseURL(String text) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(BaseURL, text);
+        editor.apply();
     }
 
     public String getterminalId() {

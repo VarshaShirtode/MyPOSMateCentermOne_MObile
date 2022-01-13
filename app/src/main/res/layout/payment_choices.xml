@@ -1105,7 +1105,6 @@
                     android:text="%"
                     android:textColor="@color/colorBlack" />
 
-
                 <CheckBox
                     android:id="@+id/chk_static_unionpay_display_and_add"
                     android:layout_width="wrap_content"
@@ -1126,6 +1125,83 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/chk_static_unionpay_display_and_add"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rel_zip_pc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/chk_zip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="ZIP"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp">
+
+                <CheckBox
+                    android:id="@+id/chk_zip_qr_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+
+                <com.quagnitia.myposmate.utils.CurrencyEditText
+                    android:id="@+id/edt_zip_cv"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/chk_zip_qr_scan"
+                    android:background="@drawable/edt_border"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:text="0.0"
+                    android:textColor="@color/colorBlack" />
+
+
+                <TextView
+                    android:id="@+id/tv_perzip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_toRightOf="@+id/edt_zip_cv"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textColor="@color/colorBlack" />
+
+
+                <CheckBox
+                    android:id="@+id/chk_zip_display_and_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_perzip"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/chk_zip_display_only"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/chk_zip_display_and_add"
                     android:gravity="center"
                     android:textSize="16sp"
                     android:textStyle="bold" />

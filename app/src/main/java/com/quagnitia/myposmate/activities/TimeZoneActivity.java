@@ -50,6 +50,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
     ArrayList<String> arrayList;
     TimeZoneAdapter timeZoneAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,7 +167,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
     }
 
     public String toHex(String arg) {
@@ -222,7 +223,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "UpdateBranchDetails")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,7 +240,7 @@ public class TimeZoneActivity extends AppCompatActivity implements OnTaskComplet
             hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-            new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(TimeZoneActivity.this, this, hashMap, "DeleteTerminal").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.DELETE_TERMINAL_CONFIG);
         } catch (Exception e) {
             e.printStackTrace();
         }

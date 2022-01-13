@@ -16,10 +16,11 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:text="The amount you will be paying is:"
+
+        android:gravity="center"
+        android:text="The total amount you will be paying is:"
         android:textColor="@color/colorBlack"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
 
     <TextView
@@ -38,29 +39,53 @@
     <LinearLayout
         android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_marginRight="10dp"
-            android:id="@+id/btn_cancel"
-            android:textColor="@color/colorWhite"
-            android:background="@drawable/btn_border_red"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Cancel"/>
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <Button
             android:layout_marginLeft="10dp"
             android:background="@drawable/btn_border_green"
             android:id="@+id/btn_ok"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
             android:layout_weight="1"
-            android:text="Ok"/>
+            android:text="OK Make Payment"
+
+            android:textSize="20sp"
+            android:inputType="text"
+            android:layout_margin="10dp"
+            />
+        <Button
+            android:layout_marginRight="10dp"
+            android:id="@+id/btn_change"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/btn_border_yellow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:layout_marginLeft="10dp"
+            android:text="CHANGE TIP Amount"
+
+            android:textSize="20sp"
+            />
+        <Button
+            android:layout_marginRight="10dp"
+            android:id="@+id/btn_cancel"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/btn_border_red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:inputType="text"
+            android:text="CANCEL Payment"
+
+            android:textSize="20sp"
+            />
+
+
 
     </LinearLayout>
 

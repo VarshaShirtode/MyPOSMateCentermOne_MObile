@@ -4,6 +4,7 @@ package com.quagnitia.myposmate.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ComponentName;
@@ -115,7 +116,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     private String mParam1;
     private String mParam2;
     boolean isSkipTipping=false;
-
+    int REQUEST_PURCHASE = 200;
     //AlternateBarcodeScanner alternateBarcodeScanner;
     public static String pass_amount = "";
     private Button btn_cancel, btn_save1, btn_cancel1;
@@ -130,7 +131,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     private ImageView img_alipay, img_wechat, img_unipay, img_upay, img_unionpay_qr,img;
     public static int selected_screen = 0;
     private PreferencesManager preferenceManager;
-    double convenience_amount_alipay = 0.0, convenience_amount_wechat = 0.0,
+    double convenience_amount_alipay = 0.0, convenience_amount_zip = 0.0, convenience_amount_wechat = 0.0,
             convenience_amount_alipay_scan = 0.0, convenience_amount_wechat_scan = 0.0,
             convenience_amount_unionpay = 0.0,
             convenience_amount_poli = 0.0,
@@ -176,6 +177,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     TextView tv_centrapay_merchant_qr_disabled;
     EditText edt_centerpay_mr_qr_cnv;
     public static boolean isLoyaltyQrSelected=false;
+    public static boolean isZipQrSelected=false;
     public static boolean isLoyaltyFrontQrSelected=false;
     private boolean isTipDialogSelected=false;
 
@@ -587,7 +589,6 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         if (!preferenceManager.getreference_id().equals("")) {
             reference_id = "";
             preferenceManager.setreference_id("");
-
         }
         preferenceManager.setisResetTerminal(false);
         preferenceManager.settriggerReferenceId("");
@@ -602,6 +603,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         intentFilter.addAction("PaymentExpressFailure");
         intentFilter.addAction("ScannedBackLoyaltyQr");
         intentFilter.addAction("ScannedFrontLoyaltyQr");
+        intentFilter.addAction("ZIPCODE");
         getActivity().registerReceiver(amountReceiver, intentFilter);
         bindService();
     }
@@ -1131,6 +1133,54 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     }
                     break;
 
+                case "ZIPCODE"://Alipay,wechat
+
+                    if (intent.hasExtra("identityCode")) {
+                        auth_code = intent.getStringExtra("identityCode");
+                        //  Toast.makeText(getActivity(), "Code" + auth_code, Toast.LENGTH_SHORT).show();
+                        char c[] = auth_code.toCharArray();
+                        String str_authcode = String.valueOf(c[0]) + String.valueOf(c[1]) + "";
+                        payment_mode = "nochannel";
+                        qrMode = "False";
+                        openProgressDialog1();
+
+                        if (MyPOSMateApplication.isOpen) {
+                            selected_channel = "ZIP";
+                            callPayNowZip();
+//                            if (selected_channel.equals("ALIPAY"))
+//                                callPayNowAlipay();
+//                            else if (selected_channel.equals("WECHAT"))
+//                                callPayNowWeChat();
+
+                        } else {
+                            if (edt_amount.getText().toString().equals("") || edt_amount.getText().toString().equals("0.00")) {
+                                if (!AppConstants.xmppamountforscan.equals("")) {
+                                    MyPOSMateApplication.isOpen = true;
+                                    final Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            selected_channel = "ZIP";
+                                            callPayNowZip();
+//                                            if (selected_channel.equals("ALIPAY"))
+//                                                callPayNowAlipay();
+//                                            else if (selected_channel.equals("WECHAT"))
+//                                                callPayNowWeChat();
+                                        }
+                                    }, 500);
+
+                                } else
+                                    Toast.makeText(getActivity(), "Please enter the amount.", Toast.LENGTH_LONG).show();
+                            } else {
+                                selected_channel = "ZIP";
+                                callPayNowZip();
+                            }
+                        }
+
+
+                    }
+
+                    break;
 
                 case "PaymentExpressSuccess":
                 case "PaymentExpressFailure":
@@ -1819,7 +1869,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -1829,7 +1879,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken1").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken1").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -1932,6 +1982,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         calculateConvFeePoli();
         calculateConvAlipay();
         calculateConvWeChat();
+        calculateConvZip();
         calculateConvAlipayWeChatScan();
         calculateConvFeeUnionPay();
         calculateConvFeeUplan();
@@ -2428,7 +2479,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     Log.v("TOKENRESPONSE","2 "+xmppAmount+" "+auth_code);
@@ -2471,7 +2522,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -2536,7 +2587,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     Log.v("TOKENRESPONSE","4 "+xmppAmount+" "+auth_code);
@@ -2577,7 +2628,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -2674,7 +2725,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                } else {
                    preferenceManager.setReference(edt_reference.getText().toString());
@@ -2720,7 +2771,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                }
 
 
@@ -2800,7 +2851,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                } else {
                    preferenceManager.setReference(edt_reference.getText().toString());
@@ -2848,7 +2899,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                }
            }
        } catch (Exception e) {
@@ -2923,7 +2974,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -2957,7 +3008,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -3016,7 +3067,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -3051,7 +3102,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -3148,7 +3199,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -3194,7 +3245,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -3274,7 +3325,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -3322,7 +3373,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -3942,7 +3993,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -3963,7 +4014,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -3987,7 +4038,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }*/
@@ -4091,7 +4142,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -4125,7 +4176,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -4162,7 +4213,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }
@@ -4240,7 +4291,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -4261,7 +4312,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -4285,7 +4336,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }
@@ -4386,7 +4437,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else if (preferenceManager.isConvenienceFeeSelected()
                 && !preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add()) {
@@ -4423,7 +4474,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } else {
             if (MyPOSMateApplication.isOpen) {
@@ -4464,7 +4515,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMap.putAll(hashMapKeys);
 
             new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
         }
 
     }
@@ -4826,7 +4877,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             AppConstants.EXTERNAL_APP_UNIONPAY_RESPONSE = URLDecoder.decode(s + json_data + "}", "UTF-8");
 
             new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -4883,7 +4934,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             hashMapKeys.put("executed", executed + "");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -4903,7 +4954,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMapKeys.put("reference_id", reference_id);
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -4911,6 +4962,34 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode==REQUEST_PURCHASE)
+        {
+            String responseFor=data.getStringExtra("ResponseFor");
+            String message=data.getStringExtra("message");
+            Toast.makeText(getActivity(),"Purchase "+message+" ",Toast.LENGTH_SHORT).show();
+
+            edt_amount.setText("");
+            edt_amount1.setText("");
+            preferenceManager.setreference_id("");
+            reference_id = "";
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            // dialog.dismiss();
+            return;
+        }
+        if (resultCode==2100)
+        {
+            String responseFor=data.getStringExtra("ResponseFor");
+            String message=data.getStringExtra("message");
+            Toast.makeText(getActivity(),message+" ",Toast.LENGTH_SHORT).show();
+
+            edt_amount.setText("");
+            edt_amount1.setText("");
+            preferenceManager.setreference_id("");
+            reference_id = "";
+            ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+            // dialog.dismiss();
+            return;
+        }
       /* if (IntentIntegrator.REQUEST_CODE == requestCode) {
 
            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -5014,7 +5093,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
         hashMapKeys.put("lane_id", preferenceManager.getLaneIdentifier());
         hashMapKeys.put("pos_id", preferenceManager.getPOSIdentifier());
         new OkHttpHandler(getActivity(), this, null, "saveLoyaltyInfo")
-                .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -5161,7 +5240,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 9;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcCentrapayMerchantQrDisplay();
                 break;
@@ -5169,7 +5248,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             case R.id.img_centerpay_scanqr:
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcCentraPayScanQR();
                 break;
@@ -5215,7 +5294,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 5;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else {
                     if (preferenceManager.isExternalScan())
                     {
@@ -5230,7 +5309,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
             case R.id.img_wechat:
                 selected_option = 6;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcWeChat();
                 break;
@@ -5239,7 +5318,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 4;
 
                     if (preferenceManager.isSwitchTip()) {
-                        showTipDialog();
+                        showTipDialog("cnv_amt");
                     } else
                         _funcAlipay();
 
@@ -5249,7 +5328,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 8;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcPoli();
                 break;
@@ -5264,7 +5343,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 3;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else {
                     if (preferenceManager.isExternalScan())
                     {
@@ -5282,7 +5361,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 2;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcDPUplanForCoupon();
                 break;
@@ -5291,7 +5370,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 selected_option = 1;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcDPCard();
                 break;
@@ -5301,7 +5380,7 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
                 isMerchantQrDisplaySelected = true;
                 if (preferenceManager.isSwitchTip()) {
 
-                    showTipDialog();
+                    showTipDialog("cnv_amt");
                 } else
                     _funcUnionPayQRMerchantDisplay();
                 break;
@@ -5488,347 +5567,426 @@ public class ManualEntry extends Fragment implements View.OnClickListener, OnTas
     int selected_option = 0;
     String tip_amount="0.00";
 
-
-    private void showTipDialog() {
-if (!isTipDialogSelected) {
-    if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-        Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
-    }
-    else {
-        callAuthToken();
+    Dialog tipdialog;
+    private void showTipDialog(String cnv_amt) {
+        if (!isTipDialogSelected) {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            }
+            else {
+                callAuthToken();
 // if (preferencesManager.isAuthenticated()) {
-        final Dialog dialog = new Dialog(getActivity());
+                tipdialog= new Dialog(getActivity());
 //dialog.setCancelable(false);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        LayoutInflater lf = (LayoutInflater) (getActivity())
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View dialogview = lf.inflate(R.layout.tip_selection_dialog, null);
-        dialog.setContentView(dialogview);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.CENTER;
-        dialog.getWindow().setAttributes(lp);
-        dialog.show();
+                tipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                LayoutInflater lf = (LayoutInflater) (getActivity())
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View dialogview = lf.inflate(R.layout.tip_selection_dialog, null);
+                tipdialog.setContentView(dialogview);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(tipdialog.getWindow().getAttributes());
+                lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.CENTER;
+                tipdialog.getWindow().setAttributes(lp);
+                tipdialog.show();
 
-        RecyclerView recyclerTip=dialogview.findViewById(R.id.recyclerTip);
+                RecyclerView recyclerTip=dialogview.findViewById(R.id.recyclerTip);
 
-        LinearLayout ll_default1, ll_default2, ll_default3, ll_default4, ll_default5, ll_defaultCustom;
-        LinearLayout ll_default1_disable, ll_default2_disable, ll_default3_disable, ll_default4_disable, ll_default5_disable, ll_defaultCustom_disable;
+                LinearLayout ll_default1, ll_default2, ll_default3, ll_default4, ll_default5, ll_defaultCustom;
+                LinearLayout ll_default1_disable, ll_default2_disable, ll_default3_disable, ll_default4_disable, ll_default5_disable, ll_defaultCustom_disable;
 
-        ll_default1 = dialogview.findViewById(R.id.ll_default1);
-        ll_default2 = dialogview.findViewById(R.id.ll_default2);
-        ll_default3 = dialogview.findViewById(R.id.ll_default3);
-        ll_default4 = dialogview.findViewById(R.id.ll_default4);
-        ll_default5 = dialogview.findViewById(R.id.ll_default5);
-        ll_defaultCustom = dialogview.findViewById(R.id.ll_defaultCustom);
+                ll_default1 = dialogview.findViewById(R.id.ll_default1);
+                ll_default2 = dialogview.findViewById(R.id.ll_default2);
+                ll_default3 = dialogview.findViewById(R.id.ll_default3);
+                ll_default4 = dialogview.findViewById(R.id.ll_default4);
+                ll_default5 = dialogview.findViewById(R.id.ll_default5);
+                ll_defaultCustom = dialogview.findViewById(R.id.ll_defaultCustom);
 
-        ll_default1_disable = dialogview.findViewById(R.id.ll_default1_disable);
-        ll_default2_disable = dialogview.findViewById(R.id.ll_default2_disable);
-        ll_default3_disable = dialogview.findViewById(R.id.ll_default3_disable);
-        ll_default4_disable = dialogview.findViewById(R.id.ll_default4_disable);
-        ll_default5_disable = dialogview.findViewById(R.id.ll_default5_disable);
-        ll_defaultCustom_disable = dialogview.findViewById(R.id.ll_defaultCustom_disable);
+                ll_default1_disable = dialogview.findViewById(R.id.ll_default1_disable);
+                ll_default2_disable = dialogview.findViewById(R.id.ll_default2_disable);
+                ll_default3_disable = dialogview.findViewById(R.id.ll_default3_disable);
+                ll_default4_disable = dialogview.findViewById(R.id.ll_default4_disable);
+                ll_default5_disable = dialogview.findViewById(R.id.ll_default5_disable);
+                ll_defaultCustom_disable = dialogview.findViewById(R.id.ll_defaultCustom_disable);
 
-        TextView txtPrice1 = dialogview.findViewById(R.id.txtPrice1);
-        TextView txtPrice2 = dialogview.findViewById(R.id.txtPrice2);
-        TextView txtPrice3 = dialogview.findViewById(R.id.txtPrice3);
-        TextView txtPrice4 = dialogview.findViewById(R.id.txtPrice4);
-        TextView txtPrice5 = dialogview.findViewById(R.id.txtPrice5);
+                TextView txtPrice1 = dialogview.findViewById(R.id.txtPrice1);
+                TextView txtPrice2 = dialogview.findViewById(R.id.txtPrice2);
+                TextView txtPrice3 = dialogview.findViewById(R.id.txtPrice3);
+                TextView txtPrice4 = dialogview.findViewById(R.id.txtPrice4);
+                TextView txtPrice5 = dialogview.findViewById(R.id.txtPrice5);
 
-        TextView txtPercent1 = dialogview.findViewById(R.id.txtPercent1);
-        TextView txtPercent2 = dialogview.findViewById(R.id.txtPercent2);
-        TextView txtPercent3 = dialogview.findViewById(R.id.txtPercent3);
-        TextView txtPercent4 = dialogview.findViewById(R.id.txtPercent4);
-        TextView txtPercent5 = dialogview.findViewById(R.id.txtPercent5);
+                TextView txtPercent1 = dialogview.findViewById(R.id.txtPercent1);
+                TextView txtPercent2 = dialogview.findViewById(R.id.txtPercent2);
+                TextView txtPercent3 = dialogview.findViewById(R.id.txtPercent3);
+                TextView txtPercent4 = dialogview.findViewById(R.id.txtPercent4);
+                TextView txtPercent5 = dialogview.findViewById(R.id.txtPercent5);
 
-        TextView txtAmt1 = dialogview.findViewById(R.id.txtAmt1);
-        TextView txtAmt2 = dialogview.findViewById(R.id.txtAmt2);
-        TextView txtAmt3 = dialogview.findViewById(R.id.txtAmt3);
-        TextView txtAmt4 = dialogview.findViewById(R.id.txtAmt4);
-        TextView txtAmt5 = dialogview.findViewById(R.id.txtAmt5);
-        TextView txtAmount = dialogview.findViewById(R.id.txtAmount);
-        TextView txtNoTip = dialogview.findViewById(R.id.txtNoTip);
-        ArrayList<String> tipList = preferenceManager.getTipPercentage("Tip");
+                TextView txtAmt1 = dialogview.findViewById(R.id.txtAmt1);
+                TextView txtAmt2 = dialogview.findViewById(R.id.txtAmt2);
+                TextView txtAmt3 = dialogview.findViewById(R.id.txtAmt3);
+                TextView txtAmt4 = dialogview.findViewById(R.id.txtAmt4);
+                TextView txtAmt5 = dialogview.findViewById(R.id.txtAmt5);
+                TextView txtAmount = dialogview.findViewById(R.id.txtAmount);
+                TextView txtCNVAmount = dialogview.findViewById(R.id.txtCNVAmount);
+                TextView txtNoTip = dialogview.findViewById(R.id.txtNoTip);
+                ArrayList<String> tipList = preferenceManager.getTipPercentage("Tip");
 
-        txtPercent1.setText(tipList.get(0) + "%");
-        txtPercent2.setText(tipList.get(1) + "%");
-        txtPercent3.setText(tipList.get(2) + "%");
-        txtPercent4.setText(tipList.get(3) + "%");
-        txtPercent5.setText(tipList.get(4) + "%");
+                txtPercent1.setText(tipList.get(0) + "%");
+                txtPercent2.setText(tipList.get(1) + "%");
+                txtPercent3.setText(tipList.get(2) + "%");
+                txtPercent4.setText(tipList.get(3) + "%");
+                txtPercent5.setText(tipList.get(4) + "%");
 
-        txtPrice1.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(0))));
-        txtPrice2.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(1))));
-        txtPrice3.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(2))));
-        txtPrice4.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(3))));
-        txtPrice5.setText("$" + roundTwoDecimals(calculatePrice(tipList.get(4))));
+                txtPrice1.setText(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(0)))));
+                txtPrice2.setText(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(1)))));
+                txtPrice3.setText(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(2)))));
+                txtPrice4.setText(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(3)))));
+                txtPrice5.setText(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(4)))));
 
-        txtAmt1.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(0),selected_option)));
-        txtAmt2.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(1),selected_option)));
-        txtAmt3.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(2),selected_option)));
-        txtAmt4.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(3),selected_option)));
-        txtAmt5.setText("$" + roundTwoDecimals(calculateAmount(tipList.get(4),selected_option)));
-        txtAmount.setText(currencyFormat(edt_amount.getText().toString().replace(",","")));
-        TextView txtChoose=dialog.findViewById(R.id.txtChoose);
+                txtAmt1.setText(currencyFormat( roundTwoDecimals(calculateAmount(tipList.get(0),selected_option))));
+                txtAmt2.setText(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(1),selected_option))));
+                txtAmt3.setText(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(2),selected_option))));
+                txtAmt4.setText(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(3),selected_option))));
+                txtAmt5.setText(currencyFormat( roundTwoDecimals(calculateAmount(tipList.get(4),selected_option))));
+                txtAmount.setText(currencyFormat(edt_amount.getText().toString().replace(",","")));
+               /* if (selected_option == 5)
+                {
+                    String amt1= "$" +roundTwoDecimals(calculateAmount("0.00" ,4));
+                    String amt2= "$"+roundTwoDecimals(calculateAmount("0.00",6));
+                    txtCNVAmount.setText(Html.fromHtml("A:"+amt1+"<br>"+"W:"+amt2));
 
-        ArrayList<TipData> enabledTipList = new ArrayList<>();
+                }else{*/
+                String cnv=currencyFormat(cnv_amt.replace(",",""));
+                if (cnv.equals("$0.00"))
+                {
+                    txtCNVAmount.setText(currencyFormat(edt_amount.getText().toString().replace(",","")) );
+                }else{
+                    txtCNVAmount.setText(cnv);
+                }
+                //  txtCNVAmount.setText("$"+roundTwoDecimals(calculateAmount(cnv_amt,selected_option)));
+                //     tip.setAmount("$" + roundTwoDecimals(calculateAmount(tipList.get(0),selected_option)));
+                //  }
+
+               /*if(selected_option==5)
+               {
+                   txtCNVAmount.setText(currencyFormat(cnv_amt.replace(",","")));
+               }else{
+                   txtCNVAmount.setText(currencyFormat(cnv_amt.replace(",","")));
+               }*/
+
+                TextView txtChoose=tipdialog.findViewById(R.id.txtChoose);
+
+                ArrayList<TipData> enabledTipList = new ArrayList<>();
 
 
-        LinearLayout ll_custome_keyboard = dialogview.findViewById(R.id.ll_custome_keyboard);
-        if (preferenceManager.isTipDefaultCustom()) {
-            ll_defaultCustom.setVisibility(View.VISIBLE);
-            ll_defaultCustom_disable.setVisibility(View.GONE);
+                LinearLayout ll_custome_keyboard = dialogview.findViewById(R.id.ll_custome_keyboard);
+                if (preferenceManager.isTipDefaultCustom()) {
+                    ll_defaultCustom.setVisibility(View.VISIBLE);
+                    ll_defaultCustom_disable.setVisibility(View.GONE);
+                }
 
-        }
-
-        ll_defaultCustom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ll_custome_keyboard.setVisibility(View.VISIBLE);
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                CurrencyEditText edt_amount_key = (CurrencyEditText) dialogview.findViewById(R.id.edt_amount);
-
-                com.quagnitia.myposmate.utils.MyTipKeyboard keyboard = (com.quagnitia.myposmate.utils.MyTipKeyboard) dialogview.findViewById(R.id.keyboard);
-
-                // prevent system keyboard from appearing when EditText is tapped
-                edt_amount_key.setRawInputType(InputType.TYPE_CLASS_TEXT);
-                edt_amount_key.setTextIsSelectable(true);
-
-                // pass the InputConnection from the EditText to the keyboard
-                InputConnection ic = edt_amount_key.onCreateInputConnection(new EditorInfo());
-                keyboard.setInputConnection(ic);
-
-
-                keyboard.mButtonEnter.setOnClickListener(new View.OnClickListener() {
+                ll_defaultCustom.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        callAuthToken();
-                        if (!edt_amount_key.getText().toString().equals("")) {
-                            keyboard_amount = edt_amount_key.getText().toString();
+                        ll_custome_keyboard.setVisibility(View.VISIBLE);
+                        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                        CurrencyEditText edt_amount_key = (CurrencyEditText) dialogview.findViewById(R.id.edt_amount);
+                        TextView edt_cnvamount=dialogview.findViewById(R.id.edt_cnvamount);
+                        com.quagnitia.myposmate.utils.MyTipKeyboard keyboard = (com.quagnitia.myposmate.utils.MyTipKeyboard) dialogview.findViewById(R.id.keyboard);
+
+                        // prevent system keyboard from appearing when EditText is tapped
+                        edt_amount_key.setRawInputType(InputType.TYPE_CLASS_TEXT);
+                        edt_amount_key.setTextIsSelectable(true);
+
+                        edt_cnvamount.setText(currencyFormat(cnv_amt.replace(",","")));
+                        /*if (selected_option == 5)
+                        {
+                            String amt1= "$" +roundTwoDecimals(calculateAmount("0.00" ,4));
+                            String amt2= "$"+roundTwoDecimals(calculateAmount("0.00",6));
+                           // txtCNVAmount.setText(Html.fromHtml("A:"+amt1+"<br>"+"W:"+amt2));
+                            edt_cnvamount.setText(Html.fromHtml("A:"+amt1+"<br>"+"W:"+amt2));
+                        }else {
+                            String cnv = currencyFormat(cnv_amt.replace(",", ""));
+                            if (cnv.equals("$0.00")) {
+                                edt_cnvamount.setText(currencyFormat(edt_amount.getText().toString().replace(",", "")));
+                            } else {
+                                edt_cnvamount.setText(cnv);
+                            }
+                        }*/
+                        //edt_cnvamount.setText("$"+roundTwoDecimals(calculateAmount(edt_amount_key.getText().toString(),selected_option)));
+                        edt_amount_key.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                // Toast.makeText(getActivity(),"$" + roundTwoDecimals(calculateAmount(edt_amount_key.getText().toString(),selected_option)),Toast.LENGTH_SHORT).show();
+                                if (selected_option == 5)
+                                {
+                                    double amt1=  calculateCustomAmount(edt_amount_key.getText().toString() ,4);
+                                    double amt2= calculateCustomAmount(edt_amount_key.getText().toString(),6);
+                                    // txtCNVAmount.setText(Html.fromHtml("A:"+amt1+"<br>"+"W:"+amt2));
+                                    //  edt_cnvamount.setText(Html.fromHtml("A:"+amt1+"<br>"+"W:"+amt2));
+                                    if(amt1>amt2)
+                                    {
+                                        edt_cnvamount.setText("$"+roundTwoDecimals(amt1));
+
+                                    }else{
+                                        edt_cnvamount.setText("$"+roundTwoDecimals(amt2));
+                                    }
+                                }else {
+                                    // edt_cnvamount.setText("$"+roundTwoDecimals(calculateCustomAmount(edt_amount_key.getText().toString(),selected_option)));
+                                    edt_cnvamount.setText("$"+roundTwoDecimals(calculateCustomAmount(edt_amount_key.getText().toString(),selected_option)));
+                                }
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+
+                            }
+                        });
+
+                        // pass the InputConnection from the EditText to the keyboard
+                        InputConnection ic = edt_amount_key.onCreateInputConnection(new EditorInfo());
+                        keyboard.setInputConnection(ic);
+
+
+                        keyboard.mButtonEnter.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                callAuthToken();
+
+                                if (!edt_amount_key.getText().toString().equals("")) {
+                                    keyboard_amount = edt_amount_key.getText().toString();
+                                } else {
+                                    keyboard_amount = "0.00";
+                                }
+                                tip_amount = keyboard_amount.replace(",", "");
+                                // showAmountDialog(roundTwoDecimals(calculateCustomAmount(tip_amount,selected_option)));
+                                showAmountDialog(edt_cnvamount.getText().toString());
+                                //dialog.dismiss();
+                            }
+                        });
+
+                    }
+                });
+                txtNoTip.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
+                            isTipDialogSelected = false;
                         } else {
-                            keyboard_amount = "0.00";
+                            isTipDialogSelected = true;
                         }
-                        tip_amount = keyboard_amount.replace(",", "");
-                        showAmountDialog(keyboard_amount);
-                       /* callPaymentOptions(selected_option);*/
-                        dialog.dismiss();
+                        callAuthToken();
+                        isSkipTipping = true;
+                        callPaymentOptions(selected_option);
+                        tipdialog.dismiss();
                     }
                 });
 
-            }
-        });
-        txtNoTip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("")) {
-                    isTipDialogSelected = false;
+                Log.v("TipSize", "tip " + tipList.size());
+                if (preferenceManager.isTipDefault1()) {
+                    ll_default1.setVisibility(View.VISIBLE);
+                    ll_default1_disable.setVisibility(View.GONE);
+                    TipData tip=new TipData();
+                    if (selected_option == 5)
+                    {
+                        String amt1= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(0),4)));
+                        String amt2= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(0),6)));
+                        tip.setAmount(amt1+"/"+amt2);
+                    }else{
+                        tip.setAmount(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(0),selected_option))));
+                    }
+                    tip.setPercent(tipList.get(0) + "%");
+                    tip.setPrice(currencyFormat( roundTwoDecimals(calculatePrice(tipList.get(0)))));
+                    enabledTipList.add(tip);
                 } else {
-                    isTipDialogSelected = true;
+                    ll_default1.setVisibility(View.GONE);
+                    ll_default1_disable.setVisibility(View.VISIBLE);
                 }
-                callAuthToken();
-                isSkipTipping = true;
-                callPaymentOptions(selected_option);
-                dialog.dismiss();
-            }
-        });
 
-        Log.v("TipSize", "tip " + tipList.size());
-        if (preferenceManager.isTipDefault1()) {
-            ll_default1.setVisibility(View.VISIBLE);
-            ll_default1_disable.setVisibility(View.GONE);
-            TipData tip=new TipData();
-            if (selected_option == 5)
-            {
-                String amt1= "$" +roundTwoDecimals(calculateAmount(tipList.get(0),4));
-                String amt2= "$"+roundTwoDecimals(calculateAmount(tipList.get(0),6));
-                tip.setAmount(amt1+"/"+amt2);
-            }else{
-                tip.setAmount("$" + roundTwoDecimals(calculateAmount(tipList.get(0),selected_option)));
-            }
-            tip.setPercent(tipList.get(0) + "%");
-            tip.setPrice("$" + roundTwoDecimals(calculatePrice(tipList.get(0))));
-            enabledTipList.add(tip);
-        } else {
-            ll_default1.setVisibility(View.GONE);
-            ll_default1_disable.setVisibility(View.VISIBLE);
-        }
-
-        if (preferenceManager.isTipDefault2()) {
-            ll_default2.setVisibility(View.VISIBLE);
-            ll_default2_disable.setVisibility(View.GONE);
-            TipData tip = new TipData();
-            if (selected_option == 5)
-            {
-                String amt1= "$" +roundTwoDecimals(calculateAmount(tipList.get(1),4));
-                String amt2= "$"+roundTwoDecimals(calculateAmount(tipList.get(1),6));
-                tip.setAmount(amt1+"/"+amt2);
-            }else{
-                tip.setAmount("$" + roundTwoDecimals(calculateAmount(tipList.get(1),selected_option)));
-            }
-            tip.setPercent(tipList.get(1) + "%");
-            tip.setPrice("$" + roundTwoDecimals(calculatePrice(tipList.get(1))));
-            enabledTipList.add(tip);
-        } else {
-            ll_default2.setVisibility(View.GONE);
-            ll_default2_disable.setVisibility(View.VISIBLE);
-        }
-
-        if (preferenceManager.isTipDefault3()) {
-            ll_default3.setVisibility(View.VISIBLE);
-            ll_default3_disable.setVisibility(View.GONE);
-            TipData tip=new TipData();
-            if (selected_option == 5)
-            {
-                String amt1= "$" +roundTwoDecimals(calculateAmount(tipList.get(2),4));
-                String amt2= "$"+roundTwoDecimals(calculateAmount(tipList.get(2),6));
-                tip.setAmount(amt1+"/"+amt2);
-            }else{
-                tip.setAmount("$" + roundTwoDecimals(calculateAmount(tipList.get(2),selected_option)));
-            }
-           tip.setPercent(tipList.get(2) + "%");
-            tip.setPrice("$" + roundTwoDecimals(calculatePrice(tipList.get(2))));
-            enabledTipList.add(tip);
-        } else {
-            ll_default3.setVisibility(View.GONE);
-            ll_default3_disable.setVisibility(View.VISIBLE);
-        }
-
-        if (preferenceManager.isTipDefault4()) {
-            ll_default4.setVisibility(View.VISIBLE);
-            ll_default4_disable.setVisibility(View.GONE);
-            TipData tip=new TipData();
-            if (selected_option == 5)
-            {
-                String amt1= "$" +roundTwoDecimals(calculateAmount(tipList.get(3),4));
-                String amt2= "$"+roundTwoDecimals(calculateAmount(tipList.get(3),6));
-                tip.setAmount(amt1+"/"+amt2);
-            }else{
-                tip.setAmount("$" + roundTwoDecimals(calculateAmount(tipList.get(3),selected_option)));
-            }
-            tip.setPercent(tipList.get(3) + "%");
-            tip.setPrice("$" + roundTwoDecimals(calculatePrice(tipList.get(3))));
-            enabledTipList.add(tip);
-        } else {
-            ll_default4.setVisibility(View.GONE);
-            ll_default4_disable.setVisibility(View.VISIBLE);
-        }
-
-        if (preferenceManager.isTipDefault5()) {
-            ll_default5.setVisibility(View.VISIBLE);
-            ll_default5_disable.setVisibility(View.GONE);
-            TipData tip=new TipData();
-            if (selected_option == 5)
-            {
-                String amt1= "$" +roundTwoDecimals(calculateAmount(tipList.get(4),4));
-                String amt2= "$"+roundTwoDecimals(calculateAmount(tipList.get(4),6));
-                tip.setAmount(amt1+"/"+amt2);
-            }else{
-                tip.setAmount("$" + roundTwoDecimals(calculateAmount(tipList.get(4),selected_option)));
-            }
-            tip.setPercent(tipList.get(4) + "%");
-            tip.setPrice("$" + roundTwoDecimals(calculatePrice(tipList.get(4))));
-            enabledTipList.add(tip);
-        } else {
-            ll_default5.setVisibility(View.GONE);
-            ll_default5_disable.setVisibility(View.VISIBLE);
-        }
-
-        if (preferenceManager.isTipDefaultCustom()) {
-            ll_defaultCustom.setVisibility(View.VISIBLE);
-            ll_defaultCustom_disable.setVisibility(View.GONE);
-            TipData tip=new TipData();
-            tip.setAmount("custom");
-            tip.setPercent("custom");
-            tip.setPrice("custom");
-            enabledTipList.add(tip);
-        } else {
-            ll_defaultCustom.setVisibility(View.GONE);
-            ll_defaultCustom_disable.setVisibility(View.VISIBLE);
-        }
-
-        if (enabledTipList != null && enabledTipList.size() != 0) {
-           GridLayoutManager mGridLayoutManager = new android.support.v7.widget.GridLayoutManager(getActivity(), 3, android.support.v7.widget.GridLayoutManager.VERTICAL, false);
-          //  recyclerTip.setItemAnimator(new DefaultItemAnimator());
-            recyclerTip.setLayoutManager(mGridLayoutManager);
-            TipAdapter mAdapter = new TipAdapter(mContext, enabledTipList,selected_option);
-            recyclerTip.setAdapter(mAdapter);
-            recyclerTip.setVisibility(View.VISIBLE);
-        } else {
-            recyclerTip.setVisibility(View.GONE);
-        }
-
-        recyclerTip.addOnItemTouchListener(
-                new RecyclerItemClickListener(context, recyclerTip ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        if (enabledTipList.get(position).getAmount().equals("custom"))
-                        {
-                            ll_defaultCustom.performClick();
-                        }else{
-                            callAuthToken();
-                            tip_amount = enabledTipList.get(position).getPrice().toString().replace("$", "");
-                            callPaymentOptions(selected_option);
-                            dialog.dismiss();
-                        }
+                if (preferenceManager.isTipDefault2()) {
+                    ll_default2.setVisibility(View.VISIBLE);
+                    ll_default2_disable.setVisibility(View.GONE);
+                    TipData tip = new TipData();
+                    if (selected_option == 5)
+                    {
+                        String amt1= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(1),4)));
+                        String amt2= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(1),6)));
+                        tip.setAmount(amt1+"/"+amt2);
+                    }else{
+                        tip.setAmount(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(1),selected_option))));
                     }
+                    tip.setPercent(tipList.get(1) + "%");
+                    tip.setPrice(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(1)))));
+                    enabledTipList.add(tip);
+                } else {
+                    ll_default2.setVisibility(View.GONE);
+                    ll_default2_disable.setVisibility(View.VISIBLE);
+                }
 
-                    @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
+                if (preferenceManager.isTipDefault3()) {
+                    ll_default3.setVisibility(View.VISIBLE);
+                    ll_default3_disable.setVisibility(View.GONE);
+                    TipData tip=new TipData();
+                    if (selected_option == 5)
+                    {
+                        String amt1= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(2),4)));
+                        String amt2= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(2),6)));
+                        tip.setAmount(amt1+"/"+amt2);
+                    }else{
+                        tip.setAmount(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(2),selected_option))));
                     }
-                })
-        );
-        ll_default1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callAuthToken();
-                tip_amount = txtPrice1.getText().toString().replace("$", "");
-                callPaymentOptions(selected_option);
-                dialog.dismiss();
-            }
-        });
+                    tip.setPercent(tipList.get(2) + "%");
+                    tip.setPrice(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(2)))));
+                    enabledTipList.add(tip);
+                } else {
+                    ll_default3.setVisibility(View.GONE);
+                    ll_default3_disable.setVisibility(View.VISIBLE);
+                }
 
-        ll_default2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callAuthToken();
-                tip_amount = txtPrice2.getText().toString().replace("$", "");
-                callPaymentOptions(selected_option);
-                dialog.dismiss();
-            }
-        });
+                if (preferenceManager.isTipDefault4()) {
+                    ll_default4.setVisibility(View.VISIBLE);
+                    ll_default4_disable.setVisibility(View.GONE);
+                    TipData tip=new TipData();
+                    if (selected_option == 5)
+                    {
+                        String amt1= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(3),4)));
+                        String amt2= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(3),6)));
+                        tip.setAmount(amt1+"/"+amt2);
+                    }else{
+                        tip.setAmount(currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(3),selected_option))));
+                    }
+                    tip.setPercent(tipList.get(3) + "%");
+                    tip.setPrice(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(3)))));
+                    enabledTipList.add(tip);
+                } else {
+                    ll_default4.setVisibility(View.GONE);
+                    ll_default4_disable.setVisibility(View.VISIBLE);
+                }
 
-        ll_default3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callAuthToken();
-                tip_amount = txtPrice3.getText().toString().replace("$", "");
-                callPaymentOptions(selected_option);
-                dialog.dismiss();
-            }
-        });
+                if (preferenceManager.isTipDefault5()) {
+                    ll_default5.setVisibility(View.VISIBLE);
+                    ll_default5_disable.setVisibility(View.GONE);
+                    TipData tip=new TipData();
+                    if (selected_option == 5)
+                    {
+                        String amt1= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(4),4)));
+                        String amt2= currencyFormat(roundTwoDecimals(calculateAmount(tipList.get(4),6)));
+                        tip.setAmount(amt1+"/"+amt2);
+                    }else{
+                        tip.setAmount(currencyFormat( roundTwoDecimals(calculateAmount(tipList.get(4),selected_option))));
+                    }
+                    tip.setPercent(tipList.get(4) + "%");
+                    tip.setPrice(currencyFormat(roundTwoDecimals(calculatePrice(tipList.get(4)))));
+                    enabledTipList.add(tip);
+                } else {
+                    ll_default5.setVisibility(View.GONE);
+                    ll_default5_disable.setVisibility(View.VISIBLE);
+                }
 
-        ll_default4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callAuthToken();
-                tip_amount = txtPrice4.getText().toString().replace("$", "");
-                callPaymentOptions(selected_option);
-                dialog.dismiss();
-            }
-        });
 
-        ll_default5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callAuthToken();
-                tip_amount = txtPrice5.getText().toString().replace("$", "");
-                callPaymentOptions(selected_option);
-                dialog.dismiss();
+                if (preferenceManager.isTipDefaultCustom()) {
+                    ll_defaultCustom.setVisibility(View.VISIBLE);
+                    ll_defaultCustom_disable.setVisibility(View.GONE);
+                    TipData tip=new TipData();
+
+                    tip.setAmount("custom");
+                    tip.setPercent("custom");
+                    tip.setPrice("custom");
+                    enabledTipList.add(tip);
+                } else {
+                    ll_defaultCustom.setVisibility(View.GONE);
+                    ll_defaultCustom_disable.setVisibility(View.VISIBLE);
+                }
+
+                if (enabledTipList != null && enabledTipList.size() != 0) {
+                    GridLayoutManager mGridLayoutManager = new android.support.v7.widget.GridLayoutManager(getActivity(), 3, android.support.v7.widget.GridLayoutManager.VERTICAL, false);
+                    //  recyclerTip.setItemAnimator(new DefaultItemAnimator());
+                    recyclerTip.setLayoutManager(mGridLayoutManager);
+                    TipAdapter mAdapter = new TipAdapter(mContext, enabledTipList,selected_option);
+                    recyclerTip.setAdapter(mAdapter);
+                    recyclerTip.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerTip.setVisibility(View.GONE);
+                }
+
+                recyclerTip.addOnItemTouchListener(
+                        new RecyclerItemClickListener(context, recyclerTip ,new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override public void onItemClick(View view, int position) {
+                                if (enabledTipList.get(position).getAmount().equals("custom"))
+                                {
+                                    ll_defaultCustom.performClick();
+                                }else{
+                                    callAuthToken();
+                                    tip_amount = enabledTipList.get(position).getPrice().toString().replace("$", "");
+                                    callPaymentOptions(selected_option);
+                                    tipdialog.dismiss();
+                                }
+                            }
+
+                            @Override public void onLongItemClick(View view, int position) {
+                                // do whatever
+                            }
+                        })
+                );
+                ll_default1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callAuthToken();
+                        tip_amount = txtPrice1.getText().toString().replace("$", "");
+                        callPaymentOptions(selected_option);
+                        tipdialog.dismiss();
+                    }
+                });
+
+                ll_default2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callAuthToken();
+                        tip_amount = txtPrice2.getText().toString().replace("$", "");
+                        callPaymentOptions(selected_option);
+                        tipdialog.dismiss();
+                    }
+                });
+
+                ll_default3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callAuthToken();
+                        tip_amount = txtPrice3.getText().toString().replace("$", "");
+                        callPaymentOptions(selected_option);
+                        tipdialog.dismiss();
+                    }
+                });
+
+                ll_default4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callAuthToken();
+                        tip_amount = txtPrice4.getText().toString().replace("$", "");
+                        callPaymentOptions(selected_option);
+                        tipdialog.dismiss();
+                    }
+                });
+
+                ll_default5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callAuthToken();
+                        tip_amount = txtPrice5.getText().toString().replace("$", "");
+                        callPaymentOptions(selected_option);
+                        tipdialog.dismiss();
+                    }
+                });
             }
-        });
-    }
-}
+        }
     }
 
     private void showAmountDialog(String amount)
@@ -5850,18 +6008,30 @@ if (!isTipDialogSelected) {
 
         Button btn_cancel=(Button)dialogview.findViewById(R.id.btn_cancel);
         Button btn_ok=(Button)dialogview.findViewById(R.id.btn_ok);
+        Button btn_change=(Button)dialogview.findViewById(R.id.btn_change);
         TextView tv_amt=(TextView) dialogview.findViewById(R.id.tv_amt);
         tv_amt.setText(amount);
+
         btn_cancel.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                tipdialog.dismiss();
             }
         });
+
         btn_ok.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 callPaymentOptions(selected_option);
+                dialog.dismiss();
+                tipdialog.dismiss();
+            }
+        });
+
+        btn_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 dialog.dismiss();
 
             }
@@ -5874,7 +6044,7 @@ if (!isTipDialogSelected) {
    /* private void showTipDialog() {
 
         callAuthToken();
-        //  if (preferencesManager.isAuthenticated()) {
+        //  if (preferenceManager.isAuthenticated()) {
         final Dialog dialog = new Dialog(getActivity());
         //dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -6180,6 +6350,118 @@ if (!isTipDialogSelected) {
 
         return ori_plus_tip;
     }
+    private double calculateCustomAmount(String per, int selected_option) {
+        NumberFormat f = NumberFormat.getInstance(); // Gets a NumberFormat with the default locale, you can specify a Locale as first parameter (like Locale.FRENCH)
+        double amount=0.0;
+        try {
+            amount = f.parse(per).doubleValue();
+           /* String amt= amountformat(edt_amount.getText().toString());
+            Log.v("AMOUNTDATA","amou"+edt_amount.getText().toString());
+            amount=Double.parseDouble(amt)+cent;*/
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //6may
+        String original_amt= amountformat(edt_amount.getText().toString());
+        double ori_plus_tip=Double.parseDouble(original_amt)+amount;
+        switch (selected_option) {
+            case 1:
+                selected_option = 1;
+                // _funcDPCard();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_uni()) / 100));
+                break;
+            case 2:
+                selected_option = 2;
+                //_funcDPUplanForCoupon();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_uplan()) / 100));
+                break;
+            case 3:
+                selected_option = 3;
+               /* if (preferenceManager.isExternalScan())
+                {
+                    if (preferenceManager.isUnionPayQrCodeDisplaySelected()) {
+                        _funcUPIQRScanExternal();*/
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_up_upiqr_mpmcloud_lower()) / 100));
+                  /*  }
+                }else{
+                    if (preferenceManager.isUnionPayQrCodeDisplaySelected()) {
+                        _funcUPIQRScan();
+                        ori_plus_tip = ori_plus_tip /
+                                (1 - (calculatecnv(preferenceManager.getcnv_up_upiqr_mpmcloud_lower()) / 100));
+                    }
+                }*/
+
+                break;
+            case 4:
+                selected_option = 4;
+                Log.v("TOKENRESPONSE","cal amount "+"Alipay");
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_alipay()) / 100));
+                break;
+            case 5:
+                selected_option = 5;
+                //scanQR
+                /*ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_alipay()) / 100));*/
+                break;
+            case 6:
+                selected_option = 6;
+                // _funcWeChat();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_wechat()) / 100));
+                break;
+            case 7:
+                selected_option = 7;
+                //_funcUnionPayQRMerchantDisplay();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.get_cnv_unimerchantqrdisplayLower()) / 100));
+                break;
+            case 8:
+                selected_option = 8;
+                // _funcPoli();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_poli()) / 100));
+                break;
+            case 9:
+                selected_option = 9;
+                // _funcCentrapayMerchantQrDisplay();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_centrapay()) / 100));
+                break;
+            case 13:
+                selected_option = 13;
+                // _funcCentrapayMerchantQrDisplay();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                break;
+
+            case 14:
+                selected_option = 14;
+                // _funcCentrapayMerchantQrDisplay();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                break;
+            /*case 13:
+                selected_option = 13;
+                // _funcCentrapayMerchantQrDisplay();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                break;
+
+            case 14:
+                selected_option = 14;
+                // _funcCentrapayMerchantQrDisplay();
+                ori_plus_tip = ori_plus_tip /
+                        (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                break;*/
+        }
+
+
+        return ori_plus_tip;
+    }
 
     private void _funcDPQRScanExternal() {
         //Scan customer wallet qr code and perfom
@@ -6341,7 +6623,12 @@ if (!isTipDialogSelected) {
                                                 AppConstants.isScannedCode1 = false;
                                                 i.setAction("ScannedCodeUnionPayQr");
                                             } else {
-                                                i.setAction("ScannedCode1");
+                                                if(selected_option==14)
+                                                {
+                                                    i.setAction("ZIPCODE");
+                                                }else {
+                                                    i.setAction("ScannedCode1");
+                                                }
                                                 AppConstants.isScannedCode1 = true;
                                             }
 
@@ -6370,8 +6657,12 @@ if (!isTipDialogSelected) {
                                                 AppConstants.isScannedCode1 = false;
                                                 i.setAction("ScannedCodeUnionPayQr");
                                             } else {
-                                                i.setAction("ScannedCode1");
-                                                AppConstants.isScannedCode1 = true;
+                                                if(selected_option==14)
+                                                {
+                                                    i.setAction("ZIPCODE");
+                                                }else {
+                                                    i.setAction("ScannedCode1");
+                                                }
                                             }
                                             Log.v("AUTHCODE", "Authcodeac2 " + i.getAction());
                                             i.putExtra("identityCode", identityCode);
@@ -6483,7 +6774,12 @@ if (!isTipDialogSelected) {
                                             AppConstants.isScannedCode1 = false;
                                             i.setAction("ScannedCodeUnionPayQr");
                                         } else {
-                                            i.setAction("ScannedCode1");
+                                            if(selected_option==14)
+                                            {
+                                                i.setAction("ZIPCODE");
+                                            }else {
+                                                i.setAction("ScannedCode1");
+                                            }
                                             AppConstants.isScannedCode1 = true;
                                         }
 
@@ -6508,8 +6804,12 @@ if (!isTipDialogSelected) {
                                             AppConstants.isScannedCode1 = false;
                                             i.setAction("ScannedCodeUnionPayQr");
                                         } else {
-                                            i.setAction("ScannedCode1");
-                                            AppConstants.isScannedCode1 = true;
+                                            if(selected_option==14)
+                                            {
+                                                i.setAction("ZIPCODE");
+                                            }else {
+                                                i.setAction("ScannedCode1");
+                                            }
                                         }
                                         Log.v("AUTHCODE", "Authcodeac2 " + i.getAction());
                                         i.putExtra("identityCode", identityCode);
@@ -7702,17 +8002,34 @@ if (!isTipDialogSelected) {
 
         if (!jsonObject.optString("status_id").equals("USERPAYING") && !jsonObject.optString("status_description").equals("WAIT_BUYER_PAY")) {
             if (jsonObject.optString("status").equalsIgnoreCase("true") && !jsonObject.optString("status_description").equals("TRADE_NOT_PAY")) {
-                if (progress1.isShowing())
-                    progress1.dismiss();
+                /*if (progress1.isShowing())
+                    progress1.dismiss();*/
                 if (MyPOSMateApplication.isOpen) {
                     jsonObject.put("grandtotal", xmppAmount);
                 } else
                     jsonObject.put("grandtotal", edt_amount.getText().toString());
-                selected_screen = 0;
-                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
-                if (progress.isShowing())
-                    progress.dismiss();
-                countDownTimer.cancel();
+                if (jsonObject.optJSONObject("payment").optString("channel").equals("ZIP")&&jsonObject.optJSONObject("payment").optString("paymentStatus").equals("PENDING"))
+                {
+                    Log.v("TOKENRESPONSE","GHHJHJJHJH");
+                  /*  isTransactionDetails=true;
+                    callAuthToken();*/
+                    callTransactionDetails();
+                    // ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
+                  /*  if (progress.isShowing())
+                        progress.dismiss();
+                    if (progress1.isShowing())
+                        progress1.dismiss();
+                    countDownTimer.cancel();*/
+                }else {
+                    if (progress1.isShowing())
+                    progress1.dismiss();
+
+                    selected_screen = 0;
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.PAYMENTPROCESSING, jsonObject.toString());
+                    if (progress.isShowing())
+                        progress.dismiss();
+                    countDownTimer.cancel();
+                }
             } else if (jsonObject.optString("status_description").equals("TRADE_REVOKED")) {
                 if (progress1.isShowing())
                     progress1.dismiss();
@@ -8045,8 +8362,9 @@ if (!isTipDialogSelected) {
                             if (progress2.isShowing())
                                 progress2.dismiss();
                         }
-
-                        callTransactionDetails();
+                        isTransactionDetails=true;
+                        callAuthToken();
+                       // callTransactionDetails();
                     }
 
                     public void onFinish() {
@@ -8121,7 +8439,9 @@ if (!isTipDialogSelected) {
 
             @Override
             public void onClick(View v) {
-                callTransactionDetails();
+                isTransactionDetails=true;
+                callAuthToken();
+             //   callTransactionDetails();
                 dialog.dismiss();
             }
         });
@@ -8512,7 +8832,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -8541,7 +8861,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -8596,7 +8916,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -8623,7 +8943,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -8711,7 +9031,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -8753,7 +9073,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -8829,7 +9149,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -8869,7 +9189,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -8937,7 +9257,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -8966,7 +9286,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -9021,7 +9341,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -9048,7 +9368,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -9139,7 +9459,7 @@ if (!isTipDialogSelected) {
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                } else {
@@ -9181,7 +9501,7 @@ if (!isTipDialogSelected) {
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                }
 
 
@@ -9256,7 +9576,7 @@ if (!isTipDialogSelected) {
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                } else {
                    preferenceManager.setReference(edt_reference.getText().toString());
                    hashMapKeys.clear();
@@ -9296,7 +9616,7 @@ if (!isTipDialogSelected) {
                    hashMap.putAll(hashMapKeys);
 
                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                           .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                           .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                }
            }
        } catch (Exception e) {
@@ -9378,7 +9698,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -9420,7 +9740,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -9490,7 +9810,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -9529,7 +9849,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -9620,7 +9940,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
                 } else {
@@ -9663,7 +9983,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
 
@@ -9739,7 +10059,7 @@ if (!isTipDialogSelected) {
                     Log.v("TOKENRESPONSE","Orig "+original_amount+" tip "+tip_amount+" grand "+hashMapKeys.get("grand_total")+ " per "+preferenceManager.getcnv_alipay());
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
                     hashMapKeys.clear();
@@ -9778,7 +10098,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -9854,7 +10174,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -9882,7 +10202,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 }
 
@@ -9937,7 +10257,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -9965,7 +10285,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -10061,7 +10381,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -10104,7 +10424,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
 
             } else {
@@ -10180,7 +10500,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
                 } else {
                     preferenceManager.setReference(edt_reference.getText().toString());
@@ -10222,7 +10542,7 @@ if (!isTipDialogSelected) {
                     hashMap.putAll(hashMapKeys);
 
                     new OkHttpHandler(getActivity(), this, hashMap, "paynow")
-                            .execute(AppConstants.BASE_URL2 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
                 }
             }
         } catch (Exception e) {
@@ -10346,7 +10666,10 @@ if (!isTipDialogSelected) {
                                     ManualEntry.isUpayselected = false;
                                 }
 
-
+                                if (progress2 != null) {
+                                    if (progress2.isShowing())
+                                        progress2.dismiss();
+                                }
                                 Toast.makeText(getActivity(), "Closed", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -10664,7 +10987,157 @@ if (!isTipDialogSelected) {
                 selected_option = 9;
                 _funcCentrapayMerchantQrDisplay();
                 break;
+            case 13:
+                selected_option = 13;
+                callStubApp("purchase",REQUEST_PURCHASE);
+                //showZipCodeKeyBoard();
+                if (pr!=null&&pr.isShowing())
+                {
+                    pr.dismiss();
+                }
+                break;
+
+            case 14:
+                selected_option = 14;
+                    _funcZipQRScan();
+                if (pr!=null&&pr.isShowing())
+                {
+                    pr.dismiss();
+                }
+
+                break;
         }
+    }
+    private void callStubApp(String requestFor, int requestCode) {
+        if(pr!=null&&pr.isShowing())
+        {
+            pr.dismiss();
+        }
+        Intent int1 = new Intent(Intent.CATEGORY_LAUNCHER);
+        int1.setComponent(new ComponentName("com.nz.stubmpm","com.nz.stubmpm.MainActivity"));
+        int1.putExtra("RequestFor",requestFor);
+        int1.putExtra("functionName",requestFor);
+        int1.putExtra("terminalID",preferenceManager.getterminalId());
+        int1.putExtra("uniqueID", new Date().getTime() + "");
+        if (MyPOSMateApplication.isOpen) {
+         //   Toast.makeText(getActivity(),"1",Toast.LENGTH_SHORT).show();
+                char[] ch = xmppAmount.toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                xmppAmount = sb.toString().replace(",", "");
+                if (preferenceManager.is_cnv_zip_display_and_add()) {
+                 //   Toast.makeText(getActivity(),"2",Toast.LENGTH_SHORT).show();
+                   String original_amount = original_xmpp_trigger_amount;
+                    xmppAmount = convenience_amount_zip + "";
+                    int1.putExtra("totalAmount",roundTwoDecimals(Double.parseDouble(xmppAmount))+"" );
+                    Log.v("TOKENRESPONSE","Selected Channel : "+ selected_channel);
+                    //   hashMapKeys.put("channel", channel);
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+                            double amt = Double.parseDouble(original_amount) + Double.parseDouble(tip_amount);
+                            double grand_tot = amt /
+                                    (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                            int1.putExtra("totalAmount",roundTwoDecimals(grand_tot) + "" );
+                         //   Toast.makeText(getActivity(),"3",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                //    Toast.makeText(getActivity(),"4",Toast.LENGTH_SHORT).show();
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+                            String original_amount = original_xmpp_trigger_amount;
+                            double amt = Double.parseDouble(original_amount) + Double.parseDouble(tip_amount);
+                            int1.putExtra("totalAmount",roundTwoDecimals(amt) + "" );
+                           // Toast.makeText(getActivity(),"5",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else
+                    {
+                       // Toast.makeText(getActivity(),"6",Toast.LENGTH_SHORT).show();
+                        int1.putExtra("totalAmount",roundTwoDecimals(Double.parseDouble(original_xmpp_trigger_amount)));
+                    }
+                  }
+
+
+        } else {
+            {
+             //   Toast.makeText(getActivity(),"7",Toast.LENGTH_SHORT).show();
+                String amount = "";
+                char[] ch = edt_amount.getText().toString().toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                amount = sb.toString().replace(",", "");
+                if (preferenceManager.is_cnv_zip_display_and_add()) {
+                   String original_amount = amount;
+                    amount = convenience_amount_zip + "";
+                    //hashMapKeys.put("grand_total", amount);
+                    int1.putExtra("totalAmount",roundTwoDecimals(Double.parseDouble(amount))+"" );
+
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+//                            String amt =roundTwoDecimals(Double.parseDouble(hashMapKeys.get("grand_total").replace(",","")) + Double.parseDouble(tip_amount));
+//                            hashMapKeys.put("grand_total", amt + "");
+//                            hashMapKeys.put("tip_amount", tip_amount + "");
+                            double amt = Double.parseDouble(original_amount) + Double.parseDouble(tip_amount);
+                            double grand_tot = amt /
+                                    (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                           // hashMapKeys.put("grand_total", roundTwoDecimals(grand_tot) + "");
+                            int1.putExtra("totalAmount", roundTwoDecimals(grand_tot) + "");
+                         //   Toast.makeText(getActivity(),"8",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                   // Toast.makeText(getActivity(),"9",Toast.LENGTH_SHORT).show();
+                    int1.putExtra("totalAmount", amount);
+                   // hashMapKeys.put("grand_total", amount);
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+                            double amt = Double.parseDouble(amount) + Double.parseDouble(tip_amount);
+                            int1.putExtra("totalAmount", roundTwoDecimals(amt)+"");
+                         //   Toast.makeText(getActivity(),"10",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+               }
+            }
+         //   int1.putExtra("totalAmount", convenience_amount_zip + "");
+        }
+
+        int1.putExtra("posInfo1","purchase");
+
+        try {
+            startActivityForResult(int1,requestCode);
+        } catch (ActivityNotFoundException e) {
+            // No application to view, ask to download one
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("No Application Found");
+            builder.setMessage("Please install the Stub app");
+            builder.setNegativeButton("Ok", null);
+            builder.create().show();
+        }
+
+
     }
 
     private String currencyFormat(String grandTotal) {
@@ -10818,6 +11291,29 @@ if (!isTipDialogSelected) {
 
             mData.add(m7);
         }
+
+        if (preferenceManager.isZipSelected()) {
+            MyObject m1 = new MyObject();
+            m1.setName("Zip disabled");
+            m1.setLogo(R.drawable.ic_zip);
+            m1.setDisplay(preferenceManager.isZipSelected());
+            m1.setSelected_option(13);
+            calculateConvZip();
+            m1.setCnv_amt(cnvAmount);
+            m1.setConv(isConv);
+            mData.add(m1);
+        }
+        if (preferenceManager.isZipScan()) {
+            MyObject m2 = new MyObject();
+            m2.setName("Zip QR scan disabled");
+            m2.setLogo(R.drawable.scanner);
+            m2.setDisplay(preferenceManager.isZipScan());
+            m2.setSelected_option(14);
+            calculateConvZipScan();
+            m2.setCnv_amt(cnvAmount);
+            m2.setConv(isConv);
+            mData.add(m2);
+        }
         return mData;
     }
 
@@ -10949,9 +11445,77 @@ if (!isTipDialogSelected) {
 
             mData.add(m7);
         }
+
+        if (preferenceManager.isZipSelected()) {
+            MyObject m1 = new MyObject();
+            m1.setName("Zip disabled");
+            m1.setLogo(R.drawable.ic_zip);
+            m1.setDisplay(preferenceManager.isZipSelected());
+            m1.setSelected_option(13);
+            calculateConvZip();
+            m1.setCnv_amt(cnvAmount);
+            m1.setConv(isConv);
+            mData.add(m1);
+        }
+        if (preferenceManager.isZipScan()) {
+            MyObject m2 = new MyObject();
+            m2.setName("Zip QR scan disabled");
+            m2.setLogo(R.drawable.scanner);
+            m2.setDisplay(preferenceManager.isZipScan());
+            m2.setSelected_option(14);
+            calculateConvZipScan();
+            m2.setCnv_amt(cnvAmount);
+            m2.setConv(isConv);
+            mData.add(m2);
+        }
         return mData;
     }
 
+    public void calculateConvZipScan() {
+        if (preferenceManager.isZipScan() && (preferenceManager.is_cnv_zip_display_and_add() ||
+                preferenceManager.is_cnv_zip_display_only())) {
+            if (!preferenceManager.getcnv_zip().equals("") ||
+                    !preferenceManager.getcnv_zip().equals("0.0") ||
+                    !preferenceManager.getcnv_zip().equals("0.00")) {
+                convenience_amount_zip = calculatecnv(edt_amount.getText().toString().
+                        replace(",", ""))/
+                        (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                if (roundTwoDecimals(convenience_amount_zip).length() > 12) {
+                    // tv_ali_cv.setTextSize(10);
+                }
+                // tv_ali_cv.setText("" + roundTwoDecimals(convenience_amount_alipay));
+                cnvAmount="" + roundTwoDecimals(convenience_amount_zip);
+                isConv=true;
+                Log.v("ConV","ZipScanCon " + roundTwoDecimals(convenience_amount_zip));
+            }
+        }else{
+            cnvAmount="0.00";
+            isConv=false;
+        }
+    }
+
+    public void calculateConvZip() {
+        if (preferenceManager.isZipSelected() && (preferenceManager.is_cnv_zip_display_and_add() ||
+                preferenceManager.is_cnv_zip_display_only())) {
+            if (!preferenceManager.getcnv_zip().equals("") ||
+                    !preferenceManager.getcnv_zip().equals("0.0") ||
+                    !preferenceManager.getcnv_zip().equals("0.00")) {
+                convenience_amount_zip = calculatecnv(edt_amount.getText().toString().
+                        replace(",", ""))/
+                        (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                if (roundTwoDecimals(convenience_amount_zip).length() > 12) {
+                    //  tv_zip_cv.setTextSize(10);
+                }
+                // tv_zip_cv.setText("" + roundTwoDecimals(convenience_amount_zip));
+                cnvAmount="" + roundTwoDecimals(convenience_amount_zip);
+                isConv=true;
+                Log.v("ConV","AlipayCon " + roundTwoDecimals(convenience_amount_zip));
+            }
+        }else{
+            cnvAmount="0.00";
+            isConv=false;
+        }
+    }
     public void getData() {
 
         mData = new ArrayList<MyObject>();
@@ -11073,17 +11637,17 @@ if (!isTipDialogSelected) {
                 Log.v("TOKENRESPONSE","req "+"empty");
             }else{
 
-                callPayment(mData.get(pos).getSelected_option());
+                callPayment(mData.get(pos).getSelected_option(),mData.get(pos).getCnv_amt());
              //   Toast.makeText(getActivity(), "clicked " + mData.get(pos).getSelected_option(), Toast.LENGTH_SHORT).show();
             }
         } else {
-            callPayment(mData.get(pos).getSelected_option());
+            callPayment(mData.get(pos).getSelected_option(),mData.get(pos).getCnv_amt());
            // Toast.makeText(getActivity(), "clicked " + mData.get(pos).getSelected_option(), Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    private void callPayment(int selected_options) {
+    private void callPayment(int selected_options, String cnv_amt) {
         mContext = getActivity();
 
         if (((DashboardActivity) mContext).mPopupWindow.isShowing())
@@ -11093,21 +11657,21 @@ if (!isTipDialogSelected) {
             case 1:
                 selected_option = 1;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else
                     _funcDPCard();
                 break;
             case 2:
                 selected_option = 2;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else
                     _funcDPUplanForCoupon();
                 break;
             case 3:
                 selected_option = 3;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else {
                     if (preferenceManager.isExternalScan()) {
                         if (preferenceManager.isUnionPayQrCodeDisplaySelected())
@@ -11122,7 +11686,7 @@ if (!isTipDialogSelected) {
                 selected_option = 4;
 
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else {
                     _funcAlipay();
                 }
@@ -11131,7 +11695,7 @@ if (!isTipDialogSelected) {
             case 5:
                 selected_option = 5;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else {
                     if (preferenceManager.isExternalScan()) {
                         _funcAlipayWeChatQRScanExternal();
@@ -11143,7 +11707,7 @@ if (!isTipDialogSelected) {
             case 6:
                 selected_option = 6;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else
                     _funcWeChat();
                 break;
@@ -11151,24 +11715,515 @@ if (!isTipDialogSelected) {
                 selected_option = 7;
                 isMerchantQrDisplaySelected = true;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else
                     _funcUnionPayQRMerchantDisplay();
                 break;
             case 8:
                 selected_option = 8;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else
                     _funcPoli();
                 break;
             case 9:
                 selected_option = 9;
                 if (preferenceManager.isSwitchTip()) {
-                    showTipDialog();
+                    showTipDialog(cnv_amt);
                 } else
                     _funcCentrapayMerchantQrDisplay();
                 break;
+
+            case 13:
+                selected_option = 13;
+                if (preferenceManager.isSwitchTip()) {
+                    showTipDialog(cnv_amt);
+                } else {
+                   // showZipCodeKeyBoard();
+                    callStubApp("purchase", REQUEST_PURCHASE);
+                }
+                break;
+
+            case 14:
+                selected_option = 14;
+                if (preferenceManager.isSwitchTip()) {
+                    showTipDialog(cnv_amt);
+                } else
+                    _funcZipQRScan();
+                break;
         }
     }
+    private void showZipCodeKeyBoard() {
+       /* if(progress3!=null&&progress3.isShowing())
+        {
+            progress3.dismiss();
+        }*/
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        LayoutInflater lf = (LayoutInflater) (getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.keyboard_layout_zip, null);
+        dialog.setContentView(dialogview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        EditText edt_amount_key1 = dialogview.findViewById(R.id.edt_amount);
+           /* if(edt_amount.getText().toString().equals("")||edt_amount.getText().toString().equals("0.00")) {
+                edt_amount_key.setText("0.00");
+            }else{
+                edt_amount_key.setText(edt_amount.getText().toString());
+            }*/
+        com.quagnitia.myposmate.utils.MyKeyboard keyboard = (com.quagnitia.myposmate.utils.MyKeyboard) dialogview.findViewById(R.id.keyboard);
+
+        // prevent system keyboard from appearing when EditText is tapped
+        edt_amount_key1.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        edt_amount_key1.setTextIsSelectable(true);
+
+        // pass the InputConnection from the EditText to the keyboard
+        InputConnection ic = edt_amount_key1.onCreateInputConnection(new EditorInfo());
+        keyboard.setInputConnection(ic);
+
+        TextView mButtonClose = (TextView) dialogview.findViewById(R.id.button_close);
+        mButtonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              //  isProcessing=false;
+                edt_amount.setText("");
+                edt_amount1.setText("");
+                preferenceManager.setreference_id("");
+                reference_id = "";
+                ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                dialog.dismiss();
+                return;
+            }
+        });
+
+        keyboard.mButtonEnter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                   /* Toast.makeText(getActivity(),"Under Implementation",Toast.LENGTH_SHORT).show();
+                    isProcessing=false;
+                    edt_amount.setText("");
+                    edt_amount1.setText("");
+                    preferenceManager.setreference_id("");
+                    reference_id = "";
+                  //  Toast.makeText(getActivity(), jsonObject.optString("message") + ".Please try again", Toast.LENGTH_LONG).show();
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
+                    dialog.dismiss();
+                    return;*/
+
+                //}
+                //{
+
+                String barcode= edt_amount_key1.getText().toString().trim();
+                if (barcode.equalsIgnoreCase("")||barcode.isEmpty())
+                {
+                    Toast.makeText(getActivity(),"Please enter the code in input box",Toast.LENGTH_SHORT).show();
+                }else {
+                    ProgressDialog p = new ProgressDialog(mmContext == null ? getActivity() : mmContext);
+                    p.setMessage("Sending request.......");
+                    p.setCancelable(false);
+                    p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    p.setIndeterminate(true);
+                    p.show();
+
+                    final Handler handlers = new Handler();
+                    handlers.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!AppConstants.xmppamountforscan.equals("")) {
+
+//                    when user get the amount xmpp trigger and if the scan qr button is pressed
+//                    of alipay and wechat then on launch of qr scan screen the xmpp trigger state
+//                    of manual entry screen gets reset.So the further procedure gets stuck as all the values are reset to zero.
+//                    To avoid the value reset we would again initiate the xmpp amount json data on manual entry screen
+//                    so that all the values will be calculated once the qr is scanned from wallet.And
+//                    once you reach here we will fire a amount trigger broadcast and then send the scanned code so that the payNow procedure works properly
+
+                                final Handler handler1 = new Handler();
+                                handler1.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent ia = new Intent();
+                                        ia.setAction("AmountTrigger");
+                                        ia.putExtra("data", preferenceManager.getamountdata());
+                                        getActivity().sendBroadcast(ia);
+
+                                    }
+                                }, 400);
+
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        //  Toast.makeText(getActivity(), "Scanned: " + edt_amount_key1.getText().toString(), Toast.LENGTH_LONG).show();
+                                        String identityCode = edt_amount_key1.getText().toString();
+                                        // Toast.makeText(getActivity(), "CodeCode" + auth_code, Toast.LENGTH_SHORT).show();
+                                        //Varsha Commented
+                                        Intent i = new Intent();
+                                                /*if (ManualEntry.isUpayselected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCode");
+                                                } else if (ManualEntry.isUnionPayQrSelected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCodeUnionPayQr");
+                                                } else {*/
+                                        i.setAction("ZIPCODE");
+                                        AppConstants.isScannedCode1 = true;
+                                        //  }
+
+                                        i.putExtra("identityCode", identityCode);
+                                        Log.v("AUTHCODE", "Authcodeac " + i.getAction());
+                                        getActivity().sendBroadcast(i);
+                                        if (p != null && p.isShowing()) {
+                                            p.dismiss();
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                }, 800);
+
+                            } else {
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // Toast.makeText(getActivity(), "Scanned : " + edt_amount_key1.getText().toString(), Toast.LENGTH_LONG).show();
+                                        String identityCode = edt_amount_key1.getText().toString();
+                                        Intent i = new Intent();
+                                               /* if (ManualEntry.isUpayselected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCode");
+                                                } else if (ManualEntry.isUnionPayQrSelected) {
+                                                    AppConstants.isScannedCode1 = false;
+                                                    i.setAction("ScannedCodeUnionPayQr");
+                                                } else {
+                                                    i.setAction("ScannedCode1");
+                                                    AppConstants.isScannedCode1 = true;
+                                                }*/
+                                        i.setAction("ZIPCODE");
+                                        AppConstants.isScannedCode1 = true;
+                                        Log.v("AUTHCODE", "Authcodeac2 " + i.getAction());
+                                        i.putExtra("identityCode", identityCode);
+                                        getActivity().sendBroadcast(i);
+                                        if (p != null && p.isShowing()) {
+                                            p.dismiss();
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                }, 500);
+
+                            }
+
+                        }
+
+                    }, 1000);
+                    dialog.dismiss();
+                }
+
+            }
+        });
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+    }
+
+    private void _funcZipQRScan() {
+        //Scanning qr from customer wallet and performing transaction
+        //through MyPOSMate cloud
+        isUnionPayQrSelected = false;
+        isUpayselected = false;
+        if (MyPOSMateApplication.isOpen) {
+            payment_mode = "";
+            qrMode = "False";
+            isZipQrSelected=true;
+            open();
+        } else {
+            if (edt_amount.getText().toString().equals("0.00") || edt_amount.getText().toString().equals("") && edt_reference.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter the amount", Toast.LENGTH_LONG).show();
+            } else {
+                payment_mode = "";
+                qrMode = "False";
+                isZipQrSelected=true;
+                open();
+            }
+        }
+    }
+
+    //ZIP Transaction
+    public void callPayNowZip() {
+        isPayNowScanCalled = true;
+        String original_amount = "", fee_amount = "", discount = "", fee_percentage = "";
+        if (countDownTimerxmpp != null) {
+            countDownTimerxmpp.cancel();
+            tv_start_countdown.setVisibility(View.GONE);
+        }
+        openProgressDialog();
+        try {
+
+
+            if (MyPOSMateApplication.isOpen) {
+                char[] ch = xmppAmount.toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                xmppAmount = sb.toString().replace(",", "");
+
+
+                if (preferenceManager.is_cnv_zip_display_and_add()) {
+                    original_amount = original_xmpp_trigger_amount;
+                    xmppAmount = convenience_amount_zip + "";
+                    fee_amount = convenience_amount_zip -
+                            Double.parseDouble(original_xmpp_trigger_amount.replace(",", ""))
+                            + "";
+                    fee_percentage = preferenceManager.getcnv_zip();
+                    preferenceManager.setReference(edt_reference.getText().toString());
+
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", URLEncoder.encode(edt_reference.getText().toString(), "UTF-8"));
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", xmppAmount);
+                    hashMapKeys.put("original_amount", original_amount);
+                    hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
+                    hashMapKeys.put("fee_percentage", fee_percentage);
+                    hashMapKeys.put("discount", "0");
+                    if (!auth_code.equals(""))
+                        hashMapKeys.put("qr_mode", false + "");
+                    else
+                        hashMapKeys.put("qr_mode", true + "");
+
+                    hashMapKeys.put("auth_code", auth_code);
+                    if (!selected_channel.equals(""))
+                        hashMapKeys.put("channel", selected_channel);
+                    Log.v("TOKENRESPONSE","Selected Channel : "+ selected_channel);
+                    //   hashMapKeys.put("channel", channel);
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+//                            String amt =roundTwoDecimals(Double.parseDouble(hashMapKeys.get("grand_total").replace(",","")) + Double.parseDouble(tip_amount));
+//                            hashMapKeys.put("grand_total", amt + "");
+//                            hashMapKeys.put("tip_amount", tip_amount + "");
+                            double amt = Double.parseDouble(original_amount) + Double.parseDouble(tip_amount);
+                            double grand_tot = amt /
+                                    (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                            hashMapKeys.put("grand_total", roundTwoDecimals(grand_tot) + "");
+                            hashMapKeys.put("tip_amount", tip_amount + "");
+                            hashMapKeys.put("fee_amount", roundTwoDecimals(grand_tot-amt));
+                        }
+                    }
+                    else
+                    {
+                        hashMapKeys.put("tip_amount","0.00");
+                    }
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+
+                } else {
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", URLEncoder.encode(edt_reference.getText().toString(), "UTF-8"));
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", xmppAmount);
+                    if (!auth_code.equals(""))
+                        hashMapKeys.put("qr_mode", false + "");
+                    else
+                        hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("auth_code", auth_code);
+                    if (!selected_channel.equals(""))
+                        hashMapKeys.put("channel", selected_channel);
+                    //   hashMapKeys.put("channel", channel);
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+                            String amt =roundTwoDecimals(Double.parseDouble(hashMapKeys.get("grand_total").replace(",","")) + Double.parseDouble(tip_amount));
+                            hashMapKeys.put("grand_total", amt + "");
+                            hashMapKeys.put("tip_amount", tip_amount + "");
+                        }
+                    }
+                    else
+                    {
+                        hashMapKeys.put("tip_amount","0.00");
+                    }
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                }
+
+
+            } else {
+                String amount = "";
+                char[] ch = edt_amount.getText().toString().toCharArray();
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < ch.length; i++) {
+                    if (((int) ch[i] == 160) || ((int) ch[i] == 32)) {
+
+                    } else {
+                        sb.append(ch[i]);
+                    }
+                }
+                amount = sb.toString().replace(",", "");
+                if (preferenceManager.is_cnv_zip_display_and_add()) {
+                    original_amount = amount;
+                    amount = convenience_amount_zip + "";
+                    fee_amount = convenience_amount_zip -
+                            Double.parseDouble(edt_amount.getText().toString().replace(",", ""))
+                            + "";
+                    fee_percentage = preferenceManager.getcnv_zip();
+
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", URLEncoder.encode(edt_reference.getText().toString(), "UTF-8"));
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", amount);
+                    hashMapKeys.put("original_amount", original_amount);
+                    hashMapKeys.put("fee_amount", roundTwoDecimals(Float.valueOf(fee_amount + "")));
+                    hashMapKeys.put("fee_percentage", fee_percentage);
+                    hashMapKeys.put("discount", "0");
+                    if (!auth_code.equals(""))
+                        hashMapKeys.put("qr_mode", false + "");
+                    else
+                        hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("auth_code", auth_code);
+                    if (!selected_channel.equals(""))
+                        hashMapKeys.put("channel", selected_channel);
+                    //    hashMapKeys.put("channel", channel);
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+//                            String amt =roundTwoDecimals(Double.parseDouble(hashMapKeys.get("grand_total").replace(",","")) + Double.parseDouble(tip_amount));
+//                            hashMapKeys.put("grand_total", amt + "");
+//                            hashMapKeys.put("tip_amount", tip_amount + "");
+                            double amt = Double.parseDouble(original_amount) + Double.parseDouble(tip_amount);
+                            double grand_tot = amt /
+                                    (1 - (calculatecnv(preferenceManager.getcnv_zip()) / 100));
+                            hashMapKeys.put("grand_total", roundTwoDecimals(grand_tot) + "");
+                            hashMapKeys.put("tip_amount", tip_amount + "");
+                            hashMapKeys.put("fee_amount", roundTwoDecimals(grand_tot-amt));
+                        }
+                    }
+                    else
+                    {
+                        hashMapKeys.put("tip_amount","0.00");
+                    }
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+
+                } else {
+                    preferenceManager.setReference(edt_reference.getText().toString());
+                    hashMapKeys.clear();
+                    if (!edt_reference.getText().toString().equals("")) {
+                        hashMapKeys.put("refData1", URLEncoder.encode(edt_reference.getText().toString(), "UTF-8"));
+                    }
+//                    hashMapKeys.put("merchant_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+                    hashMapKeys.put("terminal_id", preferenceManager.getterminalId().toString());
+                    hashMapKeys.put("config_id", preferenceManager.getConfigId());
+                    if (reference_id.isEmpty())
+
+
+                        reference_id = new Date().getTime() + "";
+                    hashMapKeys.put("reference_id", reference_id);
+                    hashMapKeys.put("random_str", new Date().getTime() + "");
+                    hashMapKeys.put("grand_total", amount);
+                    if (!auth_code.equals(""))
+                        hashMapKeys.put("qr_mode", false + "");
+                    else
+                        hashMapKeys.put("qr_mode", true + "");
+                    hashMapKeys.put("auth_code", auth_code);
+                    if (!selected_channel.equals(""))
+                        hashMapKeys.put("channel", selected_channel);
+                    // hashMapKeys.put("channel", channel);
+                    if (preferenceManager.isSwitchTip() && !isSkipTipping) {
+                        isSkipTipping = false;
+                        if (!tip_amount.equals("") || !tip_amount.equals("0.00") ||
+                                !tip_amount.equals("0.0")) {
+                            String amt =roundTwoDecimals(Double.parseDouble(hashMapKeys.get("grand_total").replace(",","")) + Double.parseDouble(tip_amount));
+                            hashMapKeys.put("grand_total", amt + "");
+                            hashMapKeys.put("tip_amount", tip_amount + "");
+                        }
+                    }
+                    else
+                    {
+                        hashMapKeys.put("tip_amount","0.00");
+                    }
+                    hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
+                    hashMapKeys.put("access_token", preferenceManager.getauthToken());
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.putAll(hashMapKeys);
+
+                    new OkHttpHandler(getActivity(), this, hashMap, "paynow")
+                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.PAYNOW);//+ MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

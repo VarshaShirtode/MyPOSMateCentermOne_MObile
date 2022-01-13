@@ -18,26 +18,43 @@ public class AppConstants {
 
 
     //Live Server
-   public static String BASE_URL3 = "https://liveone.myposmate.com/api/v1/";
+    public static String BASE_URL3 = "https://liveone.myposmate.com/api/v1/";
     public static String BASE_URL2 = "https://liveone.myposmate.com/api/v1/terminal/";
+    public static String BASE_URL5 = "/api/v1/";
+    public static String BASE_URL4 = "/api/v1/terminal/";
     public static String AUTH = "https://liveone.myposmate.com/oauth/token";
+    public static String AUTH2 = "/oauth/token";
     public static String serverIp = "liveone.myposmate.com";
 
+
     //Test Server
-   /* public static String BASE_URL3 = "https://one.myposmate.com/api/v1/";
+  /* public static String BASE_URL3 = "https://one.myposmate.com/api/v1/";
     public static String BASE_URL2 = "https://one.myposmate.com/api/v1/terminal/";
+ public static String BASE_URL5 = "/api/v1/";
+ public static String BASE_URL4 = "/api/v1/terminal/";
     public static String AUTH = "https://one.myposmate.com/oauth/token";
+ public static String AUTH2 = "/oauth/token";
     public static String serverIp = "one.myposmate.com";*/
 //one.myposmate.com commit
 
 
-    /*public static String CLIENT_ID=
+    //Master
+    public static String CLIENT_ID=
     "b7ae46e37ba373dce7bd";
-    public static String CLIENT_SECRET="5ed7ed3cc894247a60d7ff75382c9";*/
+    public static String CLIENT_SECRET="5ed7ed3cc894247a60d7ff75382c9";
 
-   public static String CLIENT_ID=
+//Vivek
+  /* public static String CLIENT_ID=
            "44381bab3247f385";
-   public static String CLIENT_SECRET="5e2391c9e09b5aae8484b0f5";
+   public static String CLIENT_SECRET="5e2391c9e09b5aae8484b0f5";*/
+
+    //Tehmus
+ /* public static String CLIENT_ID=
+            "a1acd01d8e756d14";
+    public static String CLIENT_SECRET="2462228f5c851beeaded4e90";*/
+
+    public static String GET_CONNECTIONS = "https://one.myposmate.com/endPoints";
+
 
     public static String GET_TRANSACTION_DETAILS = "getTransactionDetails";
     public static String CANCEL_TRANSACTION = "cancelTransaction";

@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,7 +53,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
     private int mYear, mMonth, mDay, mHour, mMinute;
     private TextView edt_end_datetime, edt_start_datetime, edt_start_time, edt_end_time;
     ProgressDialog progress;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private RecyclerView recycler_view;
     TreeMap<String, String> hashMapKeys;
 
@@ -103,7 +104,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.activity_transaction_listing, container, false);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
         initUI();
         initListener();
@@ -137,7 +138,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", AppConstants.CLIENT_ID);
 //        hashMap.put("password",AppConstants.CLIENT_SECRET);
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -321,7 +322,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             Date d = df1.parse(ss1[0] + " " + ss1[1]);
             String datetime = df2.format(d);
             String ss[] = datetime.split(" ");
@@ -330,6 +331,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             edt_end_datetime.setText(ss[0]);
             edt_start_time.setText("00:00:00");
             edt_end_time.setText(ss[1]);
+            Log.v("TIMESFROM","SS "+ss[1]);
             isListingCalled = true;
             callAuthToken();
 
@@ -343,7 +345,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
 
     public void callTimeStamp() {
         try {
-            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferenceManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -397,24 +399,30 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         try {
 
             SimpleDateFormat mainConv = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS");
-            mainConv.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            mainConv.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
 
             String startTime = edt_start_datetime.getText().toString() + "T" + edt_start_time.getText().toString();
 
             String endTime = df1.format(df2.parse(edt_end_datetime.getText().toString() + "T" + edt_end_time.getText().toString()));
 
             startTime = df1.format(df2.parse(startTime));
+
+            Log.v("TOKENRESPONSE",df1.format(df2.parse(edt_start_datetime.getText().toString() +
+                    "T" + edt_start_time.getText().toString()))+" "+df1.format(df2.parse(edt_end_datetime.getText().toString() +
+                    "T" + edt_end_time.getText().toString())));
+
             hashMapKeys.clear();
-            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("end_date", mainConv.format(df1.parse(endTime)) + preferencesManager.getTimezoneAbrev());
-            hashMapKeys.put("start_date", mainConv.format(df1.parse(startTime)) + preferencesManager.getTimezoneAbrev());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            Log.v("TOKENRESPONSE", "TimeZone Abbr "+ preferenceManager.getTimezoneAbrev());
+            hashMapKeys.put("end_date", mainConv.format(df1.parse(endTime)) + preferenceManager.getTimezoneAbrev());
+            hashMapKeys.put("start_date", mainConv.format(df1.parse(startTime)) + preferenceManager.getTimezoneAbrev());
 
 //            hashMapKeys.put("end_date", "20200725T000000.000GMT+12:00");
 //            hashMapKeys.put("start_date", "20200727T000000.000GMT+12:00");
@@ -423,12 +431,12 @@ public class TransactionListing extends Fragment implements View.OnClickListener
             hashMapKeys.put("limit", "1000");
 
 //            hashMapKeys.put("signature", MD5Class.generateSignatureString(hashMapKeys, getActivity()));
-//            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+//            hashMapKeys.put("access_token", preferenceManager.getauthToken());
 //            HashMap<String, String> hashMap = new HashMap<>();
 //            hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, null, "TransactionListing")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_RECENT_TRANSACTIONS
-            + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_RECENT_TRANSACTIONS
+            + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
         } catch (Exception e) {
@@ -455,7 +463,7 @@ public class TransactionListing extends Fragment implements View.OnClickListener
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                     if (TransactionDetailsActivity.isRefundUnionPaySuccess) {
                         TransactionDetailsActivity.isRefundUnionPaySuccess = false;
                         callTransactionList();

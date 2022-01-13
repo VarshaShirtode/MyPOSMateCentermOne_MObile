@@ -82,7 +82,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
     private JSONObject jsonObject;
     private TextView payment_tag;
     private TextView tv_referenceid, tv_transid, tv_tradeno, tv_reference, tv_reference1;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private static final String TAG = "PrinterDemo";
     private static final int FONT_SIZE_SMALL = 0;
     private static final int FONT_SIZE_NORMAL = 1;
@@ -124,7 +124,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_payment_processing, container, false);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
         dialog = new AlertDialog.Builder(getActivity())
                 .setNegativeButton(getString(R.string.cancel), null)
                 .setCancelable(false)
@@ -222,11 +222,11 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                         payment_image.setImageResource(R.drawable.unsuccessful_icon);
                     }
 
-                    if (preferencesManager.getReference().equals("")) {
+                    if (preferenceManager.getReference().equals("")) {
                         tv_reference.setVisibility(View.GONE);
                         tv_reference1.setVisibility(View.GONE);
                     } else {
-                        tv_reference.setText(preferencesManager.getReference());
+                        tv_reference.setText(preferenceManager.getReference());
                         tv_reference.setVisibility(View.VISIBLE);
                         tv_reference1.setVisibility(View.VISIBLE);
                     }
@@ -238,7 +238,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     tv_transid.setText(jsonObject.optJSONObject("payment").optString("id"));//increment_id
                     Log.v("TOKENRESPONSE","inside status ende");
                 }
-                if (preferencesManager.getisPrint().equals("true")) {
+                if (preferenceManager.getisPrint().equals("true")) {
 //                    bindService();
 //                    print();
                 }
@@ -261,19 +261,19 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
             //v2 signature implementation
 
             hashMapKeys.clear();
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
             hashMapKeys.put("request_id", request_id);
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("executed", executed + "");
             Log.v("TOKENResponse","inside update request "+executed);
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
-                            + "&access_token=" + preferencesManager.getauthToken());
+                            + "&access_token=" + preferenceManager.getauthToken());
 
 
         } catch (Exception e) {
@@ -295,9 +295,9 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         // openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "password");
-        hashMap.put("username", preferencesManager.getterminalId());
-        hashMap.put("password", preferencesManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        hashMap.put("username", preferenceManager.getterminalId());
+        hashMap.put("password", preferenceManager.getuniqueId());
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -363,35 +363,35 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         list.add(new PrintDataObject("Merchant Name:",
                 fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                 true));
-            list.add(new PrintDataObject(preferencesManager.getMerchantName(),
+            list.add(new PrintDataObject(preferenceManager.getMerchantName(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
         list.add(new PrintDataObject("Branch Name:",
                 fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                 true));
-        list.add(new PrintDataObject(preferencesManager.getbranchName(),
+        list.add(new PrintDataObject(preferenceManager.getbranchName(),
                 fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                 true));
 
 
-        if (preferencesManager.getBranchName().equals("true")) {
+        if (preferenceManager.getBranchName().equals("true")) {
             list.add(new PrintDataObject("Branch Info:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            list.add(new PrintDataObject(preferencesManager.getmerchant_name(),
+            list.add(new PrintDataObject(preferenceManager.getmerchant_name(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
         }
 
 
-        if (preferencesManager.getGSTNo().equals("true")) {
+        if (preferenceManager.getGSTNo().equals("true")) {
             list.add(new PrintDataObject("GST:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
 
             ArrayList<String> arrayList1 = new ArrayList<>();
-            char cc[] = preferencesManager.getgstno().toCharArray();
+            char cc[] = preferenceManager.getgstno().toCharArray();
             for (int i = 0; i < cc.length; i++) {
                 if (cc.length == 8) {
                     if (i == 1) {
@@ -421,8 +421,8 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     true));
         }
 
-        if (preferencesManager.getBranchAddress().equals("true")) {
-            char c[] = preferencesManager.getaddress().toCharArray();
+        if (preferenceManager.getBranchAddress().equals("true")) {
+            char c[] = preferenceManager.getaddress().toCharArray();
             ArrayList<String> arrayList = new ArrayList<>();
             for (int i = 0; i < c.length; i++) {
                 arrayList.add(c[i] + "");
@@ -448,30 +448,30 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     true));
         }
 
-        if (preferencesManager.getBranchPhoneNo().equals("true")) {
+        if (preferenceManager.getBranchPhoneNo().equals("true")) {
             list.add(new PrintDataObject("Contact Number:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            list.add(new PrintDataObject(preferencesManager.getcontact_no(),
+            list.add(new PrintDataObject(preferenceManager.getcontact_no(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
         }
 
-        if (preferencesManager.getBranchEmail().equals("true")) {
+        if (preferenceManager.getBranchEmail().equals("true")) {
             list.add(new PrintDataObject("Contact Email:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            if (!preferencesManager.getcontact_email().equals("")) {
-                if (preferencesManager.getcontact_email().trim().matches(emailPattern1)) {
-                    list.add(new PrintDataObject(preferencesManager.getcontact_email(),
+            if (!preferenceManager.getcontact_email().equals("")) {
+                if (preferenceManager.getcontact_email().trim().matches(emailPattern1)) {
+                    list.add(new PrintDataObject(preferenceManager.getcontact_email(),
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                             true));
-                } else if (preferencesManager.getcontact_email().trim().matches(emailPattern)) {
-                    list.add(new PrintDataObject(preferencesManager.getcontact_email(),
+                } else if (preferenceManager.getcontact_email().trim().matches(emailPattern)) {
+                    list.add(new PrintDataObject(preferenceManager.getcontact_email(),
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                             true));
                 } else {
-                    list.add(new PrintDataObject(decryption(preferencesManager.getcontact_email()),
+                    list.add(new PrintDataObject(decryption(preferenceManager.getcontact_email()),
                             fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                             true));
                 }
@@ -512,7 +512,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
 
 
             Date d = df1.parse(jsonObject.optString("createDate"));
@@ -527,12 +527,12 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
 
         if (jsonObject.has("ref1") && !jsonObject.optString("ref1").equals("") && !jsonObject.optString("ref1").equals("null")) {
-            if (!preferencesManager.getReference().equals("")) {
+            if (!preferenceManager.getReference().equals("")) {
                 list.add(new PrintDataObject("Reference:",
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 
-                list.add(new PrintDataObject(preferencesManager.getReference(),
+                list.add(new PrintDataObject(preferenceManager.getReference(),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
 
@@ -663,14 +663,14 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         list.add(new PrintDataObject("Payment via: " + jsonObject.optString("channel"),
                 fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                 true));
-        if (!preferencesManager.isQR()) {
+        if (!preferenceManager.isQR()) {
             list.add(new PrintDataObject("\n\n",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
         }
         String text = tv_referenceid.getText().toString();
         Bitmap bitmap = null;
-        if (preferencesManager.isQR()) {
+        if (preferenceManager.isQR()) {
             if (!text.equals("")) {
                 MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 try {
@@ -688,7 +688,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 
         try {
             int ret = printDev.printTextEffect(list);
-            if (preferencesManager.isQR()) {
+            if (preferenceManager.isQR()) {
 
                 printDev.printBmpFast(bitmap, Constant.ALIGN.LEFT, callback);
                 bitmap.recycle();
@@ -699,7 +699,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 btn_ok.setOnClickListener(this);
                 btn_email.setOnClickListener(this);
             }
-            if (preferencesManager.isQR()) {
+            if (preferenceManager.isQR()) {
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -775,14 +775,14 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 returnDataToExternalApp();
 
 //                if (((MyPOSMateApplication) getActivity().getApplicationContext()).mStompClient.isConnected()) {
-                    if (preferencesManager.isManual()) {
+                    if (preferenceManager.isManual()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     } else {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     }
 //                } else {
-//                    preferencesManager.setIsAuthenticated(false);
-//                    preferencesManager.setIsConnected(false);
+//                    preferenceManager.setIsAuthenticated(false);
+//                    preferenceManager.setIsConnected(false);
 //                    isNetConnectionOn=true;
 //                    callAuthToken();
 //
@@ -795,9 +795,9 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                 Toast.makeText(getActivity(),"Printer is not available",Toast.LENGTH_SHORT).show();
 
 //                try {
-//                    JSON_DATA = "{\"Merchant Name\":\"" + preferencesManager.getmerchant_name() + "\",\"Address\":\"" + preferencesManager.getaddress() + "\"," +
-//                            "\"Contact Number\":\"" + preferencesManager.getcontact_no() + "\",\"Contact Email\":" +
-//                            "\"" + preferencesManager.getcontact_email() + "\",\"Transaction Number\":\"" + tv_transid.getText().toString() +
+//                    JSON_DATA = "{\"Merchant Name\":\"" + preferenceManager.getmerchant_name() + "\",\"Address\":\"" + preferenceManager.getaddress() + "\"," +
+//                            "\"Contact Number\":\"" + preferenceManager.getcontact_no() + "\",\"Contact Email\":" +
+//                            "\"" + preferenceManager.getcontact_email() + "\",\"Transaction Number\":\"" + tv_transid.getText().toString() +
 //                            "\",\"Reference Number\":\"" + tv_referenceid.getText().toString() +
 //                            "\",\"Trade Number\":\"" + tv_tradeno.getText().toString() + "\",\"Date (Local)\":\"持卡人手续费\"," +
 //                            "\"Amount\":\"" + tv_amount.getText().toString()
@@ -841,7 +841,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         if(jsonObject.optBoolean("status"))
         {
             Toast.makeText(getActivity(), "Cancel Trigger Request Is Successful", Toast.LENGTH_SHORT).show();
-            if (preferencesManager.isManual()) {
+            if (preferenceManager.isManual()) {
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
             } else {
                 ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
@@ -867,7 +867,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
 //                if(progress.isShowing())
 //                    progress.dismiss();
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if(isNetConnectionOn)
                 {
@@ -876,7 +876,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
                     Log.v("TOKENResponse","PaymentProcessing Called connection");
 //                    if(MyPOSMateApplication.mStompClient==null)
 //                    {
-                            ((MyPOSMateApplication)getActivity().getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+                            ((MyPOSMateApplication)getActivity().getApplicationContext()).initiateStompConnection(preferenceManager.getauthToken());
 //                    }
                 }
                 break;
@@ -970,7 +970,7 @@ public class PaymentProcessing extends Fragment implements View.OnClickListener,
         }
         else
         {
-            if (preferencesManager.getisPrint().equals("true")) {
+            if (preferenceManager.getisPrint().equals("true")) {
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override

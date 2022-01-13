@@ -120,7 +120,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -290,7 +290,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
             hashMapKeys.put("random_str", new Date().getTime() + "");
 
             new OkHttpHandler(getActivity(), this, null, "refundNow")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.REFUND + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.REFUND + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 
             callAuthToken();
@@ -506,7 +506,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
             s2 = s2 + AppConstants.CLIENT_ID + PreferencesManager.getInstance(getActivity()).getauthToken();//.getuniqueId();
             String signature = MD5Class.MD5(s2);
             new OkHttpHandler(getActivity(), this, null, "saveTransaction")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVETRANSACTIONUNIONPAY + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -527,7 +527,7 @@ public class RefundFragmentUnionPay extends Fragment implements OnTaskCompleted,
             return;
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
     @Override

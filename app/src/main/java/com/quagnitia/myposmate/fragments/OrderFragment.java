@@ -31,7 +31,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, OnT
     private String mParam2;
     boolean isListing=false;
     TreeMap<String, String> hashMapKeys;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
     ProgressDialog progress;
     EditText edt_rejected,edt_completed,edt_accepted,edt_reviewed,edt_total_orders;
     View view;
@@ -61,7 +61,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, OnT
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_orders, container, false);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
         initUI();
         initListener();
@@ -113,26 +113,26 @@ public class OrderFragment extends Fragment implements View.OnClickListener, OnT
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
     public void callOrderList() {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("branchID", preferencesManager.getMerchantId());
-        hashMapKeys.put("configID", preferencesManager.getConfigId());
+        hashMapKeys.put("branchID", preferenceManager.getMerchantId());
+        hashMapKeys.put("configID", preferenceManager.getConfigId());
         hashMapKeys.put("hubID", "946");
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "OrderList")
-                .execute(AppConstants.BASE_URL3 + AppConstants.ORDER_LIST + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.ORDER_LIST + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
 
     private void _parseAuthCodeResponse(JSONObject jsonObject) {
         if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-            preferencesManager.setauthToken(jsonObject.optString("access_token"));
+            preferenceManager.setauthToken(jsonObject.optString("access_token"));
         }
 
         if(isListing)
@@ -198,7 +198,7 @@ int cnt_completed=0,cnt_rejected=0,cnt_reviewed=0,cnt_accepted=0,total_orders=0;
                 break;
 
             case "OrderList":
-                preferencesManager.setOrderBadgeCount(0);
+                preferenceManager.setOrderBadgeCount(0);
                 _parseOrderListResponse(jsonObject);
                 break;
 

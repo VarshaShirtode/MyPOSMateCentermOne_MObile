@@ -767,6 +767,7 @@ drawable blue_border_btn
 drawable blue_border_solid
 drawable btn_border_green
 drawable btn_border_red
+drawable btn_border_yellow
 drawable btn_white_border
 drawable button_shadow
 drawable centerpay
@@ -821,6 +822,7 @@ drawable ic_smalwechat
 drawable ic_unipay
 drawable ic_visa
 drawable ic_wechat
+drawable ic_zip
 drawable icon_alipay
 drawable ii
 drawable iii
@@ -926,9 +928,11 @@ id btn_cancel
 id btn_cancel1
 id btn_cancel2
 id btn_cancel_and_close
+id btn_change
 id btn_close
 id btn_close1
 id btn_complete
+id btn_connect
 id btn_customer
 id btn_email
 id btn_exit
@@ -1070,6 +1074,10 @@ id chk_wechat_display_and_add
 id chk_wechat_display_only
 id chk_wechat_qr_scan
 id chk_wine_club
+id chk_zip
+id chk_zip_display_and_add
+id chk_zip_display_only
+id chk_zip_qr_scan
 id chronometer
 id clip_horizontal
 id clip_vertical
@@ -1108,6 +1116,7 @@ id edt_amount_unionpay
 id edt_centerpay_mr_qr_cnv
 id edt_centrapay_barcode_scanner_cv
 id edt_centrapay_cv
+id edt_cnvamount
 id edt_completed
 id edt_config_id
 id edt_contact_email
@@ -1181,9 +1190,11 @@ id edt_wait_time
 id edt_wechat_cv
 id edt_xmpp_amount
 id edt_xmpp_amount1
+id edt_zip_cv
 id email
 id end
 id end_padder
+id etAccessId
 id expand_activities_button
 id expanded_menu
 id fill
@@ -1193,6 +1204,7 @@ id fitCenter
 id fitXY
 id forever
 id form_image
+id form_image1
 id frameSurfaceView
 id getPOSInfo
 id getPayInfo
@@ -1272,12 +1284,15 @@ id line2
 id line3
 id line4
 id line8
+id linearLayout
+id listConnection
 id listMode
 id list_item
 id ll
 id ll1
 id ll2
 id ll3
+id llAMount
 id llCoupen
 id llOne
 id ll_account_id
@@ -1361,6 +1376,10 @@ id progress_horizontal
 id progressbar
 id queryBalance
 id radio
+id rb3
+id rb4
+id rbLive
+id rbTest
 id recyclerTip
 id recycler_view
 id rel_alipay
@@ -1396,8 +1415,10 @@ id rel_upi_uplan
 id rel_uplan_pc
 id rel_wechat
 id rel_wechat_pc
+id rel_zip_pc
 id result
 id rfc822
+id rgConnect
 id right
 id right_icon
 id right_side
@@ -1406,8 +1427,11 @@ id rlTop1
 id rlTop2
 id rlTop3
 id rlTop4
+id rlTop5
+id rlTop6
 id sc_payment_mode
 id scanner
+id scanner5
 id scanners
 id scanqr
 id scanqr_unionpay
@@ -1469,6 +1493,7 @@ id title_template
 id top
 id topPanel
 id tv1
+id tv_Connections
 id tv_about
 id tv_add_on
 id tv_adds
@@ -1543,6 +1568,7 @@ id tv_percentrapay
 id tv_perpoli
 id tv_perupi_card
 id tv_perupi_uplan
+id tv_perzip
 id tv_poli_disabled
 id tv_price
 id tv_qrcode
@@ -1623,6 +1649,7 @@ id txtAmt2
 id txtAmt3
 id txtAmt4
 id txtAmt5
+id txtCNVAmount
 id txtChoose
 id txtNoTip
 id txtPercent
@@ -1637,6 +1664,7 @@ id txtPrice2
 id txtPrice3
 id txtPrice4
 id txtPrice5
+id txtServer
 id unbind
 id uni_ic1
 id uni_v1
@@ -1716,10 +1744,13 @@ layout activity_union_pay_screen
 layout activity_welcome_screen
 layout best_deals_layout
 layout config_dialog
+layout connection_list_item
 layout custome_toast_layout
 layout demo
 layout demo1
+layout dialog_connection
 layout dialog_keyboard
+layout dialog_validate_connection
 layout diaplay_choice_row
 layout display_ads_dialog
 layout entertainment_book
@@ -1742,6 +1773,7 @@ layout keyboard
 layout keyboard_custom
 layout keyboard_layout
 layout keyboard_layout_custom
+layout keyboard_layout_zip
 layout lay_alipay_qr
 layout lay_alipay_wechat_scan
 layout lay_dp_card_unionpay

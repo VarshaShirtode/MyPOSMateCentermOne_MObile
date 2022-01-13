@@ -95,6 +95,7 @@ import com.quagnitia.myposmate.utils.OnTaskCompleted;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
 import org.apache.commons.codec.binary.Hex;
+import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -145,15 +146,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private FrameLayout inner_frame;
     private String CURRENTFRAGMENT = "";
     private Fragment fragment;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private IntentFilter intentFilter;
     private OpenFragmentsReceiver openFragmentsReceiver;
     private ProgressDialog progress;
-    private PreferencesManager preferenceManager;
+    //private PreferencesManager preferenceManager;
     private TextView tv_transaction_log, tv_orders;
     private TextView tv_eod;
     public static boolean isLaunch = false;
     public static boolean isExternalApp = false;
+    private EditText edt_zip_cv;
 
     //payment choices variables
     private CheckBox chk_centrapay_merchant_qr;
@@ -166,8 +168,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private CheckBox chk_poli_display_only;
     private EditText edt_poli_cv;
     private CheckBox chk_unionpay_card;
+    private CheckBox chk_zip;
     private CheckBox chk_alipay;
     private CheckBox chk_wechat;
+    private CheckBox chk_zip_qr_scan;
     private CheckBox chk_unionpay_qr;
     private CheckBox chk_up_upi_qr_display_and_add;
     private CheckBox chk_upi_qr_display_only;
@@ -175,6 +179,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private CheckBox chk_alipay_qr_scan;
     private CheckBox chk_wechat_qr_scan;
     private CheckBox chk_unionpay_qr_code;
+    private CheckBox chk_zip_display_and_add;
     private CheckBox chk_ali_display_and_add;
     private CheckBox chk_ali_display_only;
     private CheckBox chk_wechat_display_and_add;
@@ -187,6 +192,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private CheckBox chk_uplan_display_only;
     private CheckBox chk_upi_qr_merchant_display;
     private EditText edt_ali_cv;
+    private CheckBox chk_zip_display_only;
     private EditText edt_wechat_cv;
     private EditText edt_unionpay_card_cv;
     private EditText edt_unionpay_qr_cv;
@@ -201,6 +207,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private TextView tv_settingMenu;
     private PopupWindow mPopupWindows;
     private TextView tv_tip;
+    TextView tv_Connections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,10 +239,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         //added for external apps 12/5/2019
         launchThroughExternalApps();
 
-        if (preferencesManager.getTimezoneAbrev().equals("")) {
+        if (preferenceManager.getTimezoneAbrev().equals("")) {
 //           String s= TimeZone.getTimeZone("Pacific/Auckland")
 //                    .getDisplayName(false, TimeZone.SHORT);
-            preferencesManager.setTimezoneAbrev("NZST");
+            preferenceManager.setTimezoneAbrev("NZST");
         }
         requestCameraPermission();
 
@@ -387,7 +394,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (preferencesManager.getOrderBadgeCount() != 0) {
+                        if (preferenceManager.getOrderBadgeCount() != 0) {
                             mySoundPlayer.playSound(1);
                             showOrderReceivedToast(" Orders in Que");
                             mySoundPlayer.stopCurrentSound(1);
@@ -505,7 +512,6 @@ showMessageOK("You have previously declined this permission.\n" +
 
     private TreeMap<String, String> hashMapKeysUniversal = null;
 
-
     public void funcInitialSetup() {
         mContext = DashboardActivity.this;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -514,7 +520,7 @@ showMessageOK("You have previously declined this permission.\n" +
         applyIntentFilter();
         openFragmentsReceiver = new OpenFragmentsReceiver();
         registerReceiver(openFragmentsReceiver, intentFilter);
-        preferencesManager = PreferencesManager.getInstance(DashboardActivity.this);
+        preferenceManager = PreferencesManager.getInstance(DashboardActivity.this);
         jsonObjectLoyalty = new JSONObject();
         mySoundPlayer = new MySoundPlayer();
         mySoundPlayer.initSounds(this);
@@ -530,21 +536,20 @@ showMessageOK("You have previously declined this permission.\n" +
             if (mStompClient.isConnected()) {
                 callSetupFragment(SCREENS.POSMATECONNECTION, null);
             } else {
-                if (preferencesManager.isRegistered()) {
-                    preferencesManager.setIsConnected(false);
-                    preferencesManager.setIsAuthenticated(false);
+                if (preferenceManager.isRegistered()) {
+                    preferenceManager.setIsConnected(false);
+                    preferenceManager.setIsAuthenticated(false);
                     callSetupFragment(SCREENS.POSMATECONNECTION, null);
                 } else {
                     callSetupFragment(SCREENS.REGISTRATION, null);
                 }
-
             }
 
         } else {
 
-            if (preferencesManager.isRegistered()) {
-                preferencesManager.setIsConnected(false);
-                preferencesManager.setIsAuthenticated(false);
+            if (preferenceManager.isRegistered()) {
+                preferenceManager.setIsConnected(false);
+                preferenceManager.setIsAuthenticated(false);
                 callSetupFragment(SCREENS.POSMATECONNECTION, null);
             } else {
                 callSetupFragment(SCREENS.REGISTRATION, null);
@@ -589,13 +594,11 @@ showMessageOK("You have previously declined this permission.\n" +
     @Override
     protected void onDestroy() {
         try {
-
-
             if (mStompClient != null) {
                 if (mStompClient.isConnected()) {
                     mStompClient.disconnect();
-                    preferencesManager.setIsAuthenticated(false);
-                    preferencesManager.setIsConnected(false);
+                    preferenceManager.setIsAuthenticated(false);
+                    preferenceManager.setIsConnected(false);
                 }
             }
             if (openFragmentsReceiver != null)
@@ -609,7 +612,6 @@ showMessageOK("You have previously declined this permission.\n" +
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         super.onDestroy();
     }
 
@@ -621,7 +623,6 @@ showMessageOK("You have previously declined this permission.\n" +
         if (TransactionDetailsActivity.isReturnFromTransactionDetails) {
             TransactionDetailsActivity.isReturnFromTransactionDetails = false;
             try {
-
                 //added for external apps 12/5/2019
                 int REQ_PAY_SALE = 100;
                 DashboardActivity.isExternalApp = false;
@@ -630,14 +631,10 @@ showMessageOK("You have previously declined this permission.\n" +
                 finishAndRemoveTask();
                 return;
                 //added for external apps
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
-
 
         if (UnionPayScreen.isUnionPaySelected) {
             UnionPayScreen.isUnionPaySelected = false;
@@ -684,7 +681,7 @@ showMessageOK("You have previously declined this permission.\n" +
         img_menu = findViewById(R.id.img_menu);
         tv_order_badge = findViewById(R.id.tv_order_badge);
         img=findViewById(R.id.img);
-        if (preferencesManager.getOrderBadgeCount() != 0) {
+        if (preferenceManager.getOrderBadgeCount() != 0) {
             Animation animBlink = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.blink);
             tv_order_badge.startAnimation(animBlink);
@@ -789,9 +786,69 @@ showMessageOK("You have previously declined this permission.\n" +
         tv_display_choices.setOnClickListener((View v) -> funcMenuDisplayChoices());
         tv_payment_choices.setOnClickListener((View v) -> funcMenuPaymentChoices());
         tv_tip.setOnClickListener((View v) -> funcMenuTipSetting());
+        tv_Connections.setOnClickListener((View v) -> validateAccessIdForSwitchConnection());
 
     }
 
+    private void validateAccessIdForSwitchConnection() {
+        Dialog dialog = new Dialog(DashboardActivity.this);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        LayoutInflater lf = (LayoutInflater) (DashboardActivity.this)
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogview = lf.inflate(R.layout.dialog_validate_connection, null);
+        EditText etAccessId=dialogview.findViewById(R.id.etAccessId);
+        Button btn_ok = dialogview.findViewById(R.id.btn_ok);
+        Button btn_cancel = dialogview.findViewById(R.id.btn_cancel);
+
+        dialog.setContentView(dialogview);
+
+        btn_cancel.setOnClickListener((View v) ->
+                {
+
+                    dialog.dismiss();
+                }
+        );
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        btn_ok.setOnClickListener((View v) -> {
+            if (etAccessId.getText().toString().equals("")) {
+                Toast.makeText(DashboardActivity.this, "Please enter Access Id", Toast.LENGTH_LONG).show();
+            }else if (etAccessId.getText().toString().trim().equals(preferenceManager.getuniqueId
+                    ()))
+            {
+                preferenceManager.clearPreferences();
+                funcChangeConnection();
+                dialog.dismiss();
+            }else{
+                Toast.makeText(DashboardActivity.this, "Please enter valid Access Id", Toast.LENGTH_LONG).show();
+
+            }
+
+            //dialog.dismiss();
+        });
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+    }
+    private void funcChangeConnection() {
+        Log.v("SelectedPos","on dialog from Dashboard "+preferenceManager.getBaseURL());
+
+        callSetupFragment(SCREENS.REGISTRATION, null);
+        preferenceManager.setisRegistered(false);
+        preferenceManager.setEditConnection(true);
+        if (mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+        }
+        if (mPopupWindows.isShowing())
+            mPopupWindows.dismiss();
+    }
     private void funcInitiateDisplaySubMenuViews(View customView) {
         tv_timezone = customView.findViewById(R.id.tv_timezone);
         tv_settings = customView.findViewById(R.id.tv_settings);
@@ -799,19 +856,20 @@ showMessageOK("You have previously declined this permission.\n" +
         tv_display_choices = customView.findViewById(R.id.tv_display_choices);
         tv_payment_choices = customView.findViewById(R.id.tv_payment_choices);
         tv_tip=customView.findViewById(R.id.tv_tip);
+        tv_Connections=customView.findViewById(R.id.tv_Connections);
         inner_frame = (FrameLayout) findViewById(R.id.inner_frame);
     }
 
     public void funcOrders() {
         callAuthToken();
-        preferencesManager.setOrderBadgeCount(0);
+        preferenceManager.setOrderBadgeCount(0);
         tv_order_badge = findViewById(R.id.tv_order_badge);
         tv_order_badge.setVisibility(View.GONE);
         if (mPopupWindow.isShowing())
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        //  if (preferencesManager.isAuthenticated()) {
+        //  if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.ORDERS, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -854,7 +912,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        //   if (preferencesManager.isAuthenticated()) {
+        //   if (preferenceManager.isAuthenticated()) {
 
 
         final Dialog dialog = new Dialog(DashboardActivity.this);
@@ -874,8 +932,8 @@ showMessageOK("You have previously declined this permission.\n" +
         final ImageView img_wine_club = dialogview.findViewById(R.id.img_wine_club);
 
         try {
-            if (!preferencesManager.getLoyaltyData().equals("")) {
-                jsonObjectLoyalty = new JSONObject(preferencesManager.getLoyaltyData());
+            if (!preferenceManager.getLoyaltyData().equals("")) {
+                jsonObjectLoyalty = new JSONObject(preferenceManager.getLoyaltyData());
                 chk_best_deals.setChecked(jsonObjectLoyalty.optBoolean("best_deals"));
                 chk_entertainment_book.setChecked(jsonObjectLoyalty.optBoolean("entertainment_book"));
                 chk_mopanion.setChecked(jsonObjectLoyalty.optBoolean("mopanion"));
@@ -929,7 +987,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     jsonObjectLoyalty.put("wine_club", true);
                 else
                     jsonObjectLoyalty.put("wine_club", false);
-                preferencesManager.setLoyaltyData(jsonObjectLoyalty.toString());
+                preferenceManager.setLoyaltyData(jsonObjectLoyalty.toString());
                 dialog.dismiss();
             } catch (Exception e) {
             }
@@ -975,8 +1033,8 @@ showMessageOK("You have previously declined this permission.\n" +
         final EditText edt_store_id = dialogview.findViewById(R.id.edt_store_id);
 
         try {
-            if (!preferencesManager.getLoyaltyData().equals("")) {
-                jsonObjectLoyalty = new JSONObject(preferencesManager.getLoyaltyData());
+            if (!preferenceManager.getLoyaltyData().equals("")) {
+                jsonObjectLoyalty = new JSONObject(preferenceManager.getLoyaltyData());
                 JSONObject jsonObject = jsonObjectLoyalty.optJSONObject("best_deals_json");
                 chk_front.setChecked(jsonObject.optBoolean("front"));
                 chk_back.setChecked(jsonObject.optBoolean("back"));
@@ -1011,7 +1069,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 jsonObject.put("amount", chk_amount.isChecked());
                 jsonObject.put("terminal_id", chk_terminal_id.isChecked());
                 jsonObjectLoyalty.put("best_deals_json", jsonObject);
-                preferencesManager.setLoyaltyData(jsonObjectLoyalty.toString());
+                preferenceManager.setLoyaltyData(jsonObjectLoyalty.toString());
                 dialog.dismiss();
             } catch (Exception e) {
             }
@@ -1053,8 +1111,8 @@ showMessageOK("You have previously declined this permission.\n" +
         final EditText edt_execute_apps = dialogview.findViewById(R.id.edt_execute_apps);
         final EditText edt_key = dialogview.findViewById(R.id.edt_key);
         try {
-            if (!preferencesManager.getLoyaltyData().equals("")) {
-                jsonObjectLoyalty = new JSONObject(preferencesManager.getLoyaltyData());
+            if (!preferenceManager.getLoyaltyData().equals("")) {
+                jsonObjectLoyalty = new JSONObject(preferenceManager.getLoyaltyData());
                 JSONObject jsonObject = jsonObjectLoyalty.optJSONObject("entertainment_book_json");
                 chk_front.setChecked(jsonObject.optBoolean("front"));
                 chk_back.setChecked(jsonObject.optBoolean("back"));
@@ -1083,7 +1141,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 jsonObject.put("front", chk_front.isChecked());
                 jsonObject.put("back", chk_back.isChecked());
                 jsonObjectLoyalty.put("entertainment_book_json", jsonObject);
-                preferencesManager.setLoyaltyData(jsonObjectLoyalty.toString());
+                preferenceManager.setLoyaltyData(jsonObjectLoyalty.toString());
                 dialog.dismiss();
             } catch (Exception e) {
             }
@@ -1113,7 +1171,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        // if (preferencesManager.isAuthenticated()) {
+        // if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.SETTLEMEMT, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1135,7 +1193,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        // if (preferencesManager.isAuthenticated()) {
+        // if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.REFUND_UNIONPAY, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1170,7 +1228,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        //  if (preferencesManager.isAuthenticated()) {
+        //  if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.EOD, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1188,7 +1246,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        // if (preferencesManager.isAuthenticated()) {
+        // if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.TRANSACTION_LIST, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1206,7 +1264,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        // if (preferencesManager.isAuthenticated()) {
+        // if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.POSMATECONNECTION, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1226,7 +1284,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        // if (preferencesManager.isAuthenticated()) {
+        // if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.REFUND, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1245,7 +1303,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        if (preferencesManager.isAuthenticated()) {
+        if (preferenceManager.isAuthenticated()) {
             callSetupFragment(SCREENS.MANUALENTRY, "Scan");
         } else {
             Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1263,7 +1321,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        //  if (preferencesManager.isAuthenticated()) {
+        //  if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.MANUALENTRY, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1296,7 +1354,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-        if (preferencesManager.isAuthenticated()) {
+        if (preferenceManager.isAuthenticated()) {
             callSetupFragment(SCREENS.HELP, null);
         } else {
             Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1315,7 +1373,7 @@ showMessageOK("You have previously declined this permission.\n" +
             mPopupWindow.dismiss();
         if (mPopupWindows.isShowing())
             mPopupWindows.dismiss();
-//        if (preferencesManager.isAuthenticated()) {
+//        if (preferenceManager.isAuthenticated()) {
         callSetupFragment(SCREENS.ABOUT, null);
 //        } else {
 //            Toast.makeText(mContext, getResources().getString(R.string.please_wait_for_authentication), Toast.LENGTH_LONG).show();
@@ -1329,7 +1387,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
     public void funcMenuTipSetting() {
         callAuthToken();
-        //  if (preferencesManager.isAuthenticated()) {
+        //  if (preferenceManager.isAuthenticated()) {
         final Dialog dialog = new Dialog(DashboardActivity.this);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1532,7 +1590,7 @@ showMessageOK("You have previously declined this permission.\n" +
     //Display Choices Dialog
     public void funcMenuDisplayChoices() {
         callAuthToken();
-        //   if (preferencesManager.isAuthenticated()) {
+        //   if (preferenceManager.isAuthenticated()) {
 
 
         final Dialog dialog = new Dialog(DashboardActivity.this);
@@ -1567,7 +1625,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
         final CheckBox chk_drag_drop = dialogview.findViewById(R.id.chk_drag_drop);
 
-        if (preferencesManager.getshowReference().equals("true")) {
+        if (preferenceManager.getshowReference().equals("true")) {
             chk_reference.setChecked(true);
             chk_reference.setSelected(true);
         } else {
@@ -1575,7 +1633,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_reference.setSelected(false);
         }
 
-        if (preferencesManager.isQR()) {
+        if (preferenceManager.isQR()) {
             chk_print_qr.setChecked(true);
             chk_print_qr.setSelected(true);
         } else {
@@ -1583,7 +1641,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_print_qr.setSelected(false);
         }
 
-        if (preferencesManager.isStaticQR()) {
+        if (preferenceManager.isStaticQR()) {
             chk_display_static_qr.setChecked(true);
             chk_display_static_qr.setSelected(true);
         } else {
@@ -1591,7 +1649,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_display_static_qr.setSelected(false);
         }
 
-        if (preferencesManager.isExternalScan()) {
+        if (preferenceManager.isExternalScan()) {
             chk_ExternalScan.setChecked(true);
             chk_ExternalScan.setSelected(true);
         } else {
@@ -1599,7 +1657,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_ExternalScan.setSelected(false);
         }
 
-        if (preferencesManager.isDragDrop()) {
+        if (preferenceManager.isDragDrop()) {
             chk_drag_drop.setChecked(true);
             chk_drag_drop.setSelected(true);
         } else {
@@ -1607,7 +1665,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_drag_drop.setSelected(false);
         }
 
-        if (preferencesManager.isDisplayLoyaltyApps()) {
+        if (preferenceManager.isDisplayLoyaltyApps()) {
             chk_display_loyalty_apps.setChecked(true);
             chk_display_loyalty_apps.setSelected(true);
         } else {
@@ -1615,7 +1673,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_display_loyalty_apps.setSelected(false);
         }
 
-        if (preferencesManager.isMembershipManual()) {
+        if (preferenceManager.isMembershipManual()) {
             chk_membership_manual.setChecked(true);
             chk_membership_manual.setSelected(true);
         } else {
@@ -1624,7 +1682,7 @@ showMessageOK("You have previously declined this permission.\n" +
         }
 
 
-        if (preferencesManager.isMembershipHome()) {
+        if (preferenceManager.isMembershipHome()) {
             chk_membership_home.setChecked(true);
             chk_membership_home.setSelected(true);
         } else {
@@ -1633,7 +1691,7 @@ showMessageOK("You have previously declined this permission.\n" +
         }
 
 
-        if (preferencesManager.isHome()) {
+        if (preferenceManager.isHome()) {
             chk_home.setChecked(true);
             chk_home.setSelected(true);
         } else {
@@ -1642,7 +1700,7 @@ showMessageOK("You have previously declined this permission.\n" +
         }
 
 
-        if (preferencesManager.isManual()) {
+        if (preferenceManager.isManual()) {
             chk_manual.setChecked(true);
             chk_manual.setSelected(true);
         } else {
@@ -1650,43 +1708,43 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_manual.setSelected(false);
         }
 
-        if (preferencesManager.getisPrint().equals("true")) {
+        if (preferenceManager.getisPrint().equals("true")) {
             chk_print_receipt.setChecked(true);
             chk_print_receipt.setSelected(true);
         }
 
 
-        if (preferencesManager.isAlipaySelected()) {
+        if (preferenceManager.isAlipaySelected()) {
             chk_alipay.setChecked(true);
             chk_alipay.setSelected(true);
         }
 
-        if (preferencesManager.isWechatSelected()) {
+        if (preferenceManager.isWechatSelected()) {
             chk_wechat.setChecked(true);
             chk_wechat.setSelected(true);
         }
 
-//            if (preferencesManager.isAlipayWechatQrSelected()) {
+//            if (preferenceManager.isAlipayWechatQrSelected()) {
 //                chk_scanqr.setChecked(true);
 //                chk_scanqr.setSelected(true);
 //            }
-        if (preferencesManager.isLoyality()) {
+        if (preferenceManager.isLoyality()) {
             chk_loyality.setChecked(true);
             chk_loyality.setSelected(true);
         }
 
-        if (preferencesManager.isBack()) {
+        if (preferenceManager.isBack()) {
             chk_back.setChecked(true);
             chk_back.setSelected(true);
         }
 
-        if (preferencesManager.isFront()) {
+        if (preferenceManager.isFront()) {
             chk_front.setChecked(true);
             chk_front.setSelected(true);
         }
 
 
-//            if (preferencesManager.isaggregated_singleqr()) {
+//            if (preferenceManager.isaggregated_singleqr()) {
 //                chk_aggregated_singleqr.setChecked(true);
 //                chk_aggregated_singleqr.setSelected(true);
 //            }
@@ -1723,11 +1781,11 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_membership_home.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_membership_home.setChecked(true);
-                preferencesManager.setshowReference("true");
+                preferenceManager.setshowReference("true");
             } else {
                 //case 2
                 chk_membership_home.setChecked(false);
-                preferencesManager.setshowReference("false");
+                preferenceManager.setshowReference("false");
             }
         });
 
@@ -1735,11 +1793,11 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_membership_manual.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_membership_manual.setChecked(true);
-                preferencesManager.setisPrint("true");
+                preferenceManager.setisPrint("true");
             } else {
                 //case 2
                 chk_membership_manual.setChecked(false);
-                preferencesManager.setisPrint("false");
+                preferenceManager.setisPrint("false");
             }
         });
 
@@ -1747,11 +1805,11 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_membership_manual.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_membership_manual.setChecked(true);
-                preferencesManager.setisMembershipManual(true);
+                preferenceManager.setisMembershipManual(true);
             } else {
                 //case 2
                 chk_membership_manual.setChecked(false);
-                preferencesManager.setisMembershipManual(false);
+                preferenceManager.setisMembershipManual(false);
             }
         });
 
@@ -1759,11 +1817,11 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_membership_home.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_membership_home.setChecked(true);
-                preferencesManager.setisMembershipHome(true);
+                preferenceManager.setisMembershipHome(true);
             } else {
                 //case 2
                 chk_membership_home.setChecked(false);
-                preferencesManager.setisMembershipHome(false);
+                preferenceManager.setisMembershipHome(false);
             }
         });
 
@@ -1771,11 +1829,11 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_reference.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_reference.setChecked(true);
-                preferencesManager.setshowReference("true");
+                preferenceManager.setshowReference("true");
             } else {
                 //case 2
                 chk_reference.setChecked(false);
-                preferencesManager.setshowReference("false");
+                preferenceManager.setshowReference("false");
             }
         });
 
@@ -1783,55 +1841,55 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_display_static_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_display_static_qr.setChecked(true);
-                preferencesManager.setisStaticQR(true);
+                preferenceManager.setisStaticQR(true);
             } else {
                 //case 2
                 chk_display_static_qr.setChecked(false);
-                preferencesManager.setisStaticQR(false);
+                preferenceManager.setisStaticQR(false);
             }
         });
 
         chk_ExternalScan.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_ExternalScan.setChecked(true);
-                preferencesManager.setisExternalScan(true);
+                preferenceManager.setisExternalScan(true);
             } else {
                 //case 2
                 chk_ExternalScan.setChecked(false);
-                preferencesManager.setisExternalScan(false);
+                preferenceManager.setisExternalScan(false);
             }
         });
 
         chk_drag_drop.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_drag_drop.setChecked(true);
-                preferencesManager.setDragDrop(true);
+                preferenceManager.setDragDrop(true);
             } else {
                 //case 2
                 chk_drag_drop.setChecked(false);
-                preferencesManager.setDragDrop(false);
+                preferenceManager.setDragDrop(false);
             }
         });
 
         chk_display_loyalty_apps.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_display_loyalty_apps.setChecked(true);
-                preferencesManager.setisDisplayLoyaltyApps(true);
+                preferenceManager.setisDisplayLoyaltyApps(true);
             } else {
                 //case 2
                 chk_display_loyalty_apps.setChecked(false);
-                preferencesManager.setisDisplayLoyaltyApps(false);
+                preferenceManager.setisDisplayLoyaltyApps(false);
             }
         });
 
         chk_print_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_print_qr.setChecked(true);
-                preferencesManager.setisQR(true);
+                preferenceManager.setisQR(true);
             } else {
                 //case 2
                 chk_print_qr.setChecked(false);
-                preferencesManager.setisQR(false);
+                preferenceManager.setisQR(false);
             }
         });
 
@@ -1839,11 +1897,11 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_print_receipt.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_print_receipt.setChecked(true);
-                preferencesManager.setisPrint("true");
+                preferenceManager.setisPrint("true");
             } else {
                 //case 2
                 chk_print_receipt.setChecked(false);
-                preferencesManager.setisPrint("false");
+                preferenceManager.setisPrint("false");
             }
         });
 
@@ -1864,13 +1922,13 @@ showMessageOK("You have previously declined this permission.\n" +
 //            chk_scanqr.setOnClickListener((View v) -> {
 //                if (((CheckBox) v).isChecked()) {
 //                    chk_scanqr.setChecked(true);
-//                    preferencesManager.setAlipayWechatQrSelected(true);
+//                    preferenceManager.setAlipayWechatQrSelected(true);
 //
 //
 //                } else {
 //                    //case 2
 //                    chk_scanqr.setChecked(false);
-//                    preferencesManager.setAlipayWechatQrSelected(false);
+//                    preferenceManager.setAlipayWechatQrSelected(false);
 //                }
 //            });
         chk_loyality.setOnClickListener((View v) -> {
@@ -1931,27 +1989,27 @@ showMessageOK("You have previously declined this permission.\n" +
 
         btn_ok.setOnClickListener((View v) -> {
             if (chk_alipay.isChecked()) {
-                preferencesManager.setisAlipaySelected(true);
+                preferenceManager.setisAlipaySelected(true);
             } else {
-                preferencesManager.setisAlipaySelected(false);
+                preferenceManager.setisAlipaySelected(false);
             }
 
             if (chk_wechat.isChecked()) {
-                preferencesManager.setisWechatSelected(true);
+                preferenceManager.setisWechatSelected(true);
             } else {
-                preferencesManager.setisWechatSelected(false);
+                preferenceManager.setisWechatSelected(false);
             }
 
 //                if (chk_aggregated_singleqr.isChecked()) {
-//                    preferencesManager.setaggregated_singleqr(true);
+//                    preferenceManager.setaggregated_singleqr(true);
 //                } else {
-//                    preferencesManager.setaggregated_singleqr(false);
+//                    preferenceManager.setaggregated_singleqr(false);
 //                }
 
             if (chk_print_receipt.isChecked()) {
-                preferencesManager.setisPrint("true");
+                preferenceManager.setisPrint("true");
             } else {
-                preferencesManager.setisPrint("false");
+                preferenceManager.setisPrint("false");
             }
 
             if (chk_home.isChecked()) {
@@ -1983,7 +2041,7 @@ showMessageOK("You have previously declined this permission.\n" +
     //Payment Choices Dialog
     public void funcMenuPaymentChoices() {
         callAuthToken();
-        //  if (preferencesManager.isAuthenticated()) {
+        //  if (preferenceManager.isAuthenticated()) {
         final Dialog dialog = new Dialog(DashboardActivity.this);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -2041,6 +2099,8 @@ showMessageOK("You have previously declined this permission.\n" +
         pcUP_Merchant_QRDisplay(dialogView);
         pcPoli(dialogView);
         pcCentrapay(dialogView);
+        //ZIP_V
+        pcZip(dialogView);
     }
 
     private void pcPoli(View dialogView) {
@@ -2059,7 +2119,14 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_centrapay_display_only = dialogView.findViewById(R.id.chk_centrapay_display_only);
         edt_centrapay_cv = dialogView.findViewById(R.id.edt_centrapay_cv);
     }
-
+    private void pcZip(View dialogView) {
+        //ZIP_V
+        chk_zip = dialogView.findViewById(R.id.chk_zip);
+        chk_zip_qr_scan = dialogView.findViewById(R.id.chk_zip_qr_scan);
+        chk_zip_display_and_add = dialogView.findViewById(R.id.chk_zip_display_and_add);
+        chk_zip_display_only = dialogView.findViewById(R.id.chk_zip_display_only);
+        edt_zip_cv = dialogView.findViewById(R.id.edt_zip_cv);
+    }
     private void pcAlipay(View dialogView) {
         //ALIPAY
         chk_alipay = dialogView.findViewById(R.id.chk_alipay);
@@ -2126,6 +2193,11 @@ showMessageOK("You have previously declined this permission.\n" +
         _alipay_QRScan_chkListener();
         _alipay_DAADD_DONLY_chkListener();
 
+        //Zip PC Listeners
+        _zip_chkListener();
+        _zip_QRScan_chkListener();
+        _zip_DAADD_DONLY_chkListener();
+
         //WeChat PC Listeners
         _weChat_chkListener();
         _weChat_QRScan_chkListener();
@@ -2165,15 +2237,15 @@ showMessageOK("You have previously declined this permission.\n" +
     {
         chk_centrapay_merchant_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
-                preferencesManager.setisCentrapayMerchantQRDisplaySelected(true);
+                preferenceManager.setisCentrapayMerchantQRDisplaySelected(true);
             } else {
-                preferencesManager.setisCentrapayMerchantQRDisplaySelected(false);
+                preferenceManager.setisCentrapayMerchantQRDisplaySelected(false);
                 chk_centrapay_merchant_qr.setChecked(false);
                 chk_centrapay_display_and_add.setChecked(false);
                 chk_centrapay_display_only.setChecked(false);
-                preferencesManager.setcnv_centrapay_display_and_add(false);
-                preferencesManager.setcnv_centrapay_display_only(false);
-                preferencesManager.setcnv_centrapay("0.00");
+                preferenceManager.setcnv_centrapay_display_and_add(false);
+                preferenceManager.setcnv_centrapay_display_only(false);
+                preferenceManager.setcnv_centrapay("0.00");
                 edt_centrapay_cv.setText("0.00");
             }
         });
@@ -2267,15 +2339,15 @@ showMessageOK("You have previously declined this permission.\n" +
     private void _poli_chkListener() {
         chk_poli.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
-                preferencesManager.setisPoliSelected(true);
+                preferenceManager.setisPoliSelected(true);
             } else {
-                preferencesManager.setisPoliSelected(false);
+                preferenceManager.setisPoliSelected(false);
                 chk_poli.setChecked(false);
                 chk_poli_display_and_add.setChecked(false);
                 chk_poli_display_only.setChecked(false);
-                preferencesManager.setcnv_poli_display_and_add(false);
-                preferencesManager.setcnv_poli_display_only(false);
-                preferencesManager.setcnv_poli("0.00");
+                preferenceManager.setcnv_poli_display_and_add(false);
+                preferenceManager.setcnv_poli_display_only(false);
+                preferenceManager.setcnv_poli("0.00");
                 edt_poli_cv.setText("0.00");
             }
         });
@@ -2369,20 +2441,20 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_wechat.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_wechat.setChecked(true);
-                preferencesManager.setisWechatSelected(true);
+                preferenceManager.setisWechatSelected(true);
 
 
             } else {
                 //case 2
                 chk_wechat.setChecked(false);
-                preferencesManager.setisWechatSelected(false);
+                preferenceManager.setisWechatSelected(false);
 
                 if (!chk_wechat_qr_scan.isChecked()) {
                     chk_wechat_display_and_add.setChecked(false);
                     chk_wechat_display_only.setChecked(false);
-                    preferencesManager.setcnv_wechat_display_only(false);
-                    preferencesManager.setcnv_wechat_display_and_add(false);
-                    preferencesManager.setcnv_wechat("0.00");
+                    preferenceManager.setcnv_wechat_display_only(false);
+                    preferenceManager.setcnv_wechat_display_and_add(false);
+                    preferenceManager.setcnv_wechat("0.00");
                     edt_wechat_cv.setText("0.00");
                 }
             }
@@ -2393,21 +2465,21 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_wechat_qr_scan.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_wechat_qr_scan.setChecked(true);
-                preferencesManager.setisWeChatScan(true);
+                preferenceManager.setisWeChatScan(true);
 //                chk_alipay_qr_scan.setChecked(false);
-//                preferencesManager.setisAlipayScan(false);
+//                preferenceManager.setisAlipayScan(false);
 
             } else {
                 //case 2
                 chk_wechat_qr_scan.setChecked(false);
-                preferencesManager.setisWeChatScan(false);
+                preferenceManager.setisWeChatScan(false);
 
                 if (!chk_wechat.isChecked()) {
                     chk_wechat_display_and_add.setChecked(false);
                     chk_wechat_display_only.setChecked(false);
-                    preferencesManager.setcnv_wechat_display_only(false);
-                    preferencesManager.setcnv_wechat_display_and_add(false);
-                    preferencesManager.setcnv_wechat("0.00");
+                    preferenceManager.setcnv_wechat_display_only(false);
+                    preferenceManager.setcnv_wechat_display_and_add(false);
+                    preferenceManager.setcnv_wechat("0.00");
                     edt_wechat_cv.setText("0.00");
                 }
 
@@ -2503,26 +2575,162 @@ showMessageOK("You have previously declined this permission.\n" +
 
         });
     }
+    //Zip PC Listeners
+    private void _zip_chkListener() {
+        chk_zip.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_zip.setChecked(true);
+                preferenceManager.setisZipSelected(true);
 
+
+            } else {
+                //case 2
+                chk_zip.setChecked(false);
+                preferenceManager.setisZipSelected(false);
+
+                if (!chk_zip_qr_scan.isChecked()) {
+                    chk_zip_display_and_add.setChecked(false);
+                    chk_zip_display_only.setChecked(false);
+                    preferenceManager.setcnv_zip_diaplay_and_add(false);
+                    preferenceManager.setcnv_zip_diaplay_only(false);
+                    preferenceManager.setcnv_alipay("0.00");
+                    edt_zip_cv.setText("0.00");
+                }
+            }
+        });
+    }
+
+    private void _zip_QRScan_chkListener() {
+        chk_zip_qr_scan.setOnClickListener((View v) -> {
+            if (((CheckBox) v).isChecked()) {
+                chk_zip_qr_scan.setChecked(true);
+                preferenceManager.setisZipScan(true);
+//                chk_wechat_qr_scan.setChecked(false);
+//                preferenceManager.setisWeChatScan(false);
+
+            } else {
+                //case 2
+                chk_zip_qr_scan.setChecked(false);
+                preferenceManager.setisZipScan(false);
+
+                if (!chk_zip.isChecked()) {
+                    chk_zip_display_and_add.setChecked(false);
+                    chk_zip_display_only.setChecked(false);
+                    preferenceManager.setcnv_zip_diaplay_and_add(false);
+                    preferenceManager.setcnv_zip_diaplay_only(false);
+                    preferenceManager.setcnv_zip("0.00");
+                    edt_zip_cv.setText("0.00");
+                }
+            }
+        });
+
+    }
+    private void _zip_DAADD_DONLY_chkListener() {
+        chk_zip_display_and_add.setOnClickListener((View v) -> {
+
+            if ((chk_zip.isChecked() || chk_zip_qr_scan.isChecked()) ||
+                    (chk_zip.isChecked() && chk_zip_qr_scan.isChecked())) {
+                if (edt_zip_cv.getText().toString().equals("0.0") ||
+                        edt_zip_cv.getText().toString().equals("0.00") ||
+                        edt_zip_cv.getText().toString().equals("")
+                        || edt_zip_cv.getText().toString().equals(" ")) {
+                    chk_zip_display_and_add.setChecked(false);
+                    chk_zip_display_and_add.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    //is chkIos checked?
+                    String s = edt_zip_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_zip_display_and_add.setChecked(false);
+                        chk_zip_display_and_add.setSelected(false);
+                        return;
+                    }
+                    if (chk_zip_display_only.isChecked()) {
+                        chk_zip_display_only.setChecked(false);
+                        preferenceManager.setcnv_zip_diaplay_only(false);
+                        preferenceManager.setcnv_zip_diaplay_and_add(true);
+                    } else {
+                        //case 2
+                        chk_zip_display_only.setChecked(false);
+                        preferenceManager.setcnv_zip_diaplay_only(false);
+                        preferenceManager.setcnv_zip_diaplay_and_add(true);
+                    }
+                }
+                preferenceManager.setcnv_zip(edt_zip_cv.getText().toString());
+            } else {
+                chk_zip_display_and_add.setChecked(false);
+                chk_zip_display_and_add.setSelected(false);
+                preferenceManager.setcnv_zip("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select the alipay", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+
+        chk_zip_display_only.setOnClickListener((View v) -> {
+
+            if ((chk_zip.isChecked() || chk_zip_qr_scan.isChecked()) ||
+                    (chk_zip.isChecked() && chk_zip_qr_scan.isChecked())) {
+                if (edt_zip_cv.getText().toString().equals("0.0") ||
+                        edt_zip_cv.getText().toString().equals("0.00") ||
+                        edt_zip_cv.getText().toString().equals("")
+                        || edt_zip_cv.getText().toString().equals(" ")) {
+                    chk_zip_display_only.setChecked(false);
+                    chk_zip_display_only.setSelected(false);
+                    Toast.makeText(DashboardActivity.this, "Please enter the fee amount.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+
+                    //is chkIos checked?
+                    String s = edt_zip_cv.getText().toString();
+                    if (s.equals("") || s.equals("0.00") || s.equals("0.0") || s.equals("0")) {
+                        chk_zip_display_only.setChecked(false);
+                        chk_zip_display_only.setSelected(false);
+                        return;
+                    }
+                    if (chk_zip_display_and_add.isChecked()) {
+                        chk_zip_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_zip_diaplay_only(true);
+                        preferenceManager.setcnv_zip_diaplay_and_add(false);
+                    } else {
+                        //case 2
+                        chk_zip_display_and_add.setChecked(false);
+                        preferenceManager.setcnv_zip_diaplay_only(true);
+                        preferenceManager.setcnv_zip_diaplay_and_add(false);
+                    }
+
+                }
+                preferenceManager.setcnv_zip(edt_zip_cv.getText().toString());
+            } else {
+                chk_zip_display_only.setChecked(false);
+                chk_zip_display_only.setSelected(false);
+                preferenceManager.setcnv_zip("0.00");
+                Toast.makeText(DashboardActivity.this, "Please select zip", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        });
+    }
     //Alipay PC Listeners
     private void _alipay_chkListener() {
         chk_alipay.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_alipay.setChecked(true);
-                preferencesManager.setisAlipaySelected(true);
+                preferenceManager.setisAlipaySelected(true);
 
 
             } else {
                 //case 2
                 chk_alipay.setChecked(false);
-                preferencesManager.setisAlipaySelected(false);
+                preferenceManager.setisAlipaySelected(false);
 
                 if (!chk_alipay_qr_scan.isChecked()) {
                     chk_ali_display_and_add.setChecked(false);
                     chk_ali_display_only.setChecked(false);
-                    preferencesManager.setcnv_alipay_diaplay_and_add(false);
-                    preferencesManager.setcnv_alipay_diaplay_only(false);
-                    preferencesManager.setcnv_alipay("0.00");
+                    preferenceManager.setcnv_alipay_diaplay_and_add(false);
+                    preferenceManager.setcnv_alipay_diaplay_only(false);
+                    preferenceManager.setcnv_alipay("0.00");
                     edt_ali_cv.setText("0.00");
                 }
 
@@ -2535,21 +2743,21 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_alipay_qr_scan.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_alipay_qr_scan.setChecked(true);
-                preferencesManager.setisAlipayScan(true);
+                preferenceManager.setisAlipayScan(true);
 //                chk_wechat_qr_scan.setChecked(false);
-//                preferencesManager.setisWeChatScan(false);
+//                preferenceManager.setisWeChatScan(false);
 
             } else {
                 //case 2
                 chk_alipay_qr_scan.setChecked(false);
-                preferencesManager.setisAlipayScan(false);
+                preferenceManager.setisAlipayScan(false);
 
                 if (!chk_alipay.isChecked()) {
                     chk_ali_display_and_add.setChecked(false);
                     chk_ali_display_only.setChecked(false);
-                    preferencesManager.setcnv_alipay_diaplay_and_add(false);
-                    preferencesManager.setcnv_alipay_diaplay_only(false);
-                    preferencesManager.setcnv_alipay("0.00");
+                    preferenceManager.setcnv_alipay_diaplay_and_add(false);
+                    preferenceManager.setcnv_alipay_diaplay_only(false);
+                    preferenceManager.setcnv_alipay("0.00");
                     edt_ali_cv.setText("0.00");
                 }
             }
@@ -2649,15 +2857,15 @@ showMessageOK("You have previously declined this permission.\n" +
     private void _upCard_chkListener() {
         chk_unionpay_card.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
-                preferencesManager.setisUnionPaySelected(true);
+                preferenceManager.setisUnionPaySelected(true);
             } else {
-                preferencesManager.setisUnionPaySelected(false);
+                preferenceManager.setisUnionPaySelected(false);
                 chk_unionpay_card.setChecked(false);
                 chk_unionpay_card_display_and_add.setChecked(false);
                 chk_unionpay_card_display_only.setChecked(false);
-                preferencesManager.setcnv_uni_display_and_add(false);
-                preferencesManager.setcnv_uni_display_only(false);
-                preferencesManager.setcnv_uni("0.00");
+                preferenceManager.setcnv_uni_display_and_add(false);
+                preferenceManager.setcnv_uni_display_only(false);
+                preferenceManager.setcnv_uni("0.00");
                 edt_unionpay_card_cv.setText("0.00");
             }
         });
@@ -2751,18 +2959,18 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_unionpay_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_unionpay_qr.setChecked(true);
-                preferencesManager.setUnionPayQrSelected(true);
+                preferenceManager.setUnionPayQrSelected(true);
 
                 //if unionpay qr is selected then disable the upi qr
                 chk_unionpay_qr_code.setChecked(false);
-                preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
+                preferenceManager.setisUnionPayQrCodeDisplaySelected(false);
 
                 if (!chk_upi_qr_merchant_display.isChecked()) {
                     chk_upi_qr_display_only.setChecked(false);
                     chk_up_upi_qr_display_and_add.setChecked(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
                     edt_up_upi_qr_cv1.setText("0.00");
                     edt_up_upi_qr_amount.setText("0.00");
@@ -2771,38 +2979,38 @@ showMessageOK("You have previously declined this permission.\n" +
 
 //                chk_upi_qr_display_only.setChecked(false);
 //                chk_up_upi_qr_display_and_add.setChecked(false);
-//                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-//                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-//                preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+//                preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+//                preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+//                preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
 //                edt_up_upi_qr_cv.setText("0.00");
 
 
             } else {
                 //case 2
                 chk_unionpay_qr.setChecked(false);
-                preferencesManager.setUnionPayQrSelected(false);
+                preferenceManager.setUnionPayQrSelected(false);
                 chk_unionpay_qr_display_and_add.setChecked(false);
                 chk_unionpay_qr_display_only.setChecked(false);
-                preferencesManager.setcnv_unionpayqr_display_only(false);
-                preferencesManager.setcnv_unionpayqr_display_and_add(false);
-                preferencesManager.setcnv_uniqr("0.00");
+                preferenceManager.setcnv_unionpayqr_display_only(false);
+                preferenceManager.setcnv_unionpayqr_display_and_add(false);
+                preferenceManager.setcnv_uniqr("0.00");
                 edt_unionpay_qr_cv.setText("0.00");
 
 //                if (!chk_upi_qr_merchant_display.isChecked()) {
 //                    chk_unionpay_qr_display_and_add.setChecked(false);
 //                    chk_unionpay_qr_display_only.setChecked(false);
-//                    preferencesManager.setcnv_unionpayqr_display_only(false);
-//                    preferencesManager.setcnv_unionpayqr_display_and_add(false);
-//                    preferencesManager.setcnv_uniqr("0.00");
+//                    preferenceManager.setcnv_unionpayqr_display_only(false);
+//                    preferenceManager.setcnv_unionpayqr_display_and_add(false);
+//                    preferenceManager.setcnv_uniqr("0.00");
 //                    edt_unionpay_qr_cv.setText("0.00");
 //                }
 
                 /*if (!chk_unionpay_qr_code.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
                     chk_unionpay_qr_display_only.setChecked(false);
-                    preferencesManager.setcnv_unionpayqr_display_only(false);
-                    preferencesManager.setcnv_unionpayqr_display_and_add(false);
-                    preferencesManager.setcnv_uniqr("0.00");
+                    preferenceManager.setcnv_unionpayqr_display_only(false);
+                    preferenceManager.setcnv_unionpayqr_display_and_add(false);
+                    preferenceManager.setcnv_uniqr("0.00");
                     edt_unionpay_qr_cv.setText("0.00");
 
                 }*/
@@ -2907,17 +3115,17 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_uplan_qr.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_uplan_qr.setChecked(true);
-                preferencesManager.setisUplanSelected(true);
+                preferenceManager.setisUplanSelected(true);
             } else {
                 //case 2
                 chk_uplan_qr.setChecked(false);
-                preferencesManager.setisUplanSelected(false);
+                preferenceManager.setisUplanSelected(false);
                 chk_uplan_qr.setChecked(false);
                 chk_uplan_display_only.setChecked(false);
                 chk_uplan_display_and_add.setChecked(false);
-                preferencesManager.setcnv_uplan_display_only(false);
-                preferencesManager.setcnv_uplan_display_and_add(false);
-                preferencesManager.setcnv_uplan("0.00");
+                preferenceManager.setcnv_uplan_display_only(false);
+                preferenceManager.setcnv_uplan_display_and_add(false);
+                preferenceManager.setcnv_uplan("0.00");
                 edt_uplan_cv.setText("0.00");
             }
         });
@@ -3017,20 +3225,20 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_upi_qr_merchant_display.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_upi_qr_merchant_display.setChecked(true);
-                preferencesManager.setisMerchantDPARDisplay(true);
+                preferenceManager.setisMerchantDPARDisplay(true);
 
 
             } else {
                 //case 2
                 chk_upi_qr_merchant_display.setChecked(false);
-                preferencesManager.setisMerchantDPARDisplay(false);
+                preferenceManager.setisMerchantDPARDisplay(false);
 
                 if (!chk_unionpay_qr_code.isChecked()) {
                     chk_up_upi_qr_display_and_add.setChecked(false);
                     chk_upi_qr_display_only.setChecked(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
                     edt_up_upi_qr_cv1.setText("0.00");
                     edt_up_upi_qr_amount.setText("0.00");
@@ -3042,29 +3250,29 @@ showMessageOK("You have previously declined this permission.\n" +
         chk_unionpay_qr_code.setOnClickListener((View v) -> {
             if (((CheckBox) v).isChecked()) {
                 chk_unionpay_qr_code.setChecked(true);
-                preferencesManager.setisUnionPayQrCodeDisplaySelected(true);
+                preferenceManager.setisUnionPayQrCodeDisplaySelected(true);
 
                 //if upi qr is selected then disable the unionpay qr
                 chk_unionpay_qr.setChecked(false);
-                preferencesManager.setUnionPayQrSelected(false);
+                preferenceManager.setUnionPayQrSelected(false);
                 chk_unionpay_qr_display_and_add.setChecked(false);
                 chk_unionpay_qr_display_only.setChecked(false);
-                preferencesManager.setcnv_unionpayqr_display_only(false);
-                preferencesManager.setcnv_unionpayqr_display_and_add(false);
-                preferencesManager.setcnv_uniqr("0.00");
+                preferenceManager.setcnv_unionpayqr_display_only(false);
+                preferenceManager.setcnv_unionpayqr_display_and_add(false);
+                preferenceManager.setcnv_uniqr("0.00");
                 edt_unionpay_qr_cv.setText("0.00");
 
             } else {
                 //case 2
                 chk_unionpay_qr_code.setChecked(false);
-                preferencesManager.setisUnionPayQrCodeDisplaySelected(false);
+                preferenceManager.setisUnionPayQrCodeDisplaySelected(false);
 
                 if (!chk_upi_qr_merchant_display.isChecked()) {
                     chk_upi_qr_display_only.setChecked(false);
                     chk_up_upi_qr_display_and_add.setChecked(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
                     edt_up_upi_qr_cv1.setText("0.00");
                     edt_up_upi_qr_amount.setText("0.00");
@@ -3074,9 +3282,9 @@ showMessageOK("You have previously declined this permission.\n" +
                 if (!chk_upi_qr_merchant_display.isChecked()) {
                     chk_up_upi_qr_display_and_add.setChecked(false);
                     chk_upi_qr_display_only.setChecked(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                     edt_up_upi_qr_cv.setText("0.00");
                     edt_up_upi_qr_cv1.setText("0.00");
                     edt_up_upi_qr_amount.setText("0.00");
@@ -3086,9 +3294,9 @@ showMessageOK("You have previously declined this permission.\n" +
                /* if (!chk_unionpay_qr.isChecked()) {
                     chk_unionpay_qr_display_and_add.setChecked(false);
                     chk_unionpay_qr_display_only.setChecked(false);
-                    preferencesManager.setcnv_unionpayqr_display_only(false);
-                    preferencesManager.setcnv_unionpayqr_display_and_add(false);
-                    preferencesManager.setcnv_uniqr("0.00");
+                    preferenceManager.setcnv_unionpayqr_display_only(false);
+                    preferenceManager.setcnv_unionpayqr_display_and_add(false);
+                    preferenceManager.setcnv_uniqr("0.00");
                     edt_unionpay_qr_cv.setText("0.00");
 
                 }*/
@@ -3135,10 +3343,10 @@ showMessageOK("You have previously declined this permission.\n" +
                 preferenceManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
                 preferenceManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
 
-                preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
-                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
+                preferenceManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
+                preferenceManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
 
-                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+                preferenceManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
 
             } else {
                 chk_up_upi_qr_display_and_add.setChecked(false);
@@ -3146,10 +3354,10 @@ showMessageOK("You have previously declined this permission.\n" +
                 preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                 preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
 
-                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
-                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplayHigher("0.00");
 
-                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -3194,20 +3402,20 @@ showMessageOK("You have previously declined this permission.\n" +
                 preferenceManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
                 preferenceManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
 
-                preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
-                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
+                preferenceManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
+                preferenceManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
 
-                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+                preferenceManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
             } else {
                 chk_upi_qr_display_only.setChecked(false);
                 chk_upi_qr_display_only.setSelected(false);
                 preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
                 preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
 
-                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
-                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplayHigher("0.00");
 
-                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                 Toast.makeText(DashboardActivity.this, "Please select the union pay qr or union pay scan", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -3217,49 +3425,51 @@ showMessageOK("You have previously declined this permission.\n" +
 
 
     public void funcPCPrefChecks() {
-        if (preferencesManager.is_cnv_centrapay_display_and_add() ||
-                preferencesManager.is_cnv_centrapay_display_only() ||
-                preferencesManager.is_cnv_poli_display_and_add() ||
-                preferencesManager.is_cnv_poli_display_only() ||
-                preferencesManager.is_cnv_uni_display_only() ||
-                preferencesManager.is_cnv_uni_display_and_add() ||
+        if (preferenceManager.is_cnv_centrapay_display_and_add() ||
+                preferenceManager.is_cnv_centrapay_display_only() ||
+                preferenceManager.is_cnv_poli_display_and_add() ||
+                preferenceManager.is_cnv_poli_display_only() ||
+                preferenceManager.is_cnv_uni_display_only() ||
+                preferenceManager.is_cnv_uni_display_and_add() ||
                 preferenceManager.cnv_unionpayqr_display_and_add() ||
                 preferenceManager.cnv_unionpayqr_display_only() ||
-                preferencesManager.cnv_uplan_display_and_add() ||
-                preferencesManager.cnv_uplan_display_only() ||
-                preferencesManager.is_cnv_wechat_display_and_add() ||
-                preferencesManager.is_cnv_wechat_display_only() ||
-                preferencesManager.is_cnv_alipay_display_only() ||
-                preferencesManager.is_cnv_alipay_display_and_add() ||
-                preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() ||
-                preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only()
+                preferenceManager.cnv_uplan_display_and_add() ||
+                preferenceManager.cnv_uplan_display_only() ||
+                preferenceManager.is_cnv_wechat_display_and_add() ||
+                preferenceManager.is_cnv_wechat_display_only() ||
+                preferenceManager.is_cnv_alipay_display_only() ||
+                preferenceManager.is_cnv_alipay_display_and_add() ||
+                preferenceManager.is_cnv_zip_display_only() ||
+                preferenceManager.is_cnv_zip_display_and_add() ||
+                preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add() ||
+                preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only()
         ) {
 
-            if (preferencesManager.is_cnv_centrapay_display_and_add()) {
+            if (preferenceManager.is_cnv_centrapay_display_and_add()) {
                 chk_centrapay_display_and_add.setChecked(true);
                 chk_centrapay_display_and_add.setSelected(true);
             }
-            if (preferencesManager.is_cnv_centrapay_display_only()) {
+            if (preferenceManager.is_cnv_centrapay_display_only()) {
                 chk_centrapay_display_only.setChecked(true);
                 chk_centrapay_display_only.setSelected(true);
             }
 
 
-            if (preferencesManager.is_cnv_poli_display_and_add()) {
+            if (preferenceManager.is_cnv_poli_display_and_add()) {
                 chk_poli_display_and_add.setChecked(true);
                 chk_poli_display_and_add.setSelected(true);
             }
-            if (preferencesManager.is_cnv_poli_display_only()) {
+            if (preferenceManager.is_cnv_poli_display_only()) {
                 chk_poli_display_only.setChecked(true);
                 chk_poli_display_only.setSelected(true);
             }
 
-            if (preferencesManager.cnv_uplan_display_and_add()) {
+            if (preferenceManager.cnv_uplan_display_and_add()) {
                 chk_uplan_display_and_add.setChecked(true);
                 chk_uplan_display_and_add.setSelected(true);
             }
 
-            if (preferencesManager.cnv_uplan_display_only()) {
+            if (preferenceManager.cnv_uplan_display_only()) {
                 chk_uplan_display_only.setChecked(true);
                 chk_uplan_display_only.setSelected(true);
             }
@@ -3297,13 +3507,23 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_ali_display_only.setChecked(true);
             }
 
+            if (preferenceManager.is_cnv_zip_display_and_add()) {
+                chk_zip_display_and_add.setChecked(true);
+                chk_zip_display_and_add.setSelected(true);
+            }
 
-            if (preferencesManager.is_cnv_wechat_display_only()) {
+            if (preferenceManager.is_cnv_zip_display_only()) {
+                chk_zip_display_only.setChecked(true);
+                chk_zip_display_only.setChecked(true);
+            }
+
+
+            if (preferenceManager.is_cnv_wechat_display_only()) {
                 chk_wechat_display_only.setChecked(true);
                 chk_wechat_display_only.setSelected(true);
             }
 
-            if (preferencesManager.is_cnv_wechat_display_and_add()) {
+            if (preferenceManager.is_cnv_wechat_display_and_add()) {
                 chk_wechat_display_and_add.setChecked(true);
                 chk_wechat_display_and_add.setSelected(true);
             }
@@ -3320,14 +3540,19 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_unionpay_card_display_only.setSelected(true);
             }
 
-            if (preferencesManager.isWeChatScan()) {
+            if (preferenceManager.isWeChatScan()) {
                 chk_wechat_qr_scan.setChecked(true);
                 chk_wechat_qr_scan.setSelected(true);
             }
 
-            if (preferencesManager.isAlipayScan()) {
+            if (preferenceManager.isAlipayScan()) {
                 chk_alipay_qr_scan.setChecked(true);
                 chk_alipay_qr_scan.setSelected(true);
+            }
+
+            if (preferenceManager.isZipScan()) {
+                chk_zip_qr_scan.setChecked(true);
+                chk_zip_qr_scan.setSelected(true);
             }
 
 
@@ -3337,6 +3562,7 @@ showMessageOK("You have previously declined this permission.\n" +
             edt_unionpay_qr_cv.setText(preferenceManager.getcnv_uniqr());
             edt_uplan_cv.setText(preferenceManager.getcnv_uplan());
             edt_ali_cv.setText(preferenceManager.getcnv_alipay());
+            edt_zip_cv.setText(preferenceManager.getcnv_zip());
             edt_wechat_cv.setText(preferenceManager.getcnv_wechat());
             if (!preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals("0.00") &&
                     !preferenceManager.getcnv_up_upiqr_mpmcloud_lower().equals(""))
@@ -3373,17 +3599,28 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_ali_display_only.setChecked(true);
         }
 
-        if (preferencesManager.is_cnv_wechat_display_only()) {
+        if (preferenceManager.is_cnv_wechat_display_only()) {
             chk_wechat_display_only.setChecked(true);
             chk_wechat_display_only.setSelected(true);
         }
+        if (preferenceManager.is_cnv_zip_display_and_add()) {
+            chk_zip_display_and_add.setChecked(true);
+            chk_zip_display_and_add.setSelected(true);
+        }
 
-        if (preferencesManager.is_cnv_wechat_display_and_add()) {
+        if (preferenceManager.is_cnv_zip_display_only()) {
+            chk_zip_display_only.setChecked(true);
+            chk_zip_display_only.setChecked(true);
+        }
+        if (preferenceManager.is_cnv_wechat_display_and_add()) {
             chk_wechat_display_and_add.setChecked(true);
             chk_wechat_display_and_add.setSelected(true);
         }
 
-
+        if (preferenceManager.isZipScan()) {
+            chk_zip_qr_scan.setSelected(true);
+            chk_zip_qr_scan.setChecked(true);
+        }
         if (preferenceManager.is_cnv_uni_display_and_add()) {
             chk_unionpay_card_display_and_add.setChecked(true);
             chk_unionpay_card_display_and_add.setSelected(true);
@@ -3417,15 +3654,15 @@ showMessageOK("You have previously declined this permission.\n" +
         }
 
 
-        if (preferencesManager.isUnipaySelected() &&
-                preferencesManager.isUnionPaySelected()) {
+        if (preferenceManager.isUnipaySelected() &&
+                preferenceManager.isUnionPaySelected()) {
             chk_unionpay_card.setChecked(true);
             chk_unionpay_card.setSelected(true);
         } else {
             chk_unionpay_card.setChecked(false);
             chk_unionpay_card.setSelected(false);
         }
-        if (preferencesManager.isUplanSelected()) {
+        if (preferenceManager.isUplanSelected()) {
             chk_uplan_qr.setChecked(true);
             chk_uplan_qr.setSelected(true);
         }
@@ -3434,7 +3671,7 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_unionpay_qr.setChecked(true);
             chk_unionpay_qr.setSelected(true);
         }
-        if (preferencesManager.isMerchantDPARDisplay()) {
+        if (preferenceManager.isMerchantDPARDisplay()) {
             chk_upi_qr_merchant_display.setChecked(true);
             chk_upi_qr_merchant_display.setSelected(true);
         }
@@ -3448,32 +3685,35 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_alipay.setChecked(true);
             chk_alipay.setSelected(true);
         }
-
+        if (preferenceManager.isZipSelected()) {
+            chk_zip.setChecked(true);
+            chk_zip.setSelected(true);
+        }
         if (preferenceManager.isWechatSelected()) {
             chk_wechat.setChecked(true);
             chk_wechat.setSelected(true);
         }
-        if (preferencesManager.isCentrapayMerchantQRDisplaySelected()) {
+        if (preferenceManager.isCentrapayMerchantQRDisplaySelected()) {
             chk_centrapay_merchant_qr.setChecked(true);
             chk_centrapay_merchant_qr.setSelected(true);
         }
-        if (preferencesManager.isPoliSelected()) {
+        if (preferenceManager.isPoliSelected()) {
             chk_poli.setChecked(true);
             chk_poli.setSelected(true);
         }
 
-        if (preferencesManager.isAlipayScan()) {
+        if (preferenceManager.isAlipayScan()) {
             chk_alipay_qr_scan.setSelected(true);
             chk_alipay_qr_scan.setChecked(true);
         }
 
 
-        if (preferencesManager.isWeChatScan()) {
+        if (preferenceManager.isWeChatScan()) {
             chk_wechat_qr_scan.setSelected(true);
             chk_wechat_qr_scan.setChecked(true);
         }
 
-        if (preferencesManager.isUplanSelected()) {
+        if (preferenceManager.isUplanSelected()) {
             chk_uplan_qr.setSelected(true);
             chk_uplan_qr.setChecked(true);
         }
@@ -3482,7 +3722,7 @@ showMessageOK("You have previously declined this permission.\n" +
         if (edt_ali_cv.getText().toString().equals("0.00") ||
                 edt_ali_cv.getText().toString().equals("")
                 || edt_ali_cv.getText().toString().equals("0.0")) {
-            preferencesManager.setcnv_alipay("0.00");
+            preferenceManager.setcnv_alipay("0.00");
             preferenceManager.setcnv_alipay_diaplay_and_add(false);
             preferenceManager.setcnv_alipay_diaplay_only(false);
             chk_ali_display_and_add.setSelected(false);
@@ -3490,11 +3730,21 @@ showMessageOK("You have previously declined this permission.\n" +
             chk_ali_display_and_add.setChecked(false);
             chk_ali_display_only.setChecked(false);
         }
-
+        if (edt_zip_cv.getText().toString().equals("0.00") ||
+                edt_zip_cv.getText().toString().equals("")
+                || edt_zip_cv.getText().toString().equals("0.0")) {
+            preferenceManager.setcnv_zip("0.00");
+            preferenceManager.setcnv_zip_diaplay_and_add(false);
+            preferenceManager.setcnv_zip_diaplay_only(false);
+            chk_zip_display_and_add.setSelected(false);
+            chk_zip_display_only.setSelected(false);
+            chk_zip_display_and_add.setChecked(false);
+            chk_zip_display_only.setChecked(false);
+        }
         if (edt_wechat_cv.getText().toString().equals("0.00") ||
                 edt_wechat_cv.getText().toString().equals("")
                 || edt_wechat_cv.getText().toString().equals("0.0")) {
-            preferencesManager.setcnv_wechat("0.00");
+            preferenceManager.setcnv_wechat("0.00");
             preferenceManager.setcnv_wechat_display_and_add(false);
             preferenceManager.setcnv_wechat_display_only(false);
             chk_wechat_display_and_add.setSelected(false);
@@ -3506,7 +3756,7 @@ showMessageOK("You have previously declined this permission.\n" +
         if (edt_unionpay_card_cv.getText().toString().equals("") ||
                 edt_unionpay_card_cv.getText().toString().equals("0.00") ||
                 edt_unionpay_card_cv.getText().toString().equals("0.0")) {
-            preferencesManager.setcnv_uni("0.00");
+            preferenceManager.setcnv_uni("0.00");
             preferenceManager.setcnv_uni_display_and_add(false);
             preferenceManager.setcnv_uni_display_only(false);
             chk_unionpay_card_display_and_add.setSelected(false);
@@ -3517,7 +3767,7 @@ showMessageOK("You have previously declined this permission.\n" +
         if (edt_centrapay_cv.getText().toString().equals("") ||
                 edt_centrapay_cv.getText().toString().equals("0.00") ||
                 edt_centrapay_cv.getText().toString().equals("0.0")) {
-            preferencesManager.setcnv_centrapay("0.00");
+            preferenceManager.setcnv_centrapay("0.00");
             preferenceManager.setcnv_centrapay_display_and_add(false);
             preferenceManager.setcnv_centrapay_display_only(false);
             chk_centrapay_display_and_add.setSelected(false);
@@ -3528,7 +3778,7 @@ showMessageOK("You have previously declined this permission.\n" +
         if (edt_poli_cv.getText().toString().equals("") ||
                 edt_poli_cv.getText().toString().equals("0.00") ||
                 edt_poli_cv.getText().toString().equals("0.0")) {
-            preferencesManager.setcnv_poli("0.00");
+            preferenceManager.setcnv_poli("0.00");
             preferenceManager.setcnv_poli_display_and_add(false);
             preferenceManager.setcnv_poli_display_only(false);
             chk_poli_display_and_add.setSelected(false);
@@ -3539,9 +3789,9 @@ showMessageOK("You have previously declined this permission.\n" +
         if(!chk_upi_qr_merchant_display.isChecked() && !chk_unionpay_qr_code.isChecked() )
         {
             preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
-            preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
-            preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
-            preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+            preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+            preferenceManager.set_cnv_unimerchantqrdisplayLower("0.00");
+            preferenceManager.set_cnv_unimerchantqrdisplayHigher("0.00");
             preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
             edt_up_upi_qr_cv1.setText("0.00");
             edt_up_upi_qr_cv.setText("0.00");
@@ -3554,6 +3804,8 @@ showMessageOK("You have previously declined this permission.\n" +
     public void funcPCSaveAndOK() {
         if (chk_ali_display_and_add.isChecked() ||
                 chk_ali_display_only.isChecked() ||
+                chk_zip_display_and_add.isChecked() ||
+                chk_zip_display_only.isChecked() ||
                 chk_wechat_display_and_add.isChecked() ||
                 chk_wechat_display_only.isChecked() ||
                 chk_unionpay_card_display_and_add.isChecked() ||
@@ -3569,63 +3821,73 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_centrapay_display_and_add.isChecked() ||
                 chk_centrapay_display_only.isChecked()
         ) {
-            preferencesManager.setisConvenienceFeeSelected(true);
+            preferenceManager.setisConvenienceFeeSelected(true);
 
             if (chk_ali_display_and_add.isChecked())
-                preferencesManager.setcnv_alipay_diaplay_and_add(true);
+                preferenceManager.setcnv_alipay_diaplay_and_add(true);
             else
-                preferencesManager.setcnv_alipay_diaplay_and_add(false);
+                preferenceManager.setcnv_alipay_diaplay_and_add(false);
 
             if (chk_ali_display_only.isChecked())
-                preferencesManager.setcnv_alipay_diaplay_only(true);
+                preferenceManager.setcnv_alipay_diaplay_only(true);
             else
-                preferencesManager.setcnv_alipay_diaplay_only(false);
+                preferenceManager.setcnv_alipay_diaplay_only(false);
+
+            if (chk_zip_display_and_add.isChecked())
+                preferenceManager.setcnv_zip_diaplay_and_add(true);
+            else
+                preferenceManager.setcnv_zip_diaplay_and_add(false);
+
+            if (chk_zip_display_only.isChecked())
+                preferenceManager.setcnv_zip_diaplay_only(true);
+            else
+                preferenceManager.setcnv_zip_diaplay_only(false);
 
 
             if (chk_wechat_display_and_add.isChecked())
-                preferencesManager.setcnv_wechat_display_and_add(true);
+                preferenceManager.setcnv_wechat_display_and_add(true);
             else
-                preferencesManager.setcnv_wechat_display_and_add(false);
+                preferenceManager.setcnv_wechat_display_and_add(false);
 
             if (chk_wechat_display_only.isChecked())
-                preferencesManager.setcnv_wechat_display_only(true);
+                preferenceManager.setcnv_wechat_display_only(true);
             else
-                preferencesManager.setcnv_wechat_display_only(false);
+                preferenceManager.setcnv_wechat_display_only(false);
 
 
             if (chk_unionpay_card_display_and_add.isChecked())
-                preferencesManager.setcnv_uni_display_and_add(true);
+                preferenceManager.setcnv_uni_display_and_add(true);
             else
-                preferencesManager.setcnv_uni_display_and_add(false);
+                preferenceManager.setcnv_uni_display_and_add(false);
 
             if (chk_unionpay_card_display_only.isChecked())
-                preferencesManager.setcnv_uni_display_only(true);
+                preferenceManager.setcnv_uni_display_only(true);
             else
-                preferencesManager.setcnv_uni_display_only(false);
+                preferenceManager.setcnv_uni_display_only(false);
 
 
             if (chk_poli_display_and_add.isChecked()) {
-                preferencesManager.setcnv_poli_display_and_add(true);
+                preferenceManager.setcnv_poli_display_and_add(true);
             } else {
-                preferencesManager.setcnv_poli_display_and_add(false);
+                preferenceManager.setcnv_poli_display_and_add(false);
             }
 
             if (chk_poli_display_only.isChecked()) {
-                preferencesManager.setcnv_poli_display_only(true);
+                preferenceManager.setcnv_poli_display_only(true);
             } else {
-                preferencesManager.setcnv_poli_display_only(false);
+                preferenceManager.setcnv_poli_display_only(false);
             }
 
             if (chk_centrapay_display_and_add.isChecked()) {
-                preferencesManager.setcnv_centrapay_display_and_add(true);
+                preferenceManager.setcnv_centrapay_display_and_add(true);
             } else {
-                preferencesManager.setcnv_centrapay_display_and_add(false);
+                preferenceManager.setcnv_centrapay_display_and_add(false);
             }
 
             if (chk_centrapay_display_only.isChecked()) {
-                preferencesManager.setcnv_centrapay_display_only(true);
+                preferenceManager.setcnv_centrapay_display_only(true);
             } else {
-                preferencesManager.setcnv_centrapay_display_only(false);
+                preferenceManager.setcnv_centrapay_display_only(false);
             }
 
             if (chk_centrapay_merchant_qr.isChecked()) {
@@ -3709,39 +3971,39 @@ showMessageOK("You have previously declined this permission.\n" +
                         if (chk_unionpay_qr_code.isChecked()) {
                             Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : calculatecnv(edt_up_upi_qr_amount.getText().toString());
                             if (a != 0.00) {
-                                preferencesManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+                                preferenceManager.setcnv_up_upiqr_mpmcloud_lower(edt_up_upi_qr_cv.getText().toString());
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_higher(edt_up_upi_qr_cv1.getText().toString());
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
                             } else {
-                                preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                                preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                             }
 
                         } else if (!chk_unionpay_qr_code.isChecked()) {
-                            preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
-                            preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+                            preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                            preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
                             if (!chk_upi_qr_merchant_display.isChecked())
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                         }
 
                         if (chk_upi_qr_merchant_display.isChecked()) {
                             Double a = edt_up_upi_qr_amount.getText().toString().isEmpty() ? 0.00 : calculatecnv(edt_up_upi_qr_amount.getText().toString());
                             if (a != 0.00) {
-                                preferencesManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
-                                preferencesManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
+                                preferenceManager.set_cnv_unimerchantqrdisplayLower(edt_up_upi_qr_cv.getText().toString());
+                                preferenceManager.set_cnv_unimerchantqrdisplayHigher(edt_up_upi_qr_cv1.getText().toString());
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_amount(edt_up_upi_qr_amount.getText().toString());
                             } else {
-                                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
-                                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
-                                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                                preferenceManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                                preferenceManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                                preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                             }
 
                         } else if (!chk_upi_qr_merchant_display.isChecked()) {
-                            preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
-                            preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                            preferenceManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                            preferenceManager.set_cnv_unimerchantqrdisplayHigher("0.00");
                             if (!chk_unionpay_qr_code.isChecked())
-                            preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                            preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
                         }
 
                     }
@@ -3766,7 +4028,21 @@ showMessageOK("You have previously declined this permission.\n" +
 
                 }
             }
+            if (chk_zip.isChecked()) {
+                if (!edt_zip_cv.getText().toString().equals("0.0") ||
+                        !edt_zip_cv.getText().toString().equals("0.00")
+                        || !edt_zip_cv.getText().toString().equals("")) {
+                    if (chk_zip_display_and_add.isChecked())
+                        preferenceManager.setcnv_zip_diaplay_and_add(true);
+                    else
+                        preferenceManager.setcnv_zip_diaplay_and_add(false);
 
+                    if (chk_zip_display_only.isChecked())
+                        preferenceManager.setcnv_zip_diaplay_only(true);
+                    else
+                        preferenceManager.setcnv_zip_diaplay_only(false);
+                }
+            }
             if (chk_alipay.isChecked()) {
                 if (!edt_ali_cv.getText().toString().equals("0.0") ||
                         !edt_ali_cv.getText().toString().equals("0.00")
@@ -3809,9 +4085,19 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_ali_display_only.setSelected(false);
                 chk_ali_display_and_add.setChecked(false);
                 chk_ali_display_and_add.setSelected(false);
-                preferencesManager.setcnv_alipay_diaplay_only(false);
-                preferencesManager.setcnv_alipay_diaplay_and_add(false);
+                preferenceManager.setcnv_alipay_diaplay_only(false);
+                preferenceManager.setcnv_alipay_diaplay_and_add(false);
 
+            }
+
+            String ss = edt_zip_cv.getText().toString();
+            if (ss.equals("") || ss.equals("0.00") || ss.equals("0.0") || ss.equals("0")) {
+                chk_zip_display_only.setChecked(false);
+                chk_zip_display_only.setSelected(false);
+                chk_zip_display_and_add.setChecked(false);
+                chk_zip_display_and_add.setSelected(false);
+                preferenceManager.setcnv_zip_diaplay_only(false);
+                preferenceManager.setcnv_zip_diaplay_and_add(false);
             }
 
             s = edt_wechat_cv.getText().toString();
@@ -3820,8 +4106,8 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_wechat_display_only.setSelected(false);
                 chk_wechat_display_and_add.setChecked(false);
                 chk_wechat_display_and_add.setSelected(false);
-                preferencesManager.setcnv_wechat_display_only(false);
-                preferencesManager.setcnv_wechat_display_and_add(false);
+                preferenceManager.setcnv_wechat_display_only(false);
+                preferenceManager.setcnv_wechat_display_and_add(false);
 
             }
 
@@ -3831,8 +4117,8 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_unionpay_card_display_only.setSelected(false);
                 chk_unionpay_card_display_and_add.setChecked(false);
                 chk_unionpay_card_display_and_add.setSelected(false);
-                preferencesManager.setcnv_uni_display_only(false);
-                preferencesManager.setcnv_uni_display_and_add(false);
+                preferenceManager.setcnv_uni_display_only(false);
+                preferenceManager.setcnv_uni_display_and_add(false);
 
             }
             s = edt_poli_cv.getText().toString();
@@ -3841,8 +4127,8 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_poli_display_only.setSelected(false);
                 chk_poli_display_and_add.setChecked(false);
                 chk_poli_display_and_add.setSelected(false);
-                preferencesManager.setcnv_poli_display_only(false);
-                preferencesManager.setcnv_poli_display_and_add(false);
+                preferenceManager.setcnv_poli_display_only(false);
+                preferenceManager.setcnv_poli_display_and_add(false);
 
             }
 
@@ -3852,13 +4138,16 @@ showMessageOK("You have previously declined this permission.\n" +
                 chk_centrapay_display_only.setSelected(false);
                 chk_centrapay_display_and_add.setChecked(false);
                 chk_centrapay_display_and_add.setSelected(false);
-                preferencesManager.setcnv_centrapay_display_only(false);
-                preferencesManager.setcnv_centrapay_display_and_add(false);
+                preferenceManager.setcnv_centrapay_display_only(false);
+                preferenceManager.setcnv_centrapay_display_and_add(false);
             }
 
             if ((edt_ali_cv.getText().toString().equals("0.00") ||
                     edt_ali_cv.getText().toString().equals("0.0") ||
                     edt_ali_cv.getText().toString().equals("")) &&
+                    (edt_zip_cv.getText().toString().equals("0.00") ||
+                            edt_zip_cv.getText().toString().equals("0.0") ||
+                            edt_zip_cv.getText().toString().equals("")) &&
                     (edt_wechat_cv.getText().toString().equals("0.00") ||
                             edt_wechat_cv.getText().toString().equals("0.0") ||
                             edt_wechat_cv.getText().toString().equals("")) &&
@@ -3887,64 +4176,73 @@ showMessageOK("You have previously declined this permission.\n" +
                             edt_centrapay_cv.getText().toString().equals("0.0") ||
                             edt_centrapay_cv.getText().toString().equals(""))
             ) {
-                preferencesManager.setisConvenienceFeeSelected(false);
-                preferencesManager.setcnv_alipay("0.00");
-                preferencesManager.setcnv_wechat("0.00");
-                preferencesManager.setcnv_uplan("0.00");
-                preferencesManager.setcnv_uni("0.00");
-                preferencesManager.setcnv_uniqr("0.00");
-                preferencesManager.setcnv_poli("0.00");
-                preferencesManager.setcnv_centrapay("0.00");
-                preferencesManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
-                preferencesManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
-                preferencesManager.set_cnv_unimerchantqrdisplayHigher("0.00");
-                preferencesManager.set_cnv_unimerchantqrdisplayLower("0.00");
-                preferencesManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
+                preferenceManager.setisConvenienceFeeSelected(false);
+                preferenceManager.setcnv_alipay("0.00");
+                preferenceManager.setcnv_zip("0.00");
+                preferenceManager.setcnv_wechat("0.00");
+                preferenceManager.setcnv_uplan("0.00");
+                preferenceManager.setcnv_uni("0.00");
+                preferenceManager.setcnv_uniqr("0.00");
+                preferenceManager.setcnv_poli("0.00");
+                preferenceManager.setcnv_centrapay("0.00");
+                preferenceManager.setCnv_up_upiqr_mpmcloud_higher("0.00");
+                preferenceManager.setcnv_up_upiqr_mpmcloud_lower("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplayHigher("0.00");
+                preferenceManager.set_cnv_unimerchantqrdisplayLower("0.00");
+                preferenceManager.setCnv_up_upiqr_mpmcloud_amount("0.00");
             } else {
                 if (!edt_ali_cv.getText().toString().equals("") &&
                         (!edt_ali_cv.getText().toString().equals("0.0") ||
                                 !edt_ali_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_alipay(edt_ali_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_alipay(edt_ali_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_alipay("0.00");
+                    preferenceManager.setcnv_alipay("0.00");
+                }
+
+                if (!edt_zip_cv.getText().toString().equals("") &&
+                        (!edt_zip_cv.getText().toString().equals("0.0") ||
+                                !edt_zip_cv.getText().toString().equals("0.00"))) {
+                    preferenceManager.setcnv_zip(edt_zip_cv.getText().toString().replace(",", ""));
+                } else {
+                    preferenceManager.setcnv_zip("0.00");
                 }
 
                 if (!edt_wechat_cv.getText().toString().equals("") &&
                         (!edt_wechat_cv.getText().toString().equals("0.0") ||
                                 !edt_wechat_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_wechat(edt_wechat_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_wechat(edt_wechat_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_wechat("0.00");
+                    preferenceManager.setcnv_wechat("0.00");
                 }
 
 
                 if (!edt_unionpay_card_cv.getText().toString().equals("") &&
                         (!edt_unionpay_card_cv.getText().toString().equals("0.0") || !edt_unionpay_card_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_uni(edt_unionpay_card_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_uni(edt_unionpay_card_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_uni("0.00");
+                    preferenceManager.setcnv_uni("0.00");
                 }
 
                 if (!edt_poli_cv.getText().toString().equals("") &&
                         (!edt_poli_cv.getText().toString().equals("0.0") || !edt_poli_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_poli(edt_poli_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_poli(edt_poli_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_poli("0.00");
+                    preferenceManager.setcnv_poli("0.00");
                 }
 
                 if (!edt_centrapay_cv.getText().toString().equals("") &&
                         (!edt_centrapay_cv.getText().toString().equals("0.0") || !edt_centrapay_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_centrapay(edt_centrapay_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_centrapay(edt_centrapay_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_centrapay("0.00");
+                    preferenceManager.setcnv_centrapay("0.00");
                 }
 
                 if (!edt_unionpay_qr_cv.getText().toString().equals("") &&
                         (!edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                                 !edt_unionpay_qr_cv.getText().toString().equals("0.00"))) {
-                    preferencesManager.setcnv_uniqr(edt_unionpay_qr_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_uniqr(edt_unionpay_qr_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_uniqr("0.00");
+                    preferenceManager.setcnv_uniqr("0.00");
                 }
 
                 if (!edt_uplan_cv.getText().toString().equals("") &&
@@ -3952,110 +4250,128 @@ showMessageOK("You have previously declined this permission.\n" +
                                 || !edt_uplan_cv.getText().toString().equals("0.00")) &&
                         (chk_uplan_display_and_add.isChecked() || chk_uplan_display_only.isChecked())
                 ) {
-                    preferencesManager.setcnv_uplan(edt_uplan_cv.getText().toString().replace(",", ""));
+                    preferenceManager.setcnv_uplan(edt_uplan_cv.getText().toString().replace(",", ""));
                 } else {
-                    preferencesManager.setcnv_uplan("0.00");
+                    preferenceManager.setcnv_uplan("0.00");
                 }
 
             }
 
 
         } else {
-            preferencesManager.setisConvenienceFeeSelected(false);
+            preferenceManager.setisConvenienceFeeSelected(false);
             if (!chk_ali_display_and_add.isChecked())
-                preferencesManager.setcnv_alipay_diaplay_and_add(false);
+                preferenceManager.setcnv_alipay_diaplay_and_add(false);
             if (!chk_ali_display_only.isChecked())
-                preferencesManager.setcnv_alipay_diaplay_only(false);
+                preferenceManager.setcnv_alipay_diaplay_only(false);
+
+            if (!chk_zip_display_and_add.isChecked())
+                preferenceManager.setcnv_zip_diaplay_and_add(false);
+            if (!chk_zip_display_only.isChecked())
+                preferenceManager.setcnv_zip_diaplay_only(false);
 
             if (!chk_wechat_display_and_add.isChecked())
-                preferencesManager.setcnv_wechat_display_and_add(false);
+                preferenceManager.setcnv_wechat_display_and_add(false);
             if (!chk_wechat_display_only.isChecked())
-                preferencesManager.setcnv_wechat_display_only(false);
+                preferenceManager.setcnv_wechat_display_only(false);
 
             if (!chk_unionpay_card_display_and_add.isChecked())
-                preferencesManager.setcnv_uni_display_and_add(false);
+                preferenceManager.setcnv_uni_display_and_add(false);
             if (!chk_unionpay_card_display_only.isChecked())
-                preferencesManager.setcnv_uni_display_only(false);
+                preferenceManager.setcnv_uni_display_only(false);
 
             if (!chk_centrapay_display_and_add.isChecked())
-                preferencesManager.setcnv_centrapay_display_and_add(false);
+                preferenceManager.setcnv_centrapay_display_and_add(false);
             if (!chk_centrapay_display_only.isChecked())
-                preferencesManager.setcnv_centrapay_display_only(false);
+                preferenceManager.setcnv_centrapay_display_only(false);
 
 
             if (!chk_poli_display_and_add.isChecked())
-                preferencesManager.setcnv_poli_display_and_add(false);
+                preferenceManager.setcnv_poli_display_and_add(false);
             if (!chk_poli_display_only.isChecked())
-                preferencesManager.setcnv_poli_display_only(false);
+                preferenceManager.setcnv_poli_display_only(false);
 
             if (!chk_unionpay_qr_display_and_add.isChecked())
-                preferencesManager.setcnv_unionpayqr_display_and_add(false);
+                preferenceManager.setcnv_unionpayqr_display_and_add(false);
             if (!chk_unionpay_qr_display_only.isChecked())
-                preferencesManager.setcnv_unionpayqr_display_only(false);
+                preferenceManager.setcnv_unionpayqr_display_only(false);
 
 
             if (!chk_up_upi_qr_display_and_add.isChecked())
-                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
             if (!chk_upi_qr_display_only.isChecked())
-                preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
 
 
             if (!chk_uplan_display_and_add.isChecked())
-                preferencesManager.setcnv_uplan_display_and_add(false);
+                preferenceManager.setcnv_uplan_display_and_add(false);
             if (!chk_uplan_display_only.isChecked())
-                preferencesManager.setcnv_uplan_display_only(false);
+                preferenceManager.setcnv_uplan_display_only(false);
 
         }
 
         if (chk_alipay.isChecked()) {
-            preferencesManager.setisAlipaySelected(true);
+            preferenceManager.setisAlipaySelected(true);
         } else {
-            preferencesManager.setisAlipaySelected(false);
+            preferenceManager.setisAlipaySelected(false);
         }
 
-        if (chk_wechat.isChecked()) {
-            preferencesManager.setisWechatSelected(true);
+
+        if (chk_zip.isChecked()) {
+            preferenceManager.setisZipSelected(true);
         } else {
-            preferencesManager.setisWechatSelected(false);
+            preferenceManager.setisZipSelected(false);
+        }
+
+
+        if (chk_wechat.isChecked()) {
+            preferenceManager.setisWechatSelected(true);
+        } else {
+            preferenceManager.setisWechatSelected(false);
         }
         if (chk_uplan_qr.isChecked()) {
-            preferencesManager.setisUnipaySelected(true);
+            preferenceManager.setisUnipaySelected(true);
         } else {
-            preferencesManager.setisUnipaySelected(false);
+            preferenceManager.setisUnipaySelected(false);
         }
 
         if (chk_unionpay_card.isChecked()) {
-            preferencesManager.setisUnipaySelected(true);
+            preferenceManager.setisUnipaySelected(true);
         } else {
-            preferencesManager.setisUnipaySelected(false);
+            preferenceManager.setisUnipaySelected(false);
             if (chk_uplan_qr.isChecked()) {
-                preferencesManager.setisUnipaySelected(true);
+                preferenceManager.setisUnipaySelected(true);
             } else {
-                preferencesManager.setisUnipaySelected(false);
+                preferenceManager.setisUnipaySelected(false);
             }
         }
 
 
-        if (!preferencesManager.is_cnv_alipay_display_and_add() && !preferencesManager.is_cnv_alipay_display_only()) {
+        if (!preferenceManager.is_cnv_alipay_display_and_add() && !preferenceManager.is_cnv_alipay_display_only()) {
             edt_ali_cv.setText("0.00");
-            preferencesManager.setcnv_alipay("0.00");
+            preferenceManager.setcnv_alipay("0.00");
         }
 
-        if (!preferencesManager.is_cnv_wechat_display_and_add() && !preferencesManager.is_cnv_wechat_display_only()) {
+        if (!preferenceManager.is_cnv_zip_display_and_add() && !preferenceManager.is_cnv_zip_display_only()) {
+            edt_zip_cv.setText("0.00");
+            preferenceManager.setcnv_zip("0.00");
+        }
+
+        if (!preferenceManager.is_cnv_wechat_display_and_add() && !preferenceManager.is_cnv_wechat_display_only()) {
             edt_wechat_cv.setText("0.00");
-            preferencesManager.setcnv_wechat("0.00");
+            preferenceManager.setcnv_wechat("0.00");
         }
 
-        if (!preferencesManager.is_cnv_uni_display_and_add() && !preferencesManager.is_cnv_uni_display_only()) {
+        if (!preferenceManager.is_cnv_uni_display_and_add() && !preferenceManager.is_cnv_uni_display_only()) {
             edt_unionpay_card_cv.setText("0.00");
             preferenceManager.setcnv_uni("0.00");
         }
-        if (!preferencesManager.is_cnv_poli_display_and_add() && !preferencesManager.is_cnv_poli_display_only()) {
+        if (!preferenceManager.is_cnv_poli_display_and_add() && !preferenceManager.is_cnv_poli_display_only()) {
             edt_poli_cv.setText("0.00");
             preferenceManager.setcnv_poli("0.00");
         }
 
-        if (!preferencesManager.is_cnv_centrapay_display_and_add() && !preferencesManager.is_cnv_centrapay_display_only()) {
+        if (!preferenceManager.is_cnv_centrapay_display_and_add() && !preferenceManager.is_cnv_centrapay_display_only()) {
             edt_centrapay_cv.setText("0.00");
             preferenceManager.setcnv_centrapay("0.00");
         }
@@ -4064,7 +4380,7 @@ showMessageOK("You have previously declined this permission.\n" +
                 (!edt_unionpay_qr_cv.getText().toString().equals("0.0") ||
                         !edt_unionpay_qr_cv.getText().toString().equals("0.00"))) &&
                 !chk_unionpay_qr_display_and_add.isChecked() && !chk_unionpay_qr_display_only.isChecked()) {
-            preferencesManager.setcnv_uniqr("0.00");
+            preferenceManager.setcnv_uniqr("0.00");
             edt_unionpay_qr_cv.setText("0.00");
         }
 
@@ -4074,6 +4390,8 @@ showMessageOK("You have previously declined this permission.\n" +
     public void funcEdtLengthCalPC() {
         edt_centrapay_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_poli_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
+        //ZIP_V
+        edt_zip_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_ali_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_wechat_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
         edt_unionpay_card_cv.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -4083,6 +4401,7 @@ showMessageOK("You have previously declined this permission.\n" +
         edt_centrapay_cv.setSelection(edt_centrapay_cv.getText().length());
         edt_poli_cv.setSelection(edt_poli_cv.getText().length());
         edt_ali_cv.setSelection(edt_ali_cv.getText().length());
+        edt_zip_cv.setSelection(edt_zip_cv.getText().length());
         edt_unionpay_card_cv.setSelection(edt_unionpay_card_cv.getText().length());
         edt_wechat_cv.setSelection(edt_wechat_cv.getText().length());
         edt_unionpay_qr_cv.setSelection(edt_unionpay_qr_cv.getText().length());
@@ -4111,6 +4430,12 @@ showMessageOK("You have previously declined this permission.\n" +
             return false;
         });
 
+        edt_zip_cv.setOnTouchListener((View v, MotionEvent event) -> {
+            if (edt_zip_cv.getText().toString().equals("0.0")) {
+                edt_zip_cv.setText("");
+            }
+            return false;
+        });
 
         edt_unionpay_card_cv.setOnTouchListener((View v, MotionEvent event) -> {
             if (edt_unionpay_card_cv.getText().toString().equals("0.0")) {
@@ -4139,6 +4464,8 @@ showMessageOK("You have previously declined this permission.\n" +
         edt_up_upi_qr_cv.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv));
         edt_up_upi_qr_cv1.addTextChangedListener(new EditTextListenerClass(edt_up_upi_qr_cv1));
         edt_ali_cv.addTextChangedListener(new EditTextListenerClass(edt_ali_cv));
+        //ZIP_V
+        edt_zip_cv.addTextChangedListener(new EditTextListenerClass(edt_zip_cv));
         edt_poli_cv.addTextChangedListener(new EditTextListenerClass(edt_poli_cv));
         edt_centrapay_cv.addTextChangedListener(new EditTextListenerClass(edt_centrapay_cv));
         edt_unionpay_card_cv.addTextChangedListener(new EditTextListenerClass(edt_unionpay_card_cv));
@@ -4222,6 +4549,11 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
             jsonObject.put("CnvAlipayDisplayOnly", preferenceManager.is_cnv_alipay_display_only());
 
+            jsonObject.put("ZipSelected", preferenceManager.isZipSelected());
+            jsonObject.put("ZipValue", preferenceManager.getcnv_zip());
+            jsonObject.put("CnvZipDisplayAndAdd", preferenceManager.is_cnv_zip_display_and_add());
+            jsonObject.put("CnvZipDisplayOnly", preferenceManager.is_cnv_zip_display_only());
+
             jsonObject.put("WeChatSelected", preferenceManager.isWechatSelected());
             jsonObject.put("WeChatValue", preferenceManager.getcnv_wechat());
             jsonObject.put("CnvWeChatDisplayAndAdd", preferenceManager.is_cnv_wechat_display_and_add());
@@ -4229,6 +4561,7 @@ showMessageOK("You have previously declined this permission.\n" +
 
             jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
             jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
+            jsonObject.put("ZipScanQR", preferenceManager.isZipScan());
 
             jsonObject.put("UnionPay", preferenceManager.isUnionPaySelected());
             jsonObject.put("Uplan", preferenceManager.isUplanSelected());
@@ -4239,10 +4572,10 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
             jsonObject.put("CnvUnionpayDisplayAndAdd", preferenceManager.is_cnv_uni_display_and_add());
             jsonObject.put("CnvUnionpayDisplayOnly", preferenceManager.is_cnv_uni_display_only());
-            jsonObject.put("MerchantId", preferencesManager.getMerchantId());
-            jsonObject.put("ConfigId", preferencesManager.getConfigId());
+            jsonObject.put("MerchantId", preferenceManager.getMerchantId());
+            jsonObject.put("ConfigId", preferenceManager.getConfigId());
             jsonObject.put("AlipayWeChatPay", preferenceManager.isaggregated_singleqr());
-            jsonObject.put("AlipayWeChatScanQR", preferencesManager.isAlipayWechatQrSelected());
+            jsonObject.put("AlipayWeChatScanQR", preferenceManager.isAlipayWechatQrSelected());
             jsonObject.put("PrintReceiptautomatically", preferenceManager.getisPrint());
             jsonObject.put("ShowReference", preferenceManager.getshowReference());
             jsonObject.put("ShowPrintQR", preferenceManager.isQR());
@@ -4266,15 +4599,15 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("EnableBranchEmail", preferenceManager.getBranchEmail());
             jsonObject.put("EnableBranchContactNo", preferenceManager.getBranchPhoneNo());
             jsonObject.put("EnableBranchGSTNo", preferenceManager.getGSTNo());
-            jsonObject.put("TimeZoneId", preferencesManager.getTimeZoneId());
-            jsonObject.put("TimeZone", preferencesManager.getTimeZone());
-            jsonObject.put("isTimeZoneChecked", preferencesManager.isTimeZoneChecked());
-            jsonObject.put("isTerminalIdentifier", preferencesManager.isTerminalIdentifier());
-            jsonObject.put("isPOSIdentifier", preferencesManager.isPOSIdentifier());
-            jsonObject.put("isLaneIdentifier", preferencesManager.isLaneIdentifier());
-            jsonObject.put("LaneIdentifier", preferencesManager.getLaneIdentifier());
-            jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
-            jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
+            jsonObject.put("TimeZoneId", preferenceManager.getTimeZoneId());
+            jsonObject.put("TimeZone", preferenceManager.getTimeZone());
+            jsonObject.put("isTimeZoneChecked", preferenceManager.isTimeZoneChecked());
+            jsonObject.put("isTerminalIdentifier", preferenceManager.isTerminalIdentifier());
+            jsonObject.put("isPOSIdentifier", preferenceManager.isPOSIdentifier());
+            jsonObject.put("isLaneIdentifier", preferenceManager.isLaneIdentifier());
+            jsonObject.put("LaneIdentifier", preferenceManager.getLaneIdentifier());
+            jsonObject.put("TerminalIdentifier", preferenceManager.getTerminalIdentifier());
+            jsonObject.put("POSIdentifier", preferenceManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
 
             jsonObject.put("CnvUPIQrMPMCloudDAADD", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
@@ -4295,21 +4628,21 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
             jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
 
-            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+            ArrayList tipList=preferenceManager.getTipPercentage("Tip");
             jsonObject.put("DefaultTip1", tipList.get(0));
             jsonObject.put("DefaultTip2", tipList.get(1));
             jsonObject.put("DefaultTip3", tipList.get(2));
             jsonObject.put("DefaultTip4", tipList.get(3));
             jsonObject.put("DefaultTip5", tipList.get(4));
-            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
-            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
-            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
-            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
-            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
-            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
-            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
+            jsonObject.put("SwitchOnTip", preferenceManager.isSwitchTip());
+            jsonObject.put("DefaultTip1IsEnabled", preferenceManager.isTipDefault1());
+            jsonObject.put("DefaultTip2IsEnabled", preferenceManager.isTipDefault2());
+            jsonObject.put("DefaultTip3IsEnabled", preferenceManager.isTipDefault3());
+            jsonObject.put("DefaultTip4IsEnabled", preferenceManager.isTipDefault4());
+            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+            jsonObject.put("CustomTip", preferenceManager.isTipDefaultCustom());
+            jsonObject.put("PaymentModePosition", preferenceManager.getString("DATA"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -4417,6 +4750,10 @@ showMessageOK("You have previously declined this permission.\n" +
                                 AppConstants.isScannedCode1 = false;
                                 i.setAction("ScannedPosFront");
                                 PosMateConnectioFrag.isLoyaltyFrontQrSelectedPos=false;
+                            }else if (ManualEntry.isZipQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ZIPCODE");
+                                ManualEntry.isZipQrSelected=false;
                             }else {
                                 i.setAction("ScannedCode1");
                                 AppConstants.isScannedCode1 = true;
@@ -4467,6 +4804,10 @@ showMessageOK("You have previously declined this permission.\n" +
                                 AppConstants.isScannedCode1 = false;
                                 i.setAction("ScannedPosFront");
                                 PosMateConnectioFrag.isLoyaltyFrontQrSelectedPos=false;
+                            }else if (ManualEntry.isZipQrSelected) {
+                                AppConstants.isScannedCode1 = false;
+                                i.setAction("ZIPCODE");
+                                ManualEntry.isZipQrSelected=false;
                             }else {
                                 i.setAction("ScannedCode1");
                                 AppConstants.isScannedCode1 = true;
@@ -4491,13 +4832,13 @@ showMessageOK("You have previously declined this permission.\n" +
         openProgressDialog();
         try {
             hashMapKeys.clear();
-            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-            new OkHttpHandler(DashboardActivity.this, this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(DashboardActivity.this, this, hashMap, "DeleteTerminal").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.DELETE_TERMINAL_CONFIG);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -4524,7 +4865,7 @@ showMessageOK("You have previously declined this permission.\n" +
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
 
                 if (isNetConnectionOn) {
@@ -4532,7 +4873,7 @@ showMessageOK("You have previously declined this permission.\n" +
                     Log.v("Dashboard", "Dashboard Called connection");
 //                    if(mStompClient==null)
 //                    {
-                    ((MyPOSMateApplication) this.getApplicationContext()).initiateStompConnection(preferencesManager.getauthToken());
+                    ((MyPOSMateApplication) this.getApplicationContext()).initiateStompConnection(preferenceManager.getauthToken());
 //                    }
 
                 }
@@ -4567,8 +4908,10 @@ showMessageOK("You have previously declined this permission.\n" +
                         {
                             if(progress!=null)
                             {
+                                Log.v("MYRESULT","newupdate8 "+result);
                                 if (progress.isShowing())
                                 {
+                                    Log.v("MYRESULT","newupdate9 "+result);
                                     progress.dismiss();
                                 }
                             }
@@ -4627,6 +4970,7 @@ showMessageOK("You have previously declined this permission.\n" +
             case "UpdateBranchDetailsNew":
                 Log.v("MYRESULT","New "+result);
                 callAuthToken();
+
                 break;
 
             case "UpdateBranchDetails":
@@ -4635,14 +4979,14 @@ showMessageOK("You have previously declined this permission.\n" +
                     JSONObject jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 
                     if (jsonObject1.has("ConfigId"))
-                        preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
+                        preferenceManager.setConfigId(jsonObject1.optString("ConfigId"));
                     if (jsonObject1.has("MerchantId"))
-                        preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+                        preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
 
-                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
-                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
-                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
-                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
+                    preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferenceManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferenceManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
 
                     ArrayList tipList=new ArrayList();
                     tipList.add(jsonObject1.optString("DefaultTip1"));
@@ -4650,91 +4994,91 @@ showMessageOK("You have previously declined this permission.\n" +
                     tipList.add(jsonObject1.optString("DefaultTip3"));
                     tipList.add(jsonObject1.optString("DefaultTip4"));
                     tipList.add(jsonObject1.optString("DefaultTip5"));
-                    preferencesManager.setTipPercentage("Tip",tipList);
+                    preferenceManager.setTipPercentage("Tip",tipList);
 
-                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+                    preferenceManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
 
-                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
-                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
-                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
-                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
-                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
-                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
-                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
+                    preferenceManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferenceManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferenceManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferenceManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
-                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
-                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
-                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
-                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
+                    preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferenceManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferenceManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
 
-                    preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
-                    preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
-                    preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
-                    preferencesManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
-                    preferencesManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
-                    preferencesManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
-                    preferencesManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
+                    preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
+                    preferenceManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
+                    preferenceManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
+                    preferenceManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
+                    preferenceManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
+                    preferenceManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
+                    preferenceManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
 
-                    preferencesManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
-                    preferencesManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
+                    preferenceManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
+                    preferenceManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
 
-                    preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
-                    preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
-                    preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
-                    preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                    preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                    preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
-                    preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
-                    preferencesManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
-                    preferencesManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
-                    preferencesManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
-                    preferencesManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
-                    preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
-                    preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
-                    preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
-                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferenceManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
+                    preferenceManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
+                    preferenceManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
+                    preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                    preferenceManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
+                    preferenceManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
+                    preferenceManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
+                    preferenceManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
+                    preferenceManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
+                    preferenceManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
+                    preferenceManager.setshowReference(jsonObject1.optString("ShowReference"));
+                    preferenceManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
+                    preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
                     preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
-                    preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
-                    preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
+                    preferenceManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
+                    preferenceManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
                     preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
-                    preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
-                    preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
-                    preferencesManager.setIsBack(jsonObject1.optBoolean("Back"));
-                    preferencesManager.setIsFront(jsonObject1.optBoolean("Front"));
-                    preferencesManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
-                    preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
-                    preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
-                    preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQRValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
-                    preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                    preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
-                    preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
-                    preferencesManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
-                    preferencesManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
-                    preferencesManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
-                    preferencesManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
-                    preferencesManager.setTimeZone(jsonObject1.optString("TimeZone"));
-                    preferencesManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
-                    preferencesManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
-                    preferencesManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
-                    preferencesManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
-                    preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
-                    preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
-                    preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+                    preferenceManager.setIsHome(jsonObject1.optBoolean("Home"));
+                    preferenceManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
+                    preferenceManager.setIsBack(jsonObject1.optBoolean("Back"));
+                    preferenceManager.setIsFront(jsonObject1.optBoolean("Front"));
+                    preferenceManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
+                    preferenceManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
+                    preferenceManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
+                    preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQRValue"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                    preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                    preferenceManager.setBranchName(jsonObject1.optString("EnableBranchName"));
+                    preferenceManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
+                    preferenceManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
+                    preferenceManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
+                    preferenceManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
+                    preferenceManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
+                    preferenceManager.setTimeZone(jsonObject1.optString("TimeZone"));
+                    preferenceManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
+                    preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
+                    preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
+                    preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
+                    preferenceManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
+                    preferenceManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
+                    preferenceManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
-                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                    preferenceManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
 
-                    if (preferencesManager.isManual()) {
+                    if (preferenceManager.isManual()) {
                         callSetupFragment(SCREENS.MANUALENTRY, null);
                     } else {
                         callSetupFragment(SCREENS.POSMATECONNECTION, null);
@@ -4913,7 +5257,7 @@ showMessageOK("You have previously declined this permission.\n" +
             hashMapKeys.put("executed", executed + "");
 
             new OkHttpHandler(this, this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, this)
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -4924,7 +5268,7 @@ showMessageOK("You have previously declined this permission.\n" +
     }
 
     public void disableBadge() {
-        preferencesManager.setOrderBadgeCount(0);
+        preferenceManager.setOrderBadgeCount(0);
         tv_order_badge.setVisibility(View.GONE);
     }
 
@@ -4947,7 +5291,7 @@ showMessageOK("You have previously declined this permission.\n" +
                         public void run() {
                             Intent in = new Intent();
                             in.setAction("TriggerReceiver");
-                            preferencesManager.setamountdata(intent.getStringExtra("data"));
+                            preferenceManager.setamountdata(intent.getStringExtra("data"));
                             in.putExtra("data", intent.getStringExtra("data"));
                             sendBroadcast(in);
                         }
@@ -4999,7 +5343,7 @@ showMessageOK("You have previously declined this permission.\n" +
                         public void run() {
                             Intent i = new Intent();
                             i.setAction("AmountTrigger");
-                            preferencesManager.setamountdata(intent.getStringExtra("data"));
+                            preferenceManager.setamountdata(intent.getStringExtra("data"));
                             i.putExtra("data", intent.getStringExtra("data"));
                             sendBroadcast(i);
                         }
@@ -5025,27 +5369,27 @@ showMessageOK("You have previously declined this permission.\n" +
 
                 case "RECONNECT":
                     if (mStompClient == null) {
-                        preferencesManager.setIsAuthenticated(false);
-                        preferencesManager.setIsConnected(false);
+                        preferenceManager.setIsAuthenticated(false);
+                        preferenceManager.setIsConnected(false);
                         connectStomp();
                     } else {
                         if (((MyPOSMateApplication) getApplicationContext()).mStompClient.isConnected()) {
-                            if (preferencesManager.isManual()) {
+                            if (preferenceManager.isManual()) {
                                 callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                             } else {
                                 callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                             }
                         } else {
-                            preferencesManager.setIsAuthenticated(false);
-                            preferencesManager.setIsConnected(false);
+                            preferenceManager.setIsAuthenticated(false);
+                            preferenceManager.setIsConnected(false);
                             callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                         }
                     }
                     break;
 
                 case "RECONNECT1":
-                    preferencesManager.setIsAuthenticated(false);
-                    preferencesManager.setIsConnected(false);
+                    preferenceManager.setIsAuthenticated(false);
+                    preferenceManager.setIsConnected(false);
                     AppConstants.isNetOff = true;
                     callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     break;
@@ -5265,7 +5609,7 @@ showMessageOK("You have previously declined this permission.\n" +
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(DashboardActivity.this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(DashboardActivity.this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
     }
 
 
@@ -5286,54 +5630,54 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("CnvWeChatDisplayOnly", preferenceManager.is_cnv_wechat_display_only());
             jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
             jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
-            jsonObject.put("MerchantId", preferencesManager.getMerchantId());
-            jsonObject.put("ConfigId", preferencesManager.getConfigId());
-            jsonObject.put("UnionPay", preferencesManager.isUnionPaySelected());
-            jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
-            jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
+            jsonObject.put("MerchantId", preferenceManager.getMerchantId());
+            jsonObject.put("ConfigId", preferenceManager.getConfigId());
+            jsonObject.put("UnionPay", preferenceManager.isUnionPaySelected());
+            jsonObject.put("UnionPayQR", preferenceManager.isUnionPayQrSelected());
+            jsonObject.put("isUnionPayQrCodeDisplaySelected", preferenceManager.isUnionPayQrCodeDisplaySelected());
             jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
             jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplayLower());
             jsonObject.put("cnv_unimerchantqrdisplay_higher", preferenceManager.get_cnv_unimerchantqrdisplayHigher());
             jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
-            jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
-            jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
-            jsonObject.put("Uplan", preferencesManager.isUplanSelected());
-            jsonObject.put("AlipayWeChatPay", preferencesManager.isaggregated_singleqr());
-            jsonObject.put("AlipayWeChatScanQR", preferencesManager.isAlipayWechatQrSelected());
-            jsonObject.put("PrintReceiptautomatically", preferencesManager.getisPrint());
-            jsonObject.put("ShowReference", preferencesManager.getshowReference());
-            jsonObject.put("ShowPrintQR", preferencesManager.isQR());
-            jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
+            jsonObject.put("CnvUnionpayDisplayAndAdd", preferenceManager.is_cnv_uni_display_and_add());
+            jsonObject.put("CnvUnionpayDisplayOnly", preferenceManager.is_cnv_uni_display_only());
+            jsonObject.put("Uplan", preferenceManager.isUplanSelected());
+            jsonObject.put("AlipayWeChatPay", preferenceManager.isaggregated_singleqr());
+            jsonObject.put("AlipayWeChatScanQR", preferenceManager.isAlipayWechatQrSelected());
+            jsonObject.put("PrintReceiptautomatically", preferenceManager.getisPrint());
+            jsonObject.put("ShowReference", preferenceManager.getshowReference());
+            jsonObject.put("ShowPrintQR", preferenceManager.isQR());
+            jsonObject.put("DisplayStaticQR", preferenceManager.isStaticQR());
             jsonObject.put("isDisplayLoyaltyApps", preferenceManager.isDisplayLoyaltyApps());
            jsonObject.put("isExternalInputDevice", preferenceManager.isExternalScan());
             jsonObject.put("isDragDrop", preferenceManager.isDragDrop());
-           jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
-            jsonObject.put("Home", preferencesManager.isHome());
-            jsonObject.put("ManualEntry", preferencesManager.isManual());
-            jsonObject.put("Back", preferencesManager.isBack());
-            jsonObject.put("Front", preferencesManager.isFront());
-            jsonObject.put("ShowMembershipManual", preferencesManager.isMembershipManual());
-            jsonObject.put("ShowMembershipHome", preferencesManager.isMembershipHome());
-            jsonObject.put("ConvenienceFee", preferencesManager.isConvenienceFeeSelected());
-            jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
-            jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
+           jsonObject.put("Membership/Loyality", preferenceManager.isLoyality());
+            jsonObject.put("Home", preferenceManager.isHome());
+            jsonObject.put("ManualEntry", preferenceManager.isManual());
+            jsonObject.put("Back", preferenceManager.isBack());
+            jsonObject.put("Front", preferenceManager.isFront());
+            jsonObject.put("ShowMembershipManual", preferenceManager.isMembershipManual());
+            jsonObject.put("ShowMembershipHome", preferenceManager.isMembershipHome());
+            jsonObject.put("ConvenienceFee", preferenceManager.isConvenienceFeeSelected());
+            jsonObject.put("AlipayWechatvalue", preferenceManager.getcnv_alipay());
+            jsonObject.put("UnionPayvalue", preferenceManager.getcnv_uni());
             jsonObject.put("UnionPayQRValue", preferenceManager.getcnv_uniqr());
             jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplayLower());
             jsonObject.put("cnv_unimerchantqrdisplay_higher", preferenceManager.get_cnv_unimerchantqrdisplayHigher());
-            jsonObject.put("EnableBranchName", preferencesManager.getBranchName());
-            jsonObject.put("EnableBranchAddress", preferencesManager.getBranchAddress());
-            jsonObject.put("EnableBranchEmail", preferencesManager.getBranchEmail());
-            jsonObject.put("EnableBranchContactNo", preferencesManager.getBranchPhoneNo());
-            jsonObject.put("EnableBranchGSTNo", preferencesManager.getGSTNo());
-            jsonObject.put("TimeZoneId", preferencesManager.getTimeZoneId());
-            jsonObject.put("TimeZone", preferencesManager.getTimeZone());
-            jsonObject.put("isTimeZoneChecked", preferencesManager.isTimeZoneChecked());
-            jsonObject.put("isTerminalIdentifier", preferencesManager.isTerminalIdentifier());
-            jsonObject.put("isPOSIdentifier", preferencesManager.isPOSIdentifier());
-            jsonObject.put("isLaneIdentifier", preferencesManager.isLaneIdentifier());
-            jsonObject.put("LaneIdentifier", preferencesManager.getLaneIdentifier());
-            jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
-            jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
+            jsonObject.put("EnableBranchName", preferenceManager.getBranchName());
+            jsonObject.put("EnableBranchAddress", preferenceManager.getBranchAddress());
+            jsonObject.put("EnableBranchEmail", preferenceManager.getBranchEmail());
+            jsonObject.put("EnableBranchContactNo", preferenceManager.getBranchPhoneNo());
+            jsonObject.put("EnableBranchGSTNo", preferenceManager.getGSTNo());
+            jsonObject.put("TimeZoneId", preferenceManager.getTimeZoneId());
+            jsonObject.put("TimeZone", preferenceManager.getTimeZone());
+            jsonObject.put("isTimeZoneChecked", preferenceManager.isTimeZoneChecked());
+            jsonObject.put("isTerminalIdentifier", preferenceManager.isTerminalIdentifier());
+            jsonObject.put("isPOSIdentifier", preferenceManager.isPOSIdentifier());
+            jsonObject.put("isLaneIdentifier", preferenceManager.isLaneIdentifier());
+            jsonObject.put("LaneIdentifier", preferenceManager.getLaneIdentifier());
+            jsonObject.put("TerminalIdentifier", preferenceManager.getTerminalIdentifier());
+            jsonObject.put("POSIdentifier", preferenceManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
             jsonObject.put("CnvUPIQrMPMCloudDAADD", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
             jsonObject.put("CnvUPIQrMPMCloudDOnly", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
@@ -5352,40 +5696,40 @@ showMessageOK("You have previously declined this permission.\n" +
             jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
             jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
 
-            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+            ArrayList tipList=preferenceManager.getTipPercentage("Tip");
             jsonObject.put("DefaultTip1", tipList.get(0));
             jsonObject.put("DefaultTip2", tipList.get(1));
             jsonObject.put("DefaultTip3", tipList.get(2));
             jsonObject.put("DefaultTip4", tipList.get(3));
             jsonObject.put("DefaultTip5", tipList.get(4));
-            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
-            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
-            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
-            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
-            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
-            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
-            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
+            jsonObject.put("SwitchOnTip", preferenceManager.isSwitchTip());
+            jsonObject.put("DefaultTip1IsEnabled", preferenceManager.isTipDefault1());
+            jsonObject.put("DefaultTip2IsEnabled", preferenceManager.isTipDefault2());
+            jsonObject.put("DefaultTip3IsEnabled", preferenceManager.isTipDefault3());
+            jsonObject.put("DefaultTip4IsEnabled", preferenceManager.isTipDefault4());
+            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+            jsonObject.put("CustomTip", preferenceManager.isTipDefaultCustom());
+            jsonObject.put("PaymentModePosition", preferenceManager.getString("DATA"));
 
 
             hashMapKeys.clear();
-            hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
-            hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
-            hashMapKeys.put("branchName", preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()));
-            hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
-            hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
-            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("branchAddress", preferenceManager.getaddress().equals("") ? encryption("nodata") : encryption(preferenceManager.getaddress()));
+            hashMapKeys.put("branchContactNo", preferenceManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferenceManager.getcontact_no()));
+            hashMapKeys.put("branchName", preferenceManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferenceManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", preferenceManager.getcontact_email().equals("") ? "nodata" : encryption(preferenceManager.getcontact_email()));
+            hashMapKeys.put("gstNo", preferenceManager.getgstno().equals("") ? encryption("nodata") : encryption(preferenceManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
             hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
+            hashMapKeys.put("accessId", encryption(preferenceManager.getuniqueId()));
+            hashMapKeys.put("configId", encryption(preferenceManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(DashboardActivity.this, this, hashMap, "UpdateBranchDetailsNew")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -5416,23 +5760,23 @@ showMessageOK("You have previously declined this permission.\n" +
         openProgressDialog();
         try {
             hashMapKeys.clear();
-            hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
-            hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
-            hashMapKeys.put("branchName", preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()));
-            hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
-            hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
-            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("branchAddress", preferenceManager.getaddress().equals("") ? encryption("nodata") : encryption(preferenceManager.getaddress()));
+            hashMapKeys.put("branchContactNo", preferenceManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferenceManager.getcontact_no()));
+            hashMapKeys.put("branchName", preferenceManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferenceManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", preferenceManager.getcontact_email().equals("") ? "nodata" : encryption(preferenceManager.getcontact_email()));
+            hashMapKeys.put("gstNo", preferenceManager.getgstno().equals("") ? encryption("nodata") : encryption(preferenceManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
             hashMapKeys.put("otherData", encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
+            hashMapKeys.put("accessId", encryption(preferenceManager.getuniqueId()));
+            hashMapKeys.put("configId", encryption(preferenceManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, DashboardActivity.this));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(DashboardActivity.this, this, hashMap, "UpdateBranchDetails")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -5465,13 +5809,13 @@ showMessageOK("You have previously declined this permission.\n" +
 //            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, this));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-            new OkHttpHandler(DashboardActivity.this, this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
+            new OkHttpHandler(DashboardActivity.this, this, hashMap, "GetBranchDetailsNew").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TERMINAL_CONFIG);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -5492,92 +5836,92 @@ showMessageOK("You have previously declined this permission.\n" +
                     tipList.add(jsonObject1.optString("DefaultTip3"));
                     tipList.add(jsonObject1.optString("DefaultTip4"));
                     tipList.add(jsonObject1.optString("DefaultTip5"));
-                    preferencesManager.setTipPercentage("Tip",tipList);
+                    preferenceManager.setTipPercentage("Tip",tipList);
 
-                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+                    preferenceManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
 
-                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
-                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
-                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
-                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
-                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
-                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
-                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
+                    preferenceManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferenceManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferenceManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferenceManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
-                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
-                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
-                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
-                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
-                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
-                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
-                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
-                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
-                    preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
-                    preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
-                    preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
-                    preferencesManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
-                    preferencesManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
-                    preferencesManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
-                    preferencesManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
+                    preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferenceManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferenceManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
+                    preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferenceManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferenceManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
+                    preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
+                    preferenceManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
+                    preferenceManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
+                    preferenceManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
+                    preferenceManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
+                    preferenceManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
+                    preferenceManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
 
-                    preferencesManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
-                    preferencesManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
+                    preferenceManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
+                    preferenceManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
 
-                    preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
-                    preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
-                    preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
-                    preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
-                    preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                    preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
-                    preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
-                    preferencesManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
-                    preferencesManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
-                    preferencesManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
-                    preferencesManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
-                    preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
-                    preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
-                    preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
-                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
-                    preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
+                    preferenceManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
+                    preferenceManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
+                    preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                    preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                    preferenceManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
+                    preferenceManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
+                    preferenceManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
+                    preferenceManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
+                    preferenceManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
+                    preferenceManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
+                    preferenceManager.setshowReference(jsonObject1.optString("ShowReference"));
+                    preferenceManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
+                    preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
                     preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
-                    preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
-                    preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
-                    preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
-                    preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
-                    preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
-                    preferencesManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
-                    preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
-                    preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
-                    preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
-                    preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                    preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
-                    preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
-                    preferencesManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
-                    preferencesManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
-                    preferencesManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
-                    preferencesManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
-                    preferencesManager.setTimeZone(jsonObject1.optString("TimeZone"));
-                    preferencesManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
-                    preferencesManager.setIsBack(jsonObject1.optBoolean("Back"));
-                    preferencesManager.setIsFront(jsonObject1.optBoolean("Front"));
+                    preferenceManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
+                    preferenceManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
+                    preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
+                    preferenceManager.setIsHome(jsonObject1.optBoolean("Home"));
+                    preferenceManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
+                    preferenceManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
+                    preferenceManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
+                    preferenceManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
+                    preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                    preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                    preferenceManager.setBranchName(jsonObject1.optString("EnableBranchName"));
+                    preferenceManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
+                    preferenceManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
+                    preferenceManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
+                    preferenceManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
+                    preferenceManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
+                    preferenceManager.setTimeZone(jsonObject1.optString("TimeZone"));
+                    preferenceManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
+                    preferenceManager.setIsBack(jsonObject1.optBoolean("Back"));
+                    preferenceManager.setIsFront(jsonObject1.optBoolean("Front"));
 
-                    preferencesManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
-                    preferencesManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
-                    preferencesManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
-                    preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
-                    preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
-                    preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+                    preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
+                    preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
+                    preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
+                    preferenceManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
+                    preferenceManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
+                    preferenceManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
-                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferenceManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
                 }
 
@@ -5585,15 +5929,15 @@ showMessageOK("You have previously declined this permission.\n" +
             } else {
 
                 if (jsonObject.has("config_id")) {
-                    preferencesManager.setConfigId(decryption(jsonObject.optString("config_id")));
+                    preferenceManager.setConfigId(decryption(jsonObject.optString("config_id")));
                 }
 
                 if (jsonObject.has("merchant_id")) {
-                    preferencesManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
+                    preferenceManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
                 }
 
                 if (jsonObject.has("terminal_id")) {
-                    preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
+                    preferenceManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
                 }
 
             }
@@ -5601,14 +5945,14 @@ showMessageOK("You have previously declined this permission.\n" +
 
         } catch (Exception e) {
             if (jsonObject.has("config_id")) {
-                preferencesManager.setConfigId(decryption(jsonObject.optString("config_id")));
+                preferenceManager.setConfigId(decryption(jsonObject.optString("config_id")));
             }
 
             if (jsonObject.has("merchant_id")) {
-                preferencesManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
+                preferenceManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
             }
             if (jsonObject.has("terminal_id")) {
-                preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
+                preferenceManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
             }
         }
     }

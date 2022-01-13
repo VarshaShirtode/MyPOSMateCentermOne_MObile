@@ -64,15 +64,17 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     private View view;
     private String android_id;
     private ProgressDialog progress;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     private EditText edt_terminal_id, edt_terminal_ip, edt_unique_id;
     private AbstractXMPPConnection asbtractConnection;
-    private String serverIp = AppConstants.serverIp;
+    //private String serverIp = AppConstants.serverIp;
+   // private String serverIp = preferenceManager.getBaseURL().replace("https://","");
     private String username, password;
     private Handler handler;
     TreeMap<String, String> hashMapKeys;
     public boolean isRegisteredStart = false;
     RelativeLayout rel_orders;
+    TextView txtServer;
     public Settings() {
         // Required empty public constructor
     }
@@ -104,7 +106,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         handler = new Handler();
         hashMapKeys = new TreeMap<>();
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
 
         initUI(view);
         initListener();
@@ -135,13 +137,18 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         edt_terminal_ip.setText(getLocalIpAddress());
         rel_orders=  getActivity().findViewById(R.id.rel_orders);
         rel_orders.setVisibility(View.GONE);
-//        preferencesManager.setuniqueId("eeac599d06a42e9b");
-//        preferencesManager.setMerchantId("29");
-//        preferencesManager.setConfigId("60");
-        edt_unique_id.setText(preferencesManager.getuniqueId
+        txtServer=view.findViewById(R.id.txtServer);
+        if (!preferenceManager.getBaseURL().equalsIgnoreCase(""))
+        {
+            txtServer.setText(preferenceManager.getBaseURL());
+        }
+//        preferenceManager.setuniqueId("eeac599d06a42e9b");
+//        preferenceManager.setMerchantId("29");
+//        preferenceManager.setConfigId("60");
+        edt_unique_id.setText(preferenceManager.getuniqueId
                 ());
 
-        if (preferencesManager.getuniqueId().equals("")) {
+        if (preferenceManager.getuniqueId().equals("")) {
             ((DashboardActivity) getActivity()).img_menu.setEnabled(false);
         } else {
             ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
@@ -154,8 +161,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             isGetBranchDetailsCalled = true;
             callAuthToken();
         } else {
-            edt_unique_id.setText(preferencesManager.getuniqueId());
-            preferencesManager.setaggregated_singleqr(true);
+            edt_unique_id.setText(preferenceManager.getuniqueId());
+            preferenceManager.setaggregated_singleqr(true);
             if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
                 Toast.makeText(getActivity(), "Please enter Terminal Id and Access Id", Toast.LENGTH_LONG).show();
             } else if (edt_terminal_id.getText().toString().equals("")) {
@@ -165,10 +172,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             } else {
                 isRegisteredStart = true;
                 callAuthToken();
-
             }
-
-
         }
     }
 
@@ -199,21 +203,21 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     public void callValidateTerminal() {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
+        hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
         hashMapKeys.put("terminal_id", edt_terminal_id.getText().toString());
         hashMapKeys.put("access_id", edt_unique_id.getText().toString());
-        hashMapKeys.put("config_id", preferencesManager.getConfigId());
+        hashMapKeys.put("config_id", preferenceManager.getConfigId());
         hashMapKeys.put("random_str", new Date().getTime() + "");
 //        hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-//        hashMapKeys.put("access_token",preferencesManager.getauthToken());
-        preferencesManager.setuniqueId(edt_unique_id.getText().toString());
+//        hashMapKeys.put("access_token",preferenceManager.getauthToken());
+        preferenceManager.setuniqueId(edt_unique_id.getText().toString());
         new OkHttpHandler(getActivity(), this, null, "validateTerminal")
-                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.VALIDATE_TERMINAL + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
 //        HashMap<String, String> hashMap = new HashMap<>();
 //        hashMap.putAll(hashMapKeys);
 //        new OkHttpHandler(getActivity(), this, hashMap, "validateTerminal")
-//                .execute(AppConstants.BASE_URL2 + AppConstants.VALIDATE_TERMINAL);
+//                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.VALIDATE_TERMINAL);
 
 
     }
@@ -233,7 +237,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
     }
 
 
@@ -244,10 +248,10 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminal").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.DELETE_TERMINAL_CONFIG);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -262,14 +266,14 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption_old(edt_terminal_id.getText().toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
-//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminalOld").execute(AppConstants.BASE_URL3 + AppConstants.DELETE_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "DeleteTerminalOld").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.DELETE_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption_old(edt_terminal_id.getText().toString()));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminalOld").execute(AppConstants.BASE_URL2 + AppConstants.DELETE_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "DeleteTerminalOld").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.DELETE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -361,7 +365,6 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     }
                 });
 
-
                 break;
 
             case R.id.btn_save:
@@ -369,11 +372,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
                     return;
                 } else if (config_id.equals("")) {
-                    Toast.makeText(getActivity(), "Config ID not present", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Config ID not present, Please register again.", Toast.LENGTH_SHORT).show();
+                    ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.REGISTRATION, null);
                     return;
                 }
 
-                preferencesManager.setaggregated_singleqr(true);
+                preferenceManager.setaggregated_singleqr(true);
                 if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Terminal Id and Access Id", Toast.LENGTH_LONG).show();
                 } else if (edt_terminal_id.getText().toString().equals("")) {
@@ -381,8 +385,8 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 } else if (edt_unique_id.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter Access Id", Toast.LENGTH_LONG).show();
                 } else {
-//                    preferencesManager.setterminalId(edt_terminal_id.getText().toString());
-//                    preferencesManager.setuniqueId(edt_unique_id.getText().toString());
+//                    preferenceManager.setterminalId(edt_terminal_id.getText().toString());
+//                    preferenceManager.setuniqueId(edt_unique_id.getText().toString());
                     isSaveAndOK = true;
                     callAuthToken();
 
@@ -390,15 +394,15 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
                 break;
             case R.id.btn_cancel:
-                preferencesManager.setisRegistered(false);
-                if (preferencesManager.isHome()) {
-                    if (!preferencesManager.getUsername().equals(""))
+                preferenceManager.setisRegistered(false);
+                if (preferenceManager.isHome()) {
+                    if (!preferenceManager.getUsername().equals(""))
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                     else
                         edt_unique_id.setText("");
 
                 } else {
-                    if (!preferencesManager.getUsername().equals(""))
+                    if (!preferenceManager.getUsername().equals(""))
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY, null);
                     else
                         edt_unique_id.setText("");
@@ -421,11 +425,13 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             @Override
             public void run() {
                 try {
-                    DomainBareJid serviceName = JidCreate.domainBareFrom(serverIp);
+                   // DomainBareJid serviceName = JidCreate.domainBareFrom(serverIp);
+                    DomainBareJid serviceName = JidCreate.domainBareFrom(preferenceManager.getBaseURL().replace("https://",""));
 
                     XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
                             .setUsernameAndPassword(username, password)
-                            .setHost(serverIp)
+                            //.setHost(serverIp)
+                            .setHost(preferenceManager.getBaseURL().replace("https://",""))
                             .setXmppDomain(serviceName)
                             .setPort(5222).setSecurityMode(ConnectionConfiguration.SecurityMode.disabled).allowEmptyOrNullUsernames().setResource("Android")
                             .build();
@@ -615,14 +621,14 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 //            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
-//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsOld").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsOld").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption_old(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsOld").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);//encryption("47f17c5fe8d43843"));
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsOld").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TERMINAL_CONFIG);//encryption("47f17c5fe8d43843"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -639,13 +645,13 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 //            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
-//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, null, "GetBranchDetailsNew").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()));//encryption("47f17c5fe8d43843"));
 
-            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TERMINAL_CONFIG);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -660,15 +666,15 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             hashMapKeys.put("terminalId", encryption(edt_terminal_id.getText().toString()));
 //            hashMapKeys.put("terminalId", edt_terminal_id.getText().toString());
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
+            hashMapKeys.put("configId", encryption(preferenceManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
 
-            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL2 + AppConstants.GET_TERMINAL_CONFIG);
+            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TERMINAL_CONFIG);
 
-//            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(AppConstants.BASE_URL3 + AppConstants.GET_TERMINAL_CONFIG
+//            new OkHttpHandler(getActivity(), this, hashMap, "GetBranchDetailsNew").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_TERMINAL_CONFIG
 //                    + "?terminal_id=" + encryption(edt_terminal_id.getText().toString()) + "&configId=" + encryption(configId));
 
         } catch (Exception e) {
@@ -684,117 +690,117 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
         try {
 
             JSONObject jsonObject = new JSONObject();
-            ArrayList tipList=preferencesManager.getTipPercentage("Tip");
+            ArrayList tipList=preferenceManager.getTipPercentage("Tip");
             jsonObject.put("DefaultTip1", tipList.get(0));
             jsonObject.put("DefaultTip2", tipList.get(1));
             jsonObject.put("DefaultTip3", tipList.get(2));
             jsonObject.put("DefaultTip4", tipList.get(3));
             jsonObject.put("DefaultTip5", tipList.get(4));
-            jsonObject.put("SwitchOnTip", preferencesManager.isSwitchTip());
+            jsonObject.put("SwitchOnTip", preferenceManager.isSwitchTip());
 
-            jsonObject.put("DefaultTip1IsEnabled", preferencesManager.isTipDefault1());
-            jsonObject.put("DefaultTip2IsEnabled", preferencesManager.isTipDefault2());
-            jsonObject.put("DefaultTip3IsEnabled", preferencesManager.isTipDefault3());
-            jsonObject.put("DefaultTip4IsEnabled", preferencesManager.isTipDefault4());
-            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-            jsonObject.put("DefaultTip5IsEnabled", preferencesManager.isTipDefault5());
-            jsonObject.put("CustomTip", preferencesManager.isTipDefaultCustom());
-            jsonObject.put("PaymentModePosition", preferencesManager.getString("DATA"));
+            jsonObject.put("DefaultTip1IsEnabled", preferenceManager.isTipDefault1());
+            jsonObject.put("DefaultTip2IsEnabled", preferenceManager.isTipDefault2());
+            jsonObject.put("DefaultTip3IsEnabled", preferenceManager.isTipDefault3());
+            jsonObject.put("DefaultTip4IsEnabled", preferenceManager.isTipDefault4());
+            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+            jsonObject.put("DefaultTip5IsEnabled", preferenceManager.isTipDefault5());
+            jsonObject.put("CustomTip", preferenceManager.isTipDefaultCustom());
+            jsonObject.put("PaymentModePosition", preferenceManager.getString("DATA"));
 
 
-            jsonObject.put("CentrapaySelected", preferencesManager.isCentrapayMerchantQRDisplaySelected());
-            jsonObject.put("CentrapayFeeValue", preferencesManager.getcnv_centrapay());
-            jsonObject.put("CnvCentrapayDisplayAndAdd", preferencesManager.is_cnv_centrapay_display_and_add());
-            jsonObject.put("CnvCentrapayDisplayOnly", preferencesManager.is_cnv_centrapay_display_only());
+            jsonObject.put("CentrapaySelected", preferenceManager.isCentrapayMerchantQRDisplaySelected());
+            jsonObject.put("CentrapayFeeValue", preferenceManager.getcnv_centrapay());
+            jsonObject.put("CnvCentrapayDisplayAndAdd", preferenceManager.is_cnv_centrapay_display_and_add());
+            jsonObject.put("CnvCentrapayDisplayOnly", preferenceManager.is_cnv_centrapay_display_only());
 
-            jsonObject.put("PoliSelected", preferencesManager.isPoliSelected());
-            jsonObject.put("PoliFeeValue", preferencesManager.getcnv_poli());
-            jsonObject.put("CnvPoliDisplayAndAdd", preferencesManager.is_cnv_poli_display_and_add());
-            jsonObject.put("CnvPoliDisplayOnly", preferencesManager.is_cnv_poli_display_only());
+            jsonObject.put("PoliSelected", preferenceManager.isPoliSelected());
+            jsonObject.put("PoliFeeValue", preferenceManager.getcnv_poli());
+            jsonObject.put("CnvPoliDisplayAndAdd", preferenceManager.is_cnv_poli_display_and_add());
+            jsonObject.put("CnvPoliDisplayOnly", preferenceManager.is_cnv_poli_display_only());
 
-            jsonObject.put("accessId", preferencesManager.getuniqueId());
-            jsonObject.put("AlipaySelected", preferencesManager.isAlipaySelected());
-            jsonObject.put("AlipayValue", preferencesManager.getcnv_alipay());
-            jsonObject.put("CnvAlipayDisplayAndAdd", preferencesManager.is_cnv_alipay_display_and_add());
-            jsonObject.put("CnvAlipayDisplayOnly", preferencesManager.is_cnv_alipay_display_only());
-            jsonObject.put("WeChatSelected", preferencesManager.isWechatSelected());
-            jsonObject.put("WeChatValue", preferencesManager.getcnv_wechat());
-            jsonObject.put("CnvWeChatDisplayAndAdd", preferencesManager.is_cnv_wechat_display_and_add());
-            jsonObject.put("CnvWeChatDisplayOnly", preferencesManager.is_cnv_wechat_display_only());
-            jsonObject.put("AlipayScanQR", preferencesManager.isAlipayScan());
-            jsonObject.put("WeChatScanQR", preferencesManager.isWeChatScan());
-            jsonObject.put("MerchantId", preferencesManager.getMerchantId());
-            jsonObject.put("ConfigId", preferencesManager.getConfigId());
-            jsonObject.put("UnionPay", preferencesManager.isUnionPaySelected());
-            jsonObject.put("UnionPayQR", preferencesManager.isUnionPayQrSelected());
-            jsonObject.put("isUnionPayQrCodeDisplaySelected", preferencesManager.isUnionPayQrCodeDisplaySelected());
-            jsonObject.put("UnionPayQrValue", preferencesManager.getcnv_uniqr());
-            jsonObject.put("UplanValue", preferencesManager.getcnv_uplan());
-            jsonObject.put("CnvUnionpayDisplayAndAdd", preferencesManager.is_cnv_uni_display_and_add());
-            jsonObject.put("CnvUnionpayDisplayOnly", preferencesManager.is_cnv_uni_display_only());
-            jsonObject.put("Uplan", preferencesManager.isUplanSelected());
-            jsonObject.put("AlipayWeChatPay", preferencesManager.isaggregated_singleqr());
-            jsonObject.put("AlipayWeChatScanQR", preferencesManager.isAlipayWechatQrSelected());
-            jsonObject.put("PrintReceiptautomatically", preferencesManager.getisPrint());
-            jsonObject.put("ShowReference", preferencesManager.getshowReference());
-            jsonObject.put("ShowPrintQR", preferencesManager.isQR());
-            jsonObject.put("DisplayStaticQR", preferencesManager.isStaticQR());
-            jsonObject.put("isDisplayLoyaltyApps",preferencesManager.isDisplayLoyaltyApps());
-            jsonObject.put("isExternalInputDevice",preferencesManager.isExternalScan());
-            jsonObject.put("isDragDrop", preferencesManager.isDragDrop());
+            jsonObject.put("accessId", preferenceManager.getuniqueId());
+            jsonObject.put("AlipaySelected", preferenceManager.isAlipaySelected());
+            jsonObject.put("AlipayValue", preferenceManager.getcnv_alipay());
+            jsonObject.put("CnvAlipayDisplayAndAdd", preferenceManager.is_cnv_alipay_display_and_add());
+            jsonObject.put("CnvAlipayDisplayOnly", preferenceManager.is_cnv_alipay_display_only());
+            jsonObject.put("WeChatSelected", preferenceManager.isWechatSelected());
+            jsonObject.put("WeChatValue", preferenceManager.getcnv_wechat());
+            jsonObject.put("CnvWeChatDisplayAndAdd", preferenceManager.is_cnv_wechat_display_and_add());
+            jsonObject.put("CnvWeChatDisplayOnly", preferenceManager.is_cnv_wechat_display_only());
+            jsonObject.put("AlipayScanQR", preferenceManager.isAlipayScan());
+            jsonObject.put("WeChatScanQR", preferenceManager.isWeChatScan());
+            jsonObject.put("MerchantId", preferenceManager.getMerchantId());
+            jsonObject.put("ConfigId", preferenceManager.getConfigId());
+            jsonObject.put("UnionPay", preferenceManager.isUnionPaySelected());
+            jsonObject.put("UnionPayQR", preferenceManager.isUnionPayQrSelected());
+            jsonObject.put("isUnionPayQrCodeDisplaySelected", preferenceManager.isUnionPayQrCodeDisplaySelected());
+            jsonObject.put("UnionPayQrValue", preferenceManager.getcnv_uniqr());
+            jsonObject.put("UplanValue", preferenceManager.getcnv_uplan());
+            jsonObject.put("CnvUnionpayDisplayAndAdd", preferenceManager.is_cnv_uni_display_and_add());
+            jsonObject.put("CnvUnionpayDisplayOnly", preferenceManager.is_cnv_uni_display_only());
+            jsonObject.put("Uplan", preferenceManager.isUplanSelected());
+            jsonObject.put("AlipayWeChatPay", preferenceManager.isaggregated_singleqr());
+            jsonObject.put("AlipayWeChatScanQR", preferenceManager.isAlipayWechatQrSelected());
+            jsonObject.put("PrintReceiptautomatically", preferenceManager.getisPrint());
+            jsonObject.put("ShowReference", preferenceManager.getshowReference());
+            jsonObject.put("ShowPrintQR", preferenceManager.isQR());
+            jsonObject.put("DisplayStaticQR", preferenceManager.isStaticQR());
+            jsonObject.put("isDisplayLoyaltyApps",preferenceManager.isDisplayLoyaltyApps());
+            jsonObject.put("isExternalInputDevice",preferenceManager.isExternalScan());
+            jsonObject.put("isDragDrop", preferenceManager.isDragDrop());
 
-            jsonObject.put("Membership/Loyality", preferencesManager.isLoyality());
-            jsonObject.put("Home", preferencesManager.isHome());
-            jsonObject.put("ManualEntry", preferencesManager.isManual());
-            jsonObject.put("Back", preferencesManager.isBack());
-            jsonObject.put("Front", preferencesManager.isFront());
-            jsonObject.put("ShowMembershipManual", preferencesManager.isMembershipManual());
-            jsonObject.put("ShowMembershipHome", preferencesManager.isMembershipHome());
-            jsonObject.put("ConvenienceFee", preferencesManager.isConvenienceFeeSelected());
-            jsonObject.put("AlipayWechatvalue", preferencesManager.getcnv_alipay());
-            jsonObject.put("UnionPayvalue", preferencesManager.getcnv_uni());
-            jsonObject.put("EnableBranchName", preferencesManager.getBranchName());
-            jsonObject.put("EnableBranchAddress", preferencesManager.getBranchAddress());
-            jsonObject.put("EnableBranchEmail", preferencesManager.getBranchEmail());
-            jsonObject.put("EnableBranchContactNo", preferencesManager.getBranchPhoneNo());
-            jsonObject.put("EnableBranchGSTNo", preferencesManager.getGSTNo());
-            jsonObject.put("TimeZoneId", preferencesManager.getTimeZoneId());
-            jsonObject.put("TimeZone", preferencesManager.getTimeZone());
-            jsonObject.put("isTimeZoneChecked", preferencesManager.isTimeZoneChecked());
-            jsonObject.put("isTerminalIdentifier", preferencesManager.isTerminalIdentifier());
-            jsonObject.put("isPOSIdentifier", preferencesManager.isPOSIdentifier());
-            jsonObject.put("isLaneIdentifier", preferencesManager.isLaneIdentifier());
-            jsonObject.put("LaneIdentifier", preferencesManager.getLaneIdentifier());
-            jsonObject.put("TerminalIdentifier", preferencesManager.getTerminalIdentifier());
-            jsonObject.put("POSIdentifier", preferencesManager.getPOSIdentifier());
+            jsonObject.put("Membership/Loyality", preferenceManager.isLoyality());
+            jsonObject.put("Home", preferenceManager.isHome());
+            jsonObject.put("ManualEntry", preferenceManager.isManual());
+            jsonObject.put("Back", preferenceManager.isBack());
+            jsonObject.put("Front", preferenceManager.isFront());
+            jsonObject.put("ShowMembershipManual", preferenceManager.isMembershipManual());
+            jsonObject.put("ShowMembershipHome", preferenceManager.isMembershipHome());
+            jsonObject.put("ConvenienceFee", preferenceManager.isConvenienceFeeSelected());
+            jsonObject.put("AlipayWechatvalue", preferenceManager.getcnv_alipay());
+            jsonObject.put("UnionPayvalue", preferenceManager.getcnv_uni());
+            jsonObject.put("EnableBranchName", preferenceManager.getBranchName());
+            jsonObject.put("EnableBranchAddress", preferenceManager.getBranchAddress());
+            jsonObject.put("EnableBranchEmail", preferenceManager.getBranchEmail());
+            jsonObject.put("EnableBranchContactNo", preferenceManager.getBranchPhoneNo());
+            jsonObject.put("EnableBranchGSTNo", preferenceManager.getGSTNo());
+            jsonObject.put("TimeZoneId", preferenceManager.getTimeZoneId());
+            jsonObject.put("TimeZone", preferenceManager.getTimeZone());
+            jsonObject.put("isTimeZoneChecked", preferenceManager.isTimeZoneChecked());
+            jsonObject.put("isTerminalIdentifier", preferenceManager.isTerminalIdentifier());
+            jsonObject.put("isPOSIdentifier", preferenceManager.isPOSIdentifier());
+            jsonObject.put("isLaneIdentifier", preferenceManager.isLaneIdentifier());
+            jsonObject.put("LaneIdentifier", preferenceManager.getLaneIdentifier());
+            jsonObject.put("TerminalIdentifier", preferenceManager.getTerminalIdentifier());
+            jsonObject.put("POSIdentifier", preferenceManager.getPOSIdentifier());
             jsonObject.put("isUpdated", true);
 
-            jsonObject.put("CnvUPIQrMPMCloudDAADD", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
-            jsonObject.put("CnvUPIQrMPMCloudDOnly", preferencesManager.cnv_up_upi_qrscan_mpmcloud_display_only());
-            jsonObject.put("CnvUPIQrMPMCloudValue", preferencesManager.getcnv_up_upiqr_mpmcloud_lower());
-            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferencesManager.getCnv_up_upiqr_mpmcloud_higher());
-            jsonObject.put("CnvUPIQRMPMCloudAmount",preferencesManager.getCnv_up_upiqr_mpmcloud_amount());
-            jsonObject.put("isMerchantDPARDisplay",preferencesManager.isMerchantDPARDisplay());
-            jsonObject.put("cnv_unimerchantqrdisplay", preferencesManager.get_cnv_unimerchantqrdisplayLower());
-            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferencesManager.get_cnv_unimerchantqrdisplayHigher());
+            jsonObject.put("CnvUPIQrMPMCloudDAADD", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_and_add());
+            jsonObject.put("CnvUPIQrMPMCloudDOnly", preferenceManager.cnv_up_upi_qrscan_mpmcloud_display_only());
+            jsonObject.put("CnvUPIQrMPMCloudValue", preferenceManager.getcnv_up_upiqr_mpmcloud_lower());
+            jsonObject.put("CnvUPIQrMPMCloudValueHigher",preferenceManager.getCnv_up_upiqr_mpmcloud_higher());
+            jsonObject.put("CnvUPIQRMPMCloudAmount",preferenceManager.getCnv_up_upiqr_mpmcloud_amount());
+            jsonObject.put("isMerchantDPARDisplay",preferenceManager.isMerchantDPARDisplay());
+            jsonObject.put("cnv_unimerchantqrdisplay", preferenceManager.get_cnv_unimerchantqrdisplayLower());
+            jsonObject.put("cnv_unimerchantqrdisplay_higher",preferenceManager.get_cnv_unimerchantqrdisplayHigher());
             hashMapKeys.clear();
-            hashMapKeys.put("branchAddress", preferencesManager.getaddress().equals("") ? encryption("nodata") : encryption(preferencesManager.getaddress()));
-            hashMapKeys.put("branchContactNo", preferencesManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferencesManager.getcontact_no()));
-            hashMapKeys.put("branchName", preferencesManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferencesManager.getmerchant_name()));
-            hashMapKeys.put("branchEmail", preferencesManager.getcontact_email().equals("") ? "nodata" : encryption(preferencesManager.getcontact_email()));
-            hashMapKeys.put("gstNo", preferencesManager.getgstno().equals("") ? encryption("nodata") : encryption(preferencesManager.getgstno()));
-            hashMapKeys.put("terminalId", encryption(preferencesManager.getterminalId()));
+            hashMapKeys.put("branchAddress", preferenceManager.getaddress().equals("") ? encryption("nodata") : encryption(preferenceManager.getaddress()));
+            hashMapKeys.put("branchContactNo", preferenceManager.getcontact_no().equals("") ? encryption("nodata") : encryption(preferenceManager.getcontact_no()));
+            hashMapKeys.put("branchName", preferenceManager.getmerchant_name().equals("") ? encryption("nodata") : encryption(preferenceManager.getmerchant_name()));
+            hashMapKeys.put("branchEmail", preferenceManager.getcontact_email().equals("") ? "nodata" : encryption(preferenceManager.getcontact_email()));
+            hashMapKeys.put("gstNo", preferenceManager.getgstno().equals("") ? encryption("nodata") : encryption(preferenceManager.getgstno()));
+            hashMapKeys.put("terminalId", encryption(preferenceManager.getterminalId()));
             hashMapKeys.put("otherData", encryption(jsonObject.toString()));//encryption(jsonObject.toString()));
             hashMapKeys.put("random_str", new Date().getTime() + "");
-            hashMapKeys.put("accessId", encryption(preferencesManager.getuniqueId()));
-            hashMapKeys.put("configId", encryption(preferencesManager.getConfigId()));
+            hashMapKeys.put("accessId", encryption(preferenceManager.getuniqueId()));
+            hashMapKeys.put("configId", encryption(preferenceManager.getConfigId()));
             hashMapKeys.put("signature", MD5Class.generateSignatureStringOne(hashMapKeys, getActivity()));
-            hashMapKeys.put("access_token", preferencesManager.getauthToken());
+            hashMapKeys.put("access_token", preferenceManager.getauthToken());
 
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.putAll(hashMapKeys);
             new OkHttpHandler(getActivity(), this, hashMap, "UpdateBranchDetailsNew")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.SAVE_TERMINAL_CONFIG);
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.SAVE_TERMINAL_CONFIG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -805,12 +811,12 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
     public void _oldUser(JSONObject jsonObject) {
         try {
             if (jsonObject.optString("success").equals("true")) {
-                preferencesManager.setaddress(decryption_old(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchAddress")));
-                preferencesManager.setcontact_email(jsonObject.optString("branchEmail").equals("nodata") ? "" : jsonObject.optString("branchEmail"));
-                preferencesManager.setcontact_no(decryption_old(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchContactNo")));
-                preferencesManager.setmerchant_name(decryption_old(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchName")));
-                preferencesManager.setgstno(decryption_old(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption_old(jsonObject.optString("gstNo")));
-                preferencesManager.setterminalId(decryption_old(jsonObject.optString("terminalId")));
+                preferenceManager.setaddress(decryption_old(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchAddress")));
+                preferenceManager.setcontact_email(jsonObject.optString("branchEmail").equals("nodata") ? "" : jsonObject.optString("branchEmail"));
+                preferenceManager.setcontact_no(decryption_old(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchContactNo")));
+                preferenceManager.setmerchant_name(decryption_old(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption_old(jsonObject.optString("branchName")));
+                preferenceManager.setgstno(decryption_old(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption_old(jsonObject.optString("gstNo")));
+                preferenceManager.setterminalId(decryption_old(jsonObject.optString("terminalId")));
                 edt_unique_id.setText(decryption_old(jsonObject.optString("accessId")));
                 jsonObject1 = new JSONObject(decryption_old(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
@@ -820,89 +826,89 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     tipList.add(jsonObject1.optString("DefaultTip3"));
                     tipList.add(jsonObject1.optString("DefaultTip4"));
                     tipList.add(jsonObject1.optString("DefaultTip5"));
-                    preferencesManager.setTipPercentage("Tip",tipList);
+                    preferenceManager.setTipPercentage("Tip",tipList);
 
-                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+                    preferenceManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
 
-                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
-                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
-                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
-                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
-                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
-                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
-                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
+                    preferenceManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferenceManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferenceManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferenceManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
 
-                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
-                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
-                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
-                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
-                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
-                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
-                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
-                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
-                    preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
-                    preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
-                    preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
-                    preferencesManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
-                    preferencesManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
-                    preferencesManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
-                    preferencesManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
+                    preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferenceManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferenceManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
+                    preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferenceManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferenceManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
+                    preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
+                    preferenceManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
+                    preferenceManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
+                    preferenceManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
+                    preferenceManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
+                    preferenceManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
+                    preferenceManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
 
-                    preferencesManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
-                    preferencesManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
+                    preferenceManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
+                    preferenceManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
 
-                    preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
-                    preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
-                    preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
-                    preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                    preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
-                    preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
-                    preferencesManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
-                    preferencesManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
-                    preferencesManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
-                    preferencesManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
-                    preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
-                    preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
-                    preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
-                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
-                    preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
-                    preferencesManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
-                    preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
-                    preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
-                    preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
-                    preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
-                    preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
-                    preferencesManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
-                    preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
-                    preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
-                    preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
-                    preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
-                    preferencesManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
-                    preferencesManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
-                    preferencesManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
-                    preferencesManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
-                    preferencesManager.setTimeZone(jsonObject1.optString("TimeZone"));
-                    preferencesManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
-                    preferencesManager.setIsBack(jsonObject1.optBoolean("Back"));
-                    preferencesManager.setIsFront(jsonObject1.optBoolean("Front"));
+                    preferenceManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
+                    preferenceManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
+                    preferenceManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
+                    preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                    preferenceManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
+                    preferenceManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
+                    preferenceManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
+                    preferenceManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
+                    preferenceManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
+                    preferenceManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
+                    preferenceManager.setshowReference(jsonObject1.optString("ShowReference"));
+                    preferenceManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
+                    preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
+                    preferenceManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
+                    preferenceManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
+                    preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
+                    preferenceManager.setIsHome(jsonObject1.optBoolean("Home"));
+                    preferenceManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
+                    preferenceManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
+                    preferenceManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
+                    preferenceManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
+                    preferenceManager.setBranchName(jsonObject1.optString("EnableBranchName"));
+                    preferenceManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
+                    preferenceManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
+                    preferenceManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
+                    preferenceManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
+                    preferenceManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
+                    preferenceManager.setTimeZone(jsonObject1.optString("TimeZone"));
+                    preferenceManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
+                    preferenceManager.setIsBack(jsonObject1.optBoolean("Back"));
+                    preferenceManager.setIsFront(jsonObject1.optBoolean("Front"));
 
-                    preferencesManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
-                    preferencesManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
-                    preferencesManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
-                    preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
-                    preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
-                    preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+                    preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
+                    preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
+                    preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
+                    preferenceManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
+                    preferenceManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
+                    preferenceManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
-                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferenceManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
                 }
 
 
@@ -932,52 +938,52 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
         try {
             if (jsonObject.optString("success").equals("true")) {
-                preferencesManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
+                preferenceManager.setaddress(decryption(jsonObject.optString("branchAddress")).equals("nodata") ? "" : decryption(jsonObject.optString("branchAddress")));
                 if (jsonObject.optString("branchEmail").equals("nodata")) {
-                    preferencesManager.setcontact_email("");
+                    preferenceManager.setcontact_email("");
                 } else {
-                    preferencesManager.setcontact_email(decryption(jsonObject.optString("branchEmail")).equals("nodata") ? "" : decryption(jsonObject.optString("branchEmail")));
+                    preferenceManager.setcontact_email(decryption(jsonObject.optString("branchEmail")).equals("nodata") ? "" : decryption(jsonObject.optString("branchEmail")));
                 }
-                preferencesManager.setcontact_no(decryption(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption(jsonObject.optString("branchContactNo")));
-                preferencesManager.setmerchant_name(decryption(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption(jsonObject.optString("branchName")));
-                preferencesManager.setgstno(decryption(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption(jsonObject.optString("gstNo")));
-                preferencesManager.setterminalId(decryption(jsonObject.optString("terminalId")));
+                preferenceManager.setcontact_no(decryption(jsonObject.optString("branchContactNo")).equals("nodata") ? "" : decryption(jsonObject.optString("branchContactNo")));
+                preferenceManager.setmerchant_name(decryption(jsonObject.optString("branchName")).equals("nodata") ? "" : decryption(jsonObject.optString("branchName")));
+                preferenceManager.setgstno(decryption(jsonObject.optString("gstNo")).equals("nodata") ? "" : decryption(jsonObject.optString("gstNo")));
+                preferenceManager.setterminalId(decryption(jsonObject.optString("terminalId")));
 
-                if (preferencesManager.isResetTerminal()) {
+                if (preferenceManager.isResetTerminal()) {
                     edt_unique_id.setText("");
-                    preferencesManager.setuniqueId("");
+                    preferenceManager.setuniqueId("");
                 } else {
-                    if (!preferencesManager.getuniqueId().equals("")) {
-                        edt_unique_id.setText(preferencesManager.getuniqueId());
+                    if (!preferenceManager.getuniqueId().equals("")) {
+                        edt_unique_id.setText(preferenceManager.getuniqueId());
                     } else {
                         edt_unique_id.setText(decryption(jsonObject.optString("accessId")));
-                        preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
+                        preferenceManager.setuniqueId(decryption(jsonObject.optString("accessId")));
                     }
 
                 }
 
 
                 if (jsonObject.has("configId")) {
-                    preferencesManager.setConfigId(decryption(jsonObject.optString("configId")));
+                    preferenceManager.setConfigId(decryption(jsonObject.optString("configId")));
                 }
 
                 if (jsonObject.has("merchant_id")) {
-                    preferencesManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
+                    preferenceManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
                 }
 
 
                 jsonObject1 = new JSONObject(decryption(jsonObject.optString("otherData")));
 //                jsonObject1 = new JSONObject(hextoString(jsonObject.optString("otherData")));
                 if (jsonObject.has("otherData")) {
-                    if (preferencesManager.isResetTerminal()) {
+                    if (preferenceManager.isResetTerminal()) {
                         edt_unique_id.setText("");
-                        preferencesManager.setuniqueId("");
+                        preferenceManager.setuniqueId("");
                     } else {
-                        if (!preferencesManager.getuniqueId().equals("")) {
-                            edt_unique_id.setText(preferencesManager.getuniqueId());
+                        if (!preferenceManager.getuniqueId().equals("")) {
+                            edt_unique_id.setText(preferenceManager.getuniqueId());
                         } else {
                             edt_unique_id.setText(jsonObject1.optString("accessId"));
-                            preferencesManager.setuniqueId(jsonObject1.optString("accessId"));
+                            preferenceManager.setuniqueId(jsonObject1.optString("accessId"));
                         }
 
                     }
@@ -988,145 +994,145 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                     tipList.add(jsonObject1.optString("DefaultTip3"));
                     tipList.add(jsonObject1.optString("DefaultTip4"));
                     tipList.add(jsonObject1.optString("DefaultTip5"));
-                    preferencesManager.setTipPercentage("Tip",tipList);
+                    preferenceManager.setTipPercentage("Tip",tipList);
 
-                    preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+                    preferenceManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
 
-                    preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
-                    preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
-                    preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
-                    preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
-                    preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
-                    preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
-                    preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
+                    preferenceManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                    preferenceManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                    preferenceManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                    preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                    preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                    preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                    preferenceManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
-                    preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
-                    preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
-                    preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
-                    preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
-                    preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
-                    preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
-                    preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
-                    preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
-                    preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
-                    preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
-                    preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
-                    preferencesManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
-                    preferencesManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
-                    preferencesManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
-                    preferencesManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
+                    preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                    preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                    preferenceManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                    preferenceManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
+                    preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                    preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                    preferenceManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                    preferenceManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
+                    preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
+                    preferenceManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
+                    preferenceManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
+                    preferenceManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
+                    preferenceManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
+                    preferenceManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
+                    preferenceManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
 
-                    preferencesManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
-                    preferencesManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
+                    preferenceManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
+                    preferenceManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
 
-                    preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
-                    preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
-                    preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
-                    preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                    preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                    preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
-                    preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
-                    preferencesManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
-                    preferencesManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
-                    preferencesManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
-                    preferencesManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
-                    preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
-                    preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
-                    preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
-                    preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
-                    preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
-                    preferencesManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
-                    preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
-                    preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
-                    preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
-                    preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
-                    preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
-                    preferencesManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
-                    preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
-                    preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
-                    preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
-                    preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
-                    preferencesManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
-                    preferencesManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
-                    preferencesManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
-                    preferencesManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
-                    preferencesManager.setTimeZone(jsonObject1.optString("TimeZone"));
-                    preferencesManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
-                    preferencesManager.setIsBack(jsonObject1.optBoolean("Back"));
-                    preferencesManager.setIsFront(jsonObject1.optBoolean("Front"));
+                    preferenceManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
+                    preferenceManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
+                    preferenceManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
+                    preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                    preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                    preferenceManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
+                    preferenceManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
+                    preferenceManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
+                    preferenceManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
+                    preferenceManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
+                    preferenceManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
+                    preferenceManager.setshowReference(jsonObject1.optString("ShowReference"));
+                    preferenceManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
+                    preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                    preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                    preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                    preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
+                    preferenceManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
+                    preferenceManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
+                    preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
+                    preferenceManager.setIsHome(jsonObject1.optBoolean("Home"));
+                    preferenceManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
+                    preferenceManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
+                    preferenceManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
+                    preferenceManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
+                    preferenceManager.setBranchName(jsonObject1.optString("EnableBranchName"));
+                    preferenceManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
+                    preferenceManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
+                    preferenceManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
+                    preferenceManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
+                    preferenceManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
+                    preferenceManager.setTimeZone(jsonObject1.optString("TimeZone"));
+                    preferenceManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
+                    preferenceManager.setIsBack(jsonObject1.optBoolean("Back"));
+                    preferenceManager.setIsFront(jsonObject1.optBoolean("Front"));
 
-                    preferencesManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
-                    preferencesManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
-                    preferencesManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
-                    preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
-                    preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
-                    preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+                    preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
+                    preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
+                    preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
+                    preferenceManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
+                    preferenceManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
+                    preferenceManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
 
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
-                    preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                    preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
-                    preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                    preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
-                    preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                    preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                    preferenceManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                    preferenceManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                    preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                    preferenceManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
 
                     if (jsonObject1.has("ConfigId")) {
-                        preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
+                        preferenceManager.setConfigId(jsonObject1.optString("ConfigId"));
                     }
 
                     if (jsonObject1.has("MerchantId")) {
-                        preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+                        preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
                     }
                 }
             } else {
                 if (jsonObject.has("configId")) {
-                    preferencesManager.setConfigId(decryption(jsonObject.optString("configId")));
+                    preferenceManager.setConfigId(decryption(jsonObject.optString("configId")));
                 }
 
                 if (jsonObject.has("merchant_id")) {
-                    preferencesManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
+                    preferenceManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
                 }
 
                 if (jsonObject.has("terminalId")) {
-                    preferencesManager.setterminalId(decryption(jsonObject.optString("terminalId")));
+                    preferenceManager.setterminalId(decryption(jsonObject.optString("terminalId")));
                 }
 //                if (jsonObject.has("accessId")) {
-//                    preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
+//                    preferenceManager.setuniqueId(decryption(jsonObject.optString("accessId")));
 //                }
             }
         } catch (Exception e) {
             if (jsonObject.has("configId")) {
-                preferencesManager.setConfigId(decryption(jsonObject.optString("configId")));
+                preferenceManager.setConfigId(decryption(jsonObject.optString("configId")));
             }
 
             if (jsonObject.has("config_id")) {
-                preferencesManager.setConfigId(decryption(jsonObject.optString("config_id")));
+                preferenceManager.setConfigId(decryption(jsonObject.optString("config_id")));
             }
 
             if (jsonObject.has("merchant_id")) {
-                preferencesManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
+                preferenceManager.setMerchantId(decryption(jsonObject.optString("merchant_id")));
             }
 
             if (jsonObject.has("terminalId")) {
-                preferencesManager.setterminalId(decryption(jsonObject.optString("terminalId")));
+                preferenceManager.setterminalId(decryption(jsonObject.optString("terminalId")));
             }
 
             if (jsonObject.has("terminal_id")) {
-                preferencesManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
+                preferenceManager.setterminalId(decryption(jsonObject.optString("terminal_id")));
             }
 
             if (jsonObject.has("branch_id")) {
-                preferencesManager.setMerchantId(decryption(jsonObject.optString("branch_id")));
+                preferenceManager.setMerchantId(decryption(jsonObject.optString("branch_id")));
             }
 
             if (jsonObject.has("branchId")) {
-                preferencesManager.setMerchantId(decryption(jsonObject.optString("branchId")));
+                preferenceManager.setMerchantId(decryption(jsonObject.optString("branchId")));
             }
 
 //            if (jsonObject.has("accessId")) {
-//                preferencesManager.setuniqueId(decryption(jsonObject.optString("accessId")));
+//                preferenceManager.setuniqueId(decryption(jsonObject.optString("accessId")));
 //            }
         }
     }
@@ -1153,7 +1159,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isGetBranchDetailsCalled) {
                     isGetBranchDetailsCalled = false;
@@ -1182,7 +1188,7 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 }
                 UpdateBranchDetailsNewJsonObject = jsonObject;
                 if (AppConstants.isRegistered) {
-                    preferencesManager.setaggregated_singleqr(true);
+                    preferenceManager.setaggregated_singleqr(true);
                     if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
                         Toast.makeText(getActivity(), "Please enter Terminal Id and Access Id", Toast.LENGTH_LONG).show();
                     } else if (edt_terminal_id.getText().toString().equals("")) {
@@ -1195,14 +1201,13 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 } else {
                     _NewUser(UpdateBranchDetailsNewJsonObject);
                     // callGetBranchDetails_new();
-
                 }
 
                 break;
             case "UpdateBranchDetails":
                 //added on 20th may 2019
                 if (AppConstants.isRegistered) {
-                    preferencesManager.setaggregated_singleqr(true);
+                    preferenceManager.setaggregated_singleqr(true);
                     if (edt_terminal_id.getText().toString().equals("") && edt_unique_id.getText().toString().equals("")) {
                         Toast.makeText(getActivity(), "Please enter Terminal Id and Access Id", Toast.LENGTH_LONG).show();
                     } else if (edt_terminal_id.getText().toString().equals("")) {
@@ -1219,16 +1224,16 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
             case "DeleteTerminal":
                 callAuthToken();
                 if (jsonObject.optBoolean("success")) {
-                    preferencesManager.clearPreferences();
+                    preferenceManager.clearPreferences();
                     Toast.makeText(getActivity(), "Terminal Config Deleted Successfully."+jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
                     // ((MyPOSMateApplication) getActivity().getApplicationContext()).asbtractConnection.disconnect();
 
-                    preferencesManager.setisResetTerminal(true);
+                    preferenceManager.setisResetTerminal(true);
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
                 } else {
                     Toast.makeText(getActivity(), "Terminal configuration not found on server.App data cleared successfully", Toast.LENGTH_SHORT).show();
-                    preferencesManager.clearPreferences();
-                    preferencesManager.setisResetTerminal(true);
+                    preferenceManager.clearPreferences();
+                    preferenceManager.setisResetTerminal(true);
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS, null);
                 }
 
@@ -1270,65 +1275,65 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                 DashboardActivity.isLaunch = true;
                 callAuthToken();
                 AppConstants.isRegistered = false;
-//                preferencesManager.setuniqueId("");
+//                preferenceManager.setuniqueId("");
 
                 if (jsonObject.has("branchInfo")) {
                     if (jsonObject.optJSONObject("branchInfo").has("company")) {
-                        preferencesManager.setMerchantName(jsonObject.optJSONObject("branchInfo").optString("company"));
-                        preferencesManager.setbranchName(jsonObject.optJSONObject("branchInfo").optString("branchName"));
-//                        preferencesManager.setTerminalIdentifier(jsonObject.optJSONObject("terminal").optString("terminalTag"));
-//                        preferencesManager.setPOSIdentifier(jsonObject.optJSONObject("terminal").optString("posTag"));
-//                        preferencesManager.setLaneIdentifier(jsonObject.optJSONObject("terminal").optString("laneTag"));
+                        preferenceManager.setMerchantName(jsonObject.optJSONObject("branchInfo").optString("company"));
+                        preferenceManager.setbranchName(jsonObject.optJSONObject("branchInfo").optString("branchName"));
+//                        preferenceManager.setTerminalIdentifier(jsonObject.optJSONObject("terminal").optString("terminalTag"));
+//                        preferenceManager.setPOSIdentifier(jsonObject.optJSONObject("terminal").optString("posTag"));
+//                        preferenceManager.setLaneIdentifier(jsonObject.optJSONObject("terminal").optString("laneTag"));
                     }
 
                 }
                 if (jsonObject.optBoolean("status")) {
-                    preferencesManager.setcurrency(jsonObject.optString("currency"));
-                    preferencesManager.setisRegistered(true);
+                    preferenceManager.setcurrency(jsonObject.optString("currency"));
+                    preferenceManager.setisRegistered(true);
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     username = jsonObject.optString("terminal_xmpp_jid").toString();
                     password = jsonObject.optString("terminal_xmpp_password").toString();
-                    preferencesManager.setterminalId(edt_terminal_id.getText().toString());
-                    preferencesManager.setterminalIp(edt_terminal_ip.getText().toString());
-                    preferencesManager.setuniqueId(edt_unique_id.getText().toString());
-                    preferencesManager.setUsername(username);
-                    preferencesManager.setPassword(password);
-                    preferencesManager.setterminal_refund_password(jsonObject.optString("terminal_refund_password").toString());
-                    preferencesManager.setIsAuthenticated(false);
-                    preferencesManager.setIsConnected(false);
-                    preferencesManager.setisUnipaySelected(true);
-                    preferencesManager.setisUnionPaySelected(true);
-                    preferencesManager.setisUplanSelected(false);
-                    preferencesManager.setisAlipaySelected(true);
-                    preferencesManager.setisWechatSelected(true);
-                    preferencesManager.setisUnionPayQrCodeDisplaySelected(true);
-                    preferencesManager.setIsHome(false);
-                    preferencesManager.setIsBack(false);
-                    preferencesManager.setIsFront(false);
-                    preferencesManager.setisQR(false);
-                    preferencesManager.setisStaticQR(false);
-                    preferencesManager.setcurrency(jsonObject.optString("currency"));
-                    preferencesManager.setisPrint("true");
-                    preferencesManager.setshowReference("false");
-                    preferencesManager.setisMembershipHome(false);
-                    preferencesManager.setisMembershipManual(false);
-                    preferencesManager.setisLoyality(false);
-                    preferencesManager.setBranchEmail("false");
-                    preferencesManager.setBranchPhoneNo("false");
-                    preferencesManager.setBranchAddress("false");
-                    preferencesManager.setBranchName("false");
-                    preferencesManager.setGSTNo("false");
-                    preferencesManager.setIsManual(true);
-                    preferencesManager.setmerchant_info(jsonObject.optString("merchant_info"));
-//                    preferencesManager.setMerchantId("");
-//                    preferencesManager.setConfigId("");
+                    preferenceManager.setterminalId(edt_terminal_id.getText().toString());
+                    preferenceManager.setterminalIp(edt_terminal_ip.getText().toString());
+                    preferenceManager.setuniqueId(edt_unique_id.getText().toString());
+                    preferenceManager.setUsername(username);
+                    preferenceManager.setPassword(password);
+                    preferenceManager.setterminal_refund_password(jsonObject.optString("terminal_refund_password").toString());
+                    preferenceManager.setIsAuthenticated(false);
+                    preferenceManager.setIsConnected(false);
+                    preferenceManager.setisUnipaySelected(true);
+                    preferenceManager.setisUnionPaySelected(true);
+                    preferenceManager.setisUplanSelected(false);
+                    preferenceManager.setisAlipaySelected(true);
+                    preferenceManager.setisWechatSelected(true);
+                    preferenceManager.setisUnionPayQrCodeDisplaySelected(true);
+                    preferenceManager.setIsHome(false);
+                    preferenceManager.setIsBack(false);
+                    preferenceManager.setIsFront(false);
+                    preferenceManager.setisQR(false);
+                    preferenceManager.setisStaticQR(false);
+                    preferenceManager.setcurrency(jsonObject.optString("currency"));
+                    preferenceManager.setisPrint("true");
+                    preferenceManager.setshowReference("false");
+                    preferenceManager.setisMembershipHome(false);
+                    preferenceManager.setisMembershipManual(false);
+                    preferenceManager.setisLoyality(false);
+                    preferenceManager.setBranchEmail("false");
+                    preferenceManager.setBranchPhoneNo("false");
+                    preferenceManager.setBranchAddress("false");
+                    preferenceManager.setBranchName("false");
+                    preferenceManager.setGSTNo("false");
+                    preferenceManager.setIsManual(true);
+                    preferenceManager.setmerchant_info(jsonObject.optString("merchant_info"));
+//                    preferenceManager.setMerchantId("");
+//                    preferenceManager.setConfigId("");
 
-                    preferencesManager.setisTimeZoneChecked(true);
-                    preferencesManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
-                    preferencesManager.setTimeZoneId("Pacific/Auckland");
+                    preferenceManager.setisTimeZoneChecked(true);
+                    preferenceManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
+                    preferenceManager.setTimeZoneId("Pacific/Auckland");
 
 
-                    if (preferencesManager.isResetTerminal()) {
+                    if (preferenceManager.isResetTerminal()) {
                         ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                         return;
                     }
@@ -1381,48 +1386,48 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                             ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                             username = jsonObject.optString("terminal_xmpp_jid").toString();
                             password = jsonObject.optString("terminal_xmpp_password").toString();
-                            preferencesManager.setterminalId(edt_terminal_id.getText().toString());
-                            preferencesManager.setterminalIp(edt_terminal_ip.getText().toString());
-                            preferencesManager.setuniqueId(edt_unique_id.getText().toString());
-                            preferencesManager.setUsername(username);
-                            preferencesManager.setPassword(password);
-                            preferencesManager.setterminal_refund_password(jsonObject.optString("terminal_refund_password").toString());
-                            preferencesManager.setIsAuthenticated(false);
-                            preferencesManager.setIsConnected(false);
-                            preferencesManager.setisDisplayAds(true);
-                            preferencesManager.setdisplayAdsTime("5");
-                            preferencesManager.setisUnipaySelected(true);
-                            preferencesManager.setisUnionPaySelected(true);
-                            preferencesManager.setisUplanSelected(false);
-                            preferencesManager.setIsHome(false);
-                            preferencesManager.setIsBack(false);
-                            preferencesManager.setIsFront(false);
-                            preferencesManager.setisQR(false);
-                            preferencesManager.setisStaticQR(false);
-                            preferencesManager.setcurrency(jsonObject.optString("currency"));
-                            preferencesManager.setisPrint("true");
-                            preferencesManager.setshowReference("false");
-                            preferencesManager.setisMembershipHome(false);
-                            preferencesManager.setisMembershipManual(false);
-                            preferencesManager.setisLoyality(false);
-                            preferencesManager.setBranchEmail("false");
-                            preferencesManager.setBranchPhoneNo("false");
-                            preferencesManager.setBranchAddress("false");
-                            preferencesManager.setBranchName("false");
-                            preferencesManager.setGSTNo("false");
-                            preferencesManager.setIsManual(true);
-                            preferencesManager.setmerchant_info(jsonObject.optString("merchant_info"));
-                            preferencesManager.setisTimeZoneChecked(true);
-                            preferencesManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
-                            preferencesManager.setTimeZoneId("Pacific/Auckland");
-                            preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
-                            preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
-                            preferencesManager.setcnv_up_upiqr_mpmcloud_lower("");
+                            preferenceManager.setterminalId(edt_terminal_id.getText().toString());
+                            preferenceManager.setterminalIp(edt_terminal_ip.getText().toString());
+                            preferenceManager.setuniqueId(edt_unique_id.getText().toString());
+                            preferenceManager.setUsername(username);
+                            preferenceManager.setPassword(password);
+                            preferenceManager.setterminal_refund_password(jsonObject.optString("terminal_refund_password").toString());
+                            preferenceManager.setIsAuthenticated(false);
+                            preferenceManager.setIsConnected(false);
+                            preferenceManager.setisDisplayAds(true);
+                            preferenceManager.setdisplayAdsTime("5");
+                            preferenceManager.setisUnipaySelected(true);
+                            preferenceManager.setisUnionPaySelected(true);
+                            preferenceManager.setisUplanSelected(false);
+                            preferenceManager.setIsHome(false);
+                            preferenceManager.setIsBack(false);
+                            preferenceManager.setIsFront(false);
+                            preferenceManager.setisQR(false);
+                            preferenceManager.setisStaticQR(false);
+                            preferenceManager.setcurrency(jsonObject.optString("currency"));
+                            preferenceManager.setisPrint("true");
+                            preferenceManager.setshowReference("false");
+                            preferenceManager.setisMembershipHome(false);
+                            preferenceManager.setisMembershipManual(false);
+                            preferenceManager.setisLoyality(false);
+                            preferenceManager.setBranchEmail("false");
+                            preferenceManager.setBranchPhoneNo("false");
+                            preferenceManager.setBranchAddress("false");
+                            preferenceManager.setBranchName("false");
+                            preferenceManager.setGSTNo("false");
+                            preferenceManager.setIsManual(true);
+                            preferenceManager.setmerchant_info(jsonObject.optString("merchant_info"));
+                            preferenceManager.setisTimeZoneChecked(true);
+                            preferenceManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
+                            preferenceManager.setTimeZoneId("Pacific/Auckland");
+                            preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(false);
+                            preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(false);
+                            preferenceManager.setcnv_up_upiqr_mpmcloud_lower("");
 
                             if (jsonObject1.has("MerchantId") && !jsonObject1.optString("MerchantId").equals(""))
-                                preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+                                preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
                             if (jsonObject1.has("ConfigId") && !jsonObject1.optString("ConfigId").equals(""))
-                                preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
+                                preferenceManager.setConfigId(jsonObject1.optString("ConfigId"));
                             ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                             return;
                         }
@@ -1432,11 +1437,11 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
 
 
                     if (jsonObject1 != null) {
-                        preferencesManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
+                        preferenceManager.setisUnionPaySelected(jsonObject1.optBoolean("UnionPay"));
                         if (jsonObject1.has("MerchantId") && !jsonObject1.optString("MerchantId").equals(""))
-                            preferencesManager.setMerchantId(jsonObject1.optString("MerchantId"));
+                            preferenceManager.setMerchantId(jsonObject1.optString("MerchantId"));
                         if (jsonObject1.has("ConfigId") && !jsonObject1.optString("ConfigId").equals(""))
-                            preferencesManager.setConfigId(jsonObject1.optString("ConfigId"));
+                            preferenceManager.setConfigId(jsonObject1.optString("ConfigId"));
 
                         ArrayList tipList=new ArrayList();
                         tipList.add(jsonObject1.optString("DefaultTip1"));
@@ -1444,117 +1449,117 @@ public class Settings extends Fragment implements View.OnClickListener, Connecti
                         tipList.add(jsonObject1.optString("DefaultTip3"));
                         tipList.add(jsonObject1.optString("DefaultTip4"));
                         tipList.add(jsonObject1.optString("DefaultTip5"));
-                        preferencesManager.setTipPercentage("Tip",tipList);
+                        preferenceManager.setTipPercentage("Tip",tipList);
 
-                        preferencesManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
+                        preferenceManager.setisSwitchTip(jsonObject1.optBoolean("SwitchOnTip"));
 
-                        preferencesManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
-                        preferencesManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
-                        preferencesManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
-                        preferencesManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
-                        preferencesManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
-                        preferencesManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
-                        preferencesManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
+                        preferenceManager.setisTipDefault1(jsonObject1.optBoolean("DefaultTip1IsEnabled"));
+                        preferenceManager.setisTipDefault2(jsonObject1.optBoolean("DefaultTip2IsEnabled"));
+                        preferenceManager.setisTipDefault3(jsonObject1.optBoolean("DefaultTip3IsEnabled"));
+                        preferenceManager.setisTipDefault4(jsonObject1.optBoolean("DefaultTip4IsEnabled"));
+                        preferenceManager.setisTipDefault5(jsonObject1.optBoolean("DefaultTip5IsEnabled"));
+                        preferenceManager.setisTipDefaultCustom(jsonObject1.optBoolean("CustomTip"));
+                        preferenceManager.putString("DATA",jsonObject1.optString("PaymentModePosition"));
 
 
-                        preferencesManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
-                        preferencesManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
-                        preferencesManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
-                        preferencesManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
-                        preferencesManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
-                        preferencesManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
-                        preferencesManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
-                        preferencesManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
-                        preferencesManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
-                        preferencesManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
-                        preferencesManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
-                        preferencesManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
-                        preferencesManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
-                        preferencesManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
-                        preferencesManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
+                        preferenceManager.setisCentrapayMerchantQRDisplaySelected(jsonObject1.optBoolean("CentrapaySelected"));
+                        preferenceManager.setcnv_centrapay_display_and_add(jsonObject1.optBoolean("CnvCentrapayDisplayAndAdd"));
+                        preferenceManager.setcnv_centrapay_display_only(jsonObject1.optBoolean("CnvCentrapayDisplayOnly"));
+                        preferenceManager.setcnv_centrapay(jsonObject1.optString("CentrapayFeeValue"));
+                        preferenceManager.setisPoliSelected(jsonObject1.optBoolean("PoliSelected"));
+                        preferenceManager.setcnv_poli_display_and_add(jsonObject1.optBoolean("CnvPoliDisplayAndAdd"));
+                        preferenceManager.setcnv_poli_display_only(jsonObject1.optBoolean("CnvPoliDisplayOnly"));
+                        preferenceManager.setcnv_poli(jsonObject1.optString("PoliFeeValue"));
+                        preferenceManager.setcnv_alipay_diaplay_and_add(jsonObject1.optBoolean("CnvAlipayDisplayAndAdd"));
+                        preferenceManager.setcnv_alipay_diaplay_only(jsonObject1.optBoolean("CnvAlipayDisplayOnly"));
+                        preferenceManager.setcnv_wechat_display_and_add(jsonObject1.optBoolean("CnvWeChatDisplayAndAdd"));
+                        preferenceManager.setcnv_wechat_display_only(jsonObject1.optBoolean("CnvWeChatDisplayOnly"));
+                        preferenceManager.setisAlipaySelected(jsonObject1.optBoolean("AlipaySelected"));
+                        preferenceManager.setisWechatSelected(jsonObject1.optBoolean("WeChatSelected"));
+                        preferenceManager.setcnv_wechat(jsonObject1.optString("WeChatValue"));
 
-                        preferencesManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
-                        preferencesManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
-                        preferencesManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
-                        preferencesManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
-                        preferencesManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
-                        preferencesManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
-                        preferencesManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
-                        preferencesManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
+                        preferenceManager.setisWeChatScan(jsonObject1.optBoolean("WeChatScanQR"));
+                        preferenceManager.setisAlipayScan(jsonObject1.optBoolean("AlipayScanQR"));
+                        preferenceManager.setUnionPayQrSelected(jsonObject1.optBoolean("UnionPayQR"));
+                        preferenceManager.setisUnionPayQrCodeDisplaySelected(jsonObject1.optBoolean("isUnionPayQrCodeDisplaySelected"));
+                        preferenceManager.setcnv_uniqr(jsonObject1.optString("UnionPayQrValue"));
+                        preferenceManager.setcnv_uplan(jsonObject1.optString("UplanValue"));
+                        preferenceManager.setcnv_uni_display_and_add(jsonObject1.optBoolean("CnvUnionpayDisplayAndAdd"));
+                        preferenceManager.setcnv_uni_display_only(jsonObject1.optBoolean("CnvUnionpayDisplayOnly"));
 
-                        preferencesManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
-                        preferencesManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
-                        preferencesManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
-                        preferencesManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
-                        preferencesManager.setshowReference(jsonObject1.optString("ShowReference"));
-                        preferencesManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
-                        preferencesManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
-                        preferencesManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
-                        preferencesManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
-                        preferencesManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
-                        preferencesManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
-                        preferencesManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
-                        preferencesManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
-                        preferencesManager.setIsHome(jsonObject1.optBoolean("Home"));
-                        preferencesManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
-                        preferencesManager.setIsBack(jsonObject1.optBoolean("Back"));
-                        preferencesManager.setIsFront(jsonObject1.optBoolean("Front"));
-                        preferencesManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
-                        preferencesManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
-                        preferencesManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
-                        preferencesManager.setBranchName(jsonObject1.optString("EnableBranchName"));
-                        preferencesManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
-                        preferencesManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
-                        preferencesManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
-                        preferencesManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
+                        preferenceManager.setisUplanSelected(jsonObject1.optBoolean("Uplan"));
+                        preferenceManager.setaggregated_singleqr(jsonObject1.optBoolean("AlipayWeChatPay"));
+                        preferenceManager.setAlipayWechatQrSelected(jsonObject1.optBoolean("AlipayWeChatScanQR"));
+                        preferenceManager.setisPrint(jsonObject1.optString("PrintReceiptautomatically"));
+                        preferenceManager.setshowReference(jsonObject1.optString("ShowReference"));
+                        preferenceManager.setisQR(jsonObject1.optBoolean("ShowPrintQR"));
+                        preferenceManager.setisStaticQR(jsonObject1.optBoolean("DisplayStaticQR"));
+                        preferenceManager.setisDisplayLoyaltyApps(jsonObject1.optBoolean("isDisplayLoyaltyApps"));
+                        preferenceManager.setisExternalScan(jsonObject1.optBoolean("isExternalInputDevice"));
+                        preferenceManager.setDragDrop(jsonObject1.optBoolean("isDragDrop"));
+                        preferenceManager.setisMembershipManual(jsonObject1.optBoolean("ShowMembershipManual"));
+                        preferenceManager.setisMembershipHome(jsonObject1.optBoolean("ShowMembershipHome"));
+                        preferenceManager.setisLoyality(jsonObject1.optBoolean("Membership/Loyality"));
+                        preferenceManager.setIsHome(jsonObject1.optBoolean("Home"));
+                        preferenceManager.setIsManual(jsonObject1.optBoolean("ManualEntry"));
+                        preferenceManager.setIsBack(jsonObject1.optBoolean("Back"));
+                        preferenceManager.setIsFront(jsonObject1.optBoolean("Front"));
+                        preferenceManager.setisConvenienceFeeSelected(jsonObject1.optBoolean("ConvenienceFee"));
+                        preferenceManager.setcnv_alipay(jsonObject1.optString("AlipayWechatvalue"));
+                        preferenceManager.setcnv_uni(jsonObject1.optString("UnionPayvalue"));
+                        preferenceManager.setBranchName(jsonObject1.optString("EnableBranchName"));
+                        preferenceManager.setBranchAddress(jsonObject1.optString("EnableBranchAddress"));
+                        preferenceManager.setBranchEmail(jsonObject1.optString("EnableBranchEmail"));
+                        preferenceManager.setBranchPhoneNo(jsonObject1.optString("EnableBranchContactNo"));
+                        preferenceManager.setGSTNo(jsonObject1.optString("EnableBranchGSTNo"));
 
                         if (jsonObject1.has("TimeZoneId")) {
                             if (jsonObject1.optString("TimeZoneId").equals("")) {
-                                preferencesManager.setisTimeZoneChecked(true);
-                                preferencesManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
-                                preferencesManager.setTimeZoneId("Pacific/Auckland");
+                                preferenceManager.setisTimeZoneChecked(true);
+                                preferenceManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
+                                preferenceManager.setTimeZoneId("Pacific/Auckland");
                             } else {
-                                preferencesManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
-                                preferencesManager.setTimeZone(jsonObject1.optString("TimeZone"));
-                                preferencesManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
+                                preferenceManager.setTimeZoneId(jsonObject1.optString("TimeZoneId"));
+                                preferenceManager.setTimeZone(jsonObject1.optString("TimeZone"));
+                                preferenceManager.setisTimeZoneChecked(jsonObject1.optBoolean("isTimeZoneChecked"));
                             }
                         } else {
-                            preferencesManager.setisTimeZoneChecked(true);
-                            preferencesManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
-                            preferencesManager.setTimeZoneId("Pacific/Auckland");
+                            preferenceManager.setisTimeZoneChecked(true);
+                            preferenceManager.setTimeZone("New Zealand Standard Time (Pacific/Auckland)");
+                            preferenceManager.setTimeZoneId("Pacific/Auckland");
                         }
 
 
-                        preferencesManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
-                        preferencesManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
-                        preferencesManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
-                        preferencesManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
-                        preferencesManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
-                        preferencesManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
+                        preferenceManager.setTerminalIdentifier(jsonObject1.optString("TerminalIdentifier"));
+                        preferenceManager.setPOSIdentifier(jsonObject1.optString("POSIdentifier"));
+                        preferenceManager.setLaneIdentifier(jsonObject1.optString("LaneIdentifier"));
+                        preferenceManager.setisLaneIdentifier(jsonObject1.optBoolean("isLaneIdentifier"));
+                        preferenceManager.setisPOSIdentifier(jsonObject1.optBoolean("isPOSIdentifier"));
+                        preferenceManager.setisTerminalIdentifier(jsonObject1.optBoolean("isTerminalIdentifier"));
 
-                        preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
-                        preferencesManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
-                        preferencesManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
-                        preferencesManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
-                        preferencesManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
-                        preferencesManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
-                        preferencesManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
-                        preferencesManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_and_add(jsonObject1.optBoolean("CnvUPIQrMPMCloudDAADD"));
+                        preferenceManager.setcnv_up_upi_qrscan_mpmcloud_display_only(jsonObject1.optBoolean("CnvUPIQrMPMCloudDOnly"));
+                        preferenceManager.setcnv_up_upiqr_mpmcloud_lower(jsonObject1.optString("CnvUPIQrMPMCloudValue"));
+                        preferenceManager.setCnv_up_upiqr_mpmcloud_higher(jsonObject1.optString("CnvUPIQrMPMCloudValueHigher"));
+                        preferenceManager.setCnv_up_upiqr_mpmcloud_amount(jsonObject1.optString("CnvUPIQRMPMCloudAmount"));
+                        preferenceManager.set_cnv_unimerchantqrdisplayLower(jsonObject1.optString("cnv_unimerchantqrdisplay"));
+                        preferenceManager.set_cnv_unimerchantqrdisplayHigher(jsonObject1.optString("cnv_unimerchantqrdisplay_higher"));
+                        preferenceManager.setisMerchantDPARDisplay(jsonObject1.optBoolean("isMerchantDPARDisplay"));
                     }
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(true);
                     //  initChat(jsonObject.optString("terminal_xmpp_jid").toString(),jsonObject.optString("terminal_xmpp_password").toString());
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.POSMATECONNECTION, null);
                 } else {
-                    preferencesManager.setuniqueId("");
-                    preferencesManager.clearPreferences();
+                    preferenceManager.setuniqueId("");
+                    preferenceManager.clearPreferences();
                     ((DashboardActivity) getActivity()).callSetupFragment(DashboardActivity.SCREENS.SETTINGS,null);
                     ((DashboardActivity) getActivity()).img_menu.setEnabled(false);
                     Toast.makeText(getActivity(), jsonObject.optString("message"), Toast.LENGTH_LONG).show();
                   }
 
-                if (preferencesManager.is_cnv_alipay_display_and_add() ||
-                        preferencesManager.is_cnv_alipay_display_only()) {
-                    preferencesManager.setisAlipaySelected(true);
+                if (preferenceManager.is_cnv_alipay_display_and_add() ||
+                        preferenceManager.is_cnv_alipay_display_only()) {
+                    preferenceManager.setisAlipaySelected(true);
                 }
 
 

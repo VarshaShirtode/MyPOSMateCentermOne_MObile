@@ -27,7 +27,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
 
     private Context mContext;
     JSONObject jsonObject;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
     public static String transactionDate = "";
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -44,7 +44,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
     public TransactionDetailsAdapter(Context mContext, JSONObject jsonObject) {
         this.jsonObject = jsonObject;
         this.mContext = mContext;
-        preferencesManager = PreferencesManager.getInstance(mContext);
+        preferenceManager = PreferencesManager.getInstance(mContext);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
                     df.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
                     Date d = df.parse(jsonObject.optString(jsonObject.names().getString(position)).replace("T", " "));
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+                    df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     holder.tv_details_key.setText(jsonObject.names().getString(position));
                     holder.tv_details_value.setText(df1.format(d));
                     transactionDate = holder.tv_details_value.getText().toString();
@@ -75,7 +75,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
                     df.setTimeZone(TimeZone.getTimeZone("UTC"));
                     Date d = df.parse(jsonObject.optString(jsonObject.names().getString(position)).replace("T", " "));
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+                    df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     holder.tv_details_key.setText(jsonObject.names().getString(position));
                     holder.tv_details_value.setText(df1.format(d));
                     transactionDate = holder.tv_details_value.getText().toString();
@@ -84,7 +84,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
                     df.setTimeZone(TimeZone.getTimeZone("UTC"));
                     Date d = df.parse(jsonObject.optString(jsonObject.names().getString(position)).replace("T", " "));
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+                    df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     holder.tv_details_key.setText(jsonObject.names().getString(position));
                     holder.tv_details_value.setText(df1.format(d));
                     transactionDate = holder.tv_details_value.getText().toString();
@@ -94,7 +94,7 @@ public class TransactionDetailsAdapter extends RecyclerView.Adapter<TransactionD
 
                     Date d = df.parse(jsonObject.optString(jsonObject.names().getString(position)).replace("T", " "));
                     SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    df1.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+                    df1.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
                     holder.tv_details_key.setText(jsonObject.names().getString(position));
                     holder.tv_details_value.setText(df1.format(d));
                     transactionDate = holder.tv_details_value.getText().toString();

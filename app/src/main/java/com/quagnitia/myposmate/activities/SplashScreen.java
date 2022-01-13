@@ -11,21 +11,21 @@ import com.quagnitia.myposmate.R;
 import com.quagnitia.myposmate.utils.PreferencesManager;
 
 public class SplashScreen extends AppCompatActivity {
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        preferencesManager = PreferencesManager.getInstance(this);
-        if (!preferencesManager.isAlipaySelected()
-                && !preferencesManager.isWechatSelected() &&
-                !preferencesManager.isUnipaySelected() &&
-                !preferencesManager.isVisaSlelected()) {
-            preferencesManager.setisAlipaySelected(true);
-            preferencesManager.setisUnipaySelected(true);
-            preferencesManager.setisVisaSlelected(true);
-            preferencesManager.setisWechatSelected(true);
+        preferenceManager = PreferencesManager.getInstance(this);
+        if (!preferenceManager.isAlipaySelected()
+                && !preferenceManager.isWechatSelected() &&
+                !preferenceManager.isUnipaySelected() &&
+                !preferenceManager.isVisaSlelected()) {
+            preferenceManager.setisAlipaySelected(true);
+            preferenceManager.setisUnipaySelected(true);
+            preferenceManager.setisVisaSlelected(true);
+            preferenceManager.setisWechatSelected(true);
         }
 
         new CountDownTimer(2000, 1000) {

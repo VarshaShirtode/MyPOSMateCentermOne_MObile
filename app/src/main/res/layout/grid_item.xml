@@ -18,96 +18,116 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-        <RelativeLayout
-            android:id="@+id/rlTop1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-android:visibility="gone"
-            >
-        <ImageView
-            android:id="@+id/form_image"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/rec_bg"
-            android:padding="10dp"
-            android:src="@drawable/ic_alipay"
-            />
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlTop1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:id="@+id/form_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/rec_bg"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_alipay"
+                    />
+            </RelativeLayout>
 
-        <RelativeLayout
-        android:id="@+id/rlTop2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/rec_bg"
-        android:padding="5dp"
-        android:layout_margin="5dp"
-            android:visibility="gone"
-        >
-        <ImageView
-            android:id="@+id/scanner"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/scanner"
-        android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
+            <RelativeLayout
+                android:id="@+id/rlTop6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:id="@+id/form_image1"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/rec_bg"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_zip"
+                    />
+            </RelativeLayout>
 
-            />
+            <RelativeLayout
+                android:id="@+id/rlTop2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rec_bg"
+                android:padding="5dp"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:id="@+id/scanner"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/scanner"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/alipay_logo"
-            android:layout_below="@+id/scanner"
-            android:layout_alignParentLeft="true"
+                    />
 
-            />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/alipay_logo"
+                    android:layout_below="@+id/scanner"
+                    android:layout_alignParentLeft="true"
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/wechat_logo"
-            android:layout_below="@+id/scanner"
-            android:layout_alignParentRight="true"
+                    />
 
-            />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/wechat_logo"
+                    android:layout_below="@+id/scanner"
+                    android:layout_alignParentRight="true"
 
-    </RelativeLayout>
+                    />
 
-        <RelativeLayout
-            android:id="@+id/rlTop3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/rec_bg"
-            android:layout_margin="5dp"
-            android:visibility="gone"
-            >
-            <ImageView
-                android:id="@+id/scanners"
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:src="@drawable/scanner"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
-                android:paddingLeft="10dp"
-                />
+            </RelativeLayout>
 
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_unipay"
-                android:layout_below="@+id/scanners"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:paddingRight="10dp"
-                />
+            <RelativeLayout
+                android:id="@+id/rlTop3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rec_bg"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:id="@+id/scanners"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/scanner"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerInParent="true"
+                    android:paddingLeft="10dp"
+                    />
 
-        </RelativeLayout>
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_unipay"
+                    android:layout_below="@+id/scanners"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:paddingRight="10dp"
+                    />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/rlTop4"
@@ -117,7 +137,7 @@ android:visibility="gone"
                 android:background="@drawable/rec_bg"
                 android:padding="5dp"
                 android:layout_margin="5dp"
-
+                android:visibility="gone"
                 >
                 <ImageView
                     android:id="@+id/centrapay"
@@ -136,6 +156,64 @@ android:visibility="gone"
                     android:layout_alignParentTop="true"
                     />
 
+
+            </RelativeLayout>
+
+            <!--<RelativeLayout
+                android:id="@+id/rlTop5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rec_bg"
+                android:layout_margin="5dp"
+                >
+                <ImageView
+                    android:id="@+id/scanner5"
+                    android:layout_width="45dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/qr_image"
+                    android:layout_below="@+id/imgZip"
+                    android:layout_centerHorizontal="true"
+
+                    />
+
+                <ImageView
+                    android:id="@+id/imgZip"
+                    android:layout_width="65dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_zip"
+                    android:layout_centerHorizontal="true"
+                    />
+
+            </RelativeLayout>-->
+            <RelativeLayout
+                android:id="@+id/rlTop5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rec_bg"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:id="@+id/scanner5"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/scanner"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerInParent="true"
+                    android:paddingLeft="10dp"
+                    />
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_zip"
+                    android:layout_below="@+id/scanner5"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:paddingRight="5dp"
+                    />
 
             </RelativeLayout>
         </RelativeLayout>
@@ -157,18 +235,19 @@ android:visibility="gone"
             app:showSymbol="true" />
     </RelativeLayout>
 
+
 </RelativeLayout>
-<!-- <TextView
-            android:id="@+id/form_fieldlabel"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/rec_gray_bg"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="Alipay disabled\n"
-            android:textColor="@color/colorBlack"
-            android:textSize="10dp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            />-->
+    <!-- <TextView
+                android:id="@+id/form_fieldlabel"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/rec_gray_bg"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Alipay disabled\n"
+                android:textColor="@color/colorBlack"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                />-->

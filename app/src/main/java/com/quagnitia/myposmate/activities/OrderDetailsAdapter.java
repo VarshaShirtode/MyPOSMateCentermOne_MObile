@@ -21,7 +21,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
 
     private Context mContext;
     private JSONArray jsonArray;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tv_id, tv_item, tv_price, tv_qty, tv_add_on;
@@ -77,7 +77,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
 //            e.printStackTrace();
 //        }
 
-        preferencesManager = PreferencesManager.getInstance(mContext);
+        preferenceManager = PreferencesManager.getInstance(mContext);
     }
 
     @Override

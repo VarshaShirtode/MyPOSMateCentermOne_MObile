@@ -1439,7 +1439,7 @@
 //                    //   hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -1462,7 +1462,7 @@
 //                    //   hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                }
 //
@@ -1511,7 +1511,7 @@
 //                    //    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //                    preferenceManager.setReference(edt_reference.getText().toString());
@@ -1536,7 +1536,7 @@
 //                    // hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //                }
 //            }
 //        } catch (Exception e) {
@@ -1600,7 +1600,7 @@
 //                    //   hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -1623,7 +1623,7 @@
 //                    //   hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                }
 //
@@ -1672,7 +1672,7 @@
 //                    //    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //                    preferenceManager.setReference(edt_reference.getText().toString());
@@ -1697,7 +1697,7 @@
 //                    // hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //                }
 //            }
 //        } catch (Exception e) {
@@ -1769,7 +1769,7 @@
 //                        hashMapKeys.put("auth_code", auth_code);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //
@@ -1798,7 +1798,7 @@
 //                        hashMapKeys.put("auth_code", auth_code);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -1834,7 +1834,7 @@
 //                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
 //                    hashMapKeys.put("qrMode", "true");
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -1859,7 +1859,7 @@
 //                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
 //                    hashMapKeys.put("qrMode", "true");
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -1899,7 +1899,7 @@
 //                    hashMapKeys.put("qrMode", "true");
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -1927,7 +1927,7 @@
 //                    hashMapKeys.put("qrMode", "true");
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2004,7 +2004,7 @@
 //                        hashMapKeys.put("auth_code", auth_code);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //
@@ -2033,7 +2033,7 @@
 //                        hashMapKeys.put("auth_code", auth_code);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2069,7 +2069,7 @@
 //                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
 //                    hashMapKeys.put("qrMode", "true");
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -2094,7 +2094,7 @@
 //                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
 //                    hashMapKeys.put("qrMode", "true");
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2134,7 +2134,7 @@
 //                    hashMapKeys.put("qrMode", "true");
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -2162,7 +2162,7 @@
 //                    hashMapKeys.put("qrMode", "true");
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2239,7 +2239,7 @@
 //                        hashMapKeys.put("auth_code", auth_code);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //
@@ -2268,7 +2268,7 @@
 //                        hashMapKeys.put("auth_code", auth_code);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2304,7 +2304,7 @@
 //                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
 //                    hashMapKeys.put("qrMode", "true");
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -2329,7 +2329,7 @@
 //                    hashMapKeys.put("access_id", preferenceManager.getuniqueId());
 //                    hashMapKeys.put("qrMode", "true");
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2369,7 +2369,7 @@
 //                    hashMapKeys.put("qrMode", "true");
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -2397,7 +2397,7 @@
 //                    hashMapKeys.put("qrMode", "true");
 //
 //                    new OkHttpHandler(getActivity(), this, null, "payUnionPay")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYUNIONPAY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                }
@@ -2512,7 +2512,7 @@
 //            AppConstants.EXTERNAL_APP_UNIONPAY_RESPONSE = URLDecoder.decode(s + json_data + "}", "UTF-8");
 //
 //            new OkHttpHandler(getActivity(), this, null, "unionpaystatus")
-//                    .execute(AppConstants.BASE_URL2 + AppConstants.V2_UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
+//                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_UPDATE_UNIONPAY_STATUS + "?" + s1 + "&signature=" + signature + "&access_token=" + preferenceManager.getauthToken());
 //
 //        } catch (Exception e) {
 //            e.printStackTrace();
@@ -2563,7 +2563,7 @@
 //        hashMapKeys.put("reference_id", reference_id);
 //        hashMapKeys.put("random_str", new Date().getTime() + "");
 //        new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-//                .execute(AppConstants.BASE_URL2 + AppConstants.V2_GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //    }
 //
 //
@@ -2644,7 +2644,7 @@
 //        hashMapKeys.put("lane_id", preferenceManager.getLaneIdentifier());
 //        hashMapKeys.put("pos_id", preferenceManager.getPOSIdentifier());
 //        new OkHttpHandler(getActivity(), this, null, "saveLoyaltyInfo")
-//                .execute(AppConstants.BASE_URL2 + AppConstants.V2_SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_SAVE_LOYALTY_INFO + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //    }
 //
 //
@@ -3882,7 +3882,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -3903,7 +3903,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                }
 //
@@ -3950,7 +3950,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //                    preferenceManager.setReference(edt_reference.getText().toString());
@@ -3970,7 +3970,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //                }
 //            }
 //        } catch (Exception e) {
@@ -4032,7 +4032,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //
 //                } else {
@@ -4053,7 +4053,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                }
 //
@@ -4100,7 +4100,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //
 //                } else {
 //                    preferenceManager.setReference(edt_reference.getText().toString());
@@ -4120,7 +4120,7 @@
 //                    hashMapKeys.put("channel", channel);
 //
 //                    new OkHttpHandler(getActivity(), this, null, "paynow")
-//                            .execute(AppConstants.BASE_URL2 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+//                            .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.V2_PAYNOW + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 //                }
 //            }
 //        } catch (Exception e) {

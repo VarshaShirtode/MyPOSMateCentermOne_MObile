@@ -188,14 +188,14 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMap.put("grant_type", "client_credentials");
 //        hashMap.put("username", preferenceManager.getterminalId());
 //        hashMap.put("password", preferenceManager.getuniqueId());
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthTokenCloseTrade").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthTokenCloseTrade").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
     public void callAuthToken() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
     }
 
     public void openProgressDialog() {
@@ -305,7 +305,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
             hashMapKeys.put("executed", executed + "");
 
             new OkHttpHandler(getActivity(), this, null, "updateRequest")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.UPDATE_REQUEST +
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.UPDATE_REQUEST +
                             MD5Class.generateSignatureString(hashMapKeys, getActivity())
                             + "&access_token=" + preferenceManager.getauthToken());
 
@@ -461,6 +461,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         if (jsonObject.optBoolean("status")) {
             countDownTimer11.cancel();
             isCloseTradeFinished = true;
+            Log.v("TOKENRESPONSE","Cacelled"+jsonObject.toString());
             Toast.makeText(getActivity(), "Your transaction has been cancelled successfully", Toast.LENGTH_LONG).show();
             _callDefaultFragSwitch();
 
@@ -654,7 +655,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMapKeys.put("reference_id", jsonObject.optString("referenceId"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
 
@@ -678,7 +679,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMapKeys.put("reference_id", reference_id);
         hashMapKeys.put("random_str", new Date().getTime() + "");
         new OkHttpHandler(getActivity(), this, null, "TransactionDetails1")
-                .execute(AppConstants.BASE_URL2 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_TRANSACTION_DETAILS + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
     }
 
     String reference_id = "";
@@ -688,7 +689,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         if (okHttpHandler != null) {
             okHttpHandler.cancel(true);
         }
-
+        Log.v("TOKENRESPONSE","Call Cancel");
 
         //v2 signature implementation
         hashMapKeys.clear();
@@ -701,7 +702,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
         hashMapKeys.put("random_str", new Date().getTime() + "");
 
         new OkHttpHandler(getActivity(), this, null, "CloseTrade")
-                .execute(AppConstants.BASE_URL2 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.CANCEL_TRANSACTION + MD5Class.generateSignatureStringCloseTrade(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthTokenCloseTrade());
 
 
     }
@@ -878,7 +879,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                 if (progress != null)
                     if (progress != null && progress.isShowing())
                         progress.dismiss();
-
+Log.v("TOKENRESPONSE","QR canceld");
                 preferenceManager.setreference_id("");
                 preferenceManager.settriggerReferenceId("");
 
@@ -892,6 +893,7 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
 
                 if(isMerchantQrDisplaySelected)
                 {
+                    Log.v("TOKENRESPONSE","QR canceld1");
                     isMerchantQrDisplaySelected=false;
                     if( MyPOSMateApplication.isOpen)
                     {
@@ -900,11 +902,13 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                         isTrigger=true;
                         openProgressDialog();
                         callAuthToken();
+                        Log.v("TOKENRESPONSE","QR canceld2");
                     }
                     else
                     {
                         MyPOSMateApplication.isOpen = false;
                         MyPOSMateApplication.isActiveQrcode = false;
+                        Log.v("TOKENRESPONSE","QR canceld3");
                         if(preferenceManager.isManual())
                         {
                             ((DashboardActivity)getActivity()).callSetupFragment(DashboardActivity.SCREENS.MANUALENTRY,null);
@@ -917,16 +921,19 @@ public class AlipayPaymentFragment extends Fragment implements View.OnClickListe
                 }
                 else
                 {
+                    Log.v("TOKENRESPONSE","QR canceld4");
                     if( MyPOSMateApplication.isOpen)
                     {
                         isTrigger=true;
                         openProgressDialog();
                         callAuthToken();
+
                     }
                     else
                     {
                         MyPOSMateApplication.isOpen = false;
                         MyPOSMateApplication.isActiveQrcode = false;
+                        Log.v("TOKENRESPONSE","QR canceld5");
                         callAuthTokenCloseTrade();
                     }
                 }

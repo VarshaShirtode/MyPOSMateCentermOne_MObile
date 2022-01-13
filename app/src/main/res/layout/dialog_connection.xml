@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBlue"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:layout_margin="10dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:text="Connections"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp"
+        android:textStyle="bold"></TextView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPopupBg"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+
+            ></LinearLayout>
+       <ListView
+           android:id="@+id/listConnection"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:divider="@null"
+           android:visibility="gone"
+           >
+
+       </ListView>
+        <LinearLayout
+            android:id="@+id/rel_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            >
+            <RadioGroup
+                android:id="@+id/rgConnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+            <RadioButton
+                android:id="@+id/rbLive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:gravity="center|left"
+                android:text="Connection 1"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_weight="60"
+                />
+                <RadioButton
+                    android:id="@+id/rbTest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center|left"
+                    android:text="Connection 2"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_weight="60"
+                    />
+                <RadioButton
+                    android:id="@+id/rb3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center|left"
+                    android:text="Connection 3"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_weight="60"
+                    />
+                <RadioButton
+                    android:id="@+id/rb4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center|left"
+                    android:text="Connection 4"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_weight="60"
+                    />
+            </RadioGroup>
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/colorBlack"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/blue_border_btn"
+                android:gravity="center"
+                android:text="Save &amp; Ok"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlue"
+                android:textSize="16sp" />
+
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/blue_border_btn"
+                android:gravity="center"
+                android:text="Cancel &amp; Close"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlue"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

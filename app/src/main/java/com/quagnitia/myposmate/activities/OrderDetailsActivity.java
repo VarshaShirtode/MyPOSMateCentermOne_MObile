@@ -66,7 +66,7 @@ import java.util.TreeMap;
 
 public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCompleted {
     RecyclerView recycler_view;
-    PreferencesManager preferencesManager;
+    PreferencesManager preferenceManager;
     EditText edt_order_number, edt_order_time,
             edt_name, edt_phoneno, edt_email, edt_pickup, edt_id, edt_status, edt_ready_by;
 
@@ -81,7 +81,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
         hashMapKeys = new TreeMap<>();
-        preferencesManager = PreferencesManager.getInstance(this);
+        preferenceManager = PreferencesManager.getInstance(this);
         initUI();
         isDetails = true;
         callAuthToken();
@@ -177,9 +177,9 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        int count=preferencesManager.getOrderBadgeCount();
+        int count=preferenceManager.getOrderBadgeCount();
         count=count-1;
-        preferencesManager.setOrderBadgeCount(count);
+        preferenceManager.setOrderBadgeCount(count);
         if (conn != null) {
             unbindService(conn);
         }
@@ -525,12 +525,12 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(this, this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
     public void callTimeStamp() {
         try {
-            new OkHttpHandler(this, this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            new OkHttpHandler(this, this, null, "TimeStamp").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferenceManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -539,16 +539,16 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnTaskCom
     public void callOrderDetails() {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("branchID", preferencesManager.getMerchantId());
-        hashMapKeys.put("configID", preferencesManager.getConfigId());
+        hashMapKeys.put("branchID", preferenceManager.getMerchantId());
+        hashMapKeys.put("configID", preferenceManager.getConfigId());
         hashMapKeys.put("hubID", getIntent().getStringExtra("hub_id"));
         hashMapKeys.put("myPOSMateOrderID", getIntent().getStringExtra("myPOSMateOrderID"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         Log.v("ORDERDETAILS","hubid-"+getIntent().getStringExtra("hub_id"));
         Log.v("ORDERDETAILS","order-"+getIntent().getStringExtra("myPOSMateOrderID"));
         new OkHttpHandler(this, this, null, "OrderDetails")
-                .execute(AppConstants.BASE_URL3 + AppConstants.ORDER_DETAILS
-                        + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferencesManager.getauthToken());
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.ORDER_DETAILS
+                        + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
 
     }
 
@@ -556,31 +556,31 @@ boolean isUpdate=false;
     public void callUpdateStatus(int status) {
         openProgressDialog();
         hashMapKeys.clear();
-        hashMapKeys.put("branchID", preferencesManager.getMerchantId());
-        hashMapKeys.put("configID", preferencesManager.getConfigId());
+        hashMapKeys.put("branchID", preferenceManager.getMerchantId());
+        hashMapKeys.put("configID", preferenceManager.getConfigId());
         hashMapKeys.put("hubID", "946");
         hashMapKeys.put("pickupTime",minutes);
         hashMapKeys.put("status",status+"");
         hashMapKeys.put("myPOSMateOrderID", getIntent().getStringExtra("myPOSMateOrderID"));
         hashMapKeys.put("random_str", new Date().getTime() + "");
         hashMapKeys.put("signature", MD5Class.generateSignatureString(hashMapKeys, this));
-        hashMapKeys.put("access_token",preferencesManager.getauthToken());
+        hashMapKeys.put("access_token",preferenceManager.getauthToken());
 
         HashMap<String,String> hashMap=new HashMap();
         hashMap.putAll(hashMapKeys);
 //        new OkHttpHandler(this, this, hashMap, "OrderUpdate")
-//                .execute(AppConstants.BASE_URL3 + AppConstants.UPDATE_ORDER_DETAILS
-//                        + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferencesManager.getauthToken());
+//                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.UPDATE_ORDER_DETAILS
+//                        + MD5Class.generateSignatureString(hashMapKeys, this) + "&access_token=" + preferenceManager.getauthToken());
 
         new OkHttpHandler(this, this, hashMap, "OrderUpdate")
-                .execute(AppConstants.BASE_URL3 + AppConstants.UPDATE_ORDER_DETAILS);
+                .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.UPDATE_ORDER_DETAILS);
 
 
     }
 
     private void _parseAuthCodeResponse(JSONObject jsonObject) {
         if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-            preferencesManager.setauthToken(jsonObject.optString("access_token"));
+            preferenceManager.setauthToken(jsonObject.optString("access_token"));
         }
 
         if (isDetails) {
@@ -607,7 +607,7 @@ boolean isUpdate=false;
             SimpleDateFormat df1 = new SimpleDateFormat("hh:mm aa");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("hh:mm aa");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             Date d = df1.parse(ss1[0] + " " + ss1[1]);
             String datetime = df2.format(d);
             String ss[] = datetime.split(" ");

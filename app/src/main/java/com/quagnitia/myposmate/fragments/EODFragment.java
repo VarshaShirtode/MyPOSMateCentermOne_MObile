@@ -78,7 +78,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
     ProgressDialog progress;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private Button btn_print, btn_settlement, btn_apply_filter;
-    private PreferencesManager preferencesManager;
+    private PreferencesManager preferenceManager;
     AlertDialog dialog;
     private TextView tv_payment_amount, tv_payment_count, tv_refunded_amount, tv_refund_count, tv_total_transactions;
     private TextView edt_end_datetime, edt_start_datetime, edt_start_time, edt_end_time;
@@ -119,7 +119,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_eod, container, false);
-        preferencesManager = PreferencesManager.getInstance(getActivity());
+        preferenceManager = PreferencesManager.getInstance(getActivity());
         hashMapKeys = new TreeMap<>();
         dialog = new AlertDialog.Builder(getActivity())
                 .setNegativeButton(getString(R.string.cancel), null)
@@ -311,7 +311,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             Date d = df1.parse(ss1[0] + " " + ss1[1]);
             String datetime = df2.format(d);
             String ss[] = datetime.split(" ");
@@ -334,8 +334,8 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
         openProgressDialog();
         try {
             HashMap<String, String> jsonObject = new HashMap<>();
-            jsonObject.put("zone_id", preferencesManager.getTimeZoneId());
-            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(AppConstants.BASE_URL3 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferencesManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
+            jsonObject.put("zone_id", preferenceManager.getTimeZoneId());
+            new OkHttpHandler(getActivity(), this, null, "TimeStamp").execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL5 + AppConstants.GET_CURRENT_DATETIME + "?access_token=" + preferenceManager.getauthToken());//"http://worldclockapi.com/api/json/NZST/now");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -355,11 +355,11 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
         try {
 
             SimpleDateFormat mainConv = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS");
-            mainConv.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            mainConv.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
             SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df1.setTimeZone(TimeZone.getTimeZone("UTC"));
             SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            df2.setTimeZone(TimeZone.getTimeZone(preferencesManager.getTimeZoneId()));
+            df2.setTimeZone(TimeZone.getTimeZone(preferenceManager.getTimeZoneId()));
 
             String startTime = edt_start_datetime.getText().toString() + "T" + edt_start_time.getText().toString();
             Date d = df2.parse(edt_end_datetime.getText().toString() + "T" + edt_end_time.getText().toString());
@@ -369,15 +369,15 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
 
 
             hashMapKeys.clear();
-            hashMapKeys.put("access_id", preferencesManager.getuniqueId());
-            hashMapKeys.put("branch_id", preferencesManager.getMerchantId());
-            hashMapKeys.put("terminal_id", preferencesManager.getterminalId());
-            hashMapKeys.put("config_id", preferencesManager.getConfigId());
-            hashMapKeys.put("start_date", mainConv.format(df1.parse(startTime)) + preferencesManager.getTimezoneAbrev());//URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
-            hashMapKeys.put("end_date", mainConv.format(df1.parse(endTime)) + preferencesManager.getTimezoneAbrev());//URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferencesManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("access_id", preferenceManager.getuniqueId());
+            hashMapKeys.put("branch_id", preferenceManager.getMerchantId());
+            hashMapKeys.put("terminal_id", preferenceManager.getterminalId());
+            hashMapKeys.put("config_id", preferenceManager.getConfigId());
+            hashMapKeys.put("start_date", mainConv.format(df1.parse(startTime)) + preferenceManager.getTimezoneAbrev());//URLEncoder.encode(mainConv.format(df2.parse(startTime)) + preferenceManager.getTimezoneAbrev(), "UTF-8"));
+            hashMapKeys.put("end_date", mainConv.format(df1.parse(endTime)) + preferenceManager.getTimezoneAbrev());//URLEncoder.encode(mainConv.format(df2.parse(endTime)) + preferenceManager.getTimezoneAbrev(), "UTF-8"));
             hashMapKeys.put("random_str", new Date().getTime() + "");
             new OkHttpHandler(getActivity(), this, null, "GetReports")
-                    .execute(AppConstants.BASE_URL2 + AppConstants.GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferencesManager.getauthToken());
+                    .execute(preferenceManager.getBaseURL()+AppConstants.BASE_URL4 + AppConstants.GET_CHANNEL_SUMMARY + MD5Class.generateSignatureString(hashMapKeys, getActivity()) + "&access_token=" + preferenceManager.getauthToken());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -464,7 +464,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
         openProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("grant_type", "client_credentials");
-        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(AppConstants.AUTH);
+        new OkHttpHandler(getActivity(), this, hashMap, "AuthToken").execute(preferenceManager.getBaseURL()+AppConstants.AUTH2);
 
     }
 
@@ -483,7 +483,7 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
         switch (TAG) {
             case "AuthToken":
                 if (jsonObject.has("access_token") && !jsonObject.optString("access_token").equals("")) {
-                    preferencesManager.setauthToken(jsonObject.optString("access_token"));
+                    preferenceManager.setauthToken(jsonObject.optString("access_token"));
                 }
                 if (isStart) {
                     isStart = false;
@@ -557,21 +557,21 @@ public class EODFragment extends Fragment implements View.OnClickListener, OnTas
     public void print() throws RemoteException {
 
         try {
-//            JSONObject jsonObject = new JSONObject(preferencesManager.getmerchant_info().toString());
+//            JSONObject jsonObject = new JSONObject(preferenceManager.getmerchant_info().toString());
             final List<PrintDataObject> list = new ArrayList<PrintDataObject>();
 
             int fontSize = 24;
-            list.add(new PrintDataObject("Merchant Name: " + preferencesManager.getMerchantName(),
+            list.add(new PrintDataObject("Merchant Name: " + preferenceManager.getMerchantName(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
             list.add(new PrintDataObject("Branch Name:",
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            list.add(new PrintDataObject(preferencesManager.getbranchName(),
+            list.add(new PrintDataObject(preferenceManager.getbranchName(),
                     fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                     true));
-            if (!preferencesManager.getmerchant_name().equals("")) {
-                list.add(new PrintDataObject("Branch Info: " + preferencesManager.getmerchant_name(),
+            if (!preferenceManager.getmerchant_name().equals("")) {
+                list.add(new PrintDataObject("Branch Info: " + preferenceManager.getmerchant_name(),
                         fontSize, true, PrintDataObject.ALIGN.LEFT, false,
                         true));
             }

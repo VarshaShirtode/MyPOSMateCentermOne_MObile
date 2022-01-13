@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
 
     public final String TAG = this.getClass().getSimpleName();
     private MyClickListener mMyClickListener;
-  //  private ArrayList<MyObject> mData;
+    //  private ArrayList<MyObject> mData;
     private View.OnDragListener mItemDragListener;
 
     public MyHoverAdapter(Context mCtx) {
@@ -37,7 +36,7 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private final ImageView image;
         private final RelativeLayout root,main_layout,rlTop;
-         RelativeLayout rlTop1,rlTop2,rlTop3,rlTop4;
+        RelativeLayout rlTop1,rlTop2,rlTop3,rlTop4,rlTop5,rlTop6;
         public MyClickListener mClickListener;
         public TextView textfield,tv_cnv;
 
@@ -45,7 +44,7 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
             super(v);
 
             root = (RelativeLayout)v;
-           // textfield = (TextView) v.findViewById(R.id.form_fieldlabel);
+            // textfield = (TextView) v.findViewById(R.id.form_fieldlabel);
             tv_cnv = (TextView) v.findViewById(R.id.tv_cnv );
             image = (ImageView) v.findViewById(R.id.form_image);
             main_layout=v.findViewById(R.id.main_layout);
@@ -58,6 +57,8 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
             rlTop1=v.findViewById(R.id.rlTop1);
             rlTop2=v.findViewById(R.id.rlTop2);
             rlTop3=v.findViewById(R.id.rlTop3);
+            rlTop5=v.findViewById(R.id.rlTop5);
+            rlTop6=v.findViewById(R.id.rlTop6);
             rlTop4=v.findViewById(R.id.rlTop4);
         }
 
@@ -114,16 +115,18 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
 
         if (mData.get(position).isDisplay())
         {
-          //  holder.textfield.setText("" + mData.get(position).getName().replace(" disabled",""));
+            //  holder.textfield.setText("" + mData.get(position).getName().replace(" disabled",""));
 
 
-// Visibility on off according number of icons
+
             if (mData.get(position).getSelected_option()==5)
             {
                 holder.rlTop1.setVisibility(View.GONE);
                 holder.rlTop2.setVisibility(View.VISIBLE);
                 holder.rlTop3.setVisibility(View.GONE);
                 holder.rlTop4.setVisibility(View.GONE);
+                holder.rlTop5.setVisibility(View.GONE);
+                holder.rlTop6.setVisibility(View.GONE);
 
             }else if (mData.get(position).getSelected_option()==3)
             {
@@ -131,6 +134,8 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
                 holder.rlTop2.setVisibility(View.GONE);
                 holder.rlTop3.setVisibility(View.VISIBLE);
                 holder.rlTop4.setVisibility(View.GONE);
+                holder.rlTop5.setVisibility(View.GONE);
+                holder.rlTop6.setVisibility(View.GONE);
 
             }else if (mData.get(position).getSelected_option()==9)
             {
@@ -138,19 +143,42 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
                 holder.rlTop2.setVisibility(View.GONE);
                 holder.rlTop3.setVisibility(View.GONE);
                 holder.rlTop4.setVisibility(View.VISIBLE);
+                holder.rlTop5.setVisibility(View.GONE);
+                holder.rlTop6.setVisibility(View.GONE);
 
-            }else{
+            }
+            else if (mData.get(position).getSelected_option()==14)
+            {
+                holder.rlTop1.setVisibility(View.GONE);
+                holder.rlTop2.setVisibility(View.GONE);
+                holder.rlTop3.setVisibility(View.GONE);
+                holder.rlTop4.setVisibility(View.GONE);
+                holder.rlTop5.setVisibility(View.VISIBLE);
+                holder.rlTop6.setVisibility(View.GONE);
+
+            }else if (mData.get(position).getSelected_option()==13)
+            {
+                holder.rlTop1.setVisibility(View.GONE);
+                holder.rlTop2.setVisibility(View.GONE);
+                holder.rlTop3.setVisibility(View.GONE);
+                holder.rlTop4.setVisibility(View.GONE);
+                holder.rlTop5.setVisibility(View.GONE);
+                holder.rlTop6.setVisibility(View.VISIBLE);
+
+            }
+            else{
                 holder.rlTop1.setVisibility(View.VISIBLE);
                 holder.rlTop2.setVisibility(View.GONE);
                 holder.rlTop3.setVisibility(View.GONE);
                 holder.rlTop4.setVisibility(View.GONE);
+                holder.rlTop5.setVisibility(View.GONE);
+                holder.rlTop6.setVisibility(View.GONE);
                 holder.image.setImageResource(mData.get(position).getLogo());
 
             }
             if (mData.get(position).isConv()==true) {
                 holder.tv_cnv.setVisibility(View.VISIBLE);
                 holder.tv_cnv.setText(mData.get(position).getCnv_amt());
-                Log.v("CONVE","in adapter "+mData.get(position).getName()+" "+ mData.get(position).isConv());
             } else{
                 holder.tv_cnv.setVisibility(View.GONE);             ;
             }
@@ -162,7 +190,7 @@ public class MyHoverAdapter extends RecyclerView.Adapter<MyHoverAdapter.ViewHold
             }
         });*/
         holder.main_layout.setTag(position);
-       mDataChanged=mData;
+        mDataChanged=mData;
     }
 
     @Override
